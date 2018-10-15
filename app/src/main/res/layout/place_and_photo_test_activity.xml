@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/spacing_large"
+    tools:context=".PlaceAndPhotoTestActivity">
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/place_id_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/place_id_field_hint"
+        android:imeOptions="actionGo"
+        android:inputType="text"
+        android:text="ChIJN1t_tDeuEmsRUsoyG83frY4"/>
+
+    <CheckBox
+        android:id="@+id/fetch_photo_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:text="@string/fetch_photo_checkbox"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+      <EditText
+          android:id="@+id/photo_max_width"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:hint="@string/photo_max_width_hint"
+          android:imeOptions="actionNext"
+          android:inputType="number"/>
+
+      <EditText
+          android:id="@+id/photo_max_height"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:hint="@string/photo_max_height_hint"
+          android:imeOptions="actionNext"
+          android:inputType="number"/>
+
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/use_custom_photo_reference"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:text="@string/use_custom_photo_reference"/>
+
+    <EditText
+        android:id="@+id/custom_photo_reference"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/custom_photo_reference_hint"
+        android:imeOptions="actionNext"
+        android:inputType="text"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+      <CheckBox
+          android:id="@+id/use_custom_fields"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:text="@string/use_custom_fields"/>
+
+      <TextView
+          android:id="@+id/custom_fields_list"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/fetch_place_and_photo_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fetch_place_and_photo_button"/>
+
+    <CheckBox
+        android:id="@+id/display_raw_results"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:text="@string/display_raw_results"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+      <ImageView
+          android:id="@+id/photo"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@color/material_grey_300"
+          android:minHeight="48dp"
+          android:minWidth="48dp"/>
+
+      <ProgressBar
+          android:id="@+id/loading"
+          style="?android:attr/progressBarStyleSmall"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerHorizontal="true"
+          android:visibility="invisible"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/response"
+        android:textIsSelectable="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+  </LinearLayout>
+</ScrollView>
+

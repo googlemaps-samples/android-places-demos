@@ -1,0 +1,109 @@
+<resources>
+  <!-- Title of the app. -->
+  <string name="app_name" translatable="false">Android Places Demo</string>
+
+  <!-- title for error alerts. -->
+  <string name="error_alert_title" translatable="false">Uh-Oh!</string>
+  <!-- message to show for error alerts when location bias or restriction is malformed. -->
+  <string name="error_alert_message_invalid_bounds" translatable="false">Unable to parse Location Bias or Location Restriction. Expected format: "33, 128"</string>
+  <!-- message to show for error alerts when a photo size field is malformed. -->
+  <string name="error_alert_message_invalid_photo_size" translatable="false">Unable to parse Photo size. Expected format is integers</string>
+
+  <!-- Text for raw results checkbox. When checked raw return values will be displayed. -->
+  <string name="display_raw_results" translatable="false">Display raw results?</string>
+
+
+  <!-- MAIN ACTIVITY -->
+
+  <!-- Button for launching autocomplete test activity. -->
+  <string name="autocomplete_button" translatable="false">Autocomplete</string>
+
+  <!-- Button for launching place and photo test activity. -->
+  <string name="place_and_photo_button" translatable="false">Place and Photo</string>
+
+  <!-- Button for launching current place test activity. -->
+  <string name="current_place_button" translatable="false">Current Place</string>
+
+
+  <!-- AUTOCOMPLETE -->
+
+  <!-- Hint for the autocomplete widget's initial query and autocomplete prediction's query field. -->
+  <string name="autocomplete_query_hint" translatable="false">(Initial) Query</string>
+
+  <!-- Hint for the autocomplete fragment's hint. -->
+  <string name="autocomplete_hint_hint" translatable="false">(Fragment-only) Hint</string>
+
+  <!-- Hint for the autocomplete prediction's and widget's country field. -->
+  <string name="autocomplete_country_hint" translatable="false">Country</string>
+
+  <!-- Hint Text for the autocomplete prediction's and widget's type filter field. -->
+  <string name="autocomplete_type_filter" translatable="false">Type Filter</string>
+
+
+  <!-- Label for the autocomplete prediction's and widget's location bias related fields. -->
+  <string name="autocomplete_location_bias_label" translatable="false">Location Bias (format: -33.2, 128.2)</string>
+
+  <!-- Label for the autocomplete prediction's and widget's location restriction related fields. -->
+  <string name="autocomplete_location_restriction_label" translatable="false">Location Restriction (format: -33.2, 128.2)</string>
+
+  <!-- Hint for the autocomplete prediction's and widget's location southwest field. -->
+  <string name="autocomplete_location_south_west_hint" translatable="false">South West (lat, lng)</string>
+
+  <!-- Hint for the autocomplete prediction's and widget's location northeast field. -->
+  <string name="autocomplete_location_north_east_hint" translatable="false">North East (lat, lng)</string>
+
+
+  <!-- Text for enabling autocomplete prediction's and widget's type filter field. -->
+  <string name="autocomplete_use_type_filter" translatable="false">Use TypeFilter?</string>
+
+  <!-- Text for enabling autocomplete prediction's use of session tokens. -->
+  <string name="autocomplete_use_session_token" translatable="false">(Predictions-only) Use session token?</string>
+
+  <!-- Text for autocomplete activity mode (overlay or fullscreen) checkbox. -->
+  <string name="autocomplete_activity_overlay_mode" translatable="false">(Activity-only) Overlay mode?</string>
+
+
+  <!-- Text for the autocomplete fragment update button. -->
+  <string name="autocomplete_fragment_update_button" translatable="false">Update Fragment</string>
+
+  <!-- Text for starting the autocomplete activity button. -->
+  <string name="autocomplete_activity_button" translatable="false">Open Activity</string>
+
+  <!-- Text for the fetch autocomplete predictions submit button. -->
+  <string name="fetch_autocomplete_predictions_button" translatable="false">Fetch Predictions</string>
+
+
+  <!-- FETCH PLACE AND PHOTO -->
+
+  <!-- Hint for the place ID field. -->
+  <string name="place_id_field_hint" translatable="false">Enter place ID</string>
+
+  <!-- Text for the fetch place and photo button. -->
+  <string name="fetch_photo_checkbox" translatable="false">Also fetch photo?</string>
+
+  <!-- Hint for the fetch photo max width field. -->
+  <string name="photo_max_width_hint" translatable="false">Photo Max Width</string>
+
+  <!-- Text for the fetch photo max height field. -->
+  <string name="photo_max_height_hint" translatable="false">Photo Max Height</string>
+
+  <!-- Text for the fetch place and photo button. -->
+  <string name="use_custom_photo_reference" translatable="false">Use custom Photo Reference?</string>
+
+  <!-- Text for the fetch place and photo button. -->
+  <string name="custom_photo_reference_hint" translatable="false">Custom Photo Reference</string>
+
+  <!-- Text for checkbox to set custom list of Place Fields. -->
+  <string name="use_custom_fields" translatable="false">Manually set Place Fields?</string>
+
+  <!-- Text for the fetch place and photo button. -->
+  <string name="fetch_place_and_photo_button" translatable="false">Fetch Place and Photo</string>
+
+
+  <!-- FIND CURRENT PLACE -->
+
+  <!-- Text for the find current place submit button. -->
+  <string name="find_current_place_button" translatable="false">Find Current Place</string>
+
+
+</resources>
