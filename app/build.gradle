@@ -8,6 +8,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+        resValue "string", "places_api_key", (project.findProperty("PLACES_API_KEY") ?: "")
     }
     buildTypes {
         release {

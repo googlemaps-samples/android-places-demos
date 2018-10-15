@@ -9,6 +9,8 @@
   <!-- message to show for error alerts when a photo size field is malformed. -->
   <string name="error_alert_message_invalid_photo_size" translatable="false">Unable to parse Photo size. Expected format is integers</string>
 
+  <string name="error_api_key" translatable="false">No API key defined in gradle.properties</string>
+
   <!-- Text for raw results checkbox. When checked raw return values will be displayed. -->
   <string name="display_raw_results" translatable="false">Display raw results?</string>
 
