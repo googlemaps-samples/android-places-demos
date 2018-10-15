@@ -29,11 +29,6 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -43,6 +38,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * Activity for testing {@link PlacesClient#fetchPlace(FetchPlaceRequest)}.

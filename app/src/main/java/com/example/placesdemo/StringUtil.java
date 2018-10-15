@@ -28,11 +28,12 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 
 import android.graphics.Bitmap;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.TextView;
 
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 /**
  * Utility class for converting objects to viewable strings and back.
