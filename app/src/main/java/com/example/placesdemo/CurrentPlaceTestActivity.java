@@ -98,7 +98,7 @@ public class CurrentPlaceTestActivity extends AppCompatActivity {
     setLoading(true);
 
     FindCurrentPlaceRequest currentPlaceRequest =
-        FindCurrentPlaceRequest.builder(getPlaceFields()).build();
+        FindCurrentPlaceRequest.newInstance(getPlaceFields());
     Task<FindCurrentPlaceResponse> currentPlaceTask =
         placesClient.findCurrentPlace(currentPlaceRequest);
 

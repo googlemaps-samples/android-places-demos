@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Setup Places Client
     if (!Places.isInitialized()) {
-      Places.initialize(apiKey);
+      Places.initialize(getApplicationContext(), apiKey);
     }
 
     setLaunchActivityClickListener(R.id.autocomplete_button, AutocompleteTestActivity.class);

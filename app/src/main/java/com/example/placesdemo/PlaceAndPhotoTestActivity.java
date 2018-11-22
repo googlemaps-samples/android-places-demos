@@ -102,7 +102,7 @@ public class PlaceAndPhotoTestActivity extends AppCompatActivity {
 
     setLoading(true);
 
-    FetchPlaceRequest request = FetchPlaceRequest.builder(getPlaceId(), placeFields).build();
+    FetchPlaceRequest request = FetchPlaceRequest.newInstance(getPlaceId(), placeFields);
     Task<FetchPlaceResponse> placeTask = placesClient.fetchPlace(request);
 
     placeTask.addOnSuccessListener(
