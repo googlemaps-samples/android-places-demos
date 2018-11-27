@@ -30,6 +30,7 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
@@ -131,10 +132,15 @@ public class AutocompleteTestActivity extends AppCompatActivity {
   @Override
   protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
     if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
-      if (resultCode == RESULT_OK) {
+      if (resultCode == AutocompleteActivity.RESULT_OK) {
         Place place = Autocomplete.getPlaceFromIntent(intent);
         responseView.setText(
             StringUtil.stringifyAutocompleteWidget(place, isDisplayRawResultsChecked()));
+      } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+        Status status = Autocomplete.getStatusFromIntent(intent);
+        responseView.setText(status.getStatusMessage());
+      } else if (resultCode == AutocompleteActivity.RESULT_CANCELED) {
+        // The user canceled the operation.
       }
     }
 

@@ -24,12 +24,13 @@ import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
-import android.annotation.SuppressLint;
+import android.Manifest.permission;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -78,11 +79,22 @@ public class CurrentPlaceTestActivity extends AppCompatActivity {
    * most
    * likely to be at currently.
    */
-  // ASwB complains about MissingPermission even when permission is checked directly
-  // (i.e not in a separate checkPermission() method).
-  @SuppressLint("MissingPermission")
   private void findCurrentPlace() {
-    // ACCESS_WIFI_STATE is a normal permission, no need to check for it.
+    if (ContextCompat.checkSelfPermission(this, permission.ACCESS_WIFI_STATE)
+            != PackageManager.PERMISSION_GRANTED
+        || ContextCompat.checkSelfPermission(this, permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
+      Toast.makeText(
+              this,
+              "Both ACCESS_WIFI_STATE & ACCESS_FINE_LOCATION permissions are required",
+              Toast.LENGTH_SHORT)
+          .show();
+    }
+
+    // Note that it is not possible to request a normal (non-dangerous) permission from
+    // ActivityCompat.requestPermissions(), which is why the checkPermission() only checks if
+    // ACCESS_FINE_LOCATION is granted. It is still possible to check whether a normal permission
+    // is granted or not using ContextCompat.checkSelfPermission().
     if (checkPermission(ACCESS_FINE_LOCATION)) {
       findCurrentPlaceWithPermissions();
     }
