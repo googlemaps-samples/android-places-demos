@@ -140,7 +140,7 @@ public class PlaceAndPhotoTestActivity extends AppCompatActivity {
 
     String customPhotoReference = getCustomPhotoReference();
     if (!TextUtils.isEmpty(customPhotoReference)) {
-      photoMetadata = PhotoMetadata.builder().setPhotoReference(customPhotoReference).build();
+      photoMetadata = PhotoMetadata.builder(customPhotoReference).build();
     }
 
     FetchPhotoRequest.Builder photoRequestBuilder = FetchPhotoRequest.builder(photoMetadata);
@@ -184,9 +184,9 @@ public class PlaceAndPhotoTestActivity extends AppCompatActivity {
   private boolean validateInputs(
       boolean isFetchPhotoChecked, List<Field> placeFields, String customPhotoReference) {
     if (isFetchPhotoChecked) {
-      if (!placeFields.contains(Field.PHOTO_METADATA_LIST)) {
+      if (!placeFields.contains(Field.PHOTO_METADATAS)) {
         responseView.setText(
-            "'Also fetch photo?' is selected, but PHOTO_METADATA_LIST Place Field is not.");
+            "'Also fetch photo?' is selected, but PHOTO_METADATAS Place Field is not.");
         return false;
       }
     } else if (!TextUtils.isEmpty(customPhotoReference)) {
