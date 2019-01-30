@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+    <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        <Button
+                android:text="@string/button_place_picker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/button_place_picker"/>
+
+        <Button
+                android:text="@string/button_current_place"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/button_current_place"/>
+
+        <Button
+                android:text="@string/button_autocomplete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/button_autocomplete"/>
+
+        <fragment
+                android:id="@+id/place_autocomplete_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:name="com.google.android.libraries.places.compat.ui.PlaceAutocompleteFragment"/>
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/text"/>
+
+        <ImageView
+                android:id="@+id/image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

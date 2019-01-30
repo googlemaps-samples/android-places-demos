@@ -1,0 +1,30 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.example.placesdemo"
+        minSdkVersion 25
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        resValue "string", "places_api_key", (project.findProperty("PLACES_API_KEY") ?: "")
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
+    implementation 'com.google.android.libraries.places:places-compat:1.0.0'
+}

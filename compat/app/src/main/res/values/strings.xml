@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Places Demo</string>
+    <string name="button_place_picker">Place Picker</string>
+    <string name="button_current_place">Current Place</string>
+    <string name="button_autocomplete">Autocomplete</string>
+    <string name="google_play_services_error">Google Play Services is not available</string>
+    <string name="location_permission_error">Location permission required</string>
+    <string name="autocomplete">Autocomplete</string>
+    <string name="place_picker">Place Picker</string>
+    <string name="autocomplete_fragment">Autocomplete Fragment</string>
+</resources>
