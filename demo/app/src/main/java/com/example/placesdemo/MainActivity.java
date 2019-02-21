@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    String apiKey = getString(R.string.places_api_key);
+    String apiKey = "AIzaSyAEwt2BcWduah-WlyIT-QOo0Z3IvSjICGA";
 
     if (apiKey.equals("")) {
       Toast.makeText(this, getString(R.string.error_api_key), Toast.LENGTH_LONG).show();
@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     setLaunchActivityClickListener(R.id.place_and_photo_button, PlaceAndPhotoTestActivity.class);
 
     setLaunchActivityClickListener(R.id.current_place_button, CurrentPlaceTestActivity.class);
+
+    setLaunchActivityClickListener(R.id.child_frag_button, FragmentActivity.class);
   }
 
   private void setLaunchActivityClickListener(
