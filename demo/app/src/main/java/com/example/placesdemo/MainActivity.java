@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    String apiKey = "AIzaSyAEwt2BcWduah-WlyIT-QOo0Z3IvSjICGA";
+    String apiKey = "";
 
     if (apiKey.equals("")) {
       Toast.makeText(this, getString(R.string.error_api_key), Toast.LENGTH_LONG).show();
