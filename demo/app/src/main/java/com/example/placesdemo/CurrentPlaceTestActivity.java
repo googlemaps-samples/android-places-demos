@@ -19,6 +19,7 @@ package com.example.placesdemo;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.Place.Field;
 import com.google.android.libraries.places.api.model.PlaceLikelihood;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
@@ -61,7 +62,8 @@ public class CurrentPlaceTestActivity extends AppCompatActivity {
 
     // Set view objects
     List<Place.Field> placeFields =
-        FieldSelector.getPlaceFields(Place.Field.PHONE_NUMBER, Place.Field.WEBSITE_URI);
+        FieldSelector.getPlaceFields(
+          Field.ADDRESS_COMPONENTS, Field.PHONE_NUMBER, Field.WEBSITE_URI, Field.OPENING_HOURS);
     fieldSelector =
         new FieldSelector(
             findViewById(R.id.use_custom_fields),

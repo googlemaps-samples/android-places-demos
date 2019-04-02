@@ -38,7 +38,7 @@ import androidx.annotation.Nullable;
 /**
  * Utility class for converting objects to viewable strings and back.
  */
-final class StringUtil {
+public final class StringUtil {
 
   private static final String FIELD_SEPARATOR = "\n\t";
   private static final String RESULT_SEPARATOR = "\n---\n\t";
@@ -153,7 +153,7 @@ final class StringUtil {
     return builder.toString();
   }
 
-  static String stringifyAutocompleteWidget(Place place, boolean raw) {
+  public static String stringifyAutocompleteWidget(Place place, boolean raw) {
     StringBuilder builder = new StringBuilder();
 
     builder.append("Autocomplete Widget Result:").append(RESULT_SEPARATOR);
