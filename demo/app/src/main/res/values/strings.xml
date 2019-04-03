@@ -64,6 +64,14 @@
   <!-- Text for autocomplete activity mode (overlay or fullscreen) checkbox. -->
   <string name="autocomplete_activity_overlay_mode" translatable="false">(Activity-only) Overlay mode?</string>
 
+  <!-- Text for the autocomplete support fragment section label. -->
+  <string name="autocomplete_support_fragment_text_label" translatable="false">Autocomplete Support Fragment:</string>
+
+  <!-- Text for the autocomplete fragment section label. -->
+  <string name="autocomplete_fragment_text_label" translatable="false">Autocomplete Fragment:</string>
+
+  <!-- Text for the autocomplete support fragment update button. -->
+  <string name="autocomplete_support_fragment_update_button" translatable="false">Update Support Fragment</string>
 
   <!-- Text for the autocomplete fragment update button. -->
   <string name="autocomplete_fragment_update_button" translatable="false">Update Fragment</string>

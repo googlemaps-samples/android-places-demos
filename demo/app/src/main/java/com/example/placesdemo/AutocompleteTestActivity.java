@@ -31,6 +31,7 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.AutocompleteFragment;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
@@ -47,6 +48,7 @@ import android.widget.TextView;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
@@ -83,25 +85,29 @@ public class AutocompleteTestActivity extends AppCompatActivity {
         new FieldSelector(
             findViewById(R.id.use_custom_fields), findViewById(R.id.custom_fields_list));
 
-    // Setup Autocomplete Support Fragment
+    setupAutocompleteSupportFragment();
+    setupAutocompleteFragment();
+
+    // Set listeners for Autocomplete activity
+    findViewById(R.id.autocomplete_activity_button)
+            .setOnClickListener(view -> startAutocompleteActivity());
+
+    // Set listeners for programmatic Autocomplete
+    findViewById(R.id.fetch_autocomplete_predictions_button)
+            .setOnClickListener(view -> findAutocompletePredictions());
+
+    // UI initialization
+    setLoading(false);
+    typeFilterSpinner.setEnabled(false);
+  }
+
+  private void setupAutocompleteSupportFragment() {
     final AutocompleteSupportFragment autocompleteSupportFragment =
         (AutocompleteSupportFragment)
-            getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+            getSupportFragmentManager().findFragmentById(R.id.autocomplete_support_fragment);
     autocompleteSupportFragment.setPlaceFields(getPlaceFields());
-    autocompleteSupportFragment.setOnPlaceSelectedListener(
-        new PlaceSelectionListener() {
-          @Override
-          public void onPlaceSelected(Place place) {
-            responseView.setText(
-                StringUtil.stringifyAutocompleteWidget(place, isDisplayRawResultsChecked()));
-          }
-
-          @Override
-          public void onError(Status status) {
-            responseView.setText(status.getStatusMessage());
-          }
-        });
-    findViewById(R.id.autocomplete_fragment_update_button)
+    autocompleteSupportFragment.setOnPlaceSelectedListener(getPlaceSelectionListener());
+    findViewById(R.id.autocomplete_support_fragment_update_button)
         .setOnClickListener(
             view -> {
               autocompleteSupportFragment.setPlaceFields(getPlaceFields());
@@ -113,17 +119,40 @@ public class AutocompleteTestActivity extends AppCompatActivity {
               autocompleteSupportFragment.setTypeFilter(getTypeFilter());
             });
 
-    // Set listeners for Autocomplete activity
-    findViewById(R.id.autocomplete_activity_button)
-        .setOnClickListener(view -> startAutocompleteActivity());
+  }
 
-    // Set listeners for programmatic Autocomplete
-    findViewById(R.id.fetch_autocomplete_predictions_button)
-        .setOnClickListener(view -> findAutocompletePredictions());
+  private void setupAutocompleteFragment() {
+    final AutocompleteFragment autocompleteFragment =
+            (AutocompleteFragment) getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+    autocompleteFragment.setPlaceFields(getPlaceFields());
+    autocompleteFragment.setOnPlaceSelectedListener(getPlaceSelectionListener());
+    findViewById(R.id.autocomplete_fragment_update_button)
+            .setOnClickListener(
+                    view -> {
+                      autocompleteFragment.setPlaceFields(getPlaceFields());
+                      autocompleteFragment.setText(getQuery());
+                      autocompleteFragment.setHint(getHint());
+                      autocompleteFragment.setCountry(getCountry());
+                      autocompleteFragment.setLocationBias(getLocationBias());
+                      autocompleteFragment.setLocationRestriction(getLocationRestriction());
+                      autocompleteFragment.setTypeFilter(getTypeFilter());
+                    });
+  }
 
-    // UI initialization
-    setLoading(false);
-    typeFilterSpinner.setEnabled(false);
+  @NonNull
+  private PlaceSelectionListener getPlaceSelectionListener() {
+    return new PlaceSelectionListener() {
+      @Override
+      public void onPlaceSelected(Place place) {
+        responseView.setText(
+                StringUtil.stringifyAutocompleteWidget(place, isDisplayRawResultsChecked()));
+      }
+
+      @Override
+      public void onError(Status status) {
+        responseView.setText(status.getStatusMessage());
+      }
+    };
   }
 
   /**

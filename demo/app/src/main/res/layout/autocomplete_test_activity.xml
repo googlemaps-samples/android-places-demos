@@ -162,26 +162,42 @@
         android:layout_height="wrap_content"
         android:text="@string/autocomplete_activity_button"/>
 
-    <!-- Autocomplete fragment -->
-    <LinearLayout
+    <!-- Autocomplete support fragment -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/autocomplete_support_fragment_text_label"
+        android:text="@string/autocomplete_support_fragment_text_label"/>
+    <fragment
+        android:id="@+id/autocomplete_support_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+        />
+    <Button
+        android:id="@+id/autocomplete_support_fragment_update_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/autocomplete_support_fragment_update_button"/>
+
+    <!-- Autocomplete fragment -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/autocomplete_fragment_text_label"
+        android:text="@string/autocomplete_fragment_text_label"/>
+    <fragment
+        android:id="@+id/autocomplete_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="com.google.android.libraries.places.widget.AutocompleteFragment"
+        />
 
       <Button
           android:id="@+id/autocomplete_fragment_update_button"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/autocomplete_fragment_update_button"/>
-
-      <fragment
-          android:id="@+id/autocomplete_fragment"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-          />
-    </LinearLayout>
-
 
     <!-- Results -->
     <CheckBox
