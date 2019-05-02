@@ -23,9 +23,7 @@ android {
 }
 
 dependencies {
-    api fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
     implementation 'com.google.android.libraries.places:places:1.1.0'
-    implementation 'com.google.guava:guava:23.5-android'
 }

@@ -24,14 +24,10 @@ import com.google.android.libraries.places.api.model.PlaceLikelihood;
 import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
 
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.widget.TextView;
-
-import java.util.List;
 
 import androidx.annotation.Nullable;
 
@@ -65,13 +61,13 @@ public final class StringUtil {
       return null;
     }
 
-    List<String> split = Splitter.on(',').splitToList(value);
-    if (split.size() != 2) {
+    String[] split = TextUtils.split(value, ",");
+    if (split.length != 2) {
       return null;
     }
 
     try {
-      return new LatLng(Double.parseDouble(split.get(0)), Double.parseDouble(split.get(1)));
+      return new LatLng(Double.parseDouble(split[0]), Double.parseDouble(split[1]));
     } catch (NullPointerException | NumberFormatException e) {
       return null;
     }
@@ -86,9 +82,7 @@ public final class StringUtil {
 
     if (raw) {
       builder.append(RESULT_SEPARATOR);
-      Joiner.on(RESULT_SEPARATOR)
-          .useForNull("-")
-          .appendTo(builder, response.getAutocompletePredictions());
+      builder.append(TextUtils.join(RESULT_SEPARATOR, response.getAutocompletePredictions()));
     } else {
       for (AutocompletePrediction autocompletePrediction : response.getAutocompletePredictions()) {
         builder
@@ -120,7 +114,7 @@ public final class StringUtil {
 
     if (raw) {
       builder.append(RESULT_SEPARATOR);
-      Joiner.on(RESULT_SEPARATOR).useForNull("-").appendTo(builder, response.getPlaceLikelihoods());
+      builder.append(TextUtils.join(RESULT_SEPARATOR, response.getPlaceLikelihoods()));
     } else {
       for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
         builder
