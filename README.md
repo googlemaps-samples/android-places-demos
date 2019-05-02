@@ -1,11 +1,11 @@
-Google Places SDK Demos for Android
+Google Places SDK for Android Demos
 ====================================
 
 This repo contains the following apps that demonstrate use of the [Google Places SDK for Android](https://developers.google.com/places/android-sdk/):
 
-1. [demo](https://github.com/googlemaps/android-places-demos/tree/master/demo):
+1. [demo](demo):
 Demo app for the static Places SDK.
-2. [compat](https://github.com/googlemaps/android-places-demos/tree/master/compat):
+2. [compat](compat):
 Demo app for the old Google Play Services version of the Places SDK, using the new [compatibility library](https://developers.google.com/places/android-sdk/client-migration#compat).
 
 Note that each folder contains a distinct sample and must be imported separately.

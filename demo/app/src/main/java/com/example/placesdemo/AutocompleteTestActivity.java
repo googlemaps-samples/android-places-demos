@@ -31,7 +31,6 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
-import com.google.android.libraries.places.widget.AutocompleteFragment;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
@@ -86,7 +85,6 @@ public class AutocompleteTestActivity extends AppCompatActivity {
             findViewById(R.id.use_custom_fields), findViewById(R.id.custom_fields_list));
 
     setupAutocompleteSupportFragment();
-    setupAutocompleteFragment();
 
     // Set listeners for Autocomplete activity
     findViewById(R.id.autocomplete_activity_button)
@@ -119,24 +117,6 @@ public class AutocompleteTestActivity extends AppCompatActivity {
               autocompleteSupportFragment.setTypeFilter(getTypeFilter());
             });
 
-  }
-
-  private void setupAutocompleteFragment() {
-    final AutocompleteFragment autocompleteFragment =
-            (AutocompleteFragment) getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-    autocompleteFragment.setPlaceFields(getPlaceFields());
-    autocompleteFragment.setOnPlaceSelectedListener(getPlaceSelectionListener());
-    findViewById(R.id.autocomplete_fragment_update_button)
-            .setOnClickListener(
-                    view -> {
-                      autocompleteFragment.setPlaceFields(getPlaceFields());
-                      autocompleteFragment.setText(getQuery());
-                      autocompleteFragment.setHint(getHint());
-                      autocompleteFragment.setCountry(getCountry());
-                      autocompleteFragment.setLocationBias(getLocationBias());
-                      autocompleteFragment.setLocationRestriction(getLocationRestriction());
-                      autocompleteFragment.setTypeFilter(getTypeFilter());
-                    });
   }
 
   @NonNull
