@@ -47,6 +47,7 @@ import android.widget.TextView;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -161,13 +162,14 @@ public class AutocompleteTestActivity extends AppCompatActivity {
 
   private void startAutocompleteActivity() {
     Intent autocompleteIntent =
-        new Autocomplete.IntentBuilder(getMode(), getPlaceFields())
-            .setInitialQuery(getQuery())
-            .setCountry(getCountry())
-            .setLocationBias(getLocationBias())
-            .setLocationRestriction(getLocationRestriction())
-            .setTypeFilter(getTypeFilter())
-            .build(AutocompleteTestActivity.this);
+            new Autocomplete.IntentBuilder(getMode(), getPlaceFields())
+                    .setInitialQuery(getQuery())
+                    .setHint(getHint())
+                    .setCountry(getCountry())
+                    .setLocationBias(getLocationBias())
+                    .setLocationRestriction(getLocationRestriction())
+                    .setTypeFilter(getTypeFilter())
+                    .build(AutocompleteTestActivity.this);
     startActivityForResult(autocompleteIntent, AUTOCOMPLETE_REQUEST_CODE);
   }
 
@@ -214,16 +216,25 @@ public class AutocompleteTestActivity extends AppCompatActivity {
     }
   }
 
+  @Nullable
   private String getQuery() {
-    return ((TextView) findViewById(R.id.autocomplete_query)).getText().toString();
+    return getTextViewValue(R.id.autocomplete_query);
   }
 
+  @Nullable
   private String getHint() {
-    return ((TextView) findViewById(R.id.autocomplete_hint)).getText().toString();
+    return getTextViewValue(R.id.autocomplete_hint);
   }
 
+  @Nullable
   private String getCountry() {
-    return ((TextView) findViewById(R.id.autocomplete_country)).getText().toString();
+    return getTextViewValue(R.id.autocomplete_country);
+  }
+
+  @Nullable
+  private String getTextViewValue(@IdRes int textViewResId) {
+    String value = ((TextView) findViewById(textViewResId)).getText().toString();
+    return TextUtils.isEmpty(value) ? null : value;
   }
 
   @Nullable

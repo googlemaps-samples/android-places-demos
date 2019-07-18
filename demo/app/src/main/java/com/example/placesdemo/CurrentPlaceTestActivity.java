@@ -63,7 +63,11 @@ public class CurrentPlaceTestActivity extends AppCompatActivity {
     // Set view objects
     List<Place.Field> placeFields =
         FieldSelector.getPlaceFields(
-          Field.ADDRESS_COMPONENTS, Field.PHONE_NUMBER, Field.WEBSITE_URI, Field.OPENING_HOURS);
+                Field.ADDRESS_COMPONENTS,
+                Field.OPENING_HOURS,
+                Field.PHONE_NUMBER,
+                Field.UTC_OFFSET,
+                Field.WEBSITE_URI);
     fieldSelector =
         new FieldSelector(
             findViewById(R.id.use_custom_fields),
