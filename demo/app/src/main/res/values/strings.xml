@@ -32,8 +32,8 @@
   <!-- Hint for the autocomplete widget's initial query and autocomplete prediction's query field. -->
   <string name="autocomplete_query_hint" translatable="false">(Initial) Query</string>
 
-  <!-- Hint for the autocomplete widget's query field. -->
-  <string name="autocomplete_hint_hint" translatable="false">Hint</string>
+  <!-- Hint for the autocomplete fragment's hint. -->
+  <string name="autocomplete_hint_hint" translatable="false">(Fragment-only) Hint</string>
 
   <!-- Hint for the autocomplete prediction's and widget's country field. -->
   <string name="autocomplete_country_hint" translatable="false">Country</string>

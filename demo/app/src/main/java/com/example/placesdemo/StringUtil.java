@@ -131,12 +131,7 @@ public final class StringUtil {
   }
 
   static String stringify(Place place) {
-    return place.getName()
-            + " ("
-            + place.getAddress()
-            + ")"
-            + " is open now? "
-            + place.isOpen(System.currentTimeMillis());
+    return place.getName() + " (" + place.getAddress() + ")";
   }
 
   static String stringify(Bitmap bitmap) {
