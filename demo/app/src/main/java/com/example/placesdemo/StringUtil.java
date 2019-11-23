@@ -31,6 +31,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import java.util.List;
+
 /**
  * Utility class for converting objects to viewable strings and back.
  */
@@ -61,7 +63,7 @@ public final class StringUtil {
       return null;
     }
 
-    String[] split = TextUtils.split(value, ",");
+    String[] split = value.split(",", -1);
     if (split.length != 2) {
       return null;
     }
@@ -81,9 +83,7 @@ public final class StringUtil {
         .append(" Autocomplete Predictions Results:");
 
     if (raw) {
-      builder.append(RESULT_SEPARATOR);
-      builder.append(TextUtils.join(RESULT_SEPARATOR, response.getAutocompletePredictions()));
-    } else {
+      appendListToStringBuilder(builder, response.getAutocompletePredictions());    } else {
       for (AutocompletePrediction autocompletePrediction : response.getAutocompletePredictions()) {
         builder
             .append(RESULT_SEPARATOR)
@@ -114,7 +114,7 @@ public final class StringUtil {
 
     if (raw) {
       builder.append(RESULT_SEPARATOR);
-      builder.append(TextUtils.join(RESULT_SEPARATOR, response.getPlaceLikelihoods()));
+      appendListToStringBuilder(builder, response.getPlaceLikelihoods());
     } else {
       for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
         builder
@@ -164,5 +164,17 @@ public final class StringUtil {
     }
 
     return builder.toString();
+  }
+
+  private static <T> void appendListToStringBuilder(StringBuilder builder, List<T> items) {
+    if (items.isEmpty()) {
+      return;
+    }
+
+    builder.append(items.get(0));
+    for (int i = 1; i < items.size(); i++) {
+      builder.append(RESULT_SEPARATOR);
+      builder.append(items.get(i));
+    }
   }
 }

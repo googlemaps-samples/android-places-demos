@@ -8,6 +8,7 @@
     tools:context=".AutocompleteTestActivity">
 
   <LinearLayout
+      android:id="@+id/autocomplete_scroll_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical">
@@ -153,7 +154,7 @@
           android:id="@+id/custom_fields_list"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:layout_weight="1" />
+          android:layout_weight="1"/>
 
     </LinearLayout>
 
@@ -175,12 +176,13 @@
         android:layout_height="wrap_content"
         android:id="@+id/autocomplete_support_fragment_text_label"
         android:text="@string/autocomplete_support_fragment_text_label"/>
+
     <fragment
         android:id="@+id/autocomplete_support_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-        />
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"/>
+
     <Button
         android:id="@+id/autocomplete_support_fragment_update_button"
         android:layout_width="wrap_content"

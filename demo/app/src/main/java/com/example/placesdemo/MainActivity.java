@@ -23,11 +23,20 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.annotation.StyleRes;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
+  public static final String THEME_RES_ID_EXTRA = "widget_theme";
+
+  private Spinner widgetThemeSpinner;
+
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
@@ -44,16 +53,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     setLaunchActivityClickListener(R.id.autocomplete_button, AutocompleteTestActivity.class);
-
     setLaunchActivityClickListener(R.id.place_and_photo_button, PlaceAndPhotoTestActivity.class);
-
     setLaunchActivityClickListener(R.id.current_place_button, CurrentPlaceTestActivity.class);
+
+
+    widgetThemeSpinner = findViewById(R.id.theme_spinner);
+    widgetThemeSpinner.setAdapter(
+            new ArrayAdapter<>(
+                    /* context= */ this,
+                    android.R.layout.simple_list_item_1,
+                    Arrays.asList(
+                            "Default", "\uD83D\uDCA9 brown", "\uD83E\uDD2E green", "\uD83D\uDE08 purple")));
   }
 
   private void setLaunchActivityClickListener(
       int onClickResId, Class<? extends AppCompatActivity> activityClassToLaunch) {
     findViewById(onClickResId)
         .setOnClickListener(
-            v -> startActivity(new Intent(MainActivity.this, activityClassToLaunch)));
+                v -> {
+                  Intent intent = new Intent(MainActivity.this, activityClassToLaunch);
+                  intent.putExtra(THEME_RES_ID_EXTRA, getSelectedTheme());
+                  startActivity(intent);
+                });
+  }
+
+  @StyleRes
+  private int getSelectedTheme() {
+    int style;
+    switch (widgetThemeSpinner.getSelectedItemPosition()) {
+      case 1:
+        style = R.style.Brown;
+        break;
+      case 2:
+        style = R.style.Green;
+        break;
+      case 3:
+        style = R.style.Purple;
+        break;
+      default:
+        style = 0;
+    }
+    return style;
   }
 }

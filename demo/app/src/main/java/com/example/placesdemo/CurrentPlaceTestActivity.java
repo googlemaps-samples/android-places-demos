@@ -18,7 +18,6 @@ package com.example.placesdemo;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.Place.Field;
 import com.google.android.libraries.places.api.model.PlaceLikelihood;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
@@ -35,6 +34,8 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -53,16 +54,23 @@ public class CurrentPlaceTestActivity extends AppCompatActivity {
   private FieldSelector fieldSelector;
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    // Use whatever theme was set from the MainActivity.
+    int theme = getIntent().getIntExtra(MainActivity.THEME_RES_ID_EXTRA, 0);
+    if (theme != 0) {
+      setTheme(theme);
+    }
+
     setContentView(R.layout.current_place_test_activity);
 
     // Retrieve a PlacesClient (previously initialized - see MainActivity)
     placesClient = Places.createClient(this);
 
     // Set view objects
-    List<Place.Field> placeFields =
-        FieldSelector.getPlaceFields(
+    List<Field> placeFields =
+            FieldSelector.allExcept(
                 Field.ADDRESS_COMPONENTS,
                 Field.OPENING_HOURS,
                 Field.PHONE_NUMBER,
@@ -70,14 +78,21 @@ public class CurrentPlaceTestActivity extends AppCompatActivity {
                 Field.WEBSITE_URI);
     fieldSelector =
         new FieldSelector(
-            findViewById(R.id.use_custom_fields),
-            findViewById(R.id.custom_fields_list),
-            placeFields);
+                findViewById(R.id.use_custom_fields),
+                findViewById(R.id.custom_fields_list),
+                placeFields,
+                savedInstanceState);
     responseView = findViewById(R.id.response);
     setLoading(false);
 
     // Set listeners for programmatic Find Current Place
     findViewById(R.id.find_current_place_button).setOnClickListener((view) -> findCurrentPlace());
+  }
+
+  @Override
+  protected void onSaveInstanceState(@NonNull Bundle bundle) {
+    super.onSaveInstanceState(bundle);
+    fieldSelector.onSaveInstanceState(bundle);
   }
 
   /**
@@ -137,7 +152,7 @@ public class CurrentPlaceTestActivity extends AppCompatActivity {
   // Helper methods below //
   //////////////////////////
 
-  private List<Place.Field> getPlaceFields() {
+  private List<Field> getPlaceFields() {
     if (((CheckBox) findViewById(R.id.use_custom_fields)).isChecked()) {
       return fieldSelector.getSelectedFields();
     } else {

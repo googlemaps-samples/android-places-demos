@@ -17,6 +17,9 @@
 
   <!-- MAIN ACTIVITY -->
 
+  <!-- Label for spinner/chooser for color themes. -->
+  <string name="theme_spinner_text" translatable="false">Choose a color theme…</string>
+
   <!-- Button for launching autocomplete test activity. -->
   <string name="autocomplete_button" translatable="false">Autocomplete</string>
 
@@ -41,7 +44,6 @@
   <!-- Hint Text for the autocomplete prediction's and widget's type filter field. -->
   <string name="autocomplete_type_filter" translatable="false">Type Filter</string>
 
-
   <!-- Label for the autocomplete prediction's and widget's location bias related fields. -->
   <string name="autocomplete_location_bias_label" translatable="false">Location Bias (format: -33.2, 128.2)</string>
 
@@ -62,7 +64,7 @@
   <string name="autocomplete_use_session_token" translatable="false">(Predictions-only) Use session token?</string>
 
   <!-- Text for autocomplete activity mode (overlay or fullscreen) checkbox. -->
-  <string name="autocomplete_activity_overlay_mode" translatable="false">(Activity-only) Overlay mode?</string>
+  <string name="autocomplete_activity_overlay_mode" translatable="false">Overlay mode?</string>
 
   <!-- Text for the autocomplete support fragment section label. -->
   <string name="autocomplete_support_fragment_text_label" translatable="false">Autocomplete Support Fragment:</string>
@@ -114,6 +116,5 @@
 
   <!-- Text for the find current place submit button. -->
   <string name="find_current_place_button" translatable="false">Find Current Place</string>
-
 
 </resources>

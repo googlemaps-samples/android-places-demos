@@ -65,8 +65,16 @@ public class AutocompleteTestActivity extends AppCompatActivity {
   private FieldSelector fieldSelector;
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    // Use whatever theme was set from the MainActivity - some of these colors (e.g primary color)
+    // will get picked up by the AutocompleteActivity.
+    int theme = getIntent().getIntExtra(MainActivity.THEME_RES_ID_EXTRA, 0);
+    if (theme != 0) {
+      setTheme(theme);
+    }
+
     setContentView(R.layout.autocomplete_test_activity);
 
     // Retrieve a PlacesClient (previously initialized - see MainActivity)
@@ -83,7 +91,9 @@ public class AutocompleteTestActivity extends AppCompatActivity {
         (buttonView, isChecked) -> typeFilterSpinner.setEnabled(isChecked));
     fieldSelector =
         new FieldSelector(
-            findViewById(R.id.use_custom_fields), findViewById(R.id.custom_fields_list));
+                findViewById(R.id.use_custom_fields),
+                findViewById(R.id.custom_fields_list),
+                savedInstanceState);
 
     setupAutocompleteSupportFragment();
 
@@ -100,6 +110,12 @@ public class AutocompleteTestActivity extends AppCompatActivity {
     typeFilterSpinner.setEnabled(false);
   }
 
+  @Override
+  protected void onSaveInstanceState(@NonNull Bundle bundle) {
+    super.onSaveInstanceState(bundle);
+    fieldSelector.onSaveInstanceState(bundle);
+  }
+
   private void setupAutocompleteSupportFragment() {
     final AutocompleteSupportFragment autocompleteSupportFragment =
         (AutocompleteSupportFragment)
@@ -108,29 +124,29 @@ public class AutocompleteTestActivity extends AppCompatActivity {
     autocompleteSupportFragment.setOnPlaceSelectedListener(getPlaceSelectionListener());
     findViewById(R.id.autocomplete_support_fragment_update_button)
         .setOnClickListener(
-            view -> {
-              autocompleteSupportFragment.setPlaceFields(getPlaceFields());
-              autocompleteSupportFragment.setText(getQuery());
-              autocompleteSupportFragment.setHint(getHint());
-              autocompleteSupportFragment.setCountry(getCountry());
-              autocompleteSupportFragment.setLocationBias(getLocationBias());
-              autocompleteSupportFragment.setLocationRestriction(getLocationRestriction());
-              autocompleteSupportFragment.setTypeFilter(getTypeFilter());
-            });
-
+                view ->
+                        autocompleteSupportFragment
+                                .setPlaceFields(getPlaceFields())
+                                .setText(getQuery())
+                                .setHint(getHint())
+                                .setCountry(getCountry())
+                                .setLocationBias(getLocationBias())
+                                .setLocationRestriction(getLocationRestriction())
+                                .setTypeFilter(getTypeFilter())
+                                .setActivityMode(getMode()));
   }
 
   @NonNull
   private PlaceSelectionListener getPlaceSelectionListener() {
     return new PlaceSelectionListener() {
       @Override
-      public void onPlaceSelected(Place place) {
+      public void onPlaceSelected(@NonNull Place place) {
         responseView.setText(
                 StringUtil.stringifyAutocompleteWidget(place, isDisplayRawResultsChecked()));
       }
 
       @Override
-      public void onError(Status status) {
+      public void onError(@NonNull Status status) {
         responseView.setText(status.getStatusMessage());
       }
     };
@@ -169,7 +185,7 @@ public class AutocompleteTestActivity extends AppCompatActivity {
                     .setLocationBias(getLocationBias())
                     .setLocationRestriction(getLocationRestriction())
                     .setTypeFilter(getTypeFilter())
-                    .build(AutocompleteTestActivity.this);
+                    .build(this);
     startActivityForResult(autocompleteIntent, AUTOCOMPLETE_REQUEST_CODE);
   }
 
@@ -178,11 +194,11 @@ public class AutocompleteTestActivity extends AppCompatActivity {
 
     FindAutocompletePredictionsRequest.Builder requestBuilder =
         FindAutocompletePredictionsRequest.builder()
-            .setQuery(getQuery())
-            .setCountry(getCountry())
-            .setLocationBias(getLocationBias())
-            .setLocationRestriction(getLocationRestriction())
-            .setTypeFilter(getTypeFilter());
+                .setQuery(getQuery())
+                .setCountry(getCountry())
+                .setLocationBias(getLocationBias())
+                .setLocationRestriction(getLocationRestriction())
+                .setTypeFilter(getTypeFilter());
 
     if (isUseSessionTokenChecked()) {
       requestBuilder.setSessionToken(AutocompleteSessionToken.newInstance());

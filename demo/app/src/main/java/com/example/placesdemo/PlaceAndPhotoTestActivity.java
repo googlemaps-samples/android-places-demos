@@ -28,6 +28,7 @@ import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -40,6 +41,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
@@ -49,39 +51,64 @@ import androidx.appcompat.app.AppCompatActivity;
  * Activity for testing {@link PlacesClient#fetchPlace(FetchPlaceRequest)}.
  */
 public class PlaceAndPhotoTestActivity extends AppCompatActivity {
-
+  private static final String FETCHED_PHOTO_KEY = "photo_image";
   private PlacesClient placesClient;
   private ImageView photoView;
   private TextView responseView;
+  private PhotoMetadata photo;
   private FieldSelector fieldSelector;
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    // Use whatever theme was set from the MainActivity.
+    int theme = getIntent().getIntExtra(MainActivity.THEME_RES_ID_EXTRA, 0);
+    if (theme != 0) {
+      setTheme(theme);
+    }
+
     setContentView(R.layout.place_and_photo_test_activity);
 
     // Retrieve a PlacesClient (previously initialized - see MainActivity)
     placesClient = Places.createClient(this);
+    if (savedInstanceState != null) {
+      photo = savedInstanceState.getParcelable(FETCHED_PHOTO_KEY);
+    }
+
 
     // Set up view objects
     responseView = findViewById(R.id.response);
     photoView = findViewById(R.id.photo);
-    ((CheckBox) findViewById(R.id.fetch_photo_checkbox))
-        .setOnCheckedChangeListener((buttonView, isChecked) -> setPhotoSizingEnabled(isChecked));
-    ((CheckBox) findViewById(R.id.use_custom_photo_reference))
-        .setOnCheckedChangeListener(
+    CheckBox fetchPhotoCheckbox = findViewById(R.id.fetch_photo_checkbox);
+    fetchPhotoCheckbox.setOnCheckedChangeListener(
+            (buttonView, isChecked) -> setPhotoSizingEnabled(isChecked));
+    CheckBox customPhotoCheckbox = findViewById(R.id.use_custom_photo_reference);
+    customPhotoCheckbox.setOnCheckedChangeListener(
             (buttonView, isChecked) -> setCustomPhotoReferenceEnabled(isChecked));
     fieldSelector =
         new FieldSelector(
-            findViewById(R.id.use_custom_fields), findViewById(R.id.custom_fields_list));
+                findViewById(R.id.use_custom_fields),
+                findViewById(R.id.custom_fields_list),
+                savedInstanceState);
 
     // Set listeners for programmatic Fetch Place
     findViewById(R.id.fetch_place_and_photo_button).setOnClickListener(view -> fetchPlace());
 
     // UI initialization
     setLoading(false);
-    setPhotoSizingEnabled(false);
-    setCustomPhotoReferenceEnabled(false);
+    setPhotoSizingEnabled(fetchPhotoCheckbox.isChecked());
+    setCustomPhotoReferenceEnabled(customPhotoCheckbox.isChecked());
+    if (photo != null) {
+      fetchPhoto(photo);
+    }
+  }
+
+  @Override
+  protected void onSaveInstanceState(@NonNull Bundle bundle) {
+    super.onSaveInstanceState(bundle);
+    fieldSelector.onSaveInstanceState(bundle);
+    bundle.putParcelable(FETCHED_PHOTO_KEY, photo);
   }
 
   /**
@@ -94,7 +121,7 @@ public class PlaceAndPhotoTestActivity extends AppCompatActivity {
     dismissKeyboard(findViewById(R.id.place_id_field));
 
     final boolean isFetchPhotoChecked = isFetchPhotoChecked();
-    List<Place.Field> placeFields = getPlaceFields();
+    List<Field> placeFields = getPlaceFields();
     String customPhotoReference = getCustomPhotoReference();
     if (!validateInputs(isFetchPhotoChecked, placeFields, customPhotoReference)) {
       return;
@@ -135,6 +162,8 @@ public class PlaceAndPhotoTestActivity extends AppCompatActivity {
    * @param photoMetadata from a {@link Place} instance.
    */
   private void fetchPhoto(PhotoMetadata photoMetadata) {
+    photo = photoMetadata;
+
     photoView.setImageBitmap(null);
     setLoading(true);
 
@@ -159,8 +188,9 @@ public class PlaceAndPhotoTestActivity extends AppCompatActivity {
 
     photoTask.addOnSuccessListener(
         response -> {
-          photoView.setImageBitmap(response.getBitmap());
-          StringUtil.prepend(responseView, StringUtil.stringify(response.getBitmap()));
+          Bitmap bitmap = response.getBitmap();
+          photoView.setImageBitmap(bitmap);
+          StringUtil.prepend(responseView, StringUtil.stringify(bitmap));
         });
 
     photoTask.addOnFailureListener(
@@ -202,7 +232,7 @@ public class PlaceAndPhotoTestActivity extends AppCompatActivity {
     return ((TextView) findViewById(R.id.place_id_field)).getText().toString();
   }
 
-  private List<Place.Field> getPlaceFields() {
+  private List<Field> getPlaceFields() {
     if (((CheckBox) findViewById(R.id.use_custom_fields)).isChecked()) {
       return fieldSelector.getSelectedFields();
     } else {
