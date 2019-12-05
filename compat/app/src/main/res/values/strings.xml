@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Places Demo</string>
-    <string name="button_place_picker">Place Picker</string>
     <string name="button_current_place">Current Place</string>
     <string name="button_autocomplete">Autocomplete</string>
     <string name="google_play_services_error">Google Play Services is not available</string>
