@@ -19,6 +19,7 @@ package com.example.placesdemo;
 import com.google.android.libraries.places.api.model.Place;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -29,30 +30,61 @@ import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.libraries.places.api.model.Place.Field;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
-/**
- * Helper class for selecting {@link Place.Field} values.
- */
-final class FieldSelector {
+/** Helper class for selecting {@link Field} values. */
+public final class FieldSelector {
+  private static final String SELECTED_PLACE_FIELDS_KEY = "selected_place_fields";
 
-  private final List<PlaceField> placeFields;
+  private final Map<Field, State> fieldStates;
+
   private final TextView outputView;
 
-  public FieldSelector(CheckBox enableView, TextView outputView) {
-    this(enableView, outputView, Arrays.asList(Place.Field.values()));
+  /**
+   * Returns all {@link Field} values except those passed in.
+   *
+   * <p>Convenience method for when most {@link Field} values are desired. Useful for APIs that do
+   * no support all {@link Field} values.
+   */
+  static List<Field> allExcept(Field... placeFieldsToOmit) {
+    // Arrays.asList is immutable, create a mutable list to allow removing fields
+    List<Field> placeFields = new ArrayList<>(Arrays.asList(Field.values()));
+    placeFields.removeAll(Arrays.asList(placeFieldsToOmit));
+
+    return placeFields;
   }
 
-  public FieldSelector(CheckBox enableView, TextView outputView, List<Place.Field> validFields) {
-    placeFields = new ArrayList<>();
-    for (Place.Field field : validFields) {
-      placeFields.add(new PlaceField(field));
+  public FieldSelector(CheckBox enableView, TextView outputView, @Nullable Bundle savedState) {
+    this(enableView, outputView, Arrays.asList(Field.values()), savedState);
+  }
+
+  public FieldSelector(
+          CheckBox enableView,
+          TextView outputView,
+          List<Field> validFields,
+          @Nullable Bundle savedState) {
+    fieldStates = new HashMap<>();
+    for (Field field : validFields) {
+      fieldStates.put(field, new State(field));
+    }
+
+    if (savedState != null) {
+      List<Integer> selectedFields = savedState.getIntegerArrayList(SELECTED_PLACE_FIELDS_KEY);
+      if (selectedFields != null) {
+        restoreState(selectedFields);
+      }
+      outputView.setText(getSelectedString());
     }
 
     outputView.setOnClickListener(
@@ -62,15 +94,16 @@ final class FieldSelector {
           }
         });
 
-    enableView.setOnCheckedChangeListener(
-        (buttonView, isChecked) -> {
-          outputView.setEnabled(isChecked);
-          if (isChecked) {
-            showDialog(buttonView.getContext());
-          } else {
-            outputView.setText("");
-            for (PlaceField placeField : placeFields) {
-              placeField.checked = false;
+    enableView.setOnClickListener(
+            view -> {
+              boolean isChecked = enableView.isChecked();
+              outputView.setEnabled(isChecked);
+              if (isChecked) {
+                showDialog(view.getContext());
+              } else {
+                outputView.setText("");
+                for (State state : fieldStates.values()) {
+                  state.checked = false;
             }
           }
         });
@@ -79,59 +112,40 @@ final class FieldSelector {
   }
 
   /**
-   * Returns all {@link Place.Field} values except those passed in.
-   *
-   * <p>Convenience method for when most {@link Place.Field} values are desired. Useful for APIs
-   * that do no support all {@link Place.Field} values.
-   */
-  static List<Place.Field> getPlaceFields(Place.Field... placeFieldsToOmit) {
-    // Arrays.asList is immutable, create a mutable list to allow removing fields
-    List<Place.Field> placeFields = new ArrayList<>(Arrays.asList(Place.Field.values()));
-    placeFields.removeAll(Arrays.asList(placeFieldsToOmit));
-
-    return placeFields;
-  }
-
-  /**
-   * Shows dialog to allow user to select {@link Place.Field} values they want.
+   * Shows dialog to allow user to select {@link Field} values they want.
    */
   public void showDialog(Context context) {
     ListView listView = new ListView(context);
-    PlaceFieldArrayAdapter adapter = new PlaceFieldArrayAdapter(context, placeFields);
+    PlaceFieldArrayAdapter adapter = new PlaceFieldArrayAdapter(context, fieldStates.values());
     listView.setAdapter(adapter);
     listView.setOnItemClickListener(adapter);
 
     new AlertDialog.Builder(context)
-        .setTitle("Select Place Fields")
-        .setPositiveButton(
-            "Done",
-            (dialog, which) -> {
-              outputView.setText(getSelectedString());
-            })
-        .setView(listView)
-        .show();
+            .setTitle("Select Place Fields")
+            .setPositiveButton(
+                    "Done",
+                    (dialog, which) -> {
+                      outputView.setText(getSelectedString());
+                    })
+            .setView(listView)
+            .show();
   }
 
   /**
-   * Returns all {@link Place.Field} that are selectable.
+   * Returns all {@link Field} that are selectable.
    */
-  public List<Place.Field> getAllFields() {
-    List<Place.Field> list = new ArrayList<>();
-    for (PlaceField placeField : placeFields) {
-      list.add(placeField.field);
-    }
-
-    return list;
+  public List<Field> getAllFields() {
+    return new ArrayList<>(fieldStates.keySet());
   }
 
   /**
-   * Returns all {@link Place.Field} values the user selected.
+   * Returns all {@link Field} values the user selected.
    */
-  public List<Place.Field> getSelectedFields() {
-    List<Place.Field> selectedList = new ArrayList<>();
-    for (PlaceField placeField : placeFields) {
-      if (placeField.checked) {
-        selectedList.add(placeField.field);
+  public List<Field> getSelectedFields() {
+    List<Field> selectedList = new ArrayList<>();
+    for (Map.Entry<Field, State> entry : fieldStates.entrySet()) {
+      if (entry.getValue().checked) {
+        selectedList.add(entry.getKey());
       }
     }
 
@@ -139,61 +153,85 @@ final class FieldSelector {
   }
 
   /**
-   * Returns a String representation of all selected {@link Place.Field} values. See {@link
+   * Returns a String representation of all selected {@link Field} values. See {@link
    * #getSelectedFields()}.
    */
   public String getSelectedString() {
     StringBuilder builder = new StringBuilder();
-    for (Place.Field field : getSelectedFields()) {
+    for (Field field : getSelectedFields()) {
       builder.append(field).append("\n");
     }
 
     return builder.toString();
   }
 
+
+  public void onSaveInstanceState(@NonNull Bundle bundle) {
+    List<Field> fields = getSelectedFields();
+
+    ArrayList<Integer> serializedFields = new ArrayList<>();
+    for (Field field : fields) {
+      serializedFields.add(field.ordinal());
+    }
+    bundle.putIntegerArrayList(SELECTED_PLACE_FIELDS_KEY, serializedFields);
+  }
+
+  private void restoreState(List<Integer> selectedFields) {
+    for (Integer serializedField : selectedFields) {
+      Field field = Field.values()[serializedField];
+      State state = fieldStates.get(field);
+      if (state != null) {
+        state.checked = true;
+      }
+    }
+  }
+
   //////////////////////////
   // Helper methods below //
   //////////////////////////
 
-  private static class PlaceField {
-    final Place.Field field;
-    boolean checked;
+  /**
+   * Holds selection state for a place field.
+   */
+  public static final class State {
+    public final Field field;
+    public boolean checked;
 
-    public PlaceField(Place.Field field) {
+    public State(Field field) {
       this.field = field;
     }
   }
 
-  private static class PlaceFieldArrayAdapter extends ArrayAdapter<PlaceField>
+  private static final class PlaceFieldArrayAdapter extends ArrayAdapter<State>
       implements OnItemClickListener {
 
-    public PlaceFieldArrayAdapter(Context context, List<PlaceField> placeFields) {
-      super(context, android.R.layout.simple_list_item_multiple_choice, placeFields);
+    public PlaceFieldArrayAdapter(Context context, Collection<State> states) {
+      super(context, android.R.layout.simple_list_item_multiple_choice, new ArrayList<>(states));
+    }
+
+    private static void updateView(View view, State state) {
+      if (view instanceof CheckedTextView) {
+        CheckedTextView checkedTextView = (CheckedTextView) view;
+        checkedTextView.setText(state.field.toString());
+        checkedTextView.setChecked(state.checked);
+      }
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
       View view = super.getView(position, convertView, parent);
-      PlaceField placeField = getItem(position);
-      updateView(view, placeField);
+      State state = getItem(position);
+      updateView(view, state);
 
       return view;
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-      PlaceField placeField = getItem(position);
-      placeField.checked = !placeField.checked;
-      updateView(view, placeField);
-    }
-
-    private void updateView(View view, PlaceField placeField) {
-      if (view instanceof CheckedTextView) {
-        CheckedTextView checkedTextView = (CheckedTextView) view;
-        checkedTextView.setText(placeField.field.toString());
-        checkedTextView.setChecked(placeField.checked);
-      }
+      State state = getItem(position);
+      state.checked = !state.checked;
+      updateView(view, state);
     }
   }
 }

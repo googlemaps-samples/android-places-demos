@@ -28,7 +28,7 @@
           android:id="@+id/custom_fields_list"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:layout_weight="1" />
+          android:layout_weight="1"/>
 
     </LinearLayout>
 
@@ -60,5 +60,6 @@
         android:layout_height="wrap_content"/>
 
   </LinearLayout>
+
 </ScrollView>
 

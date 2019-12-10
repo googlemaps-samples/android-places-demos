@@ -14,12 +14,6 @@
             android:orientation="vertical">
 
         <Button
-                android:text="@string/button_place_picker"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/button_place_picker"/>
-
-        <Button
                 android:text="@string/button_current_place"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

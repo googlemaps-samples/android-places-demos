@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Brown">
+        <item name="colorPrimary">#5b362c</item>
+        <item name="colorPrimaryDark">#3c1e1a</item>
+        <item name="colorAccent">#2c515b</item>
+        <item name="colorError">#5b2c3a</item>
+    </style>
+
+    <style name="Green">
+        <item name="colorPrimary">#689f38</item>
+        <item name="colorPrimaryDark">#33691e</item>
+        <item name="colorAccent">#6f389f</item>
+        <item name="colorError">#9c9f38</item>
+    </style>
+
+    <style name="Purple">
+        <item name="colorPrimary">#7b1fa2</item>
+        <item name="colorPrimaryDark">#4a148c</item>
+        <item name="colorAccent">#46a21f</item>
+        <item name="colorError">#a21f46</item>
+    </style>
+
+</resources>

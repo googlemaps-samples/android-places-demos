@@ -32,7 +32,6 @@ import com.google.android.libraries.places.compat.PlacePhotoResponse;
 import com.google.android.libraries.places.compat.Places;
 import com.google.android.libraries.places.compat.ui.PlaceAutocomplete;
 import com.google.android.libraries.places.compat.ui.PlaceAutocompleteFragment;
-import com.google.android.libraries.places.compat.ui.PlacePicker;
 import com.google.android.libraries.places.compat.ui.PlaceSelectionListener;
 import com.google.android.gms.tasks.Task;
 
@@ -52,7 +51,6 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class MainActivity extends AppCompatActivity {
 
-  final int PLACE_PICKER_REQUEST = 1;
   final int AUTOCOMPLETE_REQUEST = 2;
 
   // Views show text and image data returned from the Places API.
@@ -69,10 +67,9 @@ public class MainActivity extends AppCompatActivity {
 
     textView = findViewById(R.id.text);
     imageView = findViewById(R.id.image);
-    geoDataClient = Places.getGeoDataClient(this, null);
-    placeDetectionClient = Places.getPlaceDetectionClient(this, null);
+    geoDataClient = Places.getGeoDataClient(this);
+    placeDetectionClient = Places.getPlaceDetectionClient(this);
 
-    findViewById(R.id.button_place_picker).setOnClickListener(v -> showPlacePicker());
     findViewById(R.id.button_current_place).setOnClickListener(v -> showCurrentPlace());
     findViewById(R.id.button_autocomplete).setOnClickListener(v -> showAutocomplete());
 
@@ -132,30 +129,13 @@ public class MainActivity extends AppCompatActivity {
   }
 
   /**
-   * Shows the placepicker widget.
-   */
-  private void showPlacePicker() {
-    try {
-      PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-      startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
-    } catch (GooglePlayServicesRepairableException e) {
-      GooglePlayServicesUtil.getErrorDialog(e.getConnectionStatusCode(), this, 0);
-    } catch (GooglePlayServicesNotAvailableException e) {
-      showResponse(getString(R.string.google_play_services_error));
-    }
-  }
-
-  /**
-   * Handles responses for placepicker and autocomplete, by showing details of the place returned.
+   * Handles responses for autocomplete, by showing details of the place returned.
    */
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     Place place;
     String source;
     if (resultCode == RESULT_OK) {
-      if (requestCode == PLACE_PICKER_REQUEST) {
-        place = PlacePicker.getPlace(this, data);
-        source = getString(R.string.place_picker);
-      } else if (requestCode == AUTOCOMPLETE_REQUEST) {
+      if (requestCode == AUTOCOMPLETE_REQUEST) {
         place = PlaceAutocomplete.getPlace(this, data);
         source = getString(R.string.autocomplete);
       } else {
