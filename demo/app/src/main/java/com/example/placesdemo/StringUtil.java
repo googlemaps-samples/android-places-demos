@@ -31,6 +31,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -75,6 +77,15 @@ public final class StringUtil {
     }
   }
 
+  static List<String> countriesStringToArrayList(String countriesString) {
+    // Allow these delimiters: , ; | / \
+    List<String> countries = Arrays.asList(countriesString
+            .replaceAll("\\s", "|")
+            .split("[,;|/\\\\]",-1));
+
+    return countries;
+  }
+
   static String stringify(FindAutocompletePredictionsResponse response, boolean raw) {
     StringBuilder builder = new StringBuilder();
 
@@ -83,7 +94,9 @@ public final class StringUtil {
         .append(" Autocomplete Predictions Results:");
 
     if (raw) {
-      appendListToStringBuilder(builder, response.getAutocompletePredictions());    } else {
+      builder.append(RESULT_SEPARATOR);
+      appendListToStringBuilder(builder, response.getAutocompletePredictions());
+    } else {
       for (AutocompletePrediction autocompletePrediction : response.getAutocompletePredictions()) {
         builder
             .append(RESULT_SEPARATOR)

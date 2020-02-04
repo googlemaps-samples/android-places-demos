@@ -4,6 +4,8 @@
 
   <!-- title for error alerts. -->
   <string name="error_alert_title" translatable="false">Uh-Oh!</string>
+  <!-- message to show for error alerts when location origin is malformed. -->
+  <string name="error_alert_message_invalid_origin" translatable="false">Unable to parse Location Origin. Expected format: "33, 128"</string>
   <!-- message to show for error alerts when location bias or restriction is malformed. -->
   <string name="error_alert_message_invalid_bounds" translatable="false">Unable to parse Location Bias or Location Restriction. Expected format: "33, 128"</string>
   <!-- message to show for error alerts when a photo size field is malformed. -->
@@ -38,17 +40,23 @@
   <!-- Hint for the autocomplete widget's query field. -->
   <string name="autocomplete_hint_hint" translatable="false">Hint</string>
 
-  <!-- Hint for the autocomplete prediction's and widget's country field. -->
-  <string name="autocomplete_country_hint" translatable="false">Country</string>
+  <!-- Hint for the autocomplete prediction's and widget's countries field. -->
+  <string name="autocomplete_country_hint" translatable="false">Countries (e.g CH, US, RO)</string>
 
   <!-- Hint Text for the autocomplete prediction's and widget's type filter field. -->
   <string name="autocomplete_type_filter" translatable="false">Type Filter</string>
+
+  <!-- Label for the autocomplete prediction's and widget's location origin field. -->
+  <string name="autocomplete_location_origin_label" translatable="false">Location Origin (format: -33.2, 128.2)</string>
 
   <!-- Label for the autocomplete prediction's and widget's location bias related fields. -->
   <string name="autocomplete_location_bias_label" translatable="false">Location Bias (format: -33.2, 128.2)</string>
 
   <!-- Label for the autocomplete prediction's and widget's location restriction related fields. -->
   <string name="autocomplete_location_restriction_label" translatable="false">Location Restriction (format: -33.2, 128.2)</string>
+
+  <!-- Hint for the autocomplete prediction's and widget's location origin field. -->
+  <string name="autocomplete_location_origin_hint" translatable="false">Origin (lat, lng)</string>
 
   <!-- Hint for the autocomplete prediction's and widget's location southwest field. -->
   <string name="autocomplete_location_south_west_hint" translatable="false">South West (lat, lng)</string>
