@@ -17,6 +17,7 @@
 package com.example.placesdemo;
 
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
@@ -44,6 +45,7 @@ import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -129,7 +131,7 @@ public class AutocompleteTestActivity extends AppCompatActivity {
                                 .setPlaceFields(getPlaceFields())
                                 .setText(getQuery())
                                 .setHint(getHint())
-                                .setCountry(getCountry())
+                                .setCountries(getCountries())
                                 .setLocationBias(getLocationBias())
                                 .setLocationRestriction(getLocationRestriction())
                                 .setTypeFilter(getTypeFilter())
@@ -181,7 +183,7 @@ public class AutocompleteTestActivity extends AppCompatActivity {
             new Autocomplete.IntentBuilder(getMode(), getPlaceFields())
                     .setInitialQuery(getQuery())
                     .setHint(getHint())
-                    .setCountry(getCountry())
+                    .setCountries(getCountries())
                     .setLocationBias(getLocationBias())
                     .setLocationRestriction(getLocationRestriction())
                     .setTypeFilter(getTypeFilter())
@@ -195,7 +197,8 @@ public class AutocompleteTestActivity extends AppCompatActivity {
     FindAutocompletePredictionsRequest.Builder requestBuilder =
         FindAutocompletePredictionsRequest.builder()
                 .setQuery(getQuery())
-                .setCountry(getCountry())
+                .setCountries(getCountries())
+                .setOrigin((getOrigin()))
                 .setLocationBias(getLocationBias())
                 .setLocationRestriction(getLocationRestriction())
                 .setTypeFilter(getTypeFilter());
@@ -242,9 +245,14 @@ public class AutocompleteTestActivity extends AppCompatActivity {
     return getTextViewValue(R.id.autocomplete_hint);
   }
 
-  @Nullable
-  private String getCountry() {
-    return getTextViewValue(R.id.autocomplete_country);
+  @NonNull
+  private List<String> getCountries() {
+    String countryString = getTextViewValue(R.id.autocomplete_country);
+    if (TextUtils.isEmpty(countryString)) {
+      return new ArrayList<>();
+    }
+
+    return StringUtil.countriesStringToArrayList(countryString);
   }
 
   @Nullable
@@ -281,6 +289,23 @@ public class AutocompleteTestActivity extends AppCompatActivity {
     }
 
     return RectangularBounds.newInstance(bounds);
+  }
+
+  @Nullable
+  private LatLng getOrigin() {
+    String originStr =
+            ((TextView) findViewById(R.id.autocomplete_location_origin)).getText().toString();
+    if (TextUtils.isEmpty(originStr)) {
+      return null;
+    }
+
+    LatLng origin = StringUtil.convertToLatLng(originStr);
+    if (origin == null) {
+      showErrorAlert(R.string.error_alert_message_invalid_origin);
+      return null;
+    }
+
+    return origin;
   }
 
   @Nullable

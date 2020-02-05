@@ -17,6 +17,20 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/autocomplete_location_origin_label"/>
+
+    <EditText
+        android:id="@+id/autocomplete_location_origin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/autocomplete_location_origin_hint"
+        android:autofillHints=""
+        android:imeOptions="actionNext"
+        android:inputType="text"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="@string/autocomplete_location_bias_label"/>
 
     <LinearLayout
