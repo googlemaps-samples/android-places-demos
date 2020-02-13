@@ -1,5 +1,6 @@
 Google Places SDK for Android Demos
 ====================================
+![Apache-2.0](https://img.shields.io/badge/license-Apache-blue)
 
 This repo contains the following apps that demonstrate use of the [Google Places SDK for Android](https://developers.google.com/places/android-sdk/):
 
