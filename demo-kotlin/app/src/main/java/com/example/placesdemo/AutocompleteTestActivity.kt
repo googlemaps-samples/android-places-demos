@@ -74,22 +74,22 @@ class AutocompleteTestActivity : AppCompatActivity() {
         responseView = findViewById(R.id.response)
         val typeFilterSpinner = findViewById<Spinner>(R.id.autocomplete_type_filter)
         typeFilterSpinner.adapter = ArrayAdapter(
-                this, android.R.layout.simple_list_item_1, Arrays.asList(*TypeFilter.values()))
+            this, android.R.layout.simple_list_item_1, Arrays.asList(*TypeFilter.values()))
         val useTypeFilterCheckBox = findViewById<CheckBox>(R.id.autocomplete_use_type_filter)
         useTypeFilterCheckBox.setOnCheckedChangeListener { _, isChecked: Boolean -> typeFilterSpinner.isEnabled = isChecked }
         fieldSelector = FieldSelector(
-                findViewById(R.id.use_custom_fields),
-                findViewById(R.id.custom_fields_list),
-                savedInstanceState)
+            findViewById(R.id.use_custom_fields),
+            findViewById(R.id.custom_fields_list),
+            savedInstanceState)
         setupAutocompleteSupportFragment()
 
         // Set listeners for Autocomplete activity
         findViewById<View>(R.id.autocomplete_activity_button)
-                .setOnClickListener { startAutocompleteActivity() }
+            .setOnClickListener { startAutocompleteActivity() }
 
         // Set listeners for programmatic Autocomplete
         findViewById<View>(R.id.fetch_autocomplete_predictions_button)
-                .setOnClickListener { findAutocompletePredictions() }
+            .setOnClickListener { findAutocompletePredictions() }
 
         // UI initialization
         setLoading(false)
@@ -106,17 +106,17 @@ class AutocompleteTestActivity : AppCompatActivity() {
         autocompleteSupportFragment!!.setPlaceFields(placeFields)
         autocompleteSupportFragment.setOnPlaceSelectedListener(placeSelectionListener)
         findViewById<View>(R.id.autocomplete_support_fragment_update_button)
-                .setOnClickListener {
-                    autocompleteSupportFragment
-                            .setPlaceFields(placeFields)
-                            .setText(query)
-                            .setHint(hint)
-                            .setCountries(countries)
-                            .setLocationBias(locationBias)
-                            .setLocationRestriction(locationRestriction)
-                            .setTypeFilter(typeFilter)
-                            .setActivityMode(mode)
-                }
+            .setOnClickListener {
+                autocompleteSupportFragment
+                    .setPlaceFields(placeFields)
+                    .setText(query)
+                    .setHint(hint)
+                    .setCountries(countries)
+                    .setLocationBias(locationBias)
+                    .setLocationRestriction(locationRestriction)
+                    .setTypeFilter(typeFilter)
+                    .setActivityMode(mode)
+            }
     }
 
     private val placeSelectionListener: PlaceSelectionListener
@@ -158,30 +158,34 @@ class AutocompleteTestActivity : AppCompatActivity() {
 
     private fun startAutocompleteActivity() {
         val autocompleteIntent = Autocomplete.IntentBuilder(mode, placeFields)
-                .setInitialQuery(query)
-                .setHint(hint)
-                .setCountries(countries)
-                .setLocationBias(locationBias)
-                .setLocationRestriction(locationRestriction)
-                .setTypeFilter(typeFilter)
-                .build(this)
+            .setInitialQuery(query)
+            .setHint(hint)
+            .setCountries(countries)
+            .setLocationBias(locationBias)
+            .setLocationRestriction(locationRestriction)
+            .setTypeFilter(typeFilter)
+            .build(this)
         startActivityForResult(autocompleteIntent, AUTOCOMPLETE_REQUEST_CODE)
     }
 
     private fun findAutocompletePredictions() {
         setLoading(true)
         val requestBuilder = FindAutocompletePredictionsRequest.builder()
-                .setQuery(query)
-                .setCountries(countries)
-                .setOrigin(origin)
-                .setLocationBias(locationBias)
-                .setLocationRestriction(locationRestriction)
-                .setTypeFilter(typeFilter)
+            .setQuery(query)
+            .setCountries(countries)
+            .setOrigin(origin)
+            .setLocationBias(locationBias)
+            .setLocationRestriction(locationRestriction)
+            .setTypeFilter(typeFilter)
         if (isUseSessionTokenChecked) {
             requestBuilder.setSessionToken(AutocompleteSessionToken.newInstance())
         }
         val task = placesClient.findAutocompletePredictions(requestBuilder.build())
-        task.addOnSuccessListener { response: FindAutocompletePredictionsResponse? -> responseView.text = StringUtil.stringify(response, isDisplayRawResultsChecked) }
+        task.addOnSuccessListener { response: FindAutocompletePredictionsResponse? ->
+            response?.let {
+                responseView.text = StringUtil.stringify(it, isDisplayRawResultsChecked)
+            }
+        }
         task.addOnFailureListener { exception: Exception ->
             exception.printStackTrace()
             responseView.text = exception.message
@@ -207,10 +211,8 @@ class AutocompleteTestActivity : AppCompatActivity() {
 
     private val countries: List<String>
         get() {
-            val countryString = getTextViewValue(R.id.autocomplete_country)
-            return if (TextUtils.isEmpty(countryString)) {
-                ArrayList()
-            } else StringUtil.countriesStringToArrayList(countryString)
+            val countryString = getTextViewValue(R.id.autocomplete_country) ?: return emptyList()
+            return StringUtil.countriesStringToArrayList(countryString)
         }
 
     private fun getTextViewValue(@IdRes textViewResId: Int): String? {
@@ -220,12 +222,12 @@ class AutocompleteTestActivity : AppCompatActivity() {
 
     private val locationBias: LocationBias?
         get() = getBounds(
-                R.id.autocomplete_location_bias_south_west, R.id.autocomplete_location_bias_north_east)
+            R.id.autocomplete_location_bias_south_west, R.id.autocomplete_location_bias_north_east)
 
     private val locationRestriction: LocationRestriction?
         get() = getBounds(
-                R.id.autocomplete_location_restriction_south_west,
-                R.id.autocomplete_location_restriction_north_east)
+            R.id.autocomplete_location_restriction_south_west,
+            R.id.autocomplete_location_restriction_north_east)
 
     private fun getBounds(resIdSouthWest: Int, resIdNorthEast: Int): RectangularBounds? {
         val southWest = findViewById<TextView>(resIdSouthWest).text.toString()
@@ -279,9 +281,9 @@ class AutocompleteTestActivity : AppCompatActivity() {
 
     private fun showErrorAlert(@StringRes messageResId: Int) {
         AlertDialog.Builder(this)
-                .setTitle(R.string.error_alert_title)
-                .setMessage(messageResId)
-                .show()
+            .setTitle(R.string.error_alert_title)
+            .setMessage(messageResId)
+            .show()
     }
 
     companion object {

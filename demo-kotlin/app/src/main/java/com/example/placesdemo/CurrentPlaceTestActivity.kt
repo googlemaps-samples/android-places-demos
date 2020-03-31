@@ -56,16 +56,16 @@ class CurrentPlaceTestActivity : AppCompatActivity() {
 
         // Set view objects
         val placeFields = FieldSelector.allExcept(
-                Place.Field.ADDRESS_COMPONENTS,
-                Place.Field.OPENING_HOURS,
-                Place.Field.PHONE_NUMBER,
-                Place.Field.UTC_OFFSET,
-                Place.Field.WEBSITE_URI)
+            Place.Field.ADDRESS_COMPONENTS,
+            Place.Field.OPENING_HOURS,
+            Place.Field.PHONE_NUMBER,
+            Place.Field.UTC_OFFSET,
+            Place.Field.WEBSITE_URI)
         fieldSelector = FieldSelector(
-                findViewById(R.id.use_custom_fields),
-                findViewById(R.id.custom_fields_list),
-                placeFields,
-                savedInstanceState)
+            findViewById(R.id.use_custom_fields),
+            findViewById(R.id.custom_fields_list),
+            savedInstanceState,
+            placeFields)
         responseView = findViewById(R.id.response)
         setLoading(false)
 
@@ -87,14 +87,14 @@ class CurrentPlaceTestActivity : AppCompatActivity() {
      */
     private fun findCurrentPlace() {
         if (ContextCompat.checkSelfPermission(this, permission.ACCESS_WIFI_STATE)
-                != PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(this, permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
+            != PackageManager.PERMISSION_GRANTED
+            || ContextCompat.checkSelfPermission(this, permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(
-                    this,
-                    "Both ACCESS_WIFI_STATE & ACCESS_FINE_LOCATION permissions are required",
-                    Toast.LENGTH_SHORT)
-                    .show()
+                this,
+                "Both ACCESS_WIFI_STATE & ACCESS_FINE_LOCATION permissions are required",
+                Toast.LENGTH_SHORT)
+                .show()
         }
 
         // Note that it is not possible to request a normal (non-dangerous) permission from

@@ -34,8 +34,8 @@ import java.util.*
 class FieldSelector(
     enableView: CheckBox,
     outputView: TextView,
-    validFields: List<Place.Field> = listOf(*Place.Field.values()),
-    savedState: Bundle?
+    savedState: Bundle?,
+    validFields: List<Place.Field> = listOf(*Place.Field.values())
 ) {
 
     private val fieldStates: MutableMap<Place.Field, State>
