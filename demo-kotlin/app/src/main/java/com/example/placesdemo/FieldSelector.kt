@@ -121,7 +121,7 @@ class FieldSelector(
     private class PlaceFieldArrayAdapter(
         context: Context?,
         states: List<State>?
-    ) : ArrayAdapter<State?>(
+    ) : ArrayAdapter<State>(
         context!!,
         android.R.layout.simple_list_item_multiple_choice,
         states!!.toMutableList()

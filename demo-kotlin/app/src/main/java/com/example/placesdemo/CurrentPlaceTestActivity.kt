@@ -117,7 +117,11 @@ class CurrentPlaceTestActivity : AppCompatActivity() {
         setLoading(true)
         val currentPlaceRequest = FindCurrentPlaceRequest.newInstance(placeFields)
         val currentPlaceTask = placesClient.findCurrentPlace(currentPlaceRequest)
-        currentPlaceTask.addOnSuccessListener { response: FindCurrentPlaceResponse? -> responseView.text = StringUtil.stringify(response, isDisplayRawResultsChecked) }
+        currentPlaceTask.addOnSuccessListener { response: FindCurrentPlaceResponse? ->
+            response?.let {
+                responseView.text = StringUtil.stringify(it, isDisplayRawResultsChecked)
+            }
+        }
         currentPlaceTask.addOnFailureListener { exception: Exception ->
             exception.printStackTrace()
             responseView.text = exception.message
