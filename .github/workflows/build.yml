@@ -31,7 +31,7 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: build-reports
-        path: $GITHUB_WORKSPACE/demo-java/build/reports
+        path: demo-java/build/reports
   
   build-demo-kotlin:
     runs-on: ubuntu-latest
@@ -52,7 +52,7 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: build-reports
-        path: $GITHUB_WORKSPACE/demo-kotlin/build/reports
+        path: demo-kotlin/build/reports
 
   build-compat:
     runs-on: ubuntu-latest
@@ -73,4 +73,4 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: build-reports
-        path: $GITHUB_WORKSPACE/compat/build/reports
+        path: compat/build/reports
