@@ -12,7 +12,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build-all:
+  build-demo-java:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,4 +24,53 @@ jobs:
         java-version: 1.8
 
     - name: Build and check
-      run: find . -name "gradlew" -exec ./{} assembleDebug lintDebug \;
+      run: cd demo-java && ./gradlew assembleDebug lintDebug
+
+    - name: Upload build reports
+      if: always()
+      uses: actions/upload-artifact@v1
+      with:
+        name: build-reports
+        path: demo-java/app/build/reports
+
+  build-demo-kotlin:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+
+    - name: Build and check
+      run: cd demo-kotlin && ./gradlew assembleDebug lintDebug
+
+    - name: Upload build reports
+      if: always()
+      uses: actions/upload-artifact@v1
+      with:
+        name: build-reports
+        path: demo-kotlin/app/build/reports
+
+  build-compat:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+
+    - name: Build and check
+      run: cd compat && ./gradlew assembleDebug lintDebug
+
+    - name: Upload build reports
+      if: always()
+      uses: actions/upload-artifact@v1
+      with:
+        name: build-reports
+        path: compat/app/build/reports
