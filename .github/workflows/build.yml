@@ -30,7 +30,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v1
       with:
-        name: build-reports
+        name: demo-java-build-reports
         path: demo-java/app/build/reports
 
   build-demo-kotlin:
@@ -51,7 +51,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v1
       with:
-        name: build-reports
+        name: demo-kotlin-build-reports
         path: demo-kotlin/app/build/reports
 
   build-compat:
@@ -72,5 +72,5 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v1
       with:
-        name: build-reports
+        name: compat-build-reports
         path: compat/app/build/reports
