@@ -19,6 +19,13 @@
       android:layout_height="wrap_content" />
 
   <Button
+    android:id="@+id/programmatic_autocomplete_button"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/spacing_small"
+    android:text="@string/programmatic_autocomplete"/>
+
+  <Button
       android:id="@+id/autocomplete_button"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

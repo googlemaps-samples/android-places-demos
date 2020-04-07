@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical"
+  tools:context=".programmatic_predictions.ProgrammaticAutocompleteToolbarActivity">
+
+  <com.google.android.material.appbar.AppBarLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.Toolbar
+      android:id="@+id/toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="?attr/actionBarSize"
+      android:background="?attr/colorPrimary" />
+
+    <ProgressBar
+      android:id="@+id/progress_bar"
+      style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="-7dp"
+      android:layout_marginBottom="-7dp" />
+
+  </com.google.android.material.appbar.AppBarLayout>
+
+  <ViewAnimator
+    android:id="@+id/view_animator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_margin="16dp"
+      android:gravity="center"
+      android:lineSpacingMultiplier="1.15"
+      android:text="@string/programmatic_place_predictions_instructions"
+      android:textSize="20sp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" />
+  </ViewAnimator>
+
+</LinearLayout>

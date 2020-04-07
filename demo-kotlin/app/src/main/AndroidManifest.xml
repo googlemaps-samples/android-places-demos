@@ -23,6 +23,9 @@
     <activity android:name=".AutocompleteTestActivity" />
     <activity android:name=".PlaceAndPhotoTestActivity" />
     <activity android:name=".CurrentPlaceTestActivity" />
+    <activity
+      android:name=".programmatic_predictions.ProgrammaticAutocompleteToolbarActivity"
+      android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
   </application>
 </manifest>
