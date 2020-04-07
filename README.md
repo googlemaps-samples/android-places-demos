@@ -15,7 +15,7 @@ Note that each folder contains a distinct sample and must be imported separately
 Getting Started
 ---------------
 
-These demos uses the Gradle build system.
+These demos use the Gradle build system.
 
 First download the demos by cloning this repository or downloading an archived
 snapshot. (See the options on the right hand side.)
