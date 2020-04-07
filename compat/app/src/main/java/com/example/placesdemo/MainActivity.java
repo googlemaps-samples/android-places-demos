@@ -16,6 +16,7 @@
 
 package com.example.placesdemo;
 
+import androidx.annotation.Nullable;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -131,18 +132,16 @@ public class MainActivity extends AppCompatActivity {
   /**
    * Handles responses for autocomplete, by showing details of the place returned.
    */
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    Place place;
-    String source;
-    if (resultCode == RESULT_OK) {
-      if (requestCode == AUTOCOMPLETE_REQUEST) {
-        place = PlaceAutocomplete.getPlace(this, data);
-        source = getString(R.string.autocomplete);
-      } else {
-        return;
-      }
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (resultCode == RESULT_OK && requestCode == AUTOCOMPLETE_REQUEST) {
+      Place place = PlaceAutocomplete.getPlace(this, data);
+      String source = getString(R.string.autocomplete);
       showPlace(source, place);
+      return;
     }
+    super.onActivityResult(requestCode, resultCode, data);
   }
 
   /**
