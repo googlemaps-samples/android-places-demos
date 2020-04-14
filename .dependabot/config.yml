@@ -2,12 +2,12 @@ version: 1
 update_configs:
     - package_manager: "java:gradle"
       directory: "./demo-java/"
-      update_schedule: "live"
+      update_schedule: "daily"
 
     - package_manager: "java:gradle"
       directory: "./demo-kotlin/"
-      update_schedule: "live"
+      update_schedule: "daily"
 
     - package_manager: "java:gradle"
       directory: "./compat/"
-      update_schedule: "live"
+      update_schedule: "daily"
