@@ -24,6 +24,7 @@ import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.annotation.StyleRes
 import androidx.appcompat.app.AppCompatActivity
+import com.example.placesdemo.programmatic_predictions.ProgrammaticAutocompleteToolbarActivity
 import com.google.android.libraries.places.api.Places
 
 class MainActivity : AppCompatActivity() {
@@ -43,15 +44,17 @@ class MainActivity : AppCompatActivity() {
         if (!Places.isInitialized()) {
             Places.initialize(applicationContext, apiKey)
         }
+
+        setLaunchActivityClickListener(R.id.programmatic_autocomplete_button, ProgrammaticAutocompleteToolbarActivity::class.java)
         setLaunchActivityClickListener(R.id.autocomplete_button, AutocompleteTestActivity::class.java)
         setLaunchActivityClickListener(R.id.place_and_photo_button, PlaceAndPhotoTestActivity::class.java)
         setLaunchActivityClickListener(R.id.current_place_button, CurrentPlaceTestActivity::class.java)
 
         widgetThemeSpinner = findViewById(R.id.theme_spinner)
         widgetThemeSpinner.adapter = ArrayAdapter( /* context= */
-                this,
-                android.R.layout.simple_list_item_1,
-                listOf("Default", "\uD83D\uDCA9 brown", "\uD83E\uDD2E green", "\uD83D\uDE08 purple")
+            this,
+            android.R.layout.simple_list_item_1,
+            listOf("Default", "\uD83D\uDCA9 brown", "\uD83E\uDD2E green", "\uD83D\uDE08 purple")
         )
     }
 
