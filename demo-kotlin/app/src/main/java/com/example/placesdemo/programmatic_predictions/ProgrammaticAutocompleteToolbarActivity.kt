@@ -92,7 +92,7 @@ class ProgrammaticAutocompleteToolbarActivity : AppCompatActivity() {
     /**
      * This method demonstrates the programmatic approach to getting place predictions
      *
-     * @param query the plus code query string (e.g. "MC2W+RG")
+     * @param query the plus code query string (e.g. "MC2W+RG K")
      */
     private fun getPlacePredictions(query: String) {
         // Create a new programmatic Place Autocomplete request in Places SDK for Android
