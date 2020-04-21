@@ -30,6 +30,7 @@ import java.util.*
  */
 class PlacePredictionAdapter : RecyclerView.Adapter<PlacePredictionViewHolder>() {
     private val predictions: MutableList<AutocompletePrediction> = ArrayList()
+    var onPlaceClickListener: ((AutocompletePrediction) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlacePredictionViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -38,7 +39,11 @@ class PlacePredictionAdapter : RecyclerView.Adapter<PlacePredictionViewHolder>()
     }
 
     override fun onBindViewHolder(holder: PlacePredictionViewHolder, position: Int) {
-        holder.setPrediction(predictions[position])
+        val place = predictions[position]
+        holder.setPrediction(place)
+        holder.itemView.setOnClickListener {
+            onPlaceClickListener?.invoke(place)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -59,5 +64,9 @@ class PlacePredictionAdapter : RecyclerView.Adapter<PlacePredictionViewHolder>()
             title.text = prediction.getPrimaryText(null)
             address.text = prediction.getSecondaryText(null)
         }
+    }
+
+    interface OnPlaceClickListener {
+        fun onPlaceClicked(place: AutocompletePrediction)
     }
 }
