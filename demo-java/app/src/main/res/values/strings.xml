@@ -140,7 +140,7 @@
 
   <!-- Text for the find current place submit button. -->
   <string name="find_current_place_button" translatable="false">Find Current Place</string>
-  <string name="programmatic_as_you_type_autocomplete">Programmatic As-You-Type Autocomplete</string>
+  <string name="programmatic_autocomplete_geocoding">Programmatic Autocomplete + Geocoding</string>
   <string name="search">Search</string>
   <string name="search_a_place">Search a Place</string>
   <string name="programmatic_place_predictions_instructions">This activity demonstrates as-you-type programmatic place predictions. Tap on the search icon on the toolbar and search for a place.</string>

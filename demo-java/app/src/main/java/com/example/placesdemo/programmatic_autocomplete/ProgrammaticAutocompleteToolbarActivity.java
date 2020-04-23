@@ -57,6 +57,8 @@ import org.json.JSONException;
  * An Activity that demonstrates programmatic as-you-type place predictions. The parameters of the
  * request are currently hard coded in this Activity, to modify these parameters (e.g. location
  * bias, place types, etc.), see {@link ProgrammaticAutocompleteToolbarActivity#getPlacePredictions(String)}.
+ *
+ * @see https://developers.google.com/places/android-sdk/autocomplete#get_place_predictions_programmatically
  */
 public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
 
@@ -159,7 +161,9 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
     private void getPlacePredictions(String query) {
 
         // The value of 'bias' biases prediction results to the rectangular region provided
-        // (currently Kolkata). Modify these values to get results for another area.
+        // (currently Kolkata). Modify these values to get results for another area. Make sure to
+        // pass in the appropriate value/s for .setCountries() in the
+        // FindAutocompletePredictionsRequest.Builder object as well.
         final LocationBias bias = RectangularBounds.newInstance(
             new LatLng(22.458744, 88.208162), // SW lat, lng
             new LatLng(22.730671, 88.524896) // NE lat, lng
@@ -192,7 +196,9 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
     }
 
     /**
-     * Performs a Geocode API request and displays the result in a dialog
+     * Performs a Geocoding API request and displays the result in a dialog.
+     *
+     * @see https://developers.google.com/maps/documentation/geocoding/intro
      */
     private void geocodePlaceAndDisplay(AutocompletePrediction placePrediction) {
         // Construct the request URL
