@@ -15,6 +15,7 @@
  */
 package com.example.placesdemo
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
@@ -24,8 +25,10 @@ import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.annotation.StyleRes
 import androidx.appcompat.app.AppCompatActivity
-import com.example.placesdemo.programmatic_predictions.ProgrammaticAutocompleteToolbarActivity
+import androidx.core.content.edit
+import com.example.placesdemo.programmatic_autocomplete.ProgrammaticAutocompleteToolbarActivity
 import com.google.android.libraries.places.api.Places
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
     private lateinit var widgetThemeSpinner: Spinner

@@ -40,7 +40,7 @@
     <activity android:name=".PlaceAndPhotoTestActivity" />
     <activity android:name=".CurrentPlaceTestActivity" />
     <activity
-      android:name=".programmatic_predictions.ProgrammaticAutocompleteToolbarActivity"
+      android:name=".programmatic_autocomplete.ProgrammaticAutocompleteToolbarActivity"
       android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
   </application>

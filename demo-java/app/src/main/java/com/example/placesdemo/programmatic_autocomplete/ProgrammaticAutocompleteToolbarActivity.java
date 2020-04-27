@@ -12,40 +12,65 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.example.placesdemo.programmatic_predictions;
+package com.example.placesdemo.programmatic_autocomplete;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.ViewAnimator;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.android.volley.Request.Method;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.placesdemo.MainActivity;
 import com.example.placesdemo.R;
+import com.example.placesdemo.model.GeocodingResult;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
+import com.google.android.libraries.places.api.model.LocationBias;
+import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 /**
- * An Activity that demonstrates programmatic as-you-type place predictions.
+ * An Activity that demonstrates programmatic as-you-type place predictions. The parameters of the
+ * request are currently hard coded in this Activity, to modify these parameters (e.g. location
+ * bias, place types, etc.), see {@link ProgrammaticAutocompleteToolbarActivity#getPlacePredictions(String)}.
+ *
+ * @see https://developers.google.com/places/android-sdk/autocomplete#get_place_predictions_programmatically
  */
 public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
 
     private static final String TAG = ProgrammaticAutocompleteToolbarActivity.class.getSimpleName();
     private Handler handler = new Handler();
     private PlacePredictionAdapter adapter = new PlacePredictionAdapter();
+    private Gson gson = new GsonBuilder().registerTypeAdapter(LatLng.class, new LatLngAdapter())
+        .create();
+
+    private RequestQueue queue;
     private PlacesClient placesClient;
+    private AutocompleteSessionToken sessionToken;
 
     private ViewAnimator viewAnimator;
     private ProgressBar progressBar;
@@ -67,6 +92,7 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress_bar);
         viewAnimator = findViewById(R.id.view_animator);
         placesClient = Places.createClient(this);
+        queue = Volley.newRequestQueue(this);
         initRecyclerView();
     }
 
@@ -77,6 +103,15 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
             (SearchView) menu.findItem(R.id.search).getActionView();
         initSearchView(searchView);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.search) {
+            sessionToken = AutocompleteSessionToken.newInstance();
+            return false;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void initSearchView(SearchView searchView) {
@@ -114,20 +149,34 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         recyclerView
             .addItemDecoration(new DividerItemDecoration(this, layoutManager.getOrientation()));
+        adapter.setPlaceClickListener(this::geocodePlaceAndDisplay);
     }
 
     /**
-     * This method demonstrates the programmatic approach to getting place predictions
+     * This method demonstrates the programmatic approach to getting place predictions. The
+     * parameters in this request are currently biased to Kolkata, India.
      *
-     * @param query the plus code query string (e.g. "MC2W+RG K")
+     * @param query the plus code query string (e.g. "GCG2+3M K")
      */
     private void getPlacePredictions(String query) {
+
+        // The value of 'bias' biases prediction results to the rectangular region provided
+        // (currently Kolkata). Modify these values to get results for another area. Make sure to
+        // pass in the appropriate value/s for .setCountries() in the
+        // FindAutocompletePredictionsRequest.Builder object as well.
+        final LocationBias bias = RectangularBounds.newInstance(
+            new LatLng(22.458744, 88.208162), // SW lat, lng
+            new LatLng(22.730671, 88.524896) // NE lat, lng
+        );
+
         // Create a new programmatic Place Autocomplete request in Places SDK for Android
         final FindAutocompletePredictionsRequest newRequest = FindAutocompletePredictionsRequest
             .builder()
+            .setSessionToken(sessionToken)
+            .setLocationBias(bias)
             .setTypeFilter(TypeFilter.ESTABLISHMENT)
             .setQuery(query)
-            .setCountries("US")
+            .setCountries("IN")
             .build();
 
         // Perform autocomplete predictions request
@@ -144,5 +193,48 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
                 Log.e(TAG, "Place not found: " + apiException.getStatusCode());
             }
         });
+    }
+
+    /**
+     * Performs a Geocoding API request and displays the result in a dialog.
+     *
+     * @see https://developers.google.com/maps/documentation/geocoding/intro
+     */
+    private void geocodePlaceAndDisplay(AutocompletePrediction placePrediction) {
+        // Construct the request URL
+        final String apiKey = getString(R.string.places_api_key);
+        final String url = "https://maps.googleapis.com/maps/api/geocode/json?place_id=%s&key=%s";
+        final String requestURL = String.format(url, placePrediction.getPlaceId(), apiKey);
+
+        // Use the HTTP request URL for Geocoding API to get geographic coordinates for the place
+        JsonObjectRequest request = new JsonObjectRequest(Method.GET, requestURL, null,
+            response -> {
+                try {
+                    // Inspect the value of "results" and make sure it's not empty
+                    JSONArray results = response.getJSONArray("results");
+                    if (results.length() == 0) {
+                        Log.w(TAG, "No results from geocoding request.");
+                        return;
+                    }
+
+                    // Use Gson to convert the response JSON object to a POJO
+                    GeocodingResult result = gson.fromJson(
+                        results.getString(0), GeocodingResult.class);
+                    displayDialog(placePrediction, result);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }, error -> Log.e(TAG, "Request failed"));
+
+        // Add the request to the Request queue.
+        queue.add(request);
+    }
+
+    private void displayDialog(AutocompletePrediction place, GeocodingResult result) {
+        new AlertDialog.Builder(this)
+            .setTitle(place.getPrimaryText(null))
+            .setMessage("Geocoding result:\n" + result.geometry.location)
+            .setPositiveButton(android.R.string.ok, null)
+            .show();
     }
 }

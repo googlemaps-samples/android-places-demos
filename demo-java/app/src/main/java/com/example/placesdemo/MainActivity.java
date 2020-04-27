@@ -16,7 +16,7 @@
 
 package com.example.placesdemo;
 
-import com.example.placesdemo.programmatic_predictions.ProgrammaticAutocompleteToolbarActivity;
+import com.example.placesdemo.programmatic_autocomplete.ProgrammaticAutocompleteToolbarActivity;
 import com.google.android.libraries.places.api.Places;
 
 import android.content.Intent;

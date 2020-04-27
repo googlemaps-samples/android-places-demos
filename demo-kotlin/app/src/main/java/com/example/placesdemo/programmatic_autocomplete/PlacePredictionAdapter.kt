@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.example.placesdemo.programmatic_predictions
+package com.example.placesdemo.programmatic_autocomplete
 
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +21,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.placesdemo.R
-import com.example.placesdemo.programmatic_predictions.PlacePredictionAdapter.PlacePredictionViewHolder
+import com.example.placesdemo.programmatic_autocomplete.PlacePredictionAdapter.PlacePredictionViewHolder
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import java.util.*
 
@@ -30,6 +30,7 @@ import java.util.*
  */
 class PlacePredictionAdapter : RecyclerView.Adapter<PlacePredictionViewHolder>() {
     private val predictions: MutableList<AutocompletePrediction> = ArrayList()
+    var onPlaceClickListener: ((AutocompletePrediction) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlacePredictionViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -38,7 +39,11 @@ class PlacePredictionAdapter : RecyclerView.Adapter<PlacePredictionViewHolder>()
     }
 
     override fun onBindViewHolder(holder: PlacePredictionViewHolder, position: Int) {
-        holder.setPrediction(predictions[position])
+        val place = predictions[position]
+        holder.setPrediction(place)
+        holder.itemView.setOnClickListener {
+            onPlaceClickListener?.invoke(place)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -59,5 +64,9 @@ class PlacePredictionAdapter : RecyclerView.Adapter<PlacePredictionViewHolder>()
             title.text = prediction.getPrimaryText(null)
             address.text = prediction.getSecondaryText(null)
         }
+    }
+
+    interface OnPlaceClickListener {
+        fun onPlaceClicked(place: AutocompletePrediction)
     }
 }
