@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.example.placesdemo.programmatic_predictions
+package com.example.placesdemo.programmatic_autocomplete
 
 import android.os.Bundle
 import android.os.Handler

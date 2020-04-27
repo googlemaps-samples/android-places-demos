@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.example.placesdemo.programmatic_predictions;
+package com.example.placesdemo.programmatic_autocomplete;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +23,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.placesdemo.R;
-import com.example.placesdemo.programmatic_predictions.PlacePredictionAdapter.PlacePredictionViewHolder;
+import com.example.placesdemo.programmatic_autocomplete.PlacePredictionAdapter.PlacePredictionViewHolder;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import java.util.ArrayList;
 import java.util.List;
