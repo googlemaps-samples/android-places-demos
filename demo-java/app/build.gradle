@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ConcatFilter
+
 apply plugin: 'com.android.application'
 
 android {
@@ -20,10 +22,49 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    flavorDimensions "version"
+    productFlavors {
+        gms {
+            dimension "version"
+            applicationIdSuffix ".gms"
+            versionNameSuffix "-gms"
+        }
+        v3 {
+            dimension "version"
+            applicationIdSuffix ".v3"
+            versionNameSuffix "-v3"
+        }
+    }
+}
+
+task generateV3(type: Copy) {
+    group "V3 Beta"
+    description "Copies source code from GMS to V3 BETA."
+
+    from 'src/gms/java'
+    into 'src/v3/java'
+    filter { line ->
+        line.replace('com.google.android.gms.maps', 'com.google.android.libraries.maps')
+    }
+    filter(ConcatFilter, prepend: file('../../V3_FILE_HEADER'))
 }
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
-    implementation 'com.google.android.libraries.places:places:2.3.0'
+
+    // GMS
+    gmsImplementation 'com.google.android.libraries.places:places:2.3.0'
+
+    // V3
+    v3Implementation name:'places-maps-sdk-3.1.0-beta', ext:'aar'
+    v3Implementation 'com.android.volley:volley:1.1.1'
+    v3Implementation 'com.google.android.gms:play-services-base:17.3.0'
+    v3Implementation 'com.google.android.gms:play-services-basement:17.3.0'
+    v3Implementation 'com.google.android.gms:play-services-gcm:17.0.0'
+    v3Implementation 'com.google.android.gms:play-services-location:17.0.0'
+    v3Implementation 'com.google.android.gms:play-services-tasks:17.1.0'
+    v3Implementation 'com.google.android.libraries.maps:maps:3.1.0-beta'
+    v3Implementation 'com.google.auto.value:auto-value-annotations:1.6.2'
+    v3Implementation 'com.google.code.gson:gson:2.8.5'
 }

@@ -5,18 +5,20 @@ Google Places SDK for Android Demos
 
 This repo contains the following apps that demonstrate use of the [Google Places SDK for Android](https://developers.google.com/places/android-sdk/):
 
-1. [demo-kotlin](demo-kotlin) Kotlin demo app for the static Places SDK.
-2. [demo-java](demo-java) Java demo app for the static Places SDK.
+1. [demo-kotlin](demo-kotlin) Kotlin demo app for the Places SDK.
+2. [demo-java](demo-java) Java demo app for the Places SDK.
 
-Note that each folder contains a distinct sample and must be imported separately.
+Note that each folder contains a distinct sample and must be imported separately. Each project also contains two Gradle product flavors:
+
+1. `gms`: Product flavor for samples using the Places SDK that uses Maps SDK for Android 
+2. `v3`: Product flavor for samples using the Places SDK that uses Maps SDK V3 BETA for Android
 
 Getting Started
 ---------------
 
 These demos use the Gradle build system.
 
-First download the demos by cloning this repository or downloading an archived
-snapshot. (See the options on the right hand side.)
+First download the demos by cloning this repository or downloading an archived snapshot. (See the options on the right hand side.)
 
 In Android Studio, use the "Open an existing Android Studio project", and select one of the demo directories (`demo-kotlin` or `demo-java`).
 

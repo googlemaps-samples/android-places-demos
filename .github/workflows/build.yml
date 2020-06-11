@@ -40,7 +40,7 @@ jobs:
         java-version: 1.8
 
     - name: Build and check
-      run: cd demo-java && ./gradlew assembleDebug lintDebug
+      run: cd demo-java && ./gradlew assemble lint
 
     - name: Upload build reports
       if: always()
@@ -61,7 +61,7 @@ jobs:
         java-version: 1.8
 
     - name: Build and check
-      run: cd demo-kotlin && ./gradlew assembleDebug lintDebug
+      run: cd demo-kotlin && ./gradlew assemble lint
 
     - name: Upload build reports
       if: always()
