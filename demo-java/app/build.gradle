@@ -68,5 +68,5 @@ dependencies {
     v3Implementation 'com.google.android.gms:play-services-tasks:17.1.0'
     v3Implementation 'com.google.android.libraries.maps:maps:3.1.0-beta'
     v3Implementation 'com.google.auto.value:auto-value-annotations:1.7.2'
-    v3Implementation 'com.google.code.gson:gson:2.8.5'
+    v3Implementation 'com.google.code.gson:gson:2.8.6'
 }
