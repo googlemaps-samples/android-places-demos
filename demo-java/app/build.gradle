@@ -50,14 +50,17 @@ task generateV3(type: Copy) {
     filter(ConcatFilter, prepend: file('../../V3_FILE_HEADER'))
 }
 
+// [START maps_android_places_install_snippet]
 dependencies {
+    // [START_EXCLUDE silent]
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.google.android.material:material:1.1.0'
 
     // GMS
-    gmsImplementation 'com.google.android.libraries.places:places:2.3.0'
-
+    // [END_EXCLUDE]
+    implementation 'com.google.android.libraries.places:places:2.3.0'
+    // [START_EXCLUDE silent]
     // V3
     v3Implementation name:'places-maps-sdk-3.1.0-beta', ext:'aar'
     v3Implementation 'com.android.volley:volley:1.1.1'
@@ -69,4 +72,6 @@ dependencies {
     v3Implementation 'com.google.android.libraries.maps:maps:3.1.0-beta'
     v3Implementation 'com.google.auto.value:auto-value-annotations:1.7.2'
     v3Implementation 'com.google.code.gson:gson:2.8.6'
+    // [END_EXCLUDE]
 }
+// [END maps_android_places_install_snippet]
