@@ -77,3 +77,28 @@ jobs:
       with:
         name: demo-kotlin-build-reports
         path: demo-kotlin/app/build/reports
+
+  build-snippets:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+
+    - name: Install NDK
+      run: |
+        sudo ${ANDROID_HOME}/tools/bin/sdkmanager --install "ndk;20.0.5594570"
+
+    - name: Build and check
+      run: cd snippets && ./gradlew assemble lint
+
+    - name: Upload build reports
+      if: always()
+      uses: actions/upload-artifact@v1
+      with:
+        name: snippets-build-reports
+        path: snippets/app/build/reports
