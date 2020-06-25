@@ -27,10 +27,10 @@ class MainActivity : AppCompatActivity() {
         val apiKey = "Your API key"
         // [START maps_places_get_started]
         // Initialize the SDK
-        Places.initialize(applicationContext, apiKey);
+        Places.initialize(applicationContext, apiKey)
 
         // Create a new PlacesClient instance
-        val placesClient = Places.createClient(this);
+        val placesClient = Places.createClient(this)
         // [END maps_places_get_started]
     }
 }
