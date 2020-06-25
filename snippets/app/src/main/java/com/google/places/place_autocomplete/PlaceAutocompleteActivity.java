@@ -68,7 +68,7 @@ class PlaceAutocompleteActivity extends AppCompatActivity {
 
     private void initAutocompleteSupportFragment() {
         // [START maps_places_autocomplete_support_fragment]
-        // Initialize the AutocompleteSupportFragment.
+// Initialize the AutocompleteSupportFragment.
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
             getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
