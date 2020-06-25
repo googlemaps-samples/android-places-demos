@@ -13,6 +13,8 @@ Note that each folder contains a distinct sample and must be imported separately
 1. `gms`: Product flavor for samples using the Places SDK that uses Maps SDK for Android 
 2. `v3`: Product flavor for samples using the Places SDK that uses Maps SDK V3 BETA for Android
 
+Additionally, the [snippets](snippets) app contains code snippets used for documentation found in https://developers.google.com/places/android-sdk
+
 Getting Started
 ---------------
 
