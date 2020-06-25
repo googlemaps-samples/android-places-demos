@@ -68,7 +68,7 @@ class PlaceAutocompleteActivity extends AppCompatActivity {
 
     private void initAutocompleteSupportFragment() {
         // [START maps_places_autocomplete_support_fragment]
-// Initialize the AutocompleteSupportFragment.
+        // Initialize the AutocompleteSupportFragment.
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
             getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
@@ -123,9 +123,9 @@ class PlaceAutocompleteActivity extends AppCompatActivity {
     }
 
     // [START maps_places_autocomplete_intent]
-    private static int AUTOCOMPLETE_REQUEST_CODE = 1;
+        private static int AUTOCOMPLETE_REQUEST_CODE = 1;
 
-    // [START_EXCLUDE]
+    // [START_EXCLUDE silent]
     private void startAutocompleteIntent() {
     // [END_EXCLUDE]
         // Set the fields to specify which types of place data to

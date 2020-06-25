@@ -57,7 +57,7 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
 
     private fun initAutocompleteSupportFragment() {
         // [START maps_places_autocomplete_support_fragment]
-// Initialize the AutocompleteSupportFragment.
+        // Initialize the AutocompleteSupportFragment.
         val autocompleteFragment =
             supportFragmentManager.findFragmentById(R.id.autocomplete_fragment)
                 as AutocompleteSupportFragment
