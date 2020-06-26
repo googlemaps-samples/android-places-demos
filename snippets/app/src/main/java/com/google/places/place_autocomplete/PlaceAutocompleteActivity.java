@@ -159,8 +159,8 @@ class PlaceAutocompleteActivity extends AppCompatActivity {
     }
     // [END maps_places_on_activity_result]
 
-    // [START maps_places_programmatic_place_predictions]
     private void programmaticPlacePredictions(String query) {
+        // [START maps_places_programmatic_place_predictions]
         // Create a new token for the autocomplete session. Pass this to FindAutocompletePredictionsRequest,
         // and once again when the user makes a selection (for example when calling fetchPlace()).
         AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
@@ -192,6 +192,6 @@ class PlaceAutocompleteActivity extends AppCompatActivity {
                 Log.e(TAG, "Place not found: " + apiException.getStatusCode());
             }
         });
+        // [END maps_places_programmatic_place_predictions]
     }
-    // [END maps_places_programmatic_place_predictions]
 }

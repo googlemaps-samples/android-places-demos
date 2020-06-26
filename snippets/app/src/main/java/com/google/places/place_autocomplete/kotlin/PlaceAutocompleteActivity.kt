@@ -115,11 +115,11 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
     }
 
     // [START maps_places_autocomplete_intent]
-    private val AUTOCOMPLETE_REQUEST_CODE = 1
+        private val AUTOCOMPLETE_REQUEST_CODE = 1
 
-    // [START_EXCLUDE]
+    // [START_EXCLUDE silent]
     private fun startAutocompleteIntent() {
-        // [END_EXCLUDE]
+    // [END_EXCLUDE]
         // Set the fields to specify which types of place data to
         // return after the user has made a selection.
         val fields = listOf(Place.Field.ID, Place.Field.NAME)
@@ -159,8 +159,8 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
     // [END maps_places_on_activity_result]
 
     // [END maps_places_on_activity_result]
-    // [START maps_places_programmatic_place_predictions]
     private fun programmaticPlacePredictions(query: String) {
+        // [START maps_places_programmatic_place_predictions]
         // Create a new token for the autocomplete session. Pass this to FindAutocompletePredictionsRequest,
         // and once again when the user makes a selection (for example when calling fetchPlace()).
         val token = AutocompleteSessionToken.newInstance()
@@ -193,8 +193,8 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
                     Log.e(TAG, "Place not found: " + exception.statusCode)
                 }
             }
+        // [END maps_places_programmatic_place_predictions]
     }
-    // [END maps_places_programmatic_place_predictions]
 
     companion object {
         val TAG = PlaceAutocompleteActivity.javaClass.simpleName
