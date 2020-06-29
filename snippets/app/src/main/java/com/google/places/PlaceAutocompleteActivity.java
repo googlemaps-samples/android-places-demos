@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.places.place_autocomplete;
+package com.google.places;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,7 +37,6 @@ import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
-import com.google.places.R;
 
 import org.jetbrains.annotations.NotNull;
 

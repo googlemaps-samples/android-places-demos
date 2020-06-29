@@ -12,26 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.places.get_started.kotlin
+package com.google.places;
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import com.google.android.libraries.places.api.Places
-import com.google.places.R
+import android.os.Bundle;
 
-class MainActivity : AppCompatActivity() {
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.places.R;
 
-        val apiKey = "Your API key"
+class GetStartedActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        final String apiKey = "You API key";
         // [START maps_places_get_started]
         // Initialize the SDK
-        Places.initialize(applicationContext, apiKey)
+        Places.initialize(getApplicationContext(), apiKey);
 
         // Create a new PlacesClient instance
-        val placesClient = Places.createClient(this)
+        PlacesClient placesClient = Places.createClient(this);
         // [END maps_places_get_started]
     }
 }

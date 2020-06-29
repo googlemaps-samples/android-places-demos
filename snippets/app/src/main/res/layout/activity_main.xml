@@ -19,7 +19,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".get_started.kotlin.MainActivity">
+    tools:context=".kotlin.GetStartedActivity">
 
     <fragment
         android:id="@+id/autocomplete_fragment"
