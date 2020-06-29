@@ -65,6 +65,6 @@ class CurrentPlaceActivity : AppCompatActivity() {
     }
 
     companion object {
-        private val TAG = CurrentPlaceActivity.javaClass.simpleName
+        private val TAG = CurrentPlaceActivity::class.java.simpleName
     }
 }
