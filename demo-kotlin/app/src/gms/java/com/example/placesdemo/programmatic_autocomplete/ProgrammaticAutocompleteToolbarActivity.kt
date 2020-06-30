@@ -31,6 +31,7 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.example.placesdemo.BuildConfig
 import com.example.placesdemo.MainActivity
 import com.example.placesdemo.R
 import com.example.placesdemo.model.GeocodingResult
@@ -184,7 +185,7 @@ class ProgrammaticAutocompleteToolbarActivity : AppCompatActivity() {
      */
     private fun geocodePlaceAndDisplay(placePrediction: AutocompletePrediction): Unit {
         // Construct the request URL
-        val apiKey = getString(R.string.places_api_key)
+        val apiKey = BuildConfig.PLACES_API_KEY
         val requestURL =
             "https://maps.googleapis.com/maps/api/geocode/json?place_id=${placePrediction.placeId}&key=$apiKey"
 

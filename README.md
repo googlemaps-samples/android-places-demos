@@ -26,7 +26,11 @@ In Android Studio, use the "Open an existing Android Studio project", and select
 
 Alternatively use the `./gradlew build` command to build the project directly.
 
-Don't forget to add your API key to the `gradle.properties` file for each demo.
+The demos also require that you add your own API key:
+1. [Get an API Key](https://developers.google.com/places/android-sdk/get-api-key).
+2. Create a file in the root directory called `secure.properties` (this file should _NOT_ be under version control to protect your API key).
+3. Add a single line to `secure.properties` that looks like `PLACES_API_KEY=YOUR_API_KEY`, where `YOUR_API_KEY` is the API key you obtained in the first step. You can also take a look at `secure.properties.template` as an example.
+4. Build and run.
 
 Support
 -------
