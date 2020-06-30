@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    String apiKey = getString(R.string.places_api_key);
+    final String apiKey = BuildConfig.PLACES_API_KEY;
 
     if (apiKey.equals("")) {
       Toast.makeText(this, getString(R.string.error_api_key), Toast.LENGTH_LONG).show();
