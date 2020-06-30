@@ -19,7 +19,7 @@ android {
         if (file("../../secure.properties").exists()) {
             file("../../secure.properties")?.withInputStream { secureProps.load(it) }
         }
-        buildConfigField("String", "PLACES_API_KEY", (secureProps.getProperty("PLACES_API_KEY") ?: ""))
+        buildConfigField("String", "PLACES_API_KEY", (secureProps.getProperty("PLACES_API_KEY") ?: "\"\""))
 
         // To add your Maps API key to this project:
         // 1. Create a file ./secure.properties

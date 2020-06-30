@@ -183,7 +183,7 @@ class ProgrammaticAutocompleteToolbarActivity : AppCompatActivity() {
      *
      * @see https://developers.google.com/places/android-sdk/autocomplete#get_place_predictions_programmatically
      */
-    private fun geocodePlaceAndDisplay(placePrediction: AutocompletePrediction): Unit {
+    private fun geocodePlaceAndDisplay(placePrediction: AutocompletePrediction) {
         // Construct the request URL
         val apiKey = BuildConfig.PLACES_API_KEY
         val requestURL =
