@@ -29,6 +29,7 @@ class PlaceDetailsActivity : AppCompatActivity() {
 
         // Construct a request object, passing the place ID and fields array.
         val request = FetchPlaceRequest.newInstance(placeId, placeFields)
+
         placesClient.fetchPlace(request)
             .addOnSuccessListener { response: FetchPlaceResponse ->
                 val place = response.place
