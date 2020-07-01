@@ -22,6 +22,7 @@ class PlacePhotosActivity : AppCompatActivity() {
 
         // Get a Place object (this example uses fetchPlace(), but you can also use findCurrentPlace())
         val placeRequest = FetchPlaceRequest.newInstance(placeId, fields)
+
         placesClient.fetchPlace(placeRequest)
             .addOnSuccessListener { response: FetchPlaceResponse ->
                 val place = response.place
