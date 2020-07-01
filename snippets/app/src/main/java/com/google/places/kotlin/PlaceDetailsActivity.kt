@@ -11,8 +11,8 @@ import com.google.android.libraries.places.api.net.PlacesClient
 class PlaceDetailsActivity : AppCompatActivity() {
     private fun simpleExamples(place: Place) {
         // [START maps_places_place_details_simple]
-        val name: CharSequence? = place.name
-        val address: CharSequence? = place.address
+        val name = place.name
+        val address = place.address
         val location = place.latLng
         // [END maps_places_place_details_simple]
     }
