@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val apiKey = getString(R.string.places_api_key)
+        val apiKey = BuildConfig.PLACES_API_KEY
         if (apiKey.isEmpty()) {
             Toast.makeText(this, getString(R.string.error_api_key), Toast.LENGTH_LONG).show()
             return

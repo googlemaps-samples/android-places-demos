@@ -13,7 +13,18 @@ android {
         multiDexEnabled true
         versionCode 1
         versionName "1.0"
-        resValue "string", "places_api_key", (project.findProperty("PLACES_API_KEY") ?: "")
+
+        // Read the API key from ./secure.properties into R.string.maps_api_key
+        def secureProps = new Properties()
+        if (file("../../secure.properties").exists()) {
+            file("../../secure.properties")?.withInputStream { secureProps.load(it) }
+        }
+        buildConfigField("String", "PLACES_API_KEY", (secureProps.getProperty("PLACES_API_KEY") ?: "\"\""))
+
+        // To add your Maps API key to this project:
+        // 1. Create a file ./secure.properties
+        // 2. Add this line, where YOUR_API_KEY is your API key:
+        //        PLACES_API_KEY=YOUR_API_KEY
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
