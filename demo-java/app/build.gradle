@@ -53,7 +53,7 @@ task generateV3(type: Copy) {
 // [START maps_android_places_install_snippet]
 dependencies {
     // [START_EXCLUDE silent]
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.google.android.material:material:1.1.0'
 
