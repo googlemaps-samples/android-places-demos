@@ -1,8 +1,10 @@
 import org.apache.tools.ant.filters.ConcatFilter
 
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'com.google.secrets_gradle_plugin' version '0.4'
+}
 
 android {
     compileSdkVersion 29
@@ -13,18 +15,6 @@ android {
         multiDexEnabled true
         versionCode 1
         versionName "1.0"
-
-        // Read the API key from ./secure.properties into R.string.maps_api_key
-        def secureProps = new Properties()
-        if (file("../../secure.properties").exists()) {
-            file("../../secure.properties")?.withInputStream { secureProps.load(it) }
-        }
-        buildConfigField("String", "PLACES_API_KEY", (secureProps.getProperty("PLACES_API_KEY") ?: "\"\""))
-
-        // To add your Maps API key to this project:
-        // 1. Create a file ./secure.properties
-        // 2. Add this line, where YOUR_API_KEY is your API key:
-        //        PLACES_API_KEY=YOUR_API_KEY
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -81,4 +71,12 @@ dependencies {
 }
 repositories {
     mavenCentral()
+}
+
+secrets {
+    // To add your Places API key to this project:
+    // 1. Open the file local.properties
+    // 2. Add this line, where YOUR_API_KEY is your API key:
+    //        PLACES_API_KEY=YOUR_API_KEY
+    defaultPropertiesFileName 'local.defaults.properties'
 }
