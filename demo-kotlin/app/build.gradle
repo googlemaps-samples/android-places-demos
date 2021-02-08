@@ -71,7 +71,7 @@ dependencies {
     v3Implementation name:'places-maps-sdk-3.1.0-beta', ext:'aar'
     v3Implementation 'com.android.volley:volley:1.1.1'
     v3Implementation 'com.google.android.gms:play-services-base:17.6.0'
-    v3Implementation 'com.google.android.gms:play-services-basement:17.5.0'
+    v3Implementation 'com.google.android.gms:play-services-basement:17.6.0'
     v3Implementation 'com.google.android.gms:play-services-gcm:17.0.0'
     v3Implementation 'com.google.android.gms:play-services-location:17.1.0'
     v3Implementation 'com.google.android.gms:play-services-tasks:17.2.1'
