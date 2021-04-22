@@ -41,6 +41,12 @@
   <!-- Button for launching autocomplete test activity. -->
   <string name="autocomplete_button" translatable="false">Autocomplete</string>
 
+  <!-- Button for launching autocomplete address form activity. -->
+  <string name="autocomplete_address_button" translatable="false">Autocomplete Address Form</string>
+
+  <!-- Button for launching autocomplete address form activity. -->
+  <string name="programmatic_autocomplete_geocoding_button">Programmatic Autocomplete + Geocoding</string>
+
   <!-- Button for launching place and photo test activity. -->
   <string name="place_and_photo_button" translatable="false">Place and Photo</string>
 
@@ -48,7 +54,7 @@
   <string name="current_place_button" translatable="false">Current Place</string>
 
 
-  <!-- AUTOCOMPLETE -->
+  <!-- AUTOCOMPLETE TEST -->
 
   <!-- Hint for the autocomplete widget's initial query and autocomplete prediction's query field. -->
   <string name="autocomplete_query_hint" translatable="false">(Initial) Query</string>
@@ -109,6 +115,65 @@
   <string name="fetch_autocomplete_predictions_button" translatable="false">Fetch Predictions</string>
 
 
+  <!-- AUTOCOMPLETE ADDRESS -->
+
+  <!-- Hint for the autocomplete form's first address line field. -->
+  <string name="autocomplete_address1_hint" translatable="false">Enter the address</string>
+
+  <!-- Label for the autocomplete form's heading. -->
+  <string name="autocomplete_address_heading_label" translatable="false">Delivery Address</string>
+
+  <!-- Label for the address form's first address line field. -->
+  <string name="autocomplete_address1_label" translatable="false">Address Line 1</string>
+
+  <!-- Label for the address form's second address line field. -->
+  <string name="autocomplete_address2_label" translatable="false">Aoartment, unit, suite, or floor #</string>
+
+  <!-- Label for the address form's city field. -->
+  <string name="autocomplete_city_label" translatable="false">City</string>
+
+  <!-- Label for the address form's state field. -->
+  <string name="autocomplete_state_label" translatable="false">State/Province</string>
+
+  <!-- Label for the address form's postal code field. -->
+  <string name="autocomplete_postal_label" translatable="false">Postal code</string>
+
+  <!-- Label for the address form's country field. -->
+  <string name="autocomplete_country_label" translatable="false">Country/Region</string>
+
+  <!-- Label for the address form's confirmation map. -->
+  <string name="autocomplete_map_label" translatable="false">Map view of the selected address</string>
+
+  <!-- Text for the address form save button. -->
+  <string name="autocomplete_save_button" translatable="false">Save address</string>
+
+  <!-- Text for the address form reset button. -->
+  <string name="autocomplete_reset_button" translatable="false">Clear form</string>
+
+  <!-- Hide POIs on the map -->
+  <string name="style_json">
+  [
+    {
+      \"featureType\": \"poi\",
+      \"elementType\": \"all\",
+      \"stylers\": [
+        {
+          \"visibility\": \"off\"
+        }
+      ]
+    },
+    {
+      \"featureType\": \"transit\",
+      \"elementType\": \"labels.icon\",
+      \"stylers\": [
+        {
+          \"visibility\": \"off\"
+        }
+      ]
+    }
+  ]
+  </string>
+
   <!-- FETCH PLACE AND PHOTO -->
 
   <!-- Hint for the place ID field. -->
@@ -140,7 +205,6 @@
 
   <!-- Text for the find current place submit button. -->
   <string name="find_current_place_button" translatable="false">Find Current Place</string>
-  <string name="programmatic_autocomplete_geocoding">Programmatic Autocomplete + Geocoding</string>
   <string name="search">Search</string>
   <string name="search_a_place">Search a Place</string>
   <string name="programmatic_place_predictions_instructions">This activity demonstrates as-you-type programmatic place predictions. Tap on the search icon on the toolbar and search for a place.</string>

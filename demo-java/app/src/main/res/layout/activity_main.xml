@@ -25,39 +25,47 @@
     tools:context=".MainActivity">
 
   <TextView
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/theme_spinner_text" />
 
   <Spinner
       android:id="@+id/theme_spinner"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content" />
 
   <Button
-    android:id="@+id/programmatic_autocomplete_button"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/spacing_small"
-    android:text="@string/programmatic_autocomplete_geocoding"/>
-
-  <Button
       android:id="@+id/autocomplete_button"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_margin="@dimen/spacing_small"
       android:text="@string/autocomplete_button"/>
 
+
+  <Button
+      android:id="@+id/autocomplete_address_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/spacing_small"
+      android:text="@string/autocomplete_address_button"/>
+  
+  <Button
+      android:id="@+id/programmatic_autocomplete_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/spacing_small"
+      android:text="@string/programmatic_autocomplete_geocoding_button"/>
+  
   <Button
       android:id="@+id/place_and_photo_button"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_margin="@dimen/spacing_small"
       android:text="@string/place_and_photo_button"/>
 
   <Button
       android:id="@+id/current_place_button"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_margin="@dimen/spacing_small"
       android:text="@string/current_place_button"/>

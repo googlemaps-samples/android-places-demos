@@ -28,6 +28,14 @@
     android:supportsRtl="true"
     android:theme="@style/Theme.AppCompat.Light">
 
+    <meta-data
+        android:name="com.google.android.gms.version"
+        android:value="@integer/google_play_services_version" />
+
+    <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="${MAPS_API_KEY}" />
+
     <activity android:name=".MainActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
@@ -37,6 +45,7 @@
     </activity>
 
     <activity android:name=".AutocompleteTestActivity" />
+    <activity android:name=".AutocompleteAddressActivity" />
     <activity android:name=".PlaceAndPhotoTestActivity" />
     <activity android:name=".CurrentPlaceTestActivity" />
     <activity
