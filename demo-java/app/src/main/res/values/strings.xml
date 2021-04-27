@@ -144,8 +144,8 @@
   <!-- Label for the address form's confirmation map. -->
   <string name="autocomplete_map_label" translatable="false">Map view of the selected address</string>
 
-  <!-- Text for the address form save button. -->
-  <string name="autocomplete_save_button" translatable="false">Save address</string>
+  <!-- Text for the address form submit button. -->
+  <string name="autocomplete_save_button" translatable="false">Submit address</string>
 
   <!-- Text for the address form reset button. -->
   <string name="autocomplete_reset_button" translatable="false">Clear form</string>
