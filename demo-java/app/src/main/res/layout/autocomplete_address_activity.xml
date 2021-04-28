@@ -34,11 +34,12 @@
         android:layout_height="wrap_content"
         android:text="@string/autocomplete_address1_label"/>
 
-    <EditText
+    <com.example.placesdemo.model.AutocompleteEditText
         android:id="@+id/autocomplete_address1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autofillHints=""
+        android:hint="@string/autocomplete_address1_label"
         android:imeOptions="actionNext"
         android:inputType="text"/>
 
@@ -52,6 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autofillHints=""
+        android:hint="@string/autocomplete_address2_label"
         android:imeOptions="actionNext"
         android:inputType="text"/>
 
@@ -65,13 +67,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autofillHints=""
+        android:hint="@string/autocomplete_city_label"
         android:imeOptions="actionNext"
         android:inputType="text"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:baselineAligned="false">
 
       <LinearLayout
           android:layout_width="0dp"
@@ -89,6 +93,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:autofillHints=""
+          android:hint="@string/autocomplete_state_label"
           android:imeOptions="actionNext"
           android:inputType="textCapCharacters"/>
 
@@ -108,9 +113,10 @@
       <EditText
           android:id="@+id/autocomplete_postal"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
+          android:layout_height="0dp"
           android:layout_weight="1"
           android:autofillHints=""
+          android:hint="@string/autocomplete_postal_label"
           android:imeOptions="actionNext"
           android:inputType="number"/>
       </LinearLayout>
@@ -126,6 +132,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autofillHints=""
+        android:hint="@string/autocomplete_country_label"
         android:imeOptions="actionNext"
         android:inputType="text"/>
 

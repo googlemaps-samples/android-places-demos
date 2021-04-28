@@ -127,7 +127,7 @@
   <string name="autocomplete_address1_label" translatable="false">Address Line 1</string>
 
   <!-- Label for the address form's second address line field. -->
-  <string name="autocomplete_address2_label" translatable="false">Aoartment, unit, suite, or floor #</string>
+  <string name="autocomplete_address2_label" translatable="false">Apartment, unit, suite, or floor #</string>
 
   <!-- Label for the address form's city field. -->
   <string name="autocomplete_city_label" translatable="false">City</string>
@@ -149,30 +149,6 @@
 
   <!-- Text for the address form reset button. -->
   <string name="autocomplete_reset_button" translatable="false">Clear form</string>
-
-  <!-- Hide POIs on the map -->
-  <string name="style_json">
-  [
-    {
-      \"featureType\": \"poi\",
-      \"elementType\": \"all\",
-      \"stylers\": [
-        {
-          \"visibility\": \"off\"
-        }
-      ]
-    },
-    {
-      \"featureType\": \"transit\",
-      \"elementType\": \"labels.icon\",
-      \"stylers\": [
-        {
-          \"visibility\": \"off\"
-        }
-      ]
-    }
-  ]
-  </string>
 
   <!-- FETCH PLACE AND PHOTO -->
 

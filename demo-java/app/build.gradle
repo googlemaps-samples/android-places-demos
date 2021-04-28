@@ -78,7 +78,8 @@ dependencies {
 
 secrets {
     // To add your Google Maps Platform API key to this project:
-    // 1. Open the file local.properties
+    // 1. Create or open file local.properties in this folder, which will be ready by default
+    //    by secrets_gradle_plugin
     // 2. Add this line, replacing YOUR_API_KEY with a key from a project with Places API enabled:
     //        PLACES_API_KEY=YOUR_API_KEY
     // 3. Add this line, replacing YOUR_API_KEY with a key from a project with Maps SDK for Android

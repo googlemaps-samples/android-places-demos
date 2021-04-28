@@ -4,16 +4,15 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.placesdemo.model.AutocompleteEditText;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -42,10 +41,10 @@ import java.util.List;
 @SuppressWarnings("FieldCanBeLocal")
 public class AutocompleteAddressActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    private static final String TAG = "ADDRESSAUTOCOMPLETE";
-    private static final String MAP_FRAGMENT_TAG = "map";
+    private static final String TAG = "ADDRESS_AUTOCOMPLETE";
+    private static final String MAP_FRAGMENT_TAG = "MAP";
     private static final int AUTOCOMPLETE_REQUEST_CODE = 23487;
-    private EditText address1Field;
+    private AutocompleteEditText address1Field;
     private EditText address2Field;
     private EditText cityField;
     private EditText stateField;
@@ -74,29 +73,19 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient(this);
 
-        address1Field = (EditText) findViewById(R.id.autocomplete_address1);
-        address2Field = (EditText) findViewById(R.id.autocomplete_address2);
-        cityField = (EditText) findViewById(R.id.autocomplete_city);
-        stateField = (EditText) findViewById(R.id.autocomplete_state);
-        postalField = (EditText) findViewById(R.id.autocomplete_postal);
-        countryField = (EditText) findViewById(R.id.autocomplete_country);
+        address1Field = findViewById(R.id.autocomplete_address1);
+        address2Field = findViewById(R.id.autocomplete_address2);
+        cityField = findViewById(R.id.autocomplete_city);
+        stateField = findViewById(R.id.autocomplete_state);
+        postalField = findViewById(R.id.autocomplete_postal);
+        countryField = findViewById(R.id.autocomplete_country);
 
         // Attach an Autocomplete intent to the Address 1 EditText field
-        address1Field.setOnTouchListener((v, event) -> {
-            if(MotionEvent.ACTION_UP == event.getAction()) {
-                startAutocompleteIntent();
-            }
-
-            return true;
-        });
+        address1Field.setOnClickListener(v -> startAutocompleteIntent());
 
         // Reset the form
         Button resetButton = findViewById(R.id.autocomplete_reset_button);
-        resetButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                clearForm();
-            }
-        });
+        resetButton.setOnClickListener(v -> clearForm());
     }
 
     private void startAutocompleteIntent() {
@@ -138,8 +127,8 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
         try {
             // Customise the styling of the base map using a JSON object defined
             // in a string resource.
-            boolean success = map.setMapStyle(new MapStyleOptions(getResources()
-                    .getString(R.string.style_json)));
+            boolean success = map.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json));
 
             if (!success) {
                 Log.e(TAG, "Style parsing failed.");
@@ -149,14 +138,6 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
         }
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 15f));
         marker = map.addMarker(new MarkerOptions().position(coordinates));
-    }
-
-    private void updateMap(LatLng latLng) {
-        marker.setPosition(latLng);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f));
-        if (mapPanel.getVisibility() == View.GONE) {
-            mapPanel.setVisibility(View.VISIBLE);
-        }
     }
 
     private void fillInAddress(Place place) {
@@ -217,6 +198,10 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
         address2Field.requestFocus();
 
         // Add a map for visual confirmation of the address
+        showMap(place);
+    }
+
+    private void showMap(Place place) {
         coordinates = place.getLatLng();
 
         // It isn't possible to set a fragment's id programmatically so we set a tag instead and
@@ -226,7 +211,7 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
 
         // We only create a fragment if it doesn't already exist.
         if (mapFragment == null) {
-            mapPanel = (View) ((ViewStub) findViewById(R.id.stub_map)).inflate();
+            mapPanel = ((ViewStub) findViewById(R.id.stub_map)).inflate();
             GoogleMapOptions mapOptions = new GoogleMapOptions();
             mapOptions.mapToolbarEnabled(false);
 
@@ -244,8 +229,16 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
         }
     }
 
+    private void updateMap(LatLng latLng) {
+        marker.setPosition(latLng);
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f));
+        if (mapPanel.getVisibility() == View.GONE) {
+            mapPanel.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void clearForm() {
-        address1Field.getText().clear();
+        address1Field.setText("");
         address2Field.getText().clear();
         cityField.getText().clear();
         stateField.getText().clear();
