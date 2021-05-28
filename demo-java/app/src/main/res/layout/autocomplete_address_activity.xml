@@ -136,6 +136,14 @@
         android:imeOptions="actionNext"
         android:inputType="text"/>
 
+    <!-- Proximity check option provided for development testing convenience.
+     User would typically not control this option. -->
+    <CheckBox android:id="@+id/checkbox_proximity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/autocomplete_proximity_check"
+        android:onClick="onCheckboxClicked"/>
+
     <!-- The map for visual confirmation of the selected address -->
     <!-- Stub to only load the map after Autocomplete prediction selection -->
     <ViewStub

@@ -141,6 +141,9 @@
   <!-- Label for the address form's country field. -->
   <string name="autocomplete_country_label" translatable="false">Country/Region</string>
 
+  <!-- Label for the address form's proximity check setting. -->
+  <string name="autocomplete_proximity_check" translatable="false">Check device proximity</string>
+
   <!-- Label for the address form's confirmation map. -->
   <string name="autocomplete_map_label" translatable="false">Map view of the selected address</string>
 
