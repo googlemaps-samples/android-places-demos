@@ -141,8 +141,7 @@
     <CheckBox android:id="@+id/checkbox_proximity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/autocomplete_proximity_check"
-        android:onClick="onCheckboxClicked"/>
+        android:text="@string/autocomplete_proximity_check"/>
 
     <!-- The map for visual confirmation of the selected address -->
     <!-- Stub to only load the map after Autocomplete prediction selection -->

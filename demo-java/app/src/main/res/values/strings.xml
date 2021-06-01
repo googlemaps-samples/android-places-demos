@@ -153,6 +153,21 @@
   <!-- Text for the address form reset button. -->
   <string name="autocomplete_reset_button" translatable="false">Clear form</string>
 
+  <!-- Text for the toast message for permissions denied. -->
+  <string name="autocomplete_denied_message" translatable="false">User denied location permission. Cannot check proximity to entered address.</string>
+
+  <!-- Text for the toast message for proximity match in progress. -->
+  <string name="autocomplete_progress_message" translatable="false">Checking proximity</string>
+
+  <!-- Text for the toast message for a successful proximity match. -->
+  <string name="autocomplete_match_message" translatable="false">Device location matches entered address</string>
+
+  <!-- Text for the toast message for a failed proximity match. -->
+  <string name="autocomplete_nomatch_message" translatable="false">Device location does not match entered address</string>
+
+  <!-- Text for the toast message for a skilled proximity match. -->
+  <string name="autocomplete_skipped_message" translatable="false">Address accepted without checking proximity</string>
+
   <!-- FETCH PLACE AND PHOTO -->
 
   <!-- Hint for the place ID field. -->
