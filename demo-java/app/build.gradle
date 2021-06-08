@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
         applicationId "com.example.placesdemo"
         minSdkVersion 16
-        targetSdkVersion 29
+        targetSdkVersion 30
         multiDexEnabled true
         versionCode 1
         versionName "1.0"
