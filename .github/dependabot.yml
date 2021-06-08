@@ -15,10 +15,9 @@ updates:
   commit-message:
     prefix: chore(deps)
 - package-ecosystem: gradle
-  directory: "/./demo-java"
+  directory: "/./snippets"
   schedule:
     interval: weekly
   open-pull-requests-limit: 10
-  target-branch: devsite
   commit-message:
     prefix: chore(deps)
