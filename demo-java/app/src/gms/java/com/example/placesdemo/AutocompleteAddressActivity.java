@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.placesdemo;
 
 import android.annotation.SuppressLint;
@@ -37,6 +53,7 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AddressComponent;
 import com.google.android.libraries.places.api.model.AddressComponents;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
@@ -55,7 +72,6 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
 
     private static final String TAG = "ADDRESS_AUTOCOMPLETE";
     private static final String MAP_FRAGMENT_TAG = "MAP";
-    private static final int AUTOCOMPLETE_REQUEST_CODE = 23487;
     private AutocompleteEditText address1Field;
     private EditText address2Field;
     private EditText cityField;
@@ -70,21 +86,28 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
     private PlacesClient placesClient;
     private View mapPanel;
     private LatLng deviceLocation;
-    private static final double acceptableProximity = 150;
+    private static final double acceptedProximity = 150;
 
-    private ActivityResultLauncher<Intent> startAutocomplete = registerForActivityResult(
+    // [START maps_solutions_android_autocomplete_define]
+    private final ActivityResultLauncher<Intent> startAutocomplete = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             (ActivityResultCallback<ActivityResult>) result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent intent = result.getData();
-                    Place place = Autocomplete.getPlaceFromIntent(intent);
-                    Log.d(TAG, "Place: " + place.getAddressComponents());
+                    if (intent != null) {
+                        Place place = Autocomplete.getPlaceFromIntent(intent);
 
-                    fillInAddress(place);
+                        // Write a method to read the address components from the Place
+                        // and populate the form with the address components
+                        Log.d(TAG, "Place: " + place.getAddressComponents());
+                        fillInAddress(place);
+                    }
                 } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
                     // The user canceled the operation.
+                    Log.i(TAG, "User canceled autocomplete");
                 }
             });
+    // [END maps_solutions_android_autocomplete_define]
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,18 +152,22 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
     }
 
 
-
+    // [START maps_solutions_android_autocomplete_intent]
     private void startAutocompleteIntent() {
+
         // Set the fields to specify which types of place data to
         // return after the user has made a selection.
         List<Place.Field> fields = Arrays.asList(Place.Field.ADDRESS_COMPONENTS,
                 Place.Field.LAT_LNG, Place.Field.VIEWPORT);
 
-        // Start the autocomplete intent.
+        // Build the autocomplete intent with field, country, and type filters applied
         Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                .setCountry("US")
+                .setTypeFilter(TypeFilter.ADDRESS)
                 .build(this);
         startAutocomplete.launch(intent);
     }
+    // [END maps_solutions_android_autocomplete_intent]
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -259,7 +286,7 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
     }
 
     private void saveForm() {
-        Log.d(TAG,"checkProximity = " + String.valueOf(checkProximity));
+        Log.d(TAG,"checkProximity = " + checkProximity);
         if (checkProximity) {
             checkLocationPermissions();
         } else {
@@ -284,39 +311,35 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
         address1Field.requestFocus();
     }
 
+    // [START maps_solutions_android_permission_request]
     // Register the permissions callback, which handles the user's response to the
     // system permissions dialog. Save the return value, an instance of
     // ActivityResultLauncher, as an instance variable.
-    private ActivityResultLauncher<String> requestPermissionLauncher =
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
-                    Log.d(TAG, "fine location permission granted upon request");
+                    // Since ACCESS_FINE_LOCATION is the only permission in this sample,
+                    // run the location comparison task once permission is granted.
+                    // Otherwise, check which permission is granted.
                     getAndCompareLocations();
                 } else {
-                    Log.d(TAG, "fine location permission denied");
-                    Toast.makeText(
-                            this,
-                            R.string.autocomplete_denied_message,
-                            Toast.LENGTH_SHORT)
-                            .show();
+                    // Fallback behavior if user denies permission
+                    Log.d(TAG, "User denied permission");
                 }
             });
+    // [END maps_solutions_android_permission_request]
 
+    // [START maps_solutions_android_location_permissions]
     private void checkLocationPermissions() {
-        Toast.makeText(
-                getApplicationContext(),
-                R.string.autocomplete_progress_message,
-                Toast.LENGTH_SHORT)
-                .show();
         if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "fine location permission already granted");
             getAndCompareLocations();
         } else {
             requestPermissionLauncher.launch(
                     ACCESS_FINE_LOCATION);
         }
     }
+    // [END maps_solutions_android_location_permissions]
 
     @SuppressLint("MissingPermission")
     private void getAndCompareLocations() {
@@ -326,6 +349,7 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
         LatLng enteredLocation = coordinates;
         map.setMyLocationEnabled(true);
 
+        // [START maps_solutions_android_location_get]
         FusedLocationProviderClient fusedLocationClient =
                 LocationServices.getFusedLocationProviderClient(this);
 
@@ -337,27 +361,24 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
                     }
 
                     deviceLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                    // [START_EXCLUDE]
                     Log.d(TAG, "device location = " + deviceLocation.toString());
                     Log.d(TAG, "entered location = " + enteredLocation.toString());
 
+                    // [START maps_solutions_android_location_distance]
                     // Use the computeDistanceBetween function in the Maps SDK for Android Utility Library
                     // to use spherical geometry to compute the distance between two Lat/Lng points.
                     double distanceInMeters = computeDistanceBetween(deviceLocation, enteredLocation);
-                    if (distanceInMeters <= acceptableProximity) {
+                    if (distanceInMeters <= acceptedProximity) {
                         Log.d(TAG, "location matched");
-                        Toast.makeText(
-                                getApplicationContext(),
-                                R.string.autocomplete_match_message,
-                                Toast.LENGTH_SHORT)
-                                .show();
+                        // TODO: Display UI based on the locations matching
                     } else {
                         Log.d(TAG, "location not matched");
-                        Toast.makeText(
-                                getApplicationContext(),
-                                R.string.autocomplete_nomatch_message,
-                                Toast.LENGTH_SHORT)
-                                .show();
+                        // TODO: Display UI based on the locations not matching
                     }
+                    // [END maps_solutions_android_location_distance]
+                    // [END_EXCLUDE]
                 });
     }
+    // [END maps_solutions_android_location_get]
 }
