@@ -169,6 +169,7 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
     }
     // [END maps_solutions_android_autocomplete_intent]
 
+    // [START maps_solutions_android_autocomplete_map_ready]
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
@@ -187,6 +188,7 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 15f));
         marker = map.addMarker(new MarkerOptions().position(coordinates));
     }
+    // [END maps_solutions_android_autocomplete_map_ready]
 
     private void fillInAddress(Place place) {
         AddressComponents components = place.getAddressComponents();
@@ -249,6 +251,7 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
         showMap(place);
     }
 
+    // [START maps_solutions_android_autocomplete_map_add]
     private void showMap(Place place) {
         coordinates = place.getLatLng();
 
@@ -276,6 +279,7 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
             updateMap(coordinates);
         }
     }
+    // [END maps_solutions_android_autocomplete_map_add]
 
     private void updateMap(LatLng latLng) {
         marker.setPosition(latLng);
