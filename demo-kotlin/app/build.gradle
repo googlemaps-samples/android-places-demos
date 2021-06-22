@@ -1,30 +1,21 @@
 import org.apache.tools.ant.filters.ConcatFilter
 
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+}
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
         applicationId "com.example.placesdemo"
         minSdkVersion 16
-        targetSdkVersion 29
+        targetSdkVersion 30
         multiDexEnabled true
         versionCode 1
         versionName "1.0"
-
-        // Read the API key from ./secure.properties into R.string.maps_api_key
-        def secureProps = new Properties()
-        if (file("../../secure.properties").exists()) {
-            file("../../secure.properties")?.withInputStream { secureProps.load(it) }
-        }
-        buildConfigField("String", "PLACES_API_KEY", (secureProps.getProperty("PLACES_API_KEY") ?: "\"\""))
-
-        // To add your Maps API key to this project:
-        // 1. Create a file ./secure.properties
-        // 2. Add this line, where YOUR_API_KEY is your API key:
-        //        PLACES_API_KEY=YOUR_API_KEY
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -81,4 +72,16 @@ dependencies {
 }
 repositories {
     mavenCentral()
+}
+
+secrets {
+    // To add your Google Maps Platform API key to this project:
+    // 1. Create or open file local.properties in this folder, which will be ready by default
+    //    by secrets_gradle_plugin
+    // 2. Add this line, replacing YOUR_API_KEY with a key from a project with Places API enabled:
+    //        PLACES_API_KEY=YOUR_API_KEY
+    // 3. Add this line, replacing YOUR_API_KEY with a key from a project with Maps SDK for Android
+    //    enabled (can be the same project and key as in Step 2):
+    //        MAPS_API_KEY=YOUR_API_KEY
+    defaultPropertiesFileName 'local.defaults.properties'
 }
