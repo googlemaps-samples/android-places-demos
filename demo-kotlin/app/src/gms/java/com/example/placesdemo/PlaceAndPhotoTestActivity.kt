@@ -28,6 +28,7 @@ import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.PhotoMetadata
 import com.google.android.libraries.places.api.model.Place
@@ -43,6 +44,7 @@ import com.google.android.libraries.places.api.net.PlacesClient
 class PlaceAndPhotoTestActivity : AppCompatActivity() {
     private lateinit var placesClient: PlacesClient
     private lateinit var photoView: ImageView
+    private lateinit var iconView: ImageView
     private lateinit var responseView: TextView
     private lateinit var fieldSelector: FieldSelector
 
@@ -68,10 +70,19 @@ class PlaceAndPhotoTestActivity : AppCompatActivity() {
         // Set up view objects
         responseView = findViewById(R.id.response)
         photoView = findViewById(R.id.photo)
+        iconView = findViewById(R.id.icon)
         val fetchPhotoCheckbox = findViewById<CheckBox>(R.id.fetch_photo_checkbox)
-        fetchPhotoCheckbox.setOnCheckedChangeListener { _, isChecked: Boolean -> setPhotoSizingEnabled(isChecked) }
+        fetchPhotoCheckbox.setOnCheckedChangeListener { _, isChecked: Boolean ->
+            setPhotoSizingEnabled(
+                isChecked
+            )
+        }
         val customPhotoCheckbox = findViewById<CheckBox>(R.id.use_custom_photo_reference)
-        customPhotoCheckbox.setOnCheckedChangeListener { _, isChecked: Boolean -> setCustomPhotoReferenceEnabled(isChecked) }
+        customPhotoCheckbox.setOnCheckedChangeListener { _, isChecked: Boolean ->
+            setCustomPhotoReferenceEnabled(
+                isChecked
+            )
+        }
         fieldSelector = FieldSelector(
             findViewById(R.id.use_custom_fields),
             findViewById(R.id.custom_fields_list),
@@ -102,11 +113,20 @@ class PlaceAndPhotoTestActivity : AppCompatActivity() {
     private fun fetchPlace() {
         responseView.text = null
         photoView.setImageBitmap(null)
+        iconView.setImageBitmap(null)
+
         dismissKeyboard(findViewById(R.id.place_id_field))
         val isFetchPhotoChecked = isFetchPhotoChecked
+        val isFetchIconChecked = isFetchIconChecked
         val placeFields = placeFields
         val customPhotoReference = customPhotoReference
-        if (!validateInputs(isFetchPhotoChecked, placeFields, customPhotoReference)) {
+        if (!validateInputs(
+                isFetchPhotoChecked,
+                isFetchIconChecked,
+                placeFields,
+                customPhotoReference
+            )
+        ) {
             return
         }
         setLoading(true)
@@ -116,6 +136,9 @@ class PlaceAndPhotoTestActivity : AppCompatActivity() {
             responseView.text = StringUtil.stringify(response, isDisplayRawResultsChecked)
             if (isFetchPhotoChecked) {
                 attemptFetchPhoto(response.place)
+            }
+            if (isFetchIconChecked) {
+                attemptFetchIcon(response.place)
             }
         }
         placeTask.addOnFailureListener { exception: Exception ->
@@ -130,6 +153,13 @@ class PlaceAndPhotoTestActivity : AppCompatActivity() {
         if (photoMetadatas != null && photoMetadatas.isNotEmpty()) {
             fetchPhoto(photoMetadatas[0])
         }
+    }
+
+    private fun attemptFetchIcon(place: Place) {
+        iconView.setImageBitmap(null)
+        iconView.setBackgroundColor(place.iconBackgroundColor)
+        val url = place.iconUrl
+        Glide.with(this).load(url).into(iconView)
     }
 
     /**
@@ -177,14 +207,24 @@ class PlaceAndPhotoTestActivity : AppCompatActivity() {
     }
 
     private fun validateInputs(
-        isFetchPhotoChecked: Boolean, placeFields: List<Place.Field>, customPhotoReference: String): Boolean {
+        isFetchPhotoChecked: Boolean,
+        isFetchIconChecked: Boolean,
+        placeFields: List<Place.Field>,
+        customPhotoReference: String
+    ): Boolean {
         if (isFetchPhotoChecked) {
             if (!placeFields.contains(Place.Field.PHOTO_METADATAS)) {
-                responseView.text = "'Also fetch photo?' is selected, but PHOTO_METADATAS Place Field is not."
+                responseView.text =
+                    "'Also fetch photo?' is selected, but PHOTO_METADATAS Place Field is not."
                 return false
             }
         } else if (!TextUtils.isEmpty(customPhotoReference)) {
-            responseView.text = "Using 'Custom photo reference', but 'Also fetch photo?' is not selected."
+            responseView.text =
+                "Using 'Custom photo reference', but 'Also fetch photo?' is not selected."
+            return false
+        }
+        if (isFetchIconChecked && !placeFields.contains(Field.ICON_URL)) {
+            responseView.setText(R.string.fetch_icon_missing_fields_warning)
             return false
         }
         return true
@@ -205,6 +245,9 @@ class PlaceAndPhotoTestActivity : AppCompatActivity() {
 
     private val isFetchPhotoChecked: Boolean
         get() = findViewById<CheckBox>(R.id.fetch_photo_checkbox).isChecked
+
+    private val isFetchIconChecked: Boolean
+        get() = findViewById<CheckBox>(R.id.fetch_icon_checkbox).isChecked
 
     private val customPhotoReference: String
         get() = findViewById<TextView>(R.id.custom_photo_reference).text.toString()

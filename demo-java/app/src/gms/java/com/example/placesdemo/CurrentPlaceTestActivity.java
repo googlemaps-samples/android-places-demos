@@ -34,7 +34,6 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
@@ -90,7 +89,7 @@ public class CurrentPlaceTestActivity extends AppCompatActivity {
   }
 
   @Override
-  protected void onSaveInstanceState(@NonNull Bundle bundle) {
+  protected void onSaveInstanceState(Bundle bundle) {
     super.onSaveInstanceState(bundle);
     fieldSelector.onSaveInstanceState(bundle);
   }

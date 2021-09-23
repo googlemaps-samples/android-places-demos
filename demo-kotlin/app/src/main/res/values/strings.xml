@@ -140,6 +140,15 @@
 
   <!-- Text for the find current place submit button. -->
   <string name="find_current_place_button" translatable="false">Find Current Place</string>
+  <string name="icon_view_content_description" translatable="false">Icon View</string>
+  <string name="fetch_icon_checkbox" translatable="false">Also fetch icon?</string>
+  <string name="fetch_icon_missing_fields_warning" translatable="false">\'Also fetch icon?\' is selected, but ICON_URL Place Field is not.</string>
+  <string name="icon_view_image_content_description" translatable="false">Image view to display a Place Icon Image</string>
+  <string name="icon_with_background" translatable="false">Icon with background:</string>
+  <string name="place_photo" translatable="false">Place photo:</string>
+  <!-- Place ID for SFO, used as the default for testing in the Place and Photo screen -->
+  <string name="place_id_SFO" translatable="false">ChIJVVVVVYx3j4ARP-3NGldc8qQ</string>
+
   <string name="programmatic_autocomplete_geocoding">Programmatic Autocomplete + Geocoding</string>
   <string name="search">Search</string>
   <string name="search_a_place">Search a Place</string>

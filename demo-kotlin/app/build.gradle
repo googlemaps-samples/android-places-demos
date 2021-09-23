@@ -36,6 +36,7 @@ android {
     }
 }
 
+// Deprecated
 task generateV3(type: Copy) {
     group "V3 Beta"
     description "Copies source code from GMS to V3 BETA."
@@ -55,9 +56,10 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'com.android.volley:volley:1.2.1'
+    implementation "com.github.bumptech.glide:glide:4.9.0"
 
     // GMS
-    gmsImplementation 'com.google.android.libraries.places:places:2.4.0'
+    gmsImplementation 'com.google.android.libraries.places:places:2.5.0'
 
     // V3
     v3Implementation name:'places-maps-sdk-3.1.0-beta', ext:'aar'
