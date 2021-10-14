@@ -50,7 +50,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.IdRes;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
@@ -113,7 +112,7 @@ public class AutocompleteTestActivity extends AppCompatActivity {
   }
 
   @Override
-  protected void onSaveInstanceState(@NonNull Bundle bundle) {
+  protected void onSaveInstanceState(Bundle bundle) {
     super.onSaveInstanceState(bundle);
     fieldSelector.onSaveInstanceState(bundle);
   }
@@ -138,17 +137,16 @@ public class AutocompleteTestActivity extends AppCompatActivity {
                                 .setActivityMode(getMode()));
   }
 
-  @NonNull
   private PlaceSelectionListener getPlaceSelectionListener() {
     return new PlaceSelectionListener() {
       @Override
-      public void onPlaceSelected(@NonNull Place place) {
+      public void onPlaceSelected(Place place) {
         responseView.setText(
                 StringUtil.stringifyAutocompleteWidget(place, isDisplayRawResultsChecked()));
       }
 
       @Override
-      public void onError(@NonNull Status status) {
+      public void onError(Status status) {
         responseView.setText(status.getStatusMessage());
       }
     };
@@ -245,7 +243,6 @@ public class AutocompleteTestActivity extends AppCompatActivity {
     return getTextViewValue(R.id.autocomplete_hint);
   }
 
-  @NonNull
   private List<String> getCountries() {
     String countryString = getTextViewValue(R.id.autocomplete_country);
     if (TextUtils.isEmpty(countryString)) {

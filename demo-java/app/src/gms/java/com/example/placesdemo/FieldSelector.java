@@ -39,7 +39,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
@@ -166,7 +165,7 @@ public final class FieldSelector {
   }
 
 
-  public void onSaveInstanceState(@NonNull Bundle bundle) {
+  public void onSaveInstanceState(Bundle bundle) {
     List<Field> fields = getSelectedFields();
 
     ArrayList<Integer> serializedFields = new ArrayList<>();
@@ -217,9 +216,8 @@ public final class FieldSelector {
       }
     }
 
-    @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(int position, @Nullable View convertView, ViewGroup parent) {
       View view = super.getView(position, convertView, parent);
       State state = getItem(position);
       updateView(view, state);
