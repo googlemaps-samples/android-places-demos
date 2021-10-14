@@ -39,6 +39,7 @@ jobs:
       uses: actions/setup-java@v2.3.1
       with:
         java-version: '11'
+        distribution: 'adopt'
 
     - name: Install NDK
       run: |
@@ -64,6 +65,7 @@ jobs:
       uses: actions/setup-java@v2.3.1
       with:
         java-version: '11'
+        distribution: 'adopt'
 
     - name: Install NDK
       run: |
@@ -89,6 +91,7 @@ jobs:
       uses: actions/setup-java@v2.3.1
       with:
         java-version: '11'
+        distribution: 'adopt'
 
     - name: Install NDK
       run: |
