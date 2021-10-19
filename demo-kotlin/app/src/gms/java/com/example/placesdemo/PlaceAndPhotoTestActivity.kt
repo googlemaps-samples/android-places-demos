@@ -223,7 +223,7 @@ class PlaceAndPhotoTestActivity : AppCompatActivity() {
                 "Using 'Custom photo reference', but 'Also fetch photo?' is not selected."
             return false
         }
-        if (isFetchIconChecked && !placeFields.contains(Field.ICON_URL)) {
+        if (isFetchIconChecked && !placeFields.contains(Place.Field.ICON_URL)) {
             responseView.setText(R.string.fetch_icon_missing_fields_warning)
             return false
         }
