@@ -66,7 +66,7 @@ dependencies {
     // GMS
     gmsImplementation 'com.google.android.libraries.places:places:2.5.0'
     gmsImplementation 'com.google.android.gms:play-services-maps:17.0.1'
-    gmsImplementation 'com.google.maps.android:android-maps-utils:2.2.6'
+    gmsImplementation 'com.google.maps.android:android-maps-utils:2.3.0'
 
     // V3
     v3Implementation name:'places-maps-sdk-3.1.0-beta', ext:'aar'
