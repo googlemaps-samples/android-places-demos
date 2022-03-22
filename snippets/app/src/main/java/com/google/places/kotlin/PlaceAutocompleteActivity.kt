@@ -145,7 +145,7 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
                     // TODO: Handle the error.
                     data?.let {
                         val status = Autocomplete.getStatusFromIntent(data)
-                        Log.i(TAG, status.statusMessage)
+                        Log.i(TAG, status.statusMessage ?: "")
                     }
                 }
                 Activity.RESULT_CANCELED -> {
