@@ -70,7 +70,7 @@ dependencies {
     v3Implementation 'com.google.android.gms:play-services-tasks:18.0.1'
     v3Implementation 'com.google.android.libraries.maps:maps:3.1.0-beta'
     v3Implementation 'com.google.auto.value:auto-value-annotations:1.9'
-    v3Implementation 'com.google.code.gson:gson:2.8.9'
+    v3Implementation 'com.google.code.gson:gson:2.9.0'
 }
 repositories {
     mavenCentral()
