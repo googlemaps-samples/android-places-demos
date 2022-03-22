@@ -3,13 +3,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    compileSdk 31
 
     defaultConfig {
         applicationId "com.google.places"
-        minSdkVersion 21
-        targetSdkVersion 29
+        minSdk 21
+        targetSdk 31
         versionCode 1
         versionName "1.0"
 
@@ -42,6 +41,8 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     // [END_EXCLUDE]
+    // [START maps_android_places_upgrade_snippet]
     implementation 'com.google.android.libraries.places:places:2.5.0'
+    // [END maps_android_places_upgrade_snippet]
 }
 // [END maps_android_places_install_snippet]
