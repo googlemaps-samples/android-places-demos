@@ -158,7 +158,6 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
     }
     // [END maps_places_on_activity_result]
 
-    // [END maps_places_on_activity_result]
     private fun programmaticPlacePredictions(query: String) {
         // [START maps_places_programmatic_place_predictions]
         // Create a new token for the autocomplete session. Pass this to FindAutocompletePredictionsRequest,
