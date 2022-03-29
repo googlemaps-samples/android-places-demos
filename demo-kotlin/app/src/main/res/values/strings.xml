@@ -135,6 +135,9 @@
   <!-- Text for the fetch place and photo button. -->
   <string name="fetch_place_and_photo_button" translatable="false">Fetch Place and Photo</string>
 
+  <!--    Permissions    -->
+  <string name="permission_rationale_location">Access to the location service is required to demonstrate the \'find current place\' feature, which finds place likelihoods based on your location.</string>
+  <string name="permission_required_toast">Location permission is required for this demo.</string>
 
   <!-- FIND CURRENT PLACE -->
 
