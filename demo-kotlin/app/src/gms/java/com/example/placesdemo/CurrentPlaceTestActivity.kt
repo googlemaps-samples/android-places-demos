@@ -117,7 +117,7 @@ class CurrentPlaceTestActivity : AppCompatActivity() {
     ): Boolean =
         permissions.toList().zip(grantResults.toList())
             .firstOrNull { (permission, grantResult) ->
-                grantResult == PackageManager.PERMISSION_GRANTED && (ACCESS_FINE_LOCATION == permission || ACCESS_COARSE_LOCATION == permission)
+                grantResult == PackageManager.PERMISSION_GRANTED && (permission == ACCESS_FINE_LOCATION || permission == ACCESS_COARSE_LOCATION)
             } != null
 
     /**
@@ -130,7 +130,7 @@ class CurrentPlaceTestActivity : AppCompatActivity() {
                 this,
                 ACCESS_FINE_LOCATION
             )
-            != PackageManager.PERMISSION_GRANTED &&
+            != PackageManager.PERMISSION_GRANTED ||
             ContextCompat.checkSelfPermission(
                 this,
                 ACCESS_COARSE_LOCATION
@@ -190,13 +190,16 @@ class CurrentPlaceTestActivity : AppCompatActivity() {
      * Fetches a list of [PlaceLikelihood] instances that represent the Places the user is
      * most likely to be at currently.
      */
-    @RequiresPermission(allOf = [ACCESS_FINE_LOCATION, ACCESS_WIFI_STATE])
+    @RequiresPermission(anyOf = [ACCESS_FINE_LOCATION, ACCESS_FINE_LOCATION])
     private fun findCurrentPlaceWithPermissions() {
         setLoading(true)
         val currentPlaceRequest = FindCurrentPlaceRequest.newInstance(
             placeFields
         )
-        val currentPlaceTask =
+
+        // Safe to suppress permission for ACCESS_WIFI_STATE since this is added in the manifest
+        // file by the Places SDK
+        @SuppressLint("MissingPermission") val currentPlaceTask =
             placesClient.findCurrentPlace(currentPlaceRequest)
         currentPlaceTask.addOnSuccessListener { response: FindCurrentPlaceResponse? ->
             response?.let {

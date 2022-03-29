@@ -142,7 +142,7 @@ public class CurrentPlaceTestActivity extends AppCompatActivity {
     @SuppressLint("MissingPermission")
     private void findCurrentPlace() {
         if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED &&
+            != PackageManager.PERMISSION_GRANTED ||
             ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(
@@ -181,13 +181,16 @@ public class CurrentPlaceTestActivity extends AppCompatActivity {
      * Fetches a list of {@link PlaceLikelihood} instances that represent the Places the user is
      * most likely to be at currently.
      */
-    @RequiresPermission(allOf = {ACCESS_FINE_LOCATION, ACCESS_WIFI_STATE})
+    @RequiresPermission(anyOf = {ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION})
     private void findCurrentPlaceWithPermissions() {
         setLoading(true);
 
         FindCurrentPlaceRequest currentPlaceRequest =
             FindCurrentPlaceRequest.newInstance(getPlaceFields());
-        Task<FindCurrentPlaceResponse> currentPlaceTask =
+
+        // Safe to suppress permission for ACCESS_WIFI_STATE since this is added in the manifest
+        // file by the Places SDK
+        @SuppressLint("MissingPermission") Task<FindCurrentPlaceResponse> currentPlaceTask =
             placesClient.findCurrentPlace(currentPlaceRequest);
 
         currentPlaceTask.addOnSuccessListener(
