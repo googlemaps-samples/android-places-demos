@@ -59,7 +59,7 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:4.13.1"
 
     // GMS
-    gmsImplementation 'com.google.android.libraries.places:places:2.5.0'
+    gmsImplementation 'com.google.android.libraries.places:places:2.6.0'
 
     // V3
     v3Implementation name:'places-maps-sdk-3.1.0-beta', ext:'aar'
