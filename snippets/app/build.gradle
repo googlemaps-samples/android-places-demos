@@ -42,7 +42,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     // [END_EXCLUDE]
     // [START maps_android_places_upgrade_snippet]
-    implementation 'com.google.android.libraries.places:places:2.5.0'
+    implementation 'com.google.android.libraries.places:places:2.6.0'
     // [END maps_android_places_upgrade_snippet]
 }
 // [END maps_android_places_install_snippet]
