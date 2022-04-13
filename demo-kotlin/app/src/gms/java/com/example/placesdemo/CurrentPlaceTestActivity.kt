@@ -190,7 +190,7 @@ class CurrentPlaceTestActivity : AppCompatActivity() {
      * Fetches a list of [PlaceLikelihood] instances that represent the Places the user is
      * most likely to be at currently.
      */
-    @RequiresPermission(anyOf = [ACCESS_FINE_LOCATION, ACCESS_FINE_LOCATION])
+    @RequiresPermission(anyOf = [ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION])
     private fun findCurrentPlaceWithPermissions() {
         setLoading(true)
         val currentPlaceRequest = FindCurrentPlaceRequest.newInstance(
