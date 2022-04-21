@@ -142,7 +142,7 @@ public class CurrentPlaceTestActivity extends AppCompatActivity {
     @SuppressLint("MissingPermission")
     private void findCurrentPlace() {
         if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED ||
+            != PackageManager.PERMISSION_GRANTED &&
             ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(
