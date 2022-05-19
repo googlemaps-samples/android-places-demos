@@ -3,21 +3,21 @@ updates:
 - package-ecosystem: gradle
   directory: "/./demo-java"
   schedule:
-    interval: weekly
+    interval: "weekly"
   open-pull-requests-limit: 10
   commit-message:
     prefix: chore(deps)
 - package-ecosystem: gradle
   directory: "/./demo-kotlin"
   schedule:
-    interval: weekly
+    interval: "weekly"
   open-pull-requests-limit: 10
   commit-message:
     prefix: chore(deps)
 - package-ecosystem: gradle
   directory: "/./snippets"
   schedule:
-    interval: daily
+    interval: "weekly"
   open-pull-requests-limit: 10
   commit-message:
     prefix: chore(deps)
