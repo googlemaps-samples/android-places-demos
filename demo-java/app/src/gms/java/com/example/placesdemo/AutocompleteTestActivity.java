@@ -179,6 +179,7 @@ public class AutocompleteTestActivity extends AppCompatActivity {
                     .setCountries(getCountries())
                     .setLocationBias(getLocationBias())
                     .setLocationRestriction(getLocationRestriction())
+                    .setTypesFilter(getTypesFilter())
                     .build(this);
     startActivityForResult(autocompleteIntent, AUTOCOMPLETE_REQUEST_CODE);
   }

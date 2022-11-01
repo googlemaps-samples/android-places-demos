@@ -178,7 +178,7 @@ class PlaceAutocompleteActivity extends AppCompatActivity {
             //.setLocationRestriction(bounds)
             .setOrigin(new LatLng(-33.8749937,151.2041382))
             .setCountries("AU", "NZ")
-            .setTypeFilter(TypeFilter.ADDRESS)
+            .setTypesFilter(Arrays.asList(TypeFilter.ADDRESS.toString()))
             .setSessionToken(token)
             .setQuery(query)
             .build();
