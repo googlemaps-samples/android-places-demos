@@ -137,19 +137,24 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
       <CheckBox
-          android:id="@+id/autocomplete_use_type_filter"
+          android:id="@+id/autocomplete_use_types_filter_checkbox"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:checked="false"
-          android:text="@string/autocomplete_use_type_filter"/>
+          android:text="@string/autocomplete_use_types_filter"/>
 
-      <Spinner
-          android:id="@+id/autocomplete_type_filter"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"/>
+      <EditText
+          android:id="@+id/autocomplete_types_filter_edittext"
+          android:autofillHints=""
+          android:enabled="false"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="@string/autocomplete_types_filter_hint"
+          android:inputType="text"/>
+
     </LinearLayout>
 
     <!-- Autocomplete predictions only -->

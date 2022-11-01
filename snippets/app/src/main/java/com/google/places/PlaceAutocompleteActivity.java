@@ -103,14 +103,18 @@ class PlaceAutocompleteActivity extends AppCompatActivity {
         // [END maps_places_autocomplete_location_restriction]
 
         // [START maps_places_autocomplete_type_filter]
-        autocompleteFragment.setTypeFilter(TypeFilter.ADDRESS);
+        autocompleteFragment.setTypesFilter(Arrays.asList(TypeFilter.ADDRESS.toString()));
         // [END maps_places_autocomplete_type_filter]
+
+        // [START maps_places_autocomplete_type_filter_multiple]
+        autocompleteFragment.setTypesFilter(Arrays.asList("landmark", "restaurant", "store"));
+        // [END maps_places_autocomplete_type_filter_multiple]
 
         List<Place.Field> fields = new ArrayList<>();
         // [START maps_places_intent_type_filter]
         Intent intent = new Autocomplete.IntentBuilder(
             AutocompleteActivityMode.FULLSCREEN, fields)
-            .setTypeFilter(TypeFilter.ADDRESS)
+            .setTypesFilter(Arrays.asList(TypeFilter.ADDRESS.toString()))
             .build(this);
         startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
         // [END maps_places_intent_type_filter]

@@ -98,8 +98,12 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
         // [END maps_places_autocomplete_location_restriction]
 
         // [START maps_places_autocomplete_type_filter]
-        autocompleteFragment.setTypeFilter(TypeFilter.ADDRESS)
+        autocompleteFragment.setTypesFilter(listOf(TypeFilter.ADDRESS.toString()))
         // [END maps_places_autocomplete_type_filter]
+
+        // [START maps_places_autocomplete_type_filter_multiple]
+        autocompleteFragment.setTypesFilter(listOf("landmark", "restaurant", "store"))
+        // [END maps_places_autocomplete_type_filter_multiple]
 
         val fields: List<Place.Field> = ArrayList()
         // [START maps_places_intent_type_filter]
