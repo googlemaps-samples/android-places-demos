@@ -93,6 +93,17 @@
     </font>
   </string>
 
+  <!-- KEEP UNTIL v3 REMOVED -->
+
+  <!-- Text for enabling autocomplete prediction's and widget's type filter field. -->
+  <string name="autocomplete_use_type_filter" translatable="false">Use TypeFilter? (Deprecated)</string>
+
+    <!-- Hint Text for the autocomplete prediction's and widget's type filter field. -->
+  <string name="autocomplete_type_filter" translatable="false">Type Filter</string>
+
+  <!-- END KEEP UNTIL v3 REMOVED -->
+
+
   <!-- Text for enabling autocomplete prediction's use of session tokens. -->
   <string name="autocomplete_use_session_token" translatable="false">(Predictions-only) Use session token?</string>
 
