@@ -98,13 +98,17 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
         // [END maps_places_autocomplete_location_restriction]
 
         // [START maps_places_autocomplete_type_filter]
-        autocompleteFragment.setTypeFilter(TypeFilter.ADDRESS)
+        autocompleteFragment.setTypesFilter(listOf(TypeFilter.ADDRESS.toString()))
         // [END maps_places_autocomplete_type_filter]
+
+        // [START maps_places_autocomplete_type_filter_multiple]
+        autocompleteFragment.setTypesFilter(listOf("landmark", "restaurant", "store"))
+        // [END maps_places_autocomplete_type_filter_multiple]
 
         val fields: List<Place.Field> = ArrayList()
         // [START maps_places_intent_type_filter]
         val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
-            .setTypeFilter(TypeFilter.ADDRESS)
+            .setTypesFilter(listOf(TypeFilter.ADDRESS.toString()))
             .build(this)
         startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
         // [END maps_places_intent_type_filter]
@@ -177,7 +181,7 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
                 //.setLocationRestriction(bounds)
                 .setOrigin(LatLng(-33.8749937, 151.2041382))
                 .setCountries("AU", "NZ")
-                .setTypeFilter(TypeFilter.ADDRESS)
+                .setTypesFilter(listOf(TypeFilter.ADDRESS.toString()))
                 .setSessionToken(token)
                 .setQuery(query)
                 .build()

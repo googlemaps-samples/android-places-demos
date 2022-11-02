@@ -19,10 +19,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.CheckBox
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
@@ -36,7 +33,6 @@ import com.google.android.libraries.places.api.model.LocationBias
 import com.google.android.libraries.places.api.model.LocationRestriction
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.RectangularBounds
-import com.google.android.libraries.places.api.model.TypeFilter
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.libraries.places.api.net.PlacesClient
@@ -55,6 +51,7 @@ class AutocompleteTestActivity : AppCompatActivity() {
     private lateinit var placesClient: PlacesClient
     private lateinit var responseView: TextView
     private lateinit var fieldSelector: FieldSelector
+    private lateinit var typesFilterEditText: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,11 +69,9 @@ class AutocompleteTestActivity : AppCompatActivity() {
 
         // Set up view objects
         responseView = findViewById(R.id.response)
-        val typeFilterSpinner = findViewById<Spinner>(R.id.autocomplete_type_filter)
-        typeFilterSpinner.adapter = ArrayAdapter(
-            this, android.R.layout.simple_list_item_1, Arrays.asList(*TypeFilter.values()))
-        val useTypeFilterCheckBox = findViewById<CheckBox>(R.id.autocomplete_use_type_filter)
-        useTypeFilterCheckBox.setOnCheckedChangeListener { _, isChecked: Boolean -> typeFilterSpinner.isEnabled = isChecked }
+        typesFilterEditText = findViewById(R.id.autocomplete_types_filter_edittext)
+        val useTypesFilterCheckBox = findViewById<CheckBox>(R.id.autocomplete_use_types_filter_checkbox)
+        useTypesFilterCheckBox.setOnCheckedChangeListener { buttonView, isChecked: Boolean -> typesFilterEditText.isEnabled = isChecked }
         fieldSelector = FieldSelector(
             findViewById(R.id.use_custom_fields),
             findViewById(R.id.custom_fields_list),
@@ -93,7 +88,6 @@ class AutocompleteTestActivity : AppCompatActivity() {
 
         // UI initialization
         setLoading(false)
-        typeFilterSpinner.isEnabled = false
     }
 
     override fun onSaveInstanceState(bundle: Bundle) {
@@ -114,7 +108,7 @@ class AutocompleteTestActivity : AppCompatActivity() {
                     .setCountries(countries)
                     .setLocationBias(locationBias)
                     .setLocationRestriction(locationRestriction)
-                    .setTypeFilter(typeFilter)
+                    .setTypesFilter(getTypesFilter())
                     .setActivityMode(mode)
             }
     }
@@ -163,7 +157,7 @@ class AutocompleteTestActivity : AppCompatActivity() {
             .setCountries(countries)
             .setLocationBias(locationBias)
             .setLocationRestriction(locationRestriction)
-            .setTypeFilter(typeFilter)
+            .setTypesFilter(getTypesFilter())
             .build(this)
         startActivityForResult(autocompleteIntent, AUTOCOMPLETE_REQUEST_CODE)
     }
@@ -176,7 +170,7 @@ class AutocompleteTestActivity : AppCompatActivity() {
             .setOrigin(origin)
             .setLocationBias(locationBias)
             .setLocationRestriction(locationRestriction)
-            .setTypeFilter(typeFilter)
+            .setTypesFilter(getTypesFilter())
         if (isUseSessionTokenChecked) {
             requestBuilder.setSessionToken(AutocompleteSessionToken.newInstance())
         }
@@ -257,11 +251,12 @@ class AutocompleteTestActivity : AppCompatActivity() {
             return origin
         }
 
-    private val typeFilter: TypeFilter?
-        get() {
-            val typeFilter = findViewById<Spinner>(R.id.autocomplete_type_filter)
-            return if (typeFilter.isEnabled) typeFilter.selectedItem as TypeFilter else null
-        }
+    private fun getTypesFilter(): List<String> {
+        typesFilterEditText = findViewById(R.id.autocomplete_types_filter_edittext)
+        return if (typesFilterEditText.isEnabled)
+            typesFilterEditText.text.toString().split("[\\s,]+".toRegex()) as List<String>
+        else emptyList<String>()
+    }
 
     private val mode: AutocompleteActivityMode
         get() {

@@ -65,9 +65,6 @@
   <!-- Hint for the autocomplete prediction's and widget's countries field. -->
   <string name="autocomplete_country_hint" translatable="false">Countries (e.g CH, US, RO)</string>
 
-  <!-- Hint Text for the autocomplete prediction's and widget's type filter field. -->
-  <string name="autocomplete_type_filter" translatable="false">Type Filter</string>
-
   <!-- Label for the autocomplete prediction's and widget's location origin field. -->
   <string name="autocomplete_location_origin_label" translatable="false">Location Origin (format: -33.2, 128.2)</string>
 
@@ -86,9 +83,26 @@
   <!-- Hint for the autocomplete prediction's and widget's location northeast field. -->
   <string name="autocomplete_location_north_east_hint" translatable="false">North East (lat, lng)</string>
 
+  <!-- Text for enabling autocomplete prediction's and widget's types filter field. -->
+  <string name="autocomplete_use_types_filter" translatable="false">Use TypesFilter?</string>
+
+  <!-- Hint for the autocomplete prediction's and widget's types filter field. -->
+  <string name="autocomplete_types_filter_hint" translatable="false">
+    <font size="16">
+      Comma separated list of up to 5 place types
+    </font>
+  </string>
+
+  <!-- KEEP UNTIL v3 REMOVED -->
 
   <!-- Text for enabling autocomplete prediction's and widget's type filter field. -->
-  <string name="autocomplete_use_type_filter" translatable="false">Use TypeFilter?</string>
+  <string name="autocomplete_use_type_filter" translatable="false">Use TypeFilter? (Deprecated)</string>
+
+    <!-- Hint Text for the autocomplete prediction's and widget's type filter field. -->
+  <string name="autocomplete_type_filter" translatable="false">Type Filter</string>
+
+  <!-- END KEEP UNTIL v3 REMOVED -->
+
 
   <!-- Text for enabling autocomplete prediction's use of session tokens. -->
   <string name="autocomplete_use_session_token" translatable="false">(Predictions-only) Use session token?</string>

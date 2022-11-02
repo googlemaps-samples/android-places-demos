@@ -16,6 +16,20 @@
 
 package com.example.placesdemo;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -26,7 +40,6 @@ import com.google.android.libraries.places.api.model.LocationBias;
 import com.google.android.libraries.places.api.model.LocationRestriction;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
-import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -36,24 +49,9 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.Spinner;
-import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import androidx.annotation.IdRes;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * Activity for testing Autocomplete (activity and fragment widgets, and programmatic).
@@ -64,6 +62,7 @@ public class AutocompleteTestActivity extends AppCompatActivity {
   private PlacesClient placesClient;
   private TextView responseView;
   private FieldSelector fieldSelector;
+  private EditText typesFilterEditText;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,13 +82,10 @@ public class AutocompleteTestActivity extends AppCompatActivity {
 
     // Set up view objects
     responseView = findViewById(R.id.response);
-    Spinner typeFilterSpinner = findViewById(R.id.autocomplete_type_filter);
-    typeFilterSpinner.setAdapter(
-        new ArrayAdapter<>(
-            this, android.R.layout.simple_list_item_1, Arrays.asList(TypeFilter.values())));
-    CheckBox useTypeFilterCheckBox = findViewById(R.id.autocomplete_use_type_filter);
-    useTypeFilterCheckBox.setOnCheckedChangeListener(
-        (buttonView, isChecked) -> typeFilterSpinner.setEnabled(isChecked));
+    typesFilterEditText = findViewById(R.id.autocomplete_types_filter_edittext);
+    CheckBox useTypesFilterCheckBox = findViewById(R.id.autocomplete_use_types_filter_checkbox);
+    useTypesFilterCheckBox.setOnCheckedChangeListener(
+            (buttonView, isChecked) -> typesFilterEditText.setEnabled(isChecked));
     fieldSelector =
         new FieldSelector(
                 findViewById(R.id.use_custom_fields),
@@ -108,7 +104,6 @@ public class AutocompleteTestActivity extends AppCompatActivity {
 
     // UI initialization
     setLoading(false);
-    typeFilterSpinner.setEnabled(false);
   }
 
   @Override
@@ -133,7 +128,7 @@ public class AutocompleteTestActivity extends AppCompatActivity {
                                 .setCountries(getCountries())
                                 .setLocationBias(getLocationBias())
                                 .setLocationRestriction(getLocationRestriction())
-                                .setTypeFilter(getTypeFilter())
+                                .setTypesFilter(getTypesFilter())
                                 .setActivityMode(getMode()));
   }
 
@@ -184,7 +179,7 @@ public class AutocompleteTestActivity extends AppCompatActivity {
                     .setCountries(getCountries())
                     .setLocationBias(getLocationBias())
                     .setLocationRestriction(getLocationRestriction())
-                    .setTypeFilter(getTypeFilter())
+                    .setTypesFilter(getTypesFilter())
                     .build(this);
     startActivityForResult(autocompleteIntent, AUTOCOMPLETE_REQUEST_CODE);
   }
@@ -199,7 +194,7 @@ public class AutocompleteTestActivity extends AppCompatActivity {
                 .setOrigin((getOrigin()))
                 .setLocationBias(getLocationBias())
                 .setLocationRestriction(getLocationRestriction())
-                .setTypeFilter(getTypeFilter());
+                .setTypesFilter(getTypesFilter());
 
     if (isUseSessionTokenChecked()) {
       requestBuilder.setSessionToken(AutocompleteSessionToken.newInstance());
@@ -305,11 +300,13 @@ public class AutocompleteTestActivity extends AppCompatActivity {
     return origin;
   }
 
-  @Nullable
-  private TypeFilter getTypeFilter() {
-    Spinner typeFilter = findViewById(R.id.autocomplete_type_filter);
-    return typeFilter.isEnabled() ? (TypeFilter) typeFilter.getSelectedItem() : null;
+  private List<String> getTypesFilter() {
+    EditText typesFilterEditText = findViewById(R.id.autocomplete_types_filter_edittext);
+    return typesFilterEditText.isEnabled()
+            ? Arrays.asList(typesFilterEditText.getText().toString().split("[\\s,]+"))
+            : new ArrayList<>();
   }
+
 
   private AutocompleteActivityMode getMode() {
     boolean isOverlayMode =
