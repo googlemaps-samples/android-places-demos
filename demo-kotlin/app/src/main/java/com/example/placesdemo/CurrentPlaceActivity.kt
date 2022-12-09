@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,14 @@
 package com.example.placesdemo
 
 import android.Manifest.permission
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.placesdemo.databinding.CurrentPlaceActivityBinding
 import com.google.android.libraries.places.api.Places
@@ -39,6 +40,30 @@ class CurrentPlaceActivity : AppCompatActivity() {
     private lateinit var fieldSelector: FieldSelector
 
     private lateinit var binding: CurrentPlaceActivityBinding
+
+    @SuppressLint("MissingPermission")
+    val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            when {
+                permissions[permission.ACCESS_FINE_LOCATION] == true -> {
+                    // Precise location access granted.
+                    findCurrentPlaceWithPermissions()
+                }
+                permissions[permission.ACCESS_COARSE_LOCATION] == true -> {
+                    // Only approximate location access granted.
+                    findCurrentPlaceWithPermissions()
+                }
+                else -> {
+                    Toast.makeText(
+                        this,
+                        "Both ACCESS_COARSE_LOCATION & ACCESS_FINE_LOCATION permissions are required",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,37 +107,22 @@ class CurrentPlaceActivity : AppCompatActivity() {
     }
 
     /**
-     * Fetches a list of [com.google.android.libraries.places.api.model.PlaceLikelihood] instances that represent the Places the user is
-     * most
-     * likely to be at currently.
+     * Check whether permissions have been granted or not, and ultimately proceeds to either
+     * request them or runs {@link #findCurrentPlaceWithPermissions() findCurrentPlaceWithPermissions}
      */
+    @SuppressLint("MissingPermission")
     private fun findCurrentPlace() {
-        if (ContextCompat.checkSelfPermission(this, permission.ACCESS_WIFI_STATE)
-            != PackageManager.PERMISSION_GRANTED
-            || ContextCompat.checkSelfPermission(this, permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            Toast.makeText(
-                this,
-                "Both ACCESS_WIFI_STATE & ACCESS_FINE_LOCATION permissions are required",
-                Toast.LENGTH_SHORT
-            )
-                .show()
-        }
-
-        // Note that it is not possible to request a normal (non-dangerous) permission from
-        // ActivityCompat.requestPermissions(), which is why the checkPermission() only checks if
-        // ACCESS_FINE_LOCATION is granted. It is still possible to check whether a normal permission
-        // is granted or not using ContextCompat.checkSelfPermission().
-        if (ContextCompat.checkSelfPermission(
-                this,
-                permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(this, arrayOf(permission.ACCESS_FINE_LOCATION), 0)
+        if (hasOnePermissionGranted(permission.ACCESS_FINE_LOCATION, permission.ACCESS_COARSE_LOCATION)) {
+            findCurrentPlaceWithPermissions()
             return
+        } else {
+            requestPermissionLauncher.launch(
+                arrayOf(
+                    permission.ACCESS_FINE_LOCATION,
+                    permission.ACCESS_COARSE_LOCATION
+                )
+            )
         }
-        findCurrentPlaceWithPermissions()
     }
 
     /**
@@ -152,4 +162,12 @@ class CurrentPlaceActivity : AppCompatActivity() {
     private fun setLoading(loading: Boolean) {
         binding.loading.visibility = if (loading) View.VISIBLE else View.INVISIBLE
     }
+
+    private fun hasOnePermissionGranted(vararg permissions: String): Boolean =
+        permissions.any {
+            ContextCompat.checkSelfPermission(
+                this,
+                it
+            ) == PackageManager.PERMISSION_GRANTED
+        }
 }
