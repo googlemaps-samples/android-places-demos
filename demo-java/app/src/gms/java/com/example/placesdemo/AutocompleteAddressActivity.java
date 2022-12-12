@@ -34,6 +34,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -88,6 +89,11 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
     private LatLng deviceLocation;
     private static final double acceptedProximity = 150;
 
+    View.OnClickListener startAutocompleteIntentListener = view -> {
+        view.setOnClickListener(null);
+        startAutocompleteIntent();
+    };
+
     // [START maps_solutions_android_autocomplete_define]
     private final ActivityResultLauncher<Intent> startAutocomplete = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -108,6 +114,12 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
                 }
             });
     // [END maps_solutions_android_autocomplete_define]
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        address1Field.setOnClickListener(startAutocompleteIntentListener);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +145,7 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
         countryField = findViewById(R.id.autocomplete_country);
 
         // Attach an Autocomplete intent to the Address 1 EditText field
-        address1Field.setOnClickListener(v -> startAutocompleteIntent());
+        address1Field.setOnClickListener(startAutocompleteIntentListener);
 
         // Update checkProximity when user checks the checkbox
         CheckBox checkProximityBox = findViewById(R.id.checkbox_proximity);
@@ -150,7 +162,6 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
         Button resetButton = findViewById(R.id.autocomplete_reset_button);
         resetButton.setOnClickListener(v -> clearForm());
     }
-
 
     // [START maps_solutions_android_autocomplete_intent]
     private void startAutocompleteIntent() {
@@ -290,14 +301,14 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
     }
 
     private void saveForm() {
-        Log.d(TAG,"checkProximity = " + checkProximity);
+        Log.d(TAG, "checkProximity = " + checkProximity);
         if (checkProximity) {
             checkLocationPermissions();
         } else {
             Toast.makeText(
-                    this,
-                    R.string.autocomplete_skipped_message,
-                    Toast.LENGTH_SHORT)
+                            this,
+                            R.string.autocomplete_skipped_message,
+                            Toast.LENGTH_SHORT)
                     .show();
         }
     }
