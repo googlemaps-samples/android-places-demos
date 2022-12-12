@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
     defaultConfig {
         applicationId "com.example.placesdemo"
         minSdkVersion 19
-        targetSdkVersion 31
+        targetSdkVersion 33
         multiDexEnabled true
         versionCode 1
         versionName "1.0"
@@ -34,6 +34,7 @@ android {
             versionNameSuffix "-v3"
         }
     }
+    namespace 'com.example.placesdemo'
 }
 
 // Deprecated
@@ -51,10 +52,10 @@ task generateV3(type: Copy) {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'com.android.support:multidex:1.0.3'
-    implementation 'com.google.android.material:material:1.6.0'
+    implementation 'com.google.android.material:material:1.7.0'
     implementation 'com.android.volley:volley:1.2.1'
     implementation "com.github.bumptech.glide:glide:4.13.2"
 
@@ -63,11 +64,11 @@ dependencies {
 
     // V3
     v3Implementation name:'places-maps-sdk-3.1.0-beta', ext:'aar'
-    v3Implementation 'com.google.android.gms:play-services-base:18.0.1'
-    v3Implementation 'com.google.android.gms:play-services-basement:18.0.2'
+    v3Implementation 'com.google.android.gms:play-services-base:18.1.0'
+    v3Implementation 'com.google.android.gms:play-services-basement:18.1.0'
     v3Implementation 'com.google.android.gms:play-services-gcm:17.0.0'
-    v3Implementation 'com.google.android.gms:play-services-location:19.0.1'
-    v3Implementation 'com.google.android.gms:play-services-tasks:18.0.1'
+    v3Implementation 'com.google.android.gms:play-services-location:21.0.1'
+    v3Implementation 'com.google.android.gms:play-services-tasks:18.0.2'
     v3Implementation 'com.google.android.libraries.maps:maps:3.1.0-beta'
     v3Implementation 'com.google.auto.value:auto-value-annotations:1.9'
     v3Implementation 'com.google.code.gson:gson:2.9.0'

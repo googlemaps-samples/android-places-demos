@@ -127,6 +127,7 @@ class AutocompleteTestActivity : AppCompatActivity() {
     /**
      * Called when AutocompleteActivity finishes
      */
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE && intent != null) {
             when (resultCode) {
