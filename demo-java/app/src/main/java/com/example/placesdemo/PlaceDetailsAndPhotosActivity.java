@@ -57,6 +57,7 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
     private ImageView photoView;
     private ImageView iconView;
     private TextView responseView;
+    private TextView photoMetadataView;
     private PhotoMetadata photo;
     private FieldSelector fieldSelector;
 
@@ -81,6 +82,7 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
         // Set up view objects
         responseView = findViewById(R.id.response);
         photoView = findViewById(R.id.photo);
+        photoMetadataView = findViewById(R.id.photo_metadata);
         iconView = findViewById(R.id.icon);
         CheckBox fetchPhotoCheckbox = findViewById(R.id.fetch_photo_checkbox);
         fetchPhotoCheckbox.setOnCheckedChangeListener(
@@ -118,9 +120,7 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
      * #fetchPhoto(PhotoMetadata)} if set in the UI.
      */
     private void fetchPlace() {
-        responseView.setText(null);
-        photoView.setImageBitmap(null);
-        iconView.setImageBitmap(null);
+        clearViews();
 
         dismissKeyboard(findViewById(R.id.place_id_field));
 
@@ -206,7 +206,7 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
             response -> {
                 Bitmap bitmap = response.getBitmap();
                 photoView.setImageBitmap(bitmap);
-                StringUtil.prepend(responseView, StringUtil.stringify(bitmap));
+                StringUtil.prepend(photoMetadataView, StringUtil.stringify(bitmap));
             });
 
         photoTask.addOnFailureListener(
@@ -320,5 +320,12 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
 
     private void setLoading(boolean loading) {
         findViewById(R.id.loading).setVisibility(loading ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    private void clearViews() {
+        responseView.setText(null);
+        photoView.setImageBitmap(null);
+        photoMetadataView.setText(null);
+        iconView.setImageBitmap(null);
     }
 }

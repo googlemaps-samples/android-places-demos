@@ -46,6 +46,7 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
     private lateinit var photoView: ImageView
     private lateinit var iconView: ImageView
     private lateinit var responseView: TextView
+    private lateinit var photoMetadataView: TextView
     private lateinit var fieldSelector: FieldSelector
 
     private var photo: PhotoMetadata? = null
@@ -70,7 +71,9 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
         // Set up view objects
         responseView = findViewById(R.id.response)
         photoView = findViewById(R.id.photo)
+        photoMetadataView = findViewById(R.id.photo_metadata)
         iconView = findViewById(R.id.icon)
+
         val fetchPhotoCheckbox = findViewById<CheckBox>(R.id.fetch_photo_checkbox)
         fetchPhotoCheckbox.setOnCheckedChangeListener { _, isChecked: Boolean ->
             setPhotoSizingEnabled(
@@ -111,9 +114,7 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
      * Fetches the [Place] specified via the UI and displays it. May also trigger [ ][.fetchPhoto] if set in the UI.
      */
     private fun fetchPlace() {
-        responseView.text = null
-        photoView.setImageBitmap(null)
-        iconView.setImageBitmap(null)
+        clearViews()
 
         dismissKeyboard(findViewById(R.id.place_id_field))
         val isFetchPhotoChecked = isFetchPhotoChecked
@@ -189,7 +190,7 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
         photoTask.addOnSuccessListener { response: FetchPhotoResponse ->
             val bitmap = response.bitmap
             photoView.setImageBitmap(bitmap)
-            StringUtil.prepend(responseView, StringUtil.stringify(bitmap))
+            StringUtil.prepend(photoMetadataView, StringUtil.stringify(bitmap))
         }
         photoTask.addOnFailureListener { exception: Exception ->
             exception.printStackTrace()
@@ -292,6 +293,13 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
 
     private fun setLoading(loading: Boolean) {
         findViewById<View>(R.id.loading).visibility = if (loading) View.VISIBLE else View.INVISIBLE
+    }
+
+    private fun clearViews() {
+        responseView.setText(null)
+        photoView.setImageBitmap(null)
+        photoMetadataView.setText(null)
+        iconView.setImageBitmap(null)
     }
 
     companion object {
