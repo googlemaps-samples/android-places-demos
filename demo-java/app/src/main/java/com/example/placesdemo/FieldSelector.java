@@ -16,8 +16,6 @@
 
 package com.example.placesdemo;
 
-import com.google.android.libraries.places.api.model.Place;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
@@ -30,6 +28,9 @@ import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+
 import com.google.android.libraries.places.api.model.Place.Field;
 
 import java.util.ArrayList;
@@ -38,9 +39,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 
 /** Helper class for selecting {@link Field} values. */
 public final class FieldSelector {
