@@ -39,9 +39,9 @@ import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.PlacesClient
 
 /**
- * Activity for testing [PlacesClient.fetchPlace].
+ * Activity to demonstrate [PlacesClient.fetchPlace].
  */
-class PlaceAndPhotoTestActivity : AppCompatActivity() {
+class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
     private lateinit var placesClient: PlacesClient
     private lateinit var photoView: ImageView
     private lateinit var iconView: ImageView
@@ -58,7 +58,7 @@ class PlaceAndPhotoTestActivity : AppCompatActivity() {
         if (theme != 0) {
             setTheme(theme)
         }
-        setContentView(R.layout.place_and_photo_test_activity)
+        setContentView(R.layout.place_details_and_photos_activity)
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient(this)

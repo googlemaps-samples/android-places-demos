@@ -34,9 +34,9 @@ import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse
 import com.google.android.libraries.places.api.net.PlacesClient
 
 /**
- * Activity for testing [PlacesClient.findCurrentPlace].
+ * Activity to demonstrate [PlacesClient.findCurrentPlace].
  */
-class CurrentPlaceTestActivity : AppCompatActivity() {
+class CurrentPlaceActivity : AppCompatActivity() {
     private lateinit var placesClient: PlacesClient
     private lateinit var responseView: TextView
     private lateinit var fieldSelector: FieldSelector
@@ -49,7 +49,7 @@ class CurrentPlaceTestActivity : AppCompatActivity() {
         if (theme != 0) {
             setTheme(theme)
         }
-        setContentView(R.layout.current_place_test_activity)
+        setContentView(R.layout.current_place_activity)
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient(this)

@@ -53,11 +53,11 @@ public class MainActivity extends AppCompatActivity {
       Places.initialize(getApplicationContext(), apiKey);
     }
 
-    setLaunchActivityClickListener(R.id.autocomplete_button, AutocompleteTestActivity.class);
+    setLaunchActivityClickListener(R.id.autocomplete_button, PlaceAutocompleteActivity.class);
     setLaunchActivityClickListener(R.id.autocomplete_address_button, AutocompleteAddressActivity.class);
     setLaunchActivityClickListener(R.id.programmatic_autocomplete_button, ProgrammaticAutocompleteToolbarActivity.class);
-    setLaunchActivityClickListener(R.id.place_and_photo_button, PlaceAndPhotoTestActivity.class);
-    setLaunchActivityClickListener(R.id.current_place_button, CurrentPlaceTestActivity.class);
+    setLaunchActivityClickListener(R.id.place_and_photo_button, PlaceDetailsAndPhotosActivity.class);
+    setLaunchActivityClickListener(R.id.current_place_button, CurrentPlaceActivity.class);
 
     widgetThemeSpinner = findViewById(R.id.theme_spinner);
     widgetThemeSpinner.setAdapter(

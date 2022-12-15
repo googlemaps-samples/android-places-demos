@@ -22,7 +22,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/spacing_large"
-    tools:context=".PlaceAndPhotoTestActivity">
+    tools:context=".PlaceDetailsAndPhotosActivity">
 
   <LinearLayout
       android:id="@+id/place_scroll_container"
@@ -174,6 +174,11 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/photo_metadata"
+        android:textIsSelectable="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <TextView
         android:id="@+id/photo_metadata"
         android:textIsSelectable="true"

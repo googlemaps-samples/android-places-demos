@@ -54,9 +54,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Activity for testing Autocomplete (activity and fragment widgets, and programmatic).
+ * Activity to demonstrate Place Autocomplete (activity widget intent, fragment widget, and
+ * {@link PlacesClient#([PlacesClient.findAutocompletePredictions])}).
  */
-public class AutocompleteTestActivity extends AppCompatActivity {
+public class PlaceAutocompleteActivity extends AppCompatActivity {
 
   private static final int AUTOCOMPLETE_REQUEST_CODE = 23487;
   private PlacesClient placesClient;
@@ -75,7 +76,7 @@ public class AutocompleteTestActivity extends AppCompatActivity {
       setTheme(theme);
     }
 
-    setContentView(R.layout.autocomplete_test_activity);
+    setContentView(R.layout.place_autocomplete_activity);
 
     // Retrieve a PlacesClient (previously initialized - see MainActivity)
     placesClient = Places.createClient(this);

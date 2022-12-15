@@ -48,9 +48,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 /**
- * Activity for testing {@link PlacesClient#fetchPlace(FetchPlaceRequest)}.
+ * Activity to demonstrate {@link PlacesClient#fetchPlace(FetchPlaceRequest)}.
  */
-public class PlaceAndPhotoTestActivity extends AppCompatActivity {
+public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
 
     private static final String FETCHED_PHOTO_KEY = "photo_image";
     private PlacesClient placesClient;
@@ -70,7 +70,7 @@ public class PlaceAndPhotoTestActivity extends AppCompatActivity {
             setTheme(theme);
         }
 
-        setContentView(R.layout.place_and_photo_test_activity);
+        setContentView(R.layout.place_details_and_photos_activity);
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient(this);

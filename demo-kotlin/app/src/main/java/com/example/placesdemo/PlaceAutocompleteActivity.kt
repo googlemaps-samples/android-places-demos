@@ -44,9 +44,10 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import java.util.*
 
 /**
- * Activity for testing Autocomplete (activity and fragment widgets, and programmatic).
+ * Activity to demonstrate Place Autocomplete (activity widget intent, fragment widget, and
+ * [PlacesClient.findAutocompletePredictions]).
  */
-class AutocompleteTestActivity : AppCompatActivity() {
+class PlaceAutocompleteActivity : AppCompatActivity() {
 
     private lateinit var placesClient: PlacesClient
     private lateinit var responseView: TextView
@@ -62,7 +63,7 @@ class AutocompleteTestActivity : AppCompatActivity() {
         if (theme != 0) {
             setTheme(theme)
         }
-        setContentView(R.layout.autocomplete_test_activity)
+        setContentView(R.layout.place_autocomplete_activity)
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient(this)

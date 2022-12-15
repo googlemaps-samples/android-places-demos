@@ -46,9 +46,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         setLaunchActivityClickListener(R.id.programmatic_autocomplete_button, ProgrammaticAutocompleteToolbarActivity::class.java)
-        setLaunchActivityClickListener(R.id.autocomplete_button, AutocompleteTestActivity::class.java)
-        setLaunchActivityClickListener(R.id.place_and_photo_button, PlaceAndPhotoTestActivity::class.java)
-        setLaunchActivityClickListener(R.id.current_place_button, CurrentPlaceTestActivity::class.java)
+        setLaunchActivityClickListener(R.id.autocomplete_button, PlaceAutocompleteActivity::class.java)
+        setLaunchActivityClickListener(R.id.place_and_photo_button, PlaceDetailsAndPhotosActivity::class.java)
+        setLaunchActivityClickListener(R.id.current_place_button, CurrentPlaceActivity::class.java)
 
         widgetThemeSpinner = findViewById(R.id.theme_spinner)
         widgetThemeSpinner.adapter = ArrayAdapter( /* context= */

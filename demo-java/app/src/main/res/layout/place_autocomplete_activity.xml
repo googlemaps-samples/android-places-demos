@@ -21,7 +21,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/spacing_large"
-    tools:context=".AutocompleteTestActivity">
+    tools:context=".PlaceAutocompleteActivity">
 
   <LinearLayout
       android:id="@+id/autocomplete_scroll_container"

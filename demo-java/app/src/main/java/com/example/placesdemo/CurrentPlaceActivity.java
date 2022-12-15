@@ -44,9 +44,9 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.ACCESS_WIFI_STATE;
 
 /**
- * Activity for testing {@link PlacesClient#findCurrentPlace(FindCurrentPlaceRequest)}.
+ * Activity to demonstrate {@link PlacesClient#findCurrentPlace(FindCurrentPlaceRequest)}.
  */
-public class CurrentPlaceTestActivity extends AppCompatActivity {
+public class CurrentPlaceActivity extends AppCompatActivity {
 
   private PlacesClient placesClient;
   private TextView responseView;
@@ -62,7 +62,7 @@ public class CurrentPlaceTestActivity extends AppCompatActivity {
       setTheme(theme);
     }
 
-    setContentView(R.layout.current_place_test_activity);
+    setContentView(R.layout.current_place_activity);
 
     // Retrieve a PlacesClient (previously initialized - see MainActivity)
     placesClient = Places.createClient(this);
@@ -70,11 +70,15 @@ public class CurrentPlaceTestActivity extends AppCompatActivity {
     // Set view objects
     List<Field> placeFields =
             FieldSelector.allExcept(
-                Field.ADDRESS_COMPONENTS,
-                Field.OPENING_HOURS,
-                Field.PHONE_NUMBER,
-                Field.UTC_OFFSET,
-                Field.WEBSITE_URI);
+                    Field.ADDRESS_COMPONENTS,
+                    Field.CURBSIDE_PICKUP,
+                    Field.DELIVERY,
+                    Field.DINE_IN,
+                    Field.OPENING_HOURS,
+                    Field.PHONE_NUMBER,
+                    Field.UTC_OFFSET,
+                    Field.TAKEOUT,
+                    Field.WEBSITE_URI);
     fieldSelector =
         new FieldSelector(
                 findViewById(R.id.use_custom_fields),
