@@ -68,23 +68,21 @@ public class CurrentPlaceActivity extends AppCompatActivity {
     placesClient = Places.createClient(this);
 
     // Set view objects
-    List<Field> placeFields =
-            FieldSelector.allExcept(
-                    Field.ADDRESS_COMPONENTS,
-                    Field.CURBSIDE_PICKUP,
-                    Field.DELIVERY,
-                    Field.DINE_IN,
-                    Field.OPENING_HOURS,
-                    Field.PHONE_NUMBER,
-                    Field.UTC_OFFSET,
-                    Field.TAKEOUT,
-                    Field.WEBSITE_URI);
-    fieldSelector =
-        new FieldSelector(
-                findViewById(R.id.use_custom_fields),
-                findViewById(R.id.custom_fields_list),
-                placeFields,
-                savedInstanceState);
+    List<Field> placeFields = FieldSelector.allExcept(
+            Field.ADDRESS_COMPONENTS,
+            Field.CURBSIDE_PICKUP,
+            Field.DELIVERY,
+            Field.DINE_IN,
+            Field.OPENING_HOURS,
+            Field.PHONE_NUMBER,
+            Field.UTC_OFFSET,
+            Field.TAKEOUT,
+            Field.WEBSITE_URI);
+    fieldSelector = new FieldSelector(
+            findViewById(R.id.use_custom_fields),
+            findViewById(R.id.custom_fields_list),
+            placeFields,
+            savedInstanceState);
     responseView = findViewById(R.id.response);
     setLoading(false);
 

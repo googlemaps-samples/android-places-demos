@@ -65,7 +65,8 @@ class CurrentPlaceActivity : AppCompatActivity() {
             Place.Field.PHONE_NUMBER,
             Place.Field.TAKEOUT,
             Place.Field.UTC_OFFSET,
-            Place.Field.WEBSITE_URI)
+            Place.Field.WEBSITE_URI
+        )
         fieldSelector = FieldSelector(
             findViewById(R.id.use_custom_fields),
             findViewById(R.id.custom_fields_list),

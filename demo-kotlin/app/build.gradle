@@ -1,5 +1,3 @@
-import org.apache.tools.ant.filters.ConcatFilter
-
 plugins {
     id 'com.android.application'
     id 'kotlin-android'

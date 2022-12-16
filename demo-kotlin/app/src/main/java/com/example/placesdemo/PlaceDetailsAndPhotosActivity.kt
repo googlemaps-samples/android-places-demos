@@ -296,9 +296,9 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
     }
 
     private fun clearViews() {
-        responseView.setText(null)
+        responseView.text = null
         photoView.setImageBitmap(null)
-        photoMetadataView.setText(null)
+        photoMetadataView.text = null
         iconView.setImageBitmap(null)
     }
 
