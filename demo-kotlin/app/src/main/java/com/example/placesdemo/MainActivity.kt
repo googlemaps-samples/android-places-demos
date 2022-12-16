@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         widgetThemeSpinner.adapter = ArrayAdapter( /* context= */
             this,
             android.R.layout.simple_list_item_1,
-            listOf("Default", "\uD83D\uDCA9 brown", "\uD83E\uDD2E green", "\uD83D\uDE08 purple")
+            listOf("Default", "\uD83D\uDFE4 brown", "\uD83D\uDFE2 green", "\uD83D\uDFE3 purple")
         )
     }
 

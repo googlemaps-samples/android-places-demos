@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                     /* context= */ this,
                     android.R.layout.simple_list_item_1,
                     Arrays.asList(
-                            "Default", "\uD83D\uDCA9 brown", "\uD83E\uDD2E green", "\uD83D\uDE08 purple")));
+                            "Default", "\uD83D\uDFE4 brown", "\uD83D\uDFE2 green", "\uD83D\uDFE3purple")));
   }
 
   private void setLaunchActivityClickListener(
