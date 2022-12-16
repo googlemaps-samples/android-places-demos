@@ -39,10 +39,10 @@
   <string name="theme_spinner_text" translatable="false">Choose a color theme…</string>
 
   <!-- Button for launching autocomplete test activity. -->
-  <string name="autocomplete_button" translatable="false">Autocomplete</string>
+  <string name="autocomplete_button" translatable="false">Place Autocomplete</string>
 
   <!-- Button for launching place and photo test activity. -->
-  <string name="place_and_photo_button" translatable="false">Place and Photo</string>
+  <string name="place_and_photo_button" translatable="false">Place Details and Place Photos</string>
 
   <!-- Button for launching current place test activity. -->
   <string name="current_place_button" translatable="false">Current Place</string>

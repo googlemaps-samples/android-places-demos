@@ -37,9 +37,9 @@
       </intent-filter>
     </activity>
 
-    <activity android:name=".AutocompleteTestActivity" />
-    <activity android:name=".PlaceAndPhotoTestActivity" />
-    <activity android:name=".CurrentPlaceTestActivity" />
+    <activity android:name=".PlaceAutocompleteActivity" />
+    <activity android:name=".PlaceDetailsAndPhotosActivity" />
+    <activity android:name=".CurrentPlaceActivity" />
     <activity
       android:name=".programmatic_autocomplete.ProgrammaticAutocompleteToolbarActivity"
       android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
