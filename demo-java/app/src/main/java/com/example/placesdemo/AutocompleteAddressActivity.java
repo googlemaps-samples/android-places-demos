@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,13 +124,6 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Use whatever theme was set from the MainActivity - some of these colors (e.g primary color)
-        // will get picked up by the AutocompleteActivity.
-        int theme = getIntent().getIntExtra(MainActivity.THEME_RES_ID_EXTRA, 0);
-        if (theme != 0) {
-            setTheme(theme);
-        }
 
         setContentView(R.layout.autocomplete_address_activity);
 

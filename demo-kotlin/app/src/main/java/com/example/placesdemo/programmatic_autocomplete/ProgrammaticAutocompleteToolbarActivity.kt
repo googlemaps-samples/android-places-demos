@@ -72,12 +72,6 @@ class ProgrammaticAutocompleteToolbarActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Use whatever theme was set from the MainActivity - some of these colors (e.g primary color)
-        // will get picked up by the AutocompleteActivity.
-        val theme = intent.getIntExtra(MainActivity.THEME_RES_ID_EXTRA, 0)
-        if (theme != 0) {
-            setTheme(theme)
-        }
         setContentView(R.layout.activity_programmatic_autocomplete)
         setSupportActionBar(findViewById(R.id.toolbar))
 
