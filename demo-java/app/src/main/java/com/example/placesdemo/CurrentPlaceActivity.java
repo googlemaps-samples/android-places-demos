@@ -16,6 +16,7 @@
 
 package com.example.placesdemo;
 
+import com.example.placesdemo.databinding.CurrentPlaceActivityBinding;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place.Field;
@@ -29,11 +30,11 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
@@ -49,14 +50,16 @@ import static android.Manifest.permission.ACCESS_WIFI_STATE;
 public class CurrentPlaceActivity extends AppCompatActivity {
 
     private PlacesClient placesClient;
-    private TextView responseView;
     private FieldSelector fieldSelector;
+
+    private CurrentPlaceActivityBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.current_place_activity);
+        binding = CurrentPlaceActivityBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient(this);
@@ -73,19 +76,18 @@ public class CurrentPlaceActivity extends AppCompatActivity {
                 Field.TAKEOUT,
                 Field.WEBSITE_URI);
         fieldSelector = new FieldSelector(
-                findViewById(R.id.use_custom_fields),
-                findViewById(R.id.custom_fields_list),
+                binding.useCustomFields,
+                binding.customFieldsList,
                 placeFields,
                 savedInstanceState);
-        responseView = findViewById(R.id.response);
         setLoading(false);
 
         // Set listeners for programmatic Find Current Place
-        findViewById(R.id.find_current_place_button).setOnClickListener((view) -> findCurrentPlace());
+        binding.findCurrentPlaceButton.setOnClickListener((view) -> findCurrentPlace());
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle bundle) {
+    protected void onSaveInstanceState(@NonNull Bundle bundle) {
         super.onSaveInstanceState(bundle);
         fieldSelector.onSaveInstanceState(bundle);
     }
@@ -132,12 +134,12 @@ public class CurrentPlaceActivity extends AppCompatActivity {
 
         currentPlaceTask.addOnSuccessListener(
                 (response) ->
-                        responseView.setText(StringUtil.stringify(response, isDisplayRawResultsChecked())));
+                        binding.response.setText(StringUtil.stringify(response, isDisplayRawResultsChecked())));
 
         currentPlaceTask.addOnFailureListener(
                 (exception) -> {
                     exception.printStackTrace();
-                    responseView.setText(exception.getMessage());
+                    binding.response.setText(exception.getMessage());
                 });
 
         currentPlaceTask.addOnCompleteListener(task -> setLoading(false));
@@ -148,7 +150,7 @@ public class CurrentPlaceActivity extends AppCompatActivity {
     //////////////////////////
 
     private List<Field> getPlaceFields() {
-        if (((CheckBox) findViewById(R.id.use_custom_fields)).isChecked()) {
+        if (binding.useCustomFields.isChecked()) {
             return fieldSelector.getSelectedFields();
         } else {
             return fieldSelector.getAllFields();
@@ -165,10 +167,10 @@ public class CurrentPlaceActivity extends AppCompatActivity {
     }
 
     private boolean isDisplayRawResultsChecked() {
-        return ((CheckBox) findViewById(R.id.display_raw_results)).isChecked();
+        return binding.displayRawResults.isChecked();
     }
 
     private void setLoading(boolean loading) {
-        findViewById(R.id.loading).setVisibility(loading ? View.VISIBLE : View.INVISIBLE);
+        binding.loading.setVisibility(loading ? View.VISIBLE : View.INVISIBLE);
     }
 }

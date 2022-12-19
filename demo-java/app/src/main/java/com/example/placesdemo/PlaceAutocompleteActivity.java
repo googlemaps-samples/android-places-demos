@@ -25,11 +25,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.placesdemo.databinding.PlaceAutocompleteActivityBinding;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -61,9 +63,8 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
 
     private static final int AUTOCOMPLETE_REQUEST_CODE = 23487;
     private PlacesClient placesClient;
-    private TextView responseView;
     private FieldSelector fieldSelector;
-    private EditText typesFilterEditText;
+    private PlaceAutocompleteActivityBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,37 +72,36 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
 
         setContentView(R.layout.place_autocomplete_activity);
 
+        binding = PlaceAutocompleteActivityBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient(this);
 
         // Set up view objects
-        responseView = findViewById(R.id.response);
-        typesFilterEditText = findViewById(R.id.autocomplete_types_filter_edittext);
-        CheckBox useTypesFilterCheckBox = findViewById(R.id.autocomplete_use_types_filter_checkbox);
-        useTypesFilterCheckBox.setOnCheckedChangeListener(
-                (buttonView, isChecked) -> typesFilterEditText.setEnabled(isChecked));
+        binding.autocompleteUseTypesFilterCheckbox.setOnCheckedChangeListener(
+                (buttonView, isChecked) -> binding.autocompleteTypesFilterEdittext.setEnabled(isChecked));
         fieldSelector =
                 new FieldSelector(
-                        findViewById(R.id.use_custom_fields),
-                        findViewById(R.id.custom_fields_list),
+                        binding.useCustomFields,
+                        binding.customFieldsList,
                         savedInstanceState);
 
         setupAutocompleteSupportFragment();
 
         // Set listeners for Autocomplete activity
-        findViewById(R.id.autocomplete_activity_button)
+        binding.autocompleteActivityButton
                 .setOnClickListener(view -> startAutocompleteActivity());
 
         // Set listeners for programmatic Autocomplete
-        findViewById(R.id.fetch_autocomplete_predictions_button)
-                .setOnClickListener(view -> findAutocompletePredictions());
+        binding.fetchAutocompletePredictionsButton.setOnClickListener(view -> findAutocompletePredictions());
 
         // UI initialization
         setLoading(false);
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle bundle) {
+    protected void onSaveInstanceState(@NonNull Bundle bundle) {
         super.onSaveInstanceState(bundle);
         fieldSelector.onSaveInstanceState(bundle);
     }
@@ -110,9 +110,12 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
         final AutocompleteSupportFragment autocompleteSupportFragment =
                 (AutocompleteSupportFragment)
                         getSupportFragmentManager().findFragmentById(R.id.autocomplete_support_fragment);
-        autocompleteSupportFragment.setPlaceFields(getPlaceFields());
-        autocompleteSupportFragment.setOnPlaceSelectedListener(getPlaceSelectionListener());
-        findViewById(R.id.autocomplete_support_fragment_update_button)
+        if (autocompleteSupportFragment != null) {
+            autocompleteSupportFragment.setPlaceFields(getPlaceFields());
+            autocompleteSupportFragment.setOnPlaceSelectedListener(getPlaceSelectionListener());
+        }
+
+        binding.autocompleteSupportFragmentUpdateButton
                 .setOnClickListener(
                         view ->
                                 autocompleteSupportFragment
@@ -129,14 +132,14 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
     private PlaceSelectionListener getPlaceSelectionListener() {
         return new PlaceSelectionListener() {
             @Override
-            public void onPlaceSelected(Place place) {
-                responseView.setText(
+            public void onPlaceSelected(@NonNull Place place) {
+                binding.response.setText(
                         StringUtil.stringifyAutocompleteWidget(place, isDisplayRawResultsChecked()));
             }
 
             @Override
-            public void onError(Status status) {
-                responseView.setText(status.getStatusMessage());
+            public void onError(@NonNull Status status) {
+                binding.response.setText(status.getStatusMessage());
             }
         };
     }
@@ -149,14 +152,13 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == AutocompleteActivity.RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(intent);
-                responseView.setText(
+                binding.response.setText(
                         StringUtil.stringifyAutocompleteWidget(place, isDisplayRawResultsChecked()));
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(intent);
-                responseView.setText(status.getStatusMessage());
-            } else if (resultCode == AutocompleteActivity.RESULT_CANCELED) {
-                // The user canceled the operation.
-            }
+                binding.response.setText(status.getStatusMessage());
+            }  // The user canceled the operation.
+
         }
 
         // Required because this class extends AppCompatActivity which extends FragmentActivity
@@ -199,12 +201,12 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
 
         task.addOnSuccessListener(
                 (response) ->
-                        responseView.setText(StringUtil.stringify(response, isDisplayRawResultsChecked())));
+                        binding.response.setText(StringUtil.stringify(response, isDisplayRawResultsChecked())));
 
         task.addOnFailureListener(
                 (exception) -> {
                     exception.printStackTrace();
-                    responseView.setText(exception.getMessage());
+                    binding.response.setText(exception.getMessage());
                 });
 
         task.addOnCompleteListener(response -> setLoading(false));
