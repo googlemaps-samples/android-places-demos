@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         setLaunchActivityClickListener(R.id.programmatic_autocomplete_button, ProgrammaticAutocompleteToolbarActivity::class.java)
+        setLaunchActivityClickListener(R.id.autocomplete_address_button, AutocompleteAddressActivity::class.java)
         setLaunchActivityClickListener(R.id.autocomplete_button, PlaceAutocompleteActivity::class.java)
         setLaunchActivityClickListener(R.id.place_and_photo_button, PlaceDetailsAndPhotosActivity::class.java)
         setLaunchActivityClickListener(R.id.current_place_button, CurrentPlaceActivity::class.java)

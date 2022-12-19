@@ -97,7 +97,7 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
     // [START maps_solutions_android_autocomplete_define]
     private final ActivityResultLauncher<Intent> startAutocomplete = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
-            (ActivityResultCallback<ActivityResult>) result -> {
+            result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent intent = result.getData();
                     if (intent != null) {

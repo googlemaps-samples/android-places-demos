@@ -32,6 +32,13 @@
     android:text="@string/programmatic_autocomplete_geocoding"/>
 
   <Button
+      android:id="@+id/autocomplete_address_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/spacing_small"
+      android:text="@string/autocomplete_address_button"/>
+
+  <Button
       android:id="@+id/autocomplete_button"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

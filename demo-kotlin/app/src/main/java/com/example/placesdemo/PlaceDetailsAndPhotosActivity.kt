@@ -175,11 +175,11 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
         val photoRequestBuilder = FetchPhotoRequest.builder(photoMetadata!!)
         val maxWidth = readIntFromTextView(R.id.photo_max_width)
         if (maxWidth != null) {
-            photoRequestBuilder.setMaxWidth(maxWidth)
+            photoRequestBuilder.maxWidth = maxWidth
         }
         val maxHeight = readIntFromTextView(R.id.photo_max_height)
         if (maxHeight != null) {
-            photoRequestBuilder.setMaxHeight(maxHeight)
+            photoRequestBuilder.maxHeight = maxHeight
         }
         val photoTask = placesClient.fetchPhoto(photoRequestBuilder.build())
         photoTask.addOnSuccessListener { response: FetchPhotoResponse ->

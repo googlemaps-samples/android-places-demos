@@ -38,6 +38,9 @@
   <!-- Button for launching autocomplete test activity. -->
   <string name="autocomplete_button" translatable="false">Place Autocomplete</string>
 
+  <!-- Button for launching autocomplete address form activity. -->
+  <string name="autocomplete_address_button" translatable="false">Place Autocomplete Address Form</string>
+
   <!-- Button for launching place and photo test activity. -->
   <string name="place_and_photo_button" translatable="false">Place Details and Place Photos</string>
 
@@ -66,6 +69,37 @@
     </font>
   </string>
 
+  <!-- AUTOCOMPLETE ADDRESS -->
+
+  <!-- Label for the address form's first address line field. -->
+  <string name="autocomplete_address1_label" translatable="false">Address Line 1</string>
+
+  <!-- Label for the address form's second address line field. -->
+  <string name="autocomplete_address2_label" translatable="false">Apartment, unit, suite, or floor #</string>
+
+  <!-- Label for the address form's city field. -->
+  <string name="autocomplete_city_label" translatable="false">City</string>
+
+  <!-- Label for the address form's state field. -->
+  <string name="autocomplete_state_label" translatable="false">State/Province</string>
+
+  <!-- Label for the address form's postal code field. -->
+  <string name="autocomplete_postal_label" translatable="false">Postal code</string>
+
+  <!-- Label for the address form's country field. -->
+  <string name="autocomplete_country_label" translatable="false">Country/Region</string>
+
+  <!-- Label for the address form's proximity check setting. -->
+  <string name="autocomplete_proximity_check" translatable="false">Check device proximity</string>
+
+  <!-- Label for the address form's confirmation map. -->
+  <string name="autocomplete_map_label" translatable="false">Map view of the selected address</string>
+
+  <!-- Text for the address form submit button. -->
+  <string name="autocomplete_save_button" translatable="false">Submit address</string>
+
+  <!-- Text for the address form reset button. -->
+  <string name="autocomplete_reset_button" translatable="false">Clear form</string>
 
   <!-- KEEP UNTIL v3 REMOVED -->
 
@@ -146,6 +180,8 @@
   <!-- Text for the fetch place and photo button. -->
   <string name="fetch_place_and_photo_button" translatable="false">Fetch Place and Photo</string>
 
+  <!-- Text for the toast message for a skilled proximity match. -->
+  <string name="autocomplete_skipped_message" translatable="false">Address accepted without checking proximity</string>
 
   <!-- FIND CURRENT PLACE -->
 
