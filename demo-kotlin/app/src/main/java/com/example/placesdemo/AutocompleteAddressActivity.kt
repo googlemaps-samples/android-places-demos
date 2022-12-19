@@ -190,6 +190,8 @@ class AutocompleteAddressActivity : AppCompatActivity(R.layout.autocomplete_addr
                     Log.d(TAG, "location not matched")
                     // TODO: Display UI based on the locations not matching
                 }
+                // [END maps_solutions_android_location_distance]
+                // [END_EXCLUDE]
             }
     }
     // [END maps_solutions_android_location_get]
