@@ -44,11 +44,6 @@ class CurrentPlaceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Use whatever theme was set from the MainActivity.
-        val theme = intent.getIntExtra(MainActivity.THEME_RES_ID_EXTRA, 0)
-        if (theme != 0) {
-            setTheme(theme)
-        }
         setContentView(R.layout.current_place_activity)
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)

@@ -35,9 +35,6 @@
 
   <!-- MAIN ACTIVITY -->
 
-  <!-- Label for spinner/chooser for color themes. -->
-  <string name="theme_spinner_text" translatable="false">Choose a color theme…</string>
-
   <!-- Button for launching autocomplete test activity. -->
   <string name="autocomplete_button" translatable="false">Place Autocomplete</string>
 

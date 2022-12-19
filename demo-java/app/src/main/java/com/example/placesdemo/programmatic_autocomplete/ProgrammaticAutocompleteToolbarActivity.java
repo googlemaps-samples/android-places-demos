@@ -1,4 +1,4 @@
-// Copyright 2020 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,7 +35,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.placesdemo.BuildConfig;
-import com.example.placesdemo.MainActivity;
 import com.example.placesdemo.R;
 import com.example.placesdemo.model.GeocodingResult;
 import com.google.android.gms.common.api.ApiException;
@@ -80,12 +79,6 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Use whatever theme was set from the MainActivity - some of these colors (e.g primary color)
-        // will get picked up by the AutocompleteActivity.
-        int theme = getIntent().getIntExtra(MainActivity.THEME_RES_ID_EXTRA, 0);
-        if (theme != 0) {
-            setTheme(theme);
-        }
         setContentView(R.layout.activity_programmatic_autocomplete);
         setSupportActionBar(findViewById(R.id.toolbar));
 

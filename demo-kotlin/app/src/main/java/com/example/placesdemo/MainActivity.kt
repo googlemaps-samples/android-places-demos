@@ -17,18 +17,14 @@ package com.example.placesdemo
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.Spinner
 import android.widget.Toast
 import androidx.annotation.IdRes
-import androidx.annotation.StyleRes
 import androidx.appcompat.app.AppCompatActivity
 import com.example.placesdemo.programmatic_autocomplete.ProgrammaticAutocompleteToolbarActivity
 import com.google.android.libraries.places.api.Places
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var widgetThemeSpinner: Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,35 +45,13 @@ class MainActivity : AppCompatActivity() {
         setLaunchActivityClickListener(R.id.autocomplete_button, PlaceAutocompleteActivity::class.java)
         setLaunchActivityClickListener(R.id.place_and_photo_button, PlaceDetailsAndPhotosActivity::class.java)
         setLaunchActivityClickListener(R.id.current_place_button, CurrentPlaceActivity::class.java)
-
-        widgetThemeSpinner = findViewById(R.id.theme_spinner)
-        widgetThemeSpinner.adapter = ArrayAdapter( /* context= */
-            this,
-            android.R.layout.simple_list_item_1,
-            listOf("Default", "\uD83D\uDCA9 brown", "\uD83E\uDD2E green", "\uD83D\uDE08 purple")
-        )
     }
 
     private fun setLaunchActivityClickListener(@IdRes onClickResId: Int, activityClassToLaunch: Class<out AppCompatActivity>) {
         findViewById<Button>(onClickResId).setOnClickListener {
             val intent = Intent(this@MainActivity, activityClassToLaunch)
-            intent.putExtra(THEME_RES_ID_EXTRA, selectedTheme)
             startActivity(intent)
         }
     }
 
-    @get:StyleRes
-    private val selectedTheme: Int
-        get() {
-            return when (widgetThemeSpinner.selectedItemPosition) {
-                1 -> R.style.Brown
-                2 -> R.style.Green
-                3 -> R.style.Purple
-                else -> 0
-            }
-        }
-
-    companion object {
-        const val THEME_RES_ID_EXTRA = "widget_theme"
-    }
 }

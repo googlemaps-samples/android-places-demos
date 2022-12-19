@@ -24,23 +24,12 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-  <TextView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="@string/theme_spinner_text" />
-
-  <Spinner
-      android:id="@+id/theme_spinner"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content" />
-
   <Button
       android:id="@+id/autocomplete_button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_margin="@dimen/spacing_small"
       android:text="@string/autocomplete_button"/>
-
 
   <Button
       android:id="@+id/autocomplete_address_button"

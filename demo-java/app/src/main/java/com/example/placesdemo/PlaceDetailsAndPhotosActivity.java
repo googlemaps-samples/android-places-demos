@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,12 +65,6 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Use whatever theme was set from the MainActivity.
-        int theme = getIntent().getIntExtra(MainActivity.THEME_RES_ID_EXTRA, 0);
-        if (theme != 0) {
-            setTheme(theme);
-        }
-
         setContentView(R.layout.place_details_and_photos_activity);
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
@@ -86,15 +80,15 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
         iconView = findViewById(R.id.icon);
         CheckBox fetchPhotoCheckbox = findViewById(R.id.fetch_photo_checkbox);
         fetchPhotoCheckbox.setOnCheckedChangeListener(
-            (buttonView, isChecked) -> setPhotoSizingEnabled(isChecked));
+                (buttonView, isChecked) -> setPhotoSizingEnabled(isChecked));
         CheckBox customPhotoCheckbox = findViewById(R.id.use_custom_photo_reference);
         customPhotoCheckbox.setOnCheckedChangeListener(
-            (buttonView, isChecked) -> setCustomPhotoReferenceEnabled(isChecked));
+                (buttonView, isChecked) -> setCustomPhotoReferenceEnabled(isChecked));
         fieldSelector =
-            new FieldSelector(
-                findViewById(R.id.use_custom_fields),
-                findViewById(R.id.custom_fields_list),
-                savedInstanceState);
+                new FieldSelector(
+                        findViewById(R.id.use_custom_fields),
+                        findViewById(R.id.custom_fields_list),
+                        savedInstanceState);
 
         // Set listeners for programmatic Fetch Place
         findViewById(R.id.fetch_place_and_photo_button).setOnClickListener(view -> fetchPlace());
@@ -129,7 +123,7 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
         List<Field> placeFields = getPlaceFields();
         String customPhotoReference = getCustomPhotoReference();
         if (!validateInputs(isFetchPhotoChecked, isFetchIconChecked, placeFields,
-            customPhotoReference)) {
+                customPhotoReference)) {
             return;
         }
 
@@ -139,21 +133,21 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
         Task<FetchPlaceResponse> placeTask = placesClient.fetchPlace(request);
 
         placeTask.addOnSuccessListener(
-            (response) -> {
-                responseView.setText(StringUtil.stringify(response, isDisplayRawResultsChecked()));
-                if (isFetchPhotoChecked) {
-                    attemptFetchPhoto(response.getPlace());
-                }
-                if (isFetchIconChecked) {
-                    attemptFetchIcon(response.getPlace());
-                }
-            });
+                (response) -> {
+                    responseView.setText(StringUtil.stringify(response, isDisplayRawResultsChecked()));
+                    if (isFetchPhotoChecked) {
+                        attemptFetchPhoto(response.getPlace());
+                    }
+                    if (isFetchIconChecked) {
+                        attemptFetchIcon(response.getPlace());
+                    }
+                });
 
         placeTask.addOnFailureListener(
-            (exception) -> {
-                exception.printStackTrace();
-                responseView.setText(exception.getMessage());
-            });
+                (exception) -> {
+                    exception.printStackTrace();
+                    responseView.setText(exception.getMessage());
+                });
 
         placeTask.addOnCompleteListener(response -> setLoading(false));
     }
@@ -203,17 +197,17 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
         Task<FetchPhotoResponse> photoTask = placesClient.fetchPhoto(photoRequestBuilder.build());
 
         photoTask.addOnSuccessListener(
-            response -> {
-                Bitmap bitmap = response.getBitmap();
-                photoView.setImageBitmap(bitmap);
-                StringUtil.prepend(photoMetadataView, StringUtil.stringify(bitmap));
-            });
+                response -> {
+                    Bitmap bitmap = response.getBitmap();
+                    photoView.setImageBitmap(bitmap);
+                    StringUtil.prepend(photoMetadataView, StringUtil.stringify(bitmap));
+                });
 
         photoTask.addOnFailureListener(
-            exception -> {
-                exception.printStackTrace();
-                StringUtil.prepend(responseView, "Photo: " + exception.getMessage());
-            });
+                exception -> {
+                    exception.printStackTrace();
+                    StringUtil.prepend(responseView, "Photo: " + exception.getMessage());
+                });
 
         photoTask.addOnCompleteListener(response -> setLoading(false));
     }
@@ -224,21 +218,21 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
 
     private void dismissKeyboard(EditText focusedEditText) {
         InputMethodManager imm = (InputMethodManager) getSystemService(
-            Context.INPUT_METHOD_SERVICE);
+                Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(focusedEditText.getWindowToken(), 0);
     }
 
     private boolean validateInputs(boolean isFetchPhotoChecked, boolean isFetchIconChecked,
-        List<Field> placeFields, String customPhotoReference) {
+                                   List<Field> placeFields, String customPhotoReference) {
         if (isFetchPhotoChecked) {
             if (!placeFields.contains(Field.PHOTO_METADATAS)) {
                 responseView.setText(
-                    "'Also fetch photo?' is selected, but PHOTO_METADATAS Place Field is not.");
+                        "'Also fetch photo?' is selected, but PHOTO_METADATAS Place Field is not.");
                 return false;
             }
         } else if (!TextUtils.isEmpty(customPhotoReference)) {
             responseView.setText(
-                "Using 'Custom photo reference', but 'Also fetch photo?' is not selected.");
+                    "Using 'Custom photo reference', but 'Also fetch photo?' is not selected.");
             return false;
         }
         if (isFetchIconChecked && !placeFields.contains(Field.ICON_URL)) {
@@ -313,9 +307,9 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
 
     private void showErrorAlert(@StringRes int messageResId) {
         new AlertDialog.Builder(this)
-            .setTitle(R.string.error_alert_title)
-            .setMessage(messageResId)
-            .show();
+                .setTitle(R.string.error_alert_title)
+                .setMessage(messageResId)
+                .show();
     }
 
     private void setLoading(boolean loading) {
