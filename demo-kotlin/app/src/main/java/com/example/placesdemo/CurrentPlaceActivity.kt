@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,12 @@ import android.Manifest.permission
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.placesdemo.databinding.CurrentPlaceActivityBinding
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
@@ -38,13 +36,15 @@ import com.google.android.libraries.places.api.net.PlacesClient
  */
 class CurrentPlaceActivity : AppCompatActivity() {
     private lateinit var placesClient: PlacesClient
-    private lateinit var responseView: TextView
     private lateinit var fieldSelector: FieldSelector
+
+    private lateinit var binding: CurrentPlaceActivityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.current_place_activity)
+        binding = CurrentPlaceActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient(this)
@@ -63,15 +63,15 @@ class CurrentPlaceActivity : AppCompatActivity() {
             Place.Field.WEBSITE_URI
         )
         fieldSelector = FieldSelector(
-            findViewById(R.id.use_custom_fields),
-            findViewById(R.id.custom_fields_list),
+            binding.useCustomFields,
+            binding.customFieldsList,
             savedInstanceState,
-            placeFields)
-        responseView = findViewById(R.id.response)
+            placeFields
+        )
         setLoading(false)
 
         // Set listeners for programmatic Find Current Place
-        findViewById<Button>(R.id.find_current_place_button).setOnClickListener {
+        binding.findCurrentPlaceButton.setOnClickListener {
             findCurrentPlace()
         }
     }
@@ -82,7 +82,7 @@ class CurrentPlaceActivity : AppCompatActivity() {
     }
 
     /**
-     * Fetches a list of [PlaceLikelihood] instances that represent the Places the user is
+     * Fetches a list of [com.google.android.libraries.places.api.model.PlaceLikelihood] instances that represent the Places the user is
      * most
      * likely to be at currently.
      */
@@ -90,11 +90,13 @@ class CurrentPlaceActivity : AppCompatActivity() {
         if (ContextCompat.checkSelfPermission(this, permission.ACCESS_WIFI_STATE)
             != PackageManager.PERMISSION_GRANTED
             || ContextCompat.checkSelfPermission(this, permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) {
+            != PackageManager.PERMISSION_GRANTED
+        ) {
             Toast.makeText(
                 this,
                 "Both ACCESS_WIFI_STATE & ACCESS_FINE_LOCATION permissions are required",
-                Toast.LENGTH_SHORT)
+                Toast.LENGTH_SHORT
+            )
                 .show()
         }
 
@@ -102,7 +104,11 @@ class CurrentPlaceActivity : AppCompatActivity() {
         // ActivityCompat.requestPermissions(), which is why the checkPermission() only checks if
         // ACCESS_FINE_LOCATION is granted. It is still possible to check whether a normal permission
         // is granted or not using ContextCompat.checkSelfPermission().
-        if (ContextCompat.checkSelfPermission(this, permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             ActivityCompat.requestPermissions(this, arrayOf(permission.ACCESS_FINE_LOCATION), 0)
             return
         }
@@ -110,7 +116,7 @@ class CurrentPlaceActivity : AppCompatActivity() {
     }
 
     /**
-     * Fetches a list of [PlaceLikelihood] instances that represent the Places the user is
+     * Fetches a list of [com.google.android.libraries.places.api.model.PlaceLikelihood] instances that represent the Places the user is
      * most likely to be at currently.
      */
     @RequiresPermission(allOf = [permission.ACCESS_FINE_LOCATION, permission.ACCESS_WIFI_STATE])
@@ -120,12 +126,12 @@ class CurrentPlaceActivity : AppCompatActivity() {
         val currentPlaceTask = placesClient.findCurrentPlace(currentPlaceRequest)
         currentPlaceTask.addOnSuccessListener { response: FindCurrentPlaceResponse? ->
             response?.let {
-                responseView.text = StringUtil.stringify(it, isDisplayRawResultsChecked)
+                binding.response.text = StringUtil.stringify(it, isDisplayRawResultsChecked)
             }
         }
         currentPlaceTask.addOnFailureListener { exception: Exception ->
             exception.printStackTrace()
-            responseView.text = exception.message
+            binding.response.text = exception.message
         }
         currentPlaceTask.addOnCompleteListener { setLoading(false) }
     }
@@ -134,16 +140,16 @@ class CurrentPlaceActivity : AppCompatActivity() {
     // Helper methods below //
     //////////////////////////
     private val placeFields: List<Place.Field>
-        get() = if ((findViewById<View>(R.id.use_custom_fields) as CheckBox).isChecked) {
+        get() = if (binding.useCustomFields.isChecked) {
             fieldSelector.selectedFields
         } else {
             fieldSelector.allFields
         }
 
     private val isDisplayRawResultsChecked: Boolean
-        get() = findViewById<CheckBox>(R.id.display_raw_results).isChecked
+        get() = binding.displayRawResults.isChecked
 
     private fun setLoading(loading: Boolean) {
-        findViewById<View>(R.id.loading).visibility = if (loading) View.VISIBLE else View.INVISIBLE
+        binding.loading.visibility = if (loading) View.VISIBLE else View.INVISIBLE
     }
 }

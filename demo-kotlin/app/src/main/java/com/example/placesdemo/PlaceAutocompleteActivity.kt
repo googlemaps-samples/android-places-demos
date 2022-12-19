@@ -24,9 +24,9 @@ import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.placesdemo.databinding.PlaceAutocompleteActivityBinding
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.tasks.Task
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.LocationBias
@@ -50,35 +50,39 @@ import java.util.*
 class PlaceAutocompleteActivity : AppCompatActivity() {
 
     private lateinit var placesClient: PlacesClient
-    private lateinit var responseView: TextView
     private lateinit var fieldSelector: FieldSelector
-    private lateinit var typesFilterEditText: EditText
+
+    private lateinit var binding: PlaceAutocompleteActivityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.place_autocomplete_activity)
+        binding = PlaceAutocompleteActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient(this)
 
         // Set up view objects
-        responseView = findViewById(R.id.response)
-        typesFilterEditText = findViewById(R.id.autocomplete_types_filter_edittext)
-        val useTypesFilterCheckBox = findViewById<CheckBox>(R.id.autocomplete_use_types_filter_checkbox)
-        useTypesFilterCheckBox.setOnCheckedChangeListener { buttonView, isChecked: Boolean -> typesFilterEditText.isEnabled = isChecked }
+
+        val useTypesFilterCheckBox =
+            findViewById<CheckBox>(R.id.autocomplete_use_types_filter_checkbox)
+        useTypesFilterCheckBox.setOnCheckedChangeListener { _, isChecked: Boolean ->
+            binding.autocompleteTypesFilterEdittext.isEnabled = isChecked
+        }
         fieldSelector = FieldSelector(
             findViewById(R.id.use_custom_fields),
             findViewById(R.id.custom_fields_list),
-            savedInstanceState)
+            savedInstanceState
+        )
         setupAutocompleteSupportFragment()
 
         // Set listeners for Autocomplete activity
-        findViewById<View>(R.id.autocomplete_activity_button)
+        binding.autocompleteActivityButton
             .setOnClickListener { startAutocompleteActivity() }
 
         // Set listeners for programmatic Autocomplete
-        findViewById<View>(R.id.fetch_autocomplete_predictions_button)
+        binding.fetchAutocompletePredictionsButton
             .setOnClickListener { findAutocompletePredictions() }
 
         // UI initialization
@@ -91,7 +95,8 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
     }
 
     private fun setupAutocompleteSupportFragment() {
-        val autocompleteSupportFragment = supportFragmentManager.findFragmentById(R.id.autocomplete_support_fragment) as AutocompleteSupportFragment?
+        val autocompleteSupportFragment =
+            supportFragmentManager.findFragmentById(R.id.autocomplete_support_fragment) as AutocompleteSupportFragment?
         autocompleteSupportFragment!!.setPlaceFields(placeFields)
         autocompleteSupportFragment.setOnPlaceSelectedListener(placeSelectionListener)
         findViewById<View>(R.id.autocomplete_support_fragment_update_button)
@@ -111,11 +116,12 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
     private val placeSelectionListener: PlaceSelectionListener
         get() = object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
-                responseView.text = StringUtil.stringifyAutocompleteWidget(place, isDisplayRawResultsChecked)
+                binding.response.text =
+                    StringUtil.stringifyAutocompleteWidget(place, isDisplayRawResultsChecked)
             }
 
             override fun onError(status: Status) {
-                responseView.text = status.statusMessage
+                binding.response.text = status.statusMessage
             }
         }
 
@@ -128,11 +134,12 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
             when (resultCode) {
                 AutocompleteActivity.RESULT_OK -> {
                     val place = Autocomplete.getPlaceFromIntent(intent)
-                    responseView.text = StringUtil.stringifyAutocompleteWidget(place, isDisplayRawResultsChecked)
+                    binding.response.text =
+                        StringUtil.stringifyAutocompleteWidget(place, isDisplayRawResultsChecked)
                 }
                 AutocompleteActivity.RESULT_ERROR -> {
                     val status = Autocomplete.getStatusFromIntent(intent)
-                    responseView.text = status.statusMessage
+                    binding.response.text = status.statusMessage
                 }
                 AutocompleteActivity.RESULT_CANCELED -> {
                     // The user canceled the operation.
@@ -168,19 +175,23 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
             .setLocationRestriction(locationRestriction)
             .setTypesFilter(getTypesFilter())
         if (isUseSessionTokenChecked) {
-            requestBuilder.setSessionToken(AutocompleteSessionToken.newInstance())
+            requestBuilder.sessionToken = AutocompleteSessionToken.newInstance()
         }
         val task = placesClient.findAutocompletePredictions(requestBuilder.build())
         task.addOnSuccessListener { response: FindAutocompletePredictionsResponse? ->
             response?.let {
-                responseView.text = StringUtil.stringify(it, isDisplayRawResultsChecked)
+                binding.response.text = StringUtil.stringify(it, isDisplayRawResultsChecked)
             }
         }
         task.addOnFailureListener { exception: Exception ->
             exception.printStackTrace()
-            responseView.text = exception.message
+            binding.response.text = exception.message
         }
-        task.addOnCompleteListener { response: Task<FindAutocompletePredictionsResponse>? -> setLoading(false) }
+        task.addOnCompleteListener {
+            setLoading(
+                false
+            )
+        }
     }
 
     //////////////////////////
@@ -212,12 +223,14 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
 
     private val locationBias: LocationBias?
         get() = getBounds(
-            R.id.autocomplete_location_bias_south_west, R.id.autocomplete_location_bias_north_east)
+            R.id.autocomplete_location_bias_south_west, R.id.autocomplete_location_bias_north_east
+        )
 
     private val locationRestriction: LocationRestriction?
         get() = getBounds(
             R.id.autocomplete_location_restriction_south_west,
-            R.id.autocomplete_location_restriction_north_east)
+            R.id.autocomplete_location_restriction_north_east
+        )
 
     private fun getBounds(resIdSouthWest: Int, resIdNorthEast: Int): RectangularBounds? {
         val southWest = findViewById<TextView>(resIdSouthWest).text.toString()
@@ -235,7 +248,8 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
 
     private val origin: LatLng?
         get() {
-            val originStr = findViewById<TextView>(R.id.autocomplete_location_origin).text.toString()
+            val originStr =
+                findViewById<TextView>(R.id.autocomplete_location_origin).text.toString()
             if (TextUtils.isEmpty(originStr)) {
                 return null
             }
@@ -248,23 +262,23 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
         }
 
     private fun getTypesFilter(): List<String> {
-        typesFilterEditText = findViewById(R.id.autocomplete_types_filter_edittext)
-        return if (typesFilterEditText.isEnabled)
-            typesFilterEditText.text.toString().split("[\\s,]+".toRegex()) as List<String>
-        else emptyList<String>()
+        return if (binding.autocompleteTypesFilterEdittext.isEnabled)
+            binding.autocompleteTypesFilterEdittext.text.toString().split("[\\s,]+".toRegex())
+        else emptyList()
     }
 
     private val mode: AutocompleteActivityMode
         get() {
-            val isOverlayMode = findViewById<CheckBox>(R.id.autocomplete_activity_overlay_mode).isChecked
+            val isOverlayMode =
+                binding.autocompleteActivityOverlayMode.isChecked
             return if (isOverlayMode) AutocompleteActivityMode.OVERLAY else AutocompleteActivityMode.FULLSCREEN
         }
 
     private val isDisplayRawResultsChecked: Boolean
-        get() = findViewById<CheckBox>(R.id.display_raw_results).isChecked
+        get() = binding.displayRawResults.isChecked
 
     private val isUseSessionTokenChecked: Boolean
-        get() = findViewById<CheckBox>(R.id.autocomplete_use_session_token).isChecked
+        get() = binding.autocompleteUseSessionToken.isChecked
 
     private fun setLoading(loading: Boolean) {
         findViewById<View>(R.id.loading).visibility = if (loading) View.VISIBLE else View.INVISIBLE
