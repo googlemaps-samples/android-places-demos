@@ -47,18 +47,14 @@ class CurrentPlaceActivity : AppCompatActivity() {
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
             when {
-                permissions[permission.ACCESS_FINE_LOCATION] == true -> {
-                    // Precise location access granted.
-                    findCurrentPlaceWithPermissions()
-                }
-                permissions[permission.ACCESS_COARSE_LOCATION] == true -> {
+                permissions[permission.ACCESS_FINE_LOCATION] == true || permissions[permission.ACCESS_COARSE_LOCATION] == true -> {
                     // Only approximate location access granted.
                     findCurrentPlaceWithPermissions()
                 }
                 else -> {
                     Toast.makeText(
                         this,
-                        "Both ACCESS_COARSE_LOCATION & ACCESS_FINE_LOCATION permissions are required",
+                        "Either ACCESS_COARSE_LOCATION or ACCESS_FINE_LOCATION permissions are required",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
