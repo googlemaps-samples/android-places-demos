@@ -17,6 +17,7 @@
 package com.example.placesdemo;
 
 import com.bumptech.glide.Glide;
+import com.example.placesdemo.databinding.PlaceDetailsAndPhotosActivityBinding;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
@@ -36,12 +37,12 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
 import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
@@ -54,18 +55,17 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
 
     private static final String FETCHED_PHOTO_KEY = "photo_image";
     private PlacesClient placesClient;
-    private ImageView photoView;
-    private ImageView iconView;
-    private TextView responseView;
-    private TextView photoMetadataView;
     private PhotoMetadata photo;
     private FieldSelector fieldSelector;
+
+    private PlaceDetailsAndPhotosActivityBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.place_details_and_photos_activity);
+        binding = PlaceDetailsAndPhotosActivityBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient(this);
@@ -73,21 +73,14 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
             photo = savedInstanceState.getParcelable(FETCHED_PHOTO_KEY);
         }
 
-        // Set up view objects
-        responseView = findViewById(R.id.response);
-        photoView = findViewById(R.id.photo);
-        photoMetadataView = findViewById(R.id.photo_metadata);
-        iconView = findViewById(R.id.icon);
-        CheckBox fetchPhotoCheckbox = findViewById(R.id.fetch_photo_checkbox);
-        fetchPhotoCheckbox.setOnCheckedChangeListener(
+        binding.fetchPhotoCheckbox.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> setPhotoSizingEnabled(isChecked));
-        CheckBox customPhotoCheckbox = findViewById(R.id.use_custom_photo_reference);
-        customPhotoCheckbox.setOnCheckedChangeListener(
+        binding.useCustomPhotoReference.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> setCustomPhotoReferenceEnabled(isChecked));
         fieldSelector =
                 new FieldSelector(
-                        findViewById(R.id.use_custom_fields),
-                        findViewById(R.id.custom_fields_list),
+                        binding.useCustomFields,
+                        binding.customFieldsList,
                         savedInstanceState);
 
         // Set listeners for programmatic Fetch Place
@@ -95,15 +88,15 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
 
         // UI initialization
         setLoading(false);
-        setPhotoSizingEnabled(fetchPhotoCheckbox.isChecked());
-        setCustomPhotoReferenceEnabled(customPhotoCheckbox.isChecked());
+        setPhotoSizingEnabled(binding.fetchPhotoCheckbox.isChecked());
+        setCustomPhotoReferenceEnabled(binding.useCustomPhotoReference.isChecked());
         if (photo != null) {
             fetchPhoto(photo);
         }
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle bundle) {
+    protected void onSaveInstanceState(@NonNull Bundle bundle) {
         super.onSaveInstanceState(bundle);
         fieldSelector.onSaveInstanceState(bundle);
         bundle.putParcelable(FETCHED_PHOTO_KEY, photo);
@@ -116,7 +109,7 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
     private void fetchPlace() {
         clearViews();
 
-        dismissKeyboard(findViewById(R.id.place_id_field));
+        dismissKeyboard(binding.placeIdField);
 
         final boolean isFetchPhotoChecked = isFetchPhotoChecked();
         final boolean isFetchIconChecked = isFetchIconChecked();
@@ -133,8 +126,9 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
         Task<FetchPlaceResponse> placeTask = placesClient.fetchPlace(request);
 
         placeTask.addOnSuccessListener(
+
                 (response) -> {
-                    responseView.setText(StringUtil.stringify(response, isDisplayRawResultsChecked()));
+                    binding.response.setText(StringUtil.stringify(response, isDisplayRawResultsChecked()));
                     if (isFetchPhotoChecked) {
                         attemptFetchPhoto(response.getPlace());
                     }
@@ -146,7 +140,7 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
         placeTask.addOnFailureListener(
                 (exception) -> {
                     exception.printStackTrace();
-                    responseView.setText(exception.getMessage());
+                    binding.response.setText(exception.getMessage());
                 });
 
         placeTask.addOnCompleteListener(response -> setLoading(false));
@@ -160,10 +154,10 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
     }
 
     private void attemptFetchIcon(Place place) {
-        iconView.setImageBitmap(null);
-        iconView.setBackgroundColor(place.getIconBackgroundColor());
+        binding.icon.setImageBitmap(null);
+        binding.icon.setBackgroundColor(place.getIconBackgroundColor());
         String url = place.getIconUrl();
-        Glide.with(this).load(url).into(iconView);
+        Glide.with(this).load(url).into(binding.icon);
     }
 
     /**
@@ -174,7 +168,7 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
     private void fetchPhoto(PhotoMetadata photoMetadata) {
         photo = photoMetadata;
 
-        photoView.setImageBitmap(null);
+        binding.photo.setImageBitmap(null);
         setLoading(true);
 
         String customPhotoReference = getCustomPhotoReference();
@@ -199,14 +193,14 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
         photoTask.addOnSuccessListener(
                 response -> {
                     Bitmap bitmap = response.getBitmap();
-                    photoView.setImageBitmap(bitmap);
-                    StringUtil.prepend(photoMetadataView, StringUtil.stringify(bitmap));
+                    binding.photo.setImageBitmap(bitmap);
+                    StringUtil.prepend(binding.photoMetadata, StringUtil.stringify(bitmap));
                 });
 
         photoTask.addOnFailureListener(
                 exception -> {
                     exception.printStackTrace();
-                    StringUtil.prepend(responseView, "Photo: " + exception.getMessage());
+                    StringUtil.prepend(binding.response, "Photo: " + exception.getMessage());
                 });
 
         photoTask.addOnCompleteListener(response -> setLoading(false));
@@ -226,17 +220,18 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
                                    List<Field> placeFields, String customPhotoReference) {
         if (isFetchPhotoChecked) {
             if (!placeFields.contains(Field.PHOTO_METADATAS)) {
-                responseView.setText(
+
+                binding.response.setText(
                         "'Also fetch photo?' is selected, but PHOTO_METADATAS Place Field is not.");
                 return false;
             }
         } else if (!TextUtils.isEmpty(customPhotoReference)) {
-            responseView.setText(
+            binding.response.setText(
                     "Using 'Custom photo reference', but 'Also fetch photo?' is not selected.");
             return false;
         }
         if (isFetchIconChecked && !placeFields.contains(Field.ICON_URL)) {
-            responseView.setText(R.string.fetch_icon_missing_fields_warning);
+            binding.response.setText(R.string.fetch_icon_missing_fields_warning);
             return false;
         }
 
@@ -317,9 +312,9 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
     }
 
     private void clearViews() {
-        responseView.setText(null);
-        photoView.setImageBitmap(null);
-        photoMetadataView.setText(null);
-        iconView.setImageBitmap(null);
+        binding.response.setText(null);
+        binding.photo.setImageBitmap(null);
+        binding.photoMetadata.setText(null);
+        binding.icon.setImageBitmap(null);
     }
 }

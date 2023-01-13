@@ -154,6 +154,8 @@
   <string name="icon_view_content_description" translatable="false">Icon View</string>
   <string name="fetch_icon_checkbox" translatable="false">Also fetch icon?</string>
   <string name="fetch_icon_missing_fields_warning" translatable="false">\'Also fetch icon?\' is selected, but ICON_URL Place Field is not.</string>
+  <string name="fetch_photo_selected_but_no_metadata">\'Also fetch photo?\' is selected, but PHOTO_METADATAS Place Field is not.</string>
+  <string name="custom_photo_reference_but_not_fetch_photo">Using \'Custom photo reference\', but \'Also fetch photo?\' is not selected.</string>
   <string name="icon_view_image_content_description" translatable="false">Image view to display a Place Icon Image</string>
   <string name="icon_with_background" translatable="false">Icon with background:</string>
   <string name="place_photo" translatable="false">Place photo:</string>
