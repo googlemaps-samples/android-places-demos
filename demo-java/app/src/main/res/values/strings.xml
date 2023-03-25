@@ -50,6 +50,8 @@
   <!-- Button for launching current place test activity. -->
   <string name="current_place_button" translatable="false">Current Place</string>
 
+  <!-- Button for launching is open test activity. -->
+  <string name="main_isOpenButtonText" translatable="false">Place is Open?</string>
 
   <!-- AUTOCOMPLETE TEST -->
 
@@ -223,4 +225,17 @@
   <string name="search_a_place">Search a Place</string>
   <string name="programmatic_place_predictions_instructions">This activity demonstrates as-you-type programmatic place predictions. Tap on the search icon on the toolbar and search for a place.</string>
 
+
+  <!-- IS OPEN -->
+  <string name="isOpen_fetchPlaceButtonText" translatable="false">Fetch Place</string>
+  <string name="isOpen_isOpenButtonText" translatable="false">Is Open</string>
+  <string name="isOpen_placeIdHint" translatable="false">Enter place ID</string>
+  <string name="isOpen_useCustomFieldsText" translatable="false">Manually set Place Fields?</string>
+  <string name="isOpen_spinnerDescription" translatable="false">Time Zone</string>
+  <string name="isOpen_dateHint" translatable="false">Select isOpen date</string>
+  <string name="isOpen_timeHint" translatable="false">Select isOpen time</string>
+  <string name="isOpen_useCustomTimeHint" translatable="false">Use custom isOpen time? (must set time zone, date, and time)</string>
+  <string name="isOpen_defaultPlaceId" translatable="false">ChIJ0yqxBq23j4AR53Q9SzIY52A</string>
+  <string name="isOpen_resultDescription" translatable="false">Is Place Open?</string>
+  <string name="isOpen_displayRawResults" translatable="false">Display raw results?</string>
 </resources>

@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         setLaunchActivityClickListener(R.id.autocomplete_address_button, AutocompleteAddressActivity.class);
         setLaunchActivityClickListener(R.id.programmatic_autocomplete_button, ProgrammaticAutocompleteToolbarActivity.class);
         setLaunchActivityClickListener(R.id.place_and_photo_button, PlaceDetailsAndPhotosActivity.class);
+        setLaunchActivityClickListener(R.id.is_open_button, PlaceIsOpenActivity.class);
         setLaunchActivityClickListener(R.id.current_place_button, CurrentPlaceActivity.class);
     }
 

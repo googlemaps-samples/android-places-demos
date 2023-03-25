@@ -53,6 +53,13 @@
       android:text="@string/place_and_photo_button"/>
 
   <Button
+      android:id="@+id/is_open_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/spacing_small"
+      android:text="@string/main_isOpenButtonText"/>
+
+  <Button
       android:id="@+id/current_place_button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

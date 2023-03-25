@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Copyright 2020 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/spacing_large"
+    tools:context=".PlaceIsOpenActivity">
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/editText_placeId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/isOpen_placeIdHint"
+        android:autofillHints=""
+        android:imeOptions="actionGo"
+        android:inputType="text"
+        android:text="@string/isOpen_defaultPlaceId"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+      <CheckBox
+          android:id="@+id/checkBox_useCustomFields"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:text="@string/isOpen_useCustomFieldsText"/>
+
+      <TextView
+          android:id="@+id/textView_customFieldsList"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_xlarge"
+        android:layout_marginBottom="@dimen/spacing_xlarge"
+        android:orientation="vertical">
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal"
+          android:weightSum="10">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text="@string/isOpen_spinnerDescription"/>
+
+        <Spinner
+            android:id="@+id/spinner_timeZones"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="7"
+            android:padding="10dp" />
+
+      </LinearLayout>
+
+      <EditText
+          android:id="@+id/editText_isOpenDate"
+          android:autofillHints=""
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:clickable="false"
+          android:cursorVisible="false"
+          android:focusable="false"
+          android:focusableInTouchMode="false"
+          android:longClickable="false"
+          android:hint="@string/isOpen_dateHint"
+          android:inputType="date" />
+
+      <EditText
+          android:id="@+id/editText_isOpenTime"
+          android:autofillHints=""
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:clickable="false"
+          android:cursorVisible="false"
+          android:focusable="false"
+          android:focusableInTouchMode="false"
+          android:longClickable="false"
+          android:hint="@string/isOpen_timeHint"
+          android:inputType="time" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+      <Button
+          android:id="@+id/button_fetchPlace"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/isOpen_fetchPlaceButtonText"
+          tools:ignore="ButtonStyle" />
+
+      <Button
+          android:id="@+id/button_isOpen"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/isOpen_isOpenButtonText"
+          tools:ignore="ButtonStyle" />
+
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/checkBox_displayRawResults"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:text="@string/isOpen_displayRawResults"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+      <ProgressBar
+          android:id="@+id/progressBar_loading"
+          style="?android:attr/progressBarStyleSmall"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:visibility="invisible"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView_response"
+        android:freezesText="true"
+        android:textIsSelectable="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+  </LinearLayout>
+
+</ScrollView>
