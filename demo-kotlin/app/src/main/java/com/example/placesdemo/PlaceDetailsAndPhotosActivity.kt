@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,12 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.placesdemo.databinding.PlaceDetailsAndPhotosActivityBinding
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.PhotoMetadata
 import com.google.android.libraries.places.api.model.Place
@@ -43,18 +42,17 @@ import com.google.android.libraries.places.api.net.PlacesClient
  */
 class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
     private lateinit var placesClient: PlacesClient
-    private lateinit var photoView: ImageView
-    private lateinit var iconView: ImageView
-    private lateinit var responseView: TextView
-    private lateinit var photoMetadataView: TextView
     private lateinit var fieldSelector: FieldSelector
 
     private var photo: PhotoMetadata? = null
 
+    private lateinit var binding: PlaceDetailsAndPhotosActivityBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.place_details_and_photos_activity)
+        binding = PlaceDetailsAndPhotosActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient(this)
@@ -62,38 +60,29 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
             photo = savedInstanceState.getParcelable(FETCHED_PHOTO_KEY)
         }
 
-
-        // Set up view objects
-        responseView = findViewById(R.id.response)
-        photoView = findViewById(R.id.photo)
-        photoMetadataView = findViewById(R.id.photo_metadata)
-        iconView = findViewById(R.id.icon)
-
-        val fetchPhotoCheckbox = findViewById<CheckBox>(R.id.fetch_photo_checkbox)
-        fetchPhotoCheckbox.setOnCheckedChangeListener { _, isChecked: Boolean ->
+        binding.fetchPhotoCheckbox.setOnCheckedChangeListener { _, isChecked: Boolean ->
             setPhotoSizingEnabled(
                 isChecked
             )
         }
-        val customPhotoCheckbox = findViewById<CheckBox>(R.id.use_custom_photo_reference)
-        customPhotoCheckbox.setOnCheckedChangeListener { _, isChecked: Boolean ->
+        binding.useCustomPhotoReference.setOnCheckedChangeListener { _, isChecked: Boolean ->
             setCustomPhotoReferenceEnabled(
                 isChecked
             )
         }
         fieldSelector = FieldSelector(
-            findViewById(R.id.use_custom_fields),
-            findViewById(R.id.custom_fields_list),
+            binding.useCustomFields,
+            binding.customFieldsList,
             savedInstanceState
         )
 
         // Set listeners for programmatic Fetch Place
-        findViewById<View>(R.id.fetch_place_and_photo_button).setOnClickListener { fetchPlace() }
+        binding.fetchPlaceAndPhotoButton.setOnClickListener { fetchPlace() }
 
         // UI initialization
         setLoading(false)
-        setPhotoSizingEnabled(fetchPhotoCheckbox.isChecked)
-        setCustomPhotoReferenceEnabled(customPhotoCheckbox.isChecked)
+        setPhotoSizingEnabled(binding.fetchPhotoCheckbox.isChecked)
+        setCustomPhotoReferenceEnabled(binding.useCustomPhotoReference.isChecked)
         photo?.let {
             fetchPhoto(it)
         }
@@ -111,7 +100,7 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
     private fun fetchPlace() {
         clearViews()
 
-        dismissKeyboard(findViewById(R.id.place_id_field))
+        dismissKeyboard(binding.placeIdField)
         val isFetchPhotoChecked = isFetchPhotoChecked
         val isFetchIconChecked = isFetchIconChecked
         val placeFields = placeFields
@@ -129,7 +118,7 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
         val request = FetchPlaceRequest.newInstance(placeId, placeFields)
         val placeTask = placesClient.fetchPlace(request)
         placeTask.addOnSuccessListener { response: FetchPlaceResponse ->
-            responseView.text = StringUtil.stringify(response, isDisplayRawResultsChecked)
+            binding.response.text = StringUtil.stringify(response, isDisplayRawResultsChecked)
             if (isFetchPhotoChecked) {
                 attemptFetchPhoto(response.place)
             }
@@ -139,7 +128,7 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
         }
         placeTask.addOnFailureListener { exception: Exception ->
             exception.printStackTrace()
-            responseView.text = exception.message
+            binding.response.text = exception.message
         }
         placeTask.addOnCompleteListener { setLoading(false) }
     }
@@ -152,10 +141,10 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
     }
 
     private fun attemptFetchIcon(place: Place) {
-        iconView.setImageBitmap(null)
-        iconView.setBackgroundColor(place.iconBackgroundColor)
+        binding.icon.setImageBitmap(null)
+        place.iconBackgroundColor?.let { binding.icon.setBackgroundColor(it) }
         val url = place.iconUrl
-        Glide.with(this).load(url).into(iconView)
+        Glide.with(this).load(url).into(binding.icon)
     }
 
     /**
@@ -164,32 +153,32 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
      * @param photoMetadata from a [Place] instance.
      */
     private fun fetchPhoto(photoMetadata: PhotoMetadata) {
-        var photoMetadata: PhotoMetadata? = photoMetadata
-        photo = photoMetadata
-        photoView.setImageBitmap(null)
+        var localPhotoMetadata: PhotoMetadata? = photoMetadata
+        photo = localPhotoMetadata
+        binding.photo.setImageBitmap(null)
         setLoading(true)
         val customPhotoReference = customPhotoReference
         if (!TextUtils.isEmpty(customPhotoReference)) {
-            photoMetadata = PhotoMetadata.builder(customPhotoReference).build()
+            localPhotoMetadata = PhotoMetadata.builder(customPhotoReference).build()
         }
-        val photoRequestBuilder = FetchPhotoRequest.builder(photoMetadata!!)
-        val maxWidth = readIntFromTextView(R.id.photo_max_width)
+        val photoRequestBuilder = FetchPhotoRequest.builder(localPhotoMetadata!!)
+        val maxWidth = readIntFromTextView(binding.photoMaxWidth)
         if (maxWidth != null) {
             photoRequestBuilder.maxWidth = maxWidth
         }
-        val maxHeight = readIntFromTextView(R.id.photo_max_height)
+        val maxHeight = readIntFromTextView(binding.photoMaxHeight)
         if (maxHeight != null) {
             photoRequestBuilder.maxHeight = maxHeight
         }
         val photoTask = placesClient.fetchPhoto(photoRequestBuilder.build())
         photoTask.addOnSuccessListener { response: FetchPhotoResponse ->
             val bitmap = response.bitmap
-            photoView.setImageBitmap(bitmap)
-            StringUtil.prepend(photoMetadataView, StringUtil.stringify(bitmap))
+            binding.photo.setImageBitmap(bitmap)
+            StringUtil.prepend(binding.photoMetadata, StringUtil.stringify(bitmap))
         }
         photoTask.addOnFailureListener { exception: Exception ->
             exception.printStackTrace()
-            StringUtil.prepend(responseView, "Photo: " + exception.message)
+            StringUtil.prepend(binding.response, "Photo: " + exception.message)
         }
         photoTask.addOnCompleteListener { setLoading(false) }
     }
@@ -210,24 +199,22 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
     ): Boolean {
         if (isFetchPhotoChecked) {
             if (!placeFields.contains(Place.Field.PHOTO_METADATAS)) {
-                responseView.text =
-                    "'Also fetch photo?' is selected, but PHOTO_METADATAS Place Field is not."
+                binding.response.setText(R.string.fetch_photo_selected_but_no_metadata)
                 return false
             }
         } else if (!TextUtils.isEmpty(customPhotoReference)) {
-            responseView.text =
-                "Using 'Custom photo reference', but 'Also fetch photo?' is not selected."
+            binding.response.setText(R.string.custom_photo_reference_but_not_fetch_photo)
             return false
         }
         if (isFetchIconChecked && !placeFields.contains(Place.Field.ICON_URL)) {
-            responseView.setText(R.string.fetch_icon_missing_fields_warning)
+            binding.response.setText(R.string.fetch_icon_missing_fields_warning)
             return false
         }
         return true
     }
 
     private val placeId: String
-        get() = findViewById<TextView>(R.id.place_id_field).text.toString()
+        get() = binding.placeIdField.text.toString()
 
     private val placeFields: List<Place.Field>
         get() = if (findViewById<CheckBox>(R.id.use_custom_fields).isChecked) {
@@ -237,43 +224,39 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
         }
 
     private val isDisplayRawResultsChecked: Boolean
-        get() = findViewById<CheckBox>(R.id.display_raw_results).isChecked
+        get() = binding.displayRawResults.isChecked
 
     private val isFetchPhotoChecked: Boolean
-        get() = findViewById<CheckBox>(R.id.fetch_photo_checkbox).isChecked
+        get() = binding.fetchPhotoCheckbox.isChecked
 
     private val isFetchIconChecked: Boolean
-        get() = findViewById<CheckBox>(R.id.fetch_icon_checkbox).isChecked
+        get() = binding.fetchIconCheckbox.isChecked
 
     private val customPhotoReference: String
-        get() = findViewById<TextView>(R.id.custom_photo_reference).text.toString()
+        get() = binding.customPhotoReference.text.toString()
 
     private fun setPhotoSizingEnabled(enabled: Boolean) {
-        setEnabled(R.id.photo_max_width, enabled)
-        setEnabled(R.id.photo_max_height, enabled)
+        setEnabled(binding.photoMaxWidth, enabled)
+        setEnabled(binding.photoMaxHeight, enabled)
     }
 
     private fun setCustomPhotoReferenceEnabled(enabled: Boolean) {
-        setEnabled(R.id.custom_photo_reference, enabled)
+        setEnabled(binding.customPhotoReference, enabled)
     }
 
-    private fun setEnabled(@IdRes resId: Int, enabled: Boolean) {
-        val view = findViewById<TextView>(resId)
-        view.isEnabled = enabled
-        view.text = ""
+    private fun setEnabled(textView: TextView, enabled: Boolean) {
+        textView.isEnabled = enabled
+        textView.text = ""
     }
 
-    private fun readIntFromTextView(@IdRes resId: Int): Int? {
+    private fun readIntFromTextView(textView: TextView): Int? {
         var intValue: Int? = null
-        val view = findViewById<View>(resId)
-        if (view is TextView) {
-            val contents = view.text
-            if (!TextUtils.isEmpty(contents)) {
-                try {
-                    intValue = contents.toString().toInt()
-                } catch (e: NumberFormatException) {
-                    showErrorAlert(R.string.error_alert_message_invalid_photo_size)
-                }
+        val contents = textView.text
+        if (!TextUtils.isEmpty(contents)) {
+            try {
+                intValue = contents.toString().toInt()
+            } catch (e: NumberFormatException) {
+                showErrorAlert(R.string.error_alert_message_invalid_photo_size)
             }
         }
         return intValue
@@ -291,10 +274,10 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
     }
 
     private fun clearViews() {
-        responseView.text = null
-        photoView.setImageBitmap(null)
-        photoMetadataView.text = null
-        iconView.setImageBitmap(null)
+        binding.response.text = null
+        binding.photo.setImageBitmap(null)
+        binding.photoMetadata.text = null
+        binding.icon.setImageBitmap(null)
     }
 
     companion object {

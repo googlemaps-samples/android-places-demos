@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package com.example.placesdemo;
 
+import com.example.placesdemo.databinding.CurrentPlaceActivityBinding;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place.Field;
@@ -25,19 +26,20 @@ import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
 import android.Manifest.permission;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -48,15 +50,48 @@ import static android.Manifest.permission.ACCESS_WIFI_STATE;
  */
 public class CurrentPlaceActivity extends AppCompatActivity {
 
+    private static final String TAG = "CURRENT_PLACE";
+
     private PlacesClient placesClient;
-    private TextView responseView;
     private FieldSelector fieldSelector;
+
+    private CurrentPlaceActivityBinding binding;
+
+    // [START maps_solutions_android_permission_request]
+    // Register the permissions callback, which handles the user's response to the
+    // system permissions dialog. Save the return value, an instance of
+    // ActivityResultLauncher, as an instance variable.
+    @SuppressLint("MissingPermission")
+    private final ActivityResultLauncher<String[]> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), isGranted -> {
+                if (Boolean.TRUE.equals(isGranted.get(permission.ACCESS_FINE_LOCATION))
+                        && Boolean.TRUE.equals(isGranted.get(ACCESS_WIFI_STATE))) {
+                    findCurrentPlaceWithPermissions();
+                } else {
+                    // Fallback behavior if user denies permission
+                    Log.d(TAG, "User denied permission");
+                }
+            });
+    // [END maps_solutions_android_permission_request]
+
+    // [START maps_solutions_android_location_permissions]
+    @SuppressLint("MissingPermission")
+    private void checkLocationPermissions() {
+        if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            findCurrentPlaceWithPermissions();
+        } else {
+            requestPermissionLauncher.launch(new String[]{permission.ACCESS_FINE_LOCATION, permission.ACCESS_WIFI_STATE});
+        }
+    }
+    // [END maps_solutions_android_location_permissions]
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.current_place_activity);
+        binding = CurrentPlaceActivityBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient(this);
@@ -73,47 +108,20 @@ public class CurrentPlaceActivity extends AppCompatActivity {
                 Field.TAKEOUT,
                 Field.WEBSITE_URI);
         fieldSelector = new FieldSelector(
-                findViewById(R.id.use_custom_fields),
-                findViewById(R.id.custom_fields_list),
+                binding.useCustomFields,
+                binding.customFieldsList,
                 placeFields,
                 savedInstanceState);
-        responseView = findViewById(R.id.response);
         setLoading(false);
 
         // Set listeners for programmatic Find Current Place
-        findViewById(R.id.find_current_place_button).setOnClickListener((view) -> findCurrentPlace());
+        binding.findCurrentPlaceButton.setOnClickListener((view) -> checkLocationPermissions());
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle bundle) {
+    protected void onSaveInstanceState(@NonNull Bundle bundle) {
         super.onSaveInstanceState(bundle);
         fieldSelector.onSaveInstanceState(bundle);
-    }
-
-    /**
-     * Fetches a list of {@link PlaceLikelihood} instances that represent the Places the user is
-     * most
-     * likely to be at currently.
-     */
-    private void findCurrentPlace() {
-        if (ContextCompat.checkSelfPermission(this, permission.ACCESS_WIFI_STATE)
-                != PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(this, permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(
-                            this,
-                            "Both ACCESS_WIFI_STATE & ACCESS_FINE_LOCATION permissions are required",
-                            Toast.LENGTH_SHORT)
-                    .show();
-        }
-
-        // Note that it is not possible to request a normal (non-dangerous) permission from
-        // ActivityCompat.requestPermissions(), which is why the checkPermission() only checks if
-        // ACCESS_FINE_LOCATION is granted. It is still possible to check whether a normal permission
-        // is granted or not using ContextCompat.checkSelfPermission().
-        if (checkPermission(ACCESS_FINE_LOCATION)) {
-            findCurrentPlaceWithPermissions();
-        }
     }
 
     /**
@@ -132,12 +140,12 @@ public class CurrentPlaceActivity extends AppCompatActivity {
 
         currentPlaceTask.addOnSuccessListener(
                 (response) ->
-                        responseView.setText(StringUtil.stringify(response, isDisplayRawResultsChecked())));
+                        binding.response.setText(StringUtil.stringify(response, isDisplayRawResultsChecked())));
 
         currentPlaceTask.addOnFailureListener(
                 (exception) -> {
                     exception.printStackTrace();
-                    responseView.setText(exception.getMessage());
+                    binding.response.setText(exception.getMessage());
                 });
 
         currentPlaceTask.addOnCompleteListener(task -> setLoading(false));
@@ -148,27 +156,18 @@ public class CurrentPlaceActivity extends AppCompatActivity {
     //////////////////////////
 
     private List<Field> getPlaceFields() {
-        if (((CheckBox) findViewById(R.id.use_custom_fields)).isChecked()) {
+        if (binding.useCustomFields.isChecked()) {
             return fieldSelector.getSelectedFields();
         } else {
             return fieldSelector.getAllFields();
         }
     }
 
-    private boolean checkPermission(String permission) {
-        boolean hasPermission =
-                ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED;
-        if (!hasPermission) {
-            ActivityCompat.requestPermissions(this, new String[]{permission}, 0);
-        }
-        return hasPermission;
-    }
-
     private boolean isDisplayRawResultsChecked() {
-        return ((CheckBox) findViewById(R.id.display_raw_results)).isChecked();
+        return binding.displayRawResults.isChecked();
     }
 
     private void setLoading(boolean loading) {
-        findViewById(R.id.loading).setVisibility(loading ? View.VISIBLE : View.INVISIBLE);
+        binding.loading.setVisibility(loading ? View.VISIBLE : View.INVISIBLE);
     }
 }

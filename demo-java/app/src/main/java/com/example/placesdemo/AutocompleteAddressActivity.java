@@ -27,18 +27,16 @@ import android.view.View;
 import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.example.placesdemo.model.AutocompleteEditText;
+import com.example.placesdemo.databinding.AutocompleteAddressActivityBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -59,6 +57,7 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -73,12 +72,6 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
 
     private static final String TAG = "ADDRESS_AUTOCOMPLETE";
     private static final String MAP_FRAGMENT_TAG = "MAP";
-    private AutocompleteEditText address1Field;
-    private EditText address2Field;
-    private EditText cityField;
-    private EditText stateField;
-    private EditText postalField;
-    private EditText countryField;
     private LatLng coordinates;
     private boolean checkProximity = false;
     private SupportMapFragment mapFragment;
@@ -88,6 +81,8 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
     private View mapPanel;
     private LatLng deviceLocation;
     private static final double acceptedProximity = 150;
+
+    private AutocompleteAddressActivityBinding binding;
 
     View.OnClickListener startAutocompleteIntentListener = view -> {
         view.setOnClickListener(null);
@@ -118,27 +113,21 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        address1Field.setOnClickListener(startAutocompleteIntentListener);
+        binding.autocompleteAddress1.setOnClickListener(startAutocompleteIntentListener);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.autocomplete_address_activity);
+        binding = AutocompleteAddressActivityBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient(this);
 
-        address1Field = findViewById(R.id.autocomplete_address1);
-        address2Field = findViewById(R.id.autocomplete_address2);
-        cityField = findViewById(R.id.autocomplete_city);
-        stateField = findViewById(R.id.autocomplete_state);
-        postalField = findViewById(R.id.autocomplete_postal);
-        countryField = findViewById(R.id.autocomplete_country);
-
         // Attach an Autocomplete intent to the Address 1 EditText field
-        address1Field.setOnClickListener(startAutocompleteIntentListener);
+        binding.autocompleteAddress1.setOnClickListener(startAutocompleteIntentListener);
 
         // Update checkProximity when user checks the checkbox
         CheckBox checkProximityBox = findViewById(R.id.checkbox_proximity);
@@ -167,7 +156,9 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
         // Build the autocomplete intent with field, country, and type filters applied
         Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
                 .setCountry("US")
-                .setTypeFilter(TypeFilter.ADDRESS)
+                .setTypesFilter(new ArrayList<String>() {{
+                    add(TypeFilter.ADDRESS.toString().toLowerCase());
+                }})
                 .build(this);
         startAutocomplete.launch(intent);
     }
@@ -175,7 +166,7 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
 
     // [START maps_solutions_android_autocomplete_map_ready]
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
         try {
             // Customise the styling of the base map using a JSON object defined
@@ -228,28 +219,28 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
                     }
 
                     case "locality":
-                        cityField.setText(component.getName());
+                        binding.autocompleteCity.setText(component.getName());
                         break;
 
                     case "administrative_area_level_1": {
-                        stateField.setText(component.getShortName());
+                        binding.autocompleteState.setText(component.getShortName());
                         break;
                     }
 
                     case "country":
-                        countryField.setText(component.getName());
+                        binding.autocompleteCountry.setText(component.getName());
                         break;
                 }
             }
         }
 
-        address1Field.setText(address1.toString());
-        postalField.setText(postcode.toString());
+        binding.autocompleteAddress1.setText(address1.toString());
+        binding.autocompletePostal.setText(postcode.toString());
 
         // After filling the form with address components from the Autocomplete
         // prediction, set cursor focus on the second address line to encourage
         // entry of sub-premise information such as apartment, unit, or floor number.
-        address2Field.requestFocus();
+        binding.autocompleteAddress2.requestFocus();
 
         // Add a map for visual confirmation of the address
         showMap(place);
@@ -307,16 +298,16 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
     }
 
     private void clearForm() {
-        address1Field.setText("");
-        address2Field.getText().clear();
-        cityField.getText().clear();
-        stateField.getText().clear();
-        postalField.getText().clear();
-        countryField.getText().clear();
+        binding.autocompleteAddress1.setText("");
+        binding.autocompleteAddress2.getText().clear();
+        binding.autocompleteCity.getText().clear();
+        binding.autocompleteState.getText().clear();
+        binding.autocompletePostal.getText().clear();
+        binding.autocompleteCountry.getText().clear();
         if (mapPanel != null) {
             mapPanel.setVisibility(View.GONE);
         }
-        address1Field.requestFocus();
+        binding.autocompleteAddress1.requestFocus();
     }
 
     // [START maps_solutions_android_permission_request]
@@ -370,7 +361,7 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
 
                     deviceLocation = new LatLng(location.getLatitude(), location.getLongitude());
                     // [START_EXCLUDE]
-                    Log.d(TAG, "device location = " + deviceLocation.toString());
+                    Log.d(TAG, "device location = " + deviceLocation);
                     Log.d(TAG, "entered location = " + enteredLocation.toString());
 
                     // [START maps_solutions_android_location_distance]
