@@ -49,8 +49,8 @@
         android:name=".AutocompleteAddressActivity"
         android:windowSoftInputMode="stateHidden" />
     <activity android:name=".PlaceDetailsAndPhotosActivity" />
-    <activity android:name=".CurrentPlaceActivity" />
     <activity android:name=".PlaceIsOpenActivity"/>
+    <activity android:name=".CurrentPlaceActivity" />
     <activity
       android:name=".programmatic_autocomplete.ProgrammaticAutocompleteToolbarActivity"
       android:theme="@style/Theme.AppCompat.Light.NoActionBar" />

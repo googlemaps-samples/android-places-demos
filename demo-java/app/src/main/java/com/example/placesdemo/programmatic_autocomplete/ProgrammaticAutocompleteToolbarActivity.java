@@ -49,6 +49,8 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.util.Arrays;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -170,7 +172,7 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
             .setLocationBias(bias)
             .setTypeFilter(TypeFilter.ESTABLISHMENT)
             .setQuery(query)
-            .setCountries("IN")
+            .setCountries(Arrays.asList("IN"))
             .build();
 
         // Perform autocomplete predictions request

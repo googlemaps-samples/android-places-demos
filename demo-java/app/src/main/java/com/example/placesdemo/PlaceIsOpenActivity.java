@@ -5,9 +5,13 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -24,6 +28,8 @@ import com.google.android.libraries.places.api.net.IsOpenRequest;
 import com.google.android.libraries.places.api.net.IsOpenResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -33,7 +39,8 @@ import java.util.TimeZone;
  * Activity to demonstrate {@link PlacesClient#isOpen(IsOpenRequest)}.
  */
 public class PlaceIsOpenActivity extends AppCompatActivity {
-
+    private final String defaultTimeZone = "America/Los_Angeles";
+    @NonNull
     private final Calendar isOpenCalendar = Calendar.getInstance();
 
     private EditText editTextIsOpenDate;
@@ -67,9 +74,11 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
         findViewById(R.id.button_fetchPlace).setOnClickListener(view -> fetchPlace());
         findViewById(R.id.button_isOpen).setOnClickListener(view -> isOpen());
 
+        isOpenCalendar = Calendar.getInstance(TimeZone.getTimeZone(defaultTimeZone));
+
         // UI initialization
         setLoading(false);
-        initializeSpinnerTimeZones();
+        initializeSpinnerAndAddListener();
         addIsOpenDateSelectionListener();
         addIsOpenTimeSelectionListener();
 
@@ -160,7 +169,12 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
         if (((CheckBox) findViewById(R.id.checkBox_useCustomFields)).isChecked()) {
             return fieldSelector.getSelectedFields();
         } else {
-            return fieldSelector.getAllFields();
+            return new ArrayList<Field>(Arrays.asList(
+                    Field.BUSINESS_STATUS,
+                    Field.CURRENT_OPENING_HOURS,
+                    Field.OPENING_HOURS,
+                    Field.UTC_OFFSET
+            );
         }
     }
 
@@ -176,11 +190,25 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
         textViewResponse.setText(null);
     }
 
-    private void initializeSpinnerTimeZones() {
+    private void initializeSpinnerAndAddListener() {
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, TimeZone.getAvailableIDs());
         spinnerTimeZones.setAdapter(adapter);
-        spinnerTimeZones.setSelection(adapter.getPosition("America/Los_Angeles"));
+        spinnerTimeZones.setSelection(adapter.getPosition(defaultTimeZone));
+
+        spinnerTimeZones.setOnItemSelectedListener(
+                new OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        String timeZone = parent.getItemAtPosition(position).toString();
+                        isOpenCalendar.setTimeZone(TimeZone.getTimeZone(timeZone));
+                        updateIsOpenDate();
+                        updateIsOpenTime();
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {}
+                });
     }
 
     private void addIsOpenDateSelectionListener() {
@@ -195,7 +223,7 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
         editTextIsOpenDate.setOnClickListener(
                 view -> {
                     new DatePickerDialog(
-                            IsOpenTestActivity.this,
+                            PlaceIsOpenActivity.this,
                             listener,
                             isOpenCalendar.get(Calendar.YEAR),
                             isOpenCalendar.get(Calendar.MONTH),
@@ -220,7 +248,7 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
         editTextIsOpenTime.setOnClickListener(
                 view -> {
                     new TimePickerDialog(
-                            IsOpenTestActivity.this,
+                            PlaceIsOpenActivity.this,
                             listener,
                             isOpenCalendar.get(Calendar.HOUR_OF_DAY),
                             isOpenCalendar.get(Calendar.MINUTE),
