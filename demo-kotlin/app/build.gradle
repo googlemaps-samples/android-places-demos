@@ -37,7 +37,7 @@ dependencies {
     implementation "com.android.databinding:viewbinding:7.3.1"
 
     // Places SDK for Android
-    implementation 'com.google.android.libraries.places:places:3.0.0'
+    implementation 'com.google.android.libraries.places:places:3.1.0'
     implementation 'com.google.maps.android:android-maps-utils:2.4.0'
 }
 repositories {
