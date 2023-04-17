@@ -40,7 +40,7 @@ dependencies {
     implementation "androidx.fragment:fragment:1.5.5"
     implementation 'com.android.volley:volley:1.2.1'
     implementation "com.github.bumptech.glide:glide:4.13.2"
-    implementation "com.android.databinding:viewbinding:7.3.1"
+    implementation "com.android.databinding:viewbinding:8.0.0"
 
     // Places and Maps SDKs
     implementation 'com.google.android.libraries.places:places:3.0.0'
