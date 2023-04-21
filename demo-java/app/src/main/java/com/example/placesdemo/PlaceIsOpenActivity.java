@@ -5,9 +5,6 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -17,7 +14,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -27,6 +28,7 @@ import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.IsOpenRequest;
 import com.google.android.libraries.places.api.net.IsOpenResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +43,7 @@ import java.util.TimeZone;
 public class PlaceIsOpenActivity extends AppCompatActivity {
     private final String defaultTimeZone = "America/Los_Angeles";
     @NonNull
-    private final Calendar isOpenCalendar = Calendar.getInstance();
+    private Calendar isOpenCalendar = Calendar.getInstance();
 
     private EditText editTextIsOpenDate;
     private EditText editTextIsOpenTime;
@@ -72,7 +74,7 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
                         savedInstanceState);
 
         findViewById(R.id.button_fetchPlace).setOnClickListener(view -> fetchPlace());
-        findViewById(R.id.button_isOpen).setOnClickListener(view -> isOpen());
+        findViewById(R.id.button_isOpen).setOnClickListener(view -> isOpenByPlaceId());
 
         isOpenCalendar = Calendar.getInstance(TimeZone.getTimeZone(defaultTimeZone));
 
@@ -92,6 +94,9 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
         fieldSelector.onSaveInstanceState(bundle);
     }
 
+    /**
+     * Get details about the Place ID listed in the input field, then check if the Place is open.
+     */
     private void fetchPlace() {
         clearViews();
         dismissKeyboard(findViewById(R.id.editText_placeId));
@@ -104,7 +109,7 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
         placeTask.addOnSuccessListener(
                 (response) -> {
                     place = response.getPlace();
-                    textViewResponse.setText(StringUtil.stringify(response, isDisplayRawResultsChecked()));
+                    isOpenByPlaceObject(place);
                 });
 
         placeTask.addOnFailureListener(
@@ -116,8 +121,12 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
         placeTask.addOnCompleteListener(response -> setLoading(false));
     }
 
+    /**
+     * Check if the place is open at the time specified in the input fields.
+     * Requires a Place object that includes Place.Field.ID
+     */
     @SuppressLint("SetTextI18n")
-    private void isOpen() {
+    private void isOpenByPlaceObject(Place place) {
         clearViews();
         dismissKeyboard(findViewById(R.id.editText_placeId));
         setLoading(true);
@@ -125,10 +134,47 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
         IsOpenRequest request;
 
         try {
-            request =
-                    place != null
-                            ? IsOpenRequest.newInstance(place, isOpenCalendar.getTimeInMillis())
-                            : IsOpenRequest.newInstance(getPlaceId(), isOpenCalendar.getTimeInMillis());
+            request = IsOpenRequest.newInstance(place, isOpenCalendar.getTimeInMillis());
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            textViewResponse.setText(e.getMessage());
+            setLoading(false);
+            return;
+        }
+
+        Task<IsOpenResponse> placeTask = placesClient.isOpen(request);
+
+        placeTask.addOnSuccessListener(
+                (response) -> {
+                    textViewResponse.setText("Is place open? "
+                                                     + response.isOpen()
+                                                     + "\nExtra place details: \n"
+                                                     + StringUtil.stringify(place));
+                });
+
+        placeTask.addOnFailureListener(
+                (exception) -> {
+                    exception.printStackTrace();
+                    textViewResponse.setText(exception.getMessage());
+                });
+
+        placeTask.addOnCompleteListener(response -> setLoading(false));
+    }
+
+    /**
+     * Check if the place is open at the time specified in the input fields.
+     * Use the Place ID in the input field for the isOpenRequest.
+     */
+    @SuppressLint("SetTextI18n")
+    private void isOpenByPlaceId() {
+        clearViews();
+        dismissKeyboard(findViewById(R.id.editText_placeId));
+        setLoading(true);
+
+        IsOpenRequest request;
+
+        try {
+            request = IsOpenRequest.newInstance(getPlaceId(), isOpenCalendar.getTimeInMillis());
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             textViewResponse.setText(e.getMessage());
@@ -165,21 +211,24 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
         return ((TextView) findViewById(R.id.editText_placeId)).getText().toString();
     }
 
+    /**
+     * Fetch the fields necessary for an isOpen request, unless user has checked the box to
+     * select a custom list of fields. Also fetches name and address for display text.
+     */
     private List<Field> getPlaceFields() {
         if (((CheckBox) findViewById(R.id.checkBox_useCustomFields)).isChecked()) {
             return fieldSelector.getSelectedFields();
         } else {
             return new ArrayList<Field>(Arrays.asList(
+                    Field.ADDRESS,
                     Field.BUSINESS_STATUS,
                     Field.CURRENT_OPENING_HOURS,
+                    Field.ID,
+                    Field.NAME,
                     Field.OPENING_HOURS,
                     Field.UTC_OFFSET
-            );
+            ));
         }
-    }
-
-    private boolean isDisplayRawResultsChecked() {
-        return ((CheckBox) findViewById(R.id.checkBox_displayRawResults)).isChecked();
     }
 
     private void setLoading(boolean loading) {
@@ -207,7 +256,8 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNothingSelected(AdapterView<?> parent) {}
+                    public void onNothingSelected(AdapterView<?> parent) {
+                    }
                 });
     }
 

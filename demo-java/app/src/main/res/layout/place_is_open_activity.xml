@@ -32,6 +32,7 @@
         android:id="@+id/editText_placeId"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="48dp"
         android:hint="@string/isOpen_placeIdHint"
         android:autofillHints=""
         android:imeOptions="actionGo"
@@ -47,6 +48,7 @@
           android:id="@+id/checkBox_useCustomFields"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
+          android:minHeight="48dp"
           android:layout_weight="1"
           android:text="@string/isOpen_useCustomFieldsText"/>
 
@@ -81,6 +83,7 @@
             android:id="@+id/spinner_timeZones"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:minHeight="48dp"
             android:layout_weight="7"
             android:padding="10dp" />
 
@@ -121,26 +124,21 @@
 
       <Button
           android:id="@+id/button_fetchPlace"
-          android:layout_width="wrap_content"
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
+          android:layout_weight="1"
           android:text="@string/isOpen_fetchPlaceButtonText"
           tools:ignore="ButtonStyle" />
 
       <Button
           android:id="@+id/button_isOpen"
-          android:layout_width="wrap_content"
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
+          android:layout_weight="1"
           android:text="@string/isOpen_isOpenButtonText"
           tools:ignore="ButtonStyle" />
 
     </LinearLayout>
-
-    <CheckBox
-        android:id="@+id/checkBox_displayRawResults"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:checked="false"
-        android:text="@string/isOpen_displayRawResults"/>
 
     <LinearLayout
         android:layout_width="match_parent"

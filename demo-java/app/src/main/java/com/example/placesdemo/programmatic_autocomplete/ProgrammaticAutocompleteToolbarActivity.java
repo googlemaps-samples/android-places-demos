@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.ViewAnimator;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -30,6 +31,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.Request.Method;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -50,17 +52,18 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.Arrays;
-import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * An Activity that demonstrates programmatic as-you-type place predictions. The parameters of the
  * request are currently hard coded in this Activity, to modify these parameters (e.g. location
  * bias, place types, etc.), see {@link ProgrammaticAutocompleteToolbarActivity#getPlacePredictions(String)}.
  *
- * @see https://developers.google.com/places/android-sdk/autocomplete#get_place_predictions_programmatically
+ * @see <a href="https://developers.google.com/places/android-sdk/autocomplete#get_place_predictions_programmatically">documentation</a>
  */
 public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
 
@@ -194,7 +197,7 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
     /**
      * Performs a Geocoding API request and displays the result in a dialog.
      *
-     * @see https://developers.google.com/maps/documentation/geocoding/intro
+     * @see <a href="https://developers.google.com/maps/documentation/geocoding/intro">documentation</a>
      */
     private void geocodePlaceAndDisplay(AutocompletePrediction placePrediction) {
         // Construct the request URL
