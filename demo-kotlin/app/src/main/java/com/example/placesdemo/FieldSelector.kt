@@ -84,8 +84,8 @@ class FieldSelector(
     val selectedString: String
         get() {
             val builder = StringBuilder()
-            for (field in selectedFields) {
-                builder.append(field).append("\n")
+            for (eachField in selectedFields) {
+                builder.append(eachField).append("\n")
             }
             return builder.toString()
         }

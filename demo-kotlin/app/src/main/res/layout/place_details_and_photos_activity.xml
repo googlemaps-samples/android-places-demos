@@ -38,7 +38,7 @@
         android:autofillHints=""
         android:imeOptions="actionGo"
         android:inputType="text"
-        android:text="@string/place_id_SFO"/>
+        android:text="@string/place_id_default"/>
 
     <CheckBox
         android:id="@+id/fetch_photo_checkbox"

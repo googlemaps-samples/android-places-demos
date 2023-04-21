@@ -41,11 +41,12 @@ class MainActivity : AppCompatActivity() {
             Places.initialize(applicationContext, apiKey)
         }
 
-        setLaunchActivityClickListener(R.id.programmatic_autocomplete_button, ProgrammaticAutocompleteToolbarActivity::class.java)
-        setLaunchActivityClickListener(R.id.autocomplete_address_button, AutocompleteAddressActivity::class.java)
         setLaunchActivityClickListener(R.id.autocomplete_button, PlaceAutocompleteActivity::class.java)
-        setLaunchActivityClickListener(R.id.place_and_photo_button, PlaceDetailsAndPhotosActivity::class.java)
+        setLaunchActivityClickListener(R.id.autocomplete_address_button, AutocompleteAddressActivity::class.java)
+        setLaunchActivityClickListener(R.id.programmatic_autocomplete_button, ProgrammaticAutocompleteToolbarActivity::class.java)
         setLaunchActivityClickListener(R.id.current_place_button, CurrentPlaceActivity::class.java)
+        setLaunchActivityClickListener(R.id.place_and_photo_button, PlaceDetailsAndPhotosActivity::class.java)
+        setLaunchActivityClickListener(R.id.is_open_button, PlaceIsOpenActivity::class.java)
     }
 
     private fun setLaunchActivityClickListener(@IdRes onClickResId: Int, activityClassToLaunch: Class<out AppCompatActivity>) {

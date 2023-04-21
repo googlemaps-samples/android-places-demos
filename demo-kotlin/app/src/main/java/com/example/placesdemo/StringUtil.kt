@@ -70,7 +70,7 @@ object StringUtil {
 
     fun countriesStringToArrayList(countriesString: String): List<String> {
         // Allow these delimiters: , ; | / \
-        return Arrays.asList(*countriesString
+        return listOf(*countriesString
             .replace("\\s".toRegex(), "|")
             .split("[,;|/\\\\]").dropLastWhile { it.isEmpty() }.toTypedArray())
     }
@@ -125,12 +125,7 @@ object StringUtil {
     }
 
     fun stringify(place: Place): String {
-        return (place.name
-            + " ("
-            + place.address
-            + ")"
-            + " is open now? "
-            + place.isOpen(System.currentTimeMillis()))
+        return "${place.name?.plus(" (") ?: ""}${place.address?.plus(")") ?: ""}"
     }
 
     fun stringify(bitmap: Bitmap): String {
