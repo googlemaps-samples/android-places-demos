@@ -153,7 +153,7 @@
 
   <string name="programmatic_autocomplete_geocoding">Programmatic Autocomplete + Geocoding</string>
   <string name="search">Search</string>
-  <string name="search_a_place">Search a Place</string>
+  <string name="search_a_place">Search for a Place</string>
   <string name="programmatic_place_predictions_instructions">This activity demonstrates as-you-type programmatic place predictions. Tap on the search icon on the toolbar and search for a place.</string>
 
   <!-- FIND CURRENT PLACE -->

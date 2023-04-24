@@ -129,7 +129,7 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
     /**
      * Launches Autocomplete activity and handles result
      */
-    var autocompleteLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+    private var autocompleteLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         result ->
         when (result.resultCode) {
             AutocompleteActivity.RESULT_OK -> {
@@ -286,9 +286,5 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
             .setTitle(R.string.error_alert_title)
             .setMessage(messageResId)
             .show()
-    }
-
-    companion object {
-        private const val AUTOCOMPLETE_REQUEST_CODE = 23487
     }
 }

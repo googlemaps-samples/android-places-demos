@@ -113,7 +113,7 @@ class PlaceIsOpenActivity : AppCompatActivity() {
      * Requires a Place object that includes Place.Field.ID
      */
     @SuppressLint("SetTextI18n")
-    private fun isOpenByPlaceObject(place: Place?) {
+    private fun isOpenByPlaceObject(place: Place) {
         clearViews()
         dismissKeyboard(binding.editTextPlaceId)
         setLoading(true)
@@ -129,13 +129,10 @@ class PlaceIsOpenActivity : AppCompatActivity() {
         val placeTask: Task<IsOpenResponse> = placesClient.isOpen(request)
         placeTask.addOnSuccessListener { response ->
             binding.textViewResponse.text =
-                "Is place open? " + response.isOpen + "\nExtra place details: \n" + place?.let {
-                    stringify(
-                        it
-                    )
-                }
+                "Is place open? " + response.isOpen + "\nExtra place details: \n" + stringify(place)
         }
-        placeTask.addOnFailureListener { exception ->
+        placeTask.addOnFailureListener {
+                exception ->
             exception.printStackTrace()
             binding.textViewResponse.text = exception.message
         }
@@ -172,8 +169,8 @@ class PlaceIsOpenActivity : AppCompatActivity() {
     }
 
     //////////////////////////
-    // Helper methods below //
-    //////////////////////////
+// Helper methods below //
+//////////////////////////
     private fun dismissKeyboard(focusedEditText: EditText) {
         val imm: InputMethodManager =
             getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

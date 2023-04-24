@@ -51,7 +51,7 @@
     <activity android:name=".CurrentPlaceActivity" />
     <activity android:name=".PlaceIsOpenActivity" />
     <activity
-      android:name=".programmatic_autocomplete.ProgrammaticAutocompleteToolbarActivity"
+      android:name=".programmatic_autocomplete.ProgrammaticAutocompleteGeocodingActivity"
       android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
   </application>
