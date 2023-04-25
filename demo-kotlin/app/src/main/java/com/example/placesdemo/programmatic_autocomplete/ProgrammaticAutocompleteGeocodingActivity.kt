@@ -42,6 +42,7 @@ import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.LocationBias
 import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.model.PlaceTypes
 import com.google.android.libraries.places.api.model.RectangularBounds
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FetchPlaceResponse
@@ -133,6 +134,7 @@ class ProgrammaticAutocompleteGeocodingActivity : AppCompatActivity() {
         // Get just the location of the place using the Geocoding API
         adapter.onPlaceClickListener = { geocodePlaceAndDisplay(it) }
         // Alternative: Get more details about the place using Place Details
+        // See https://goo.gle/paaln for help choosing between Geocoding and Place Details
         // adapter.onPlaceClickListener = { fetchPlaceAndDisplay(it) }
     }
 
@@ -156,8 +158,7 @@ class ProgrammaticAutocompleteGeocodingActivity : AppCompatActivity() {
         val newRequest = FindAutocompletePredictionsRequest.builder()
             .setLocationBias(bias)
             .setCountries("IN")
-            .setTypesFilter(listOf("establishment")) // https://issuetracker.google.com/issues/261035620
-            // .setTypesFilter(listOf(TypeFilter.ESTABLISHMENT.toString()))
+            .setTypesFilter(listOf(PlaceTypes.ESTABLISHMENT))
             // Session Token only used to link related Place Details call. See https://goo.gle/paaln
             .setSessionToken(sessionToken)
             .setQuery(query)
