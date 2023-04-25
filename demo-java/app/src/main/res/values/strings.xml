@@ -229,6 +229,5 @@
   <string name="isOpen_timeHint" translatable="false">Select isOpen time</string>
   <string name="isOpen_useCustomTimeHint" translatable="false">Use custom isOpen time? (must set time zone, date, and time)</string>
   <string name="isOpen_defaultPlaceId" translatable="false">ChIJD3uTd9hx5kcR1IQvGfr8dbk</string>
-  <string name="isOpen_resultDescription" translatable="false">Is Place Open?</string>
 
 </resources>
