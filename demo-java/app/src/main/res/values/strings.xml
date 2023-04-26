@@ -220,14 +220,14 @@
 
   <!-- PLACE IS OPEN -->
 
-  <string name="isOpen_fetchPlaceButtonText" translatable="false">Fetch Place then check IsOpen</string>
-  <string name="isOpen_isOpenButtonText" translatable="false">Request IsOpen by Place ID</string>
-  <string name="isOpen_placeIdHint" translatable="false">Enter place ID</string>
-  <string name="isOpen_useCustomFieldsText" translatable="false">Manually set Place Fields?</string>
-  <string name="isOpen_spinnerDescription" translatable="false">Time Zone</string>
-  <string name="isOpen_dateHint" translatable="false">Select isOpen date</string>
-  <string name="isOpen_timeHint" translatable="false">Select isOpen time</string>
-  <string name="isOpen_useCustomTimeHint" translatable="false">Use custom isOpen time? (must set time zone, date, and time)</string>
-  <string name="isOpen_defaultPlaceId" translatable="false">ChIJD3uTd9hx5kcR1IQvGfr8dbk</string>
+  <string name="isOpen_fetch_place_button_text" translatable="false">Fetch Place then check IsOpen</string>
+  <string name="isOpen_is_open_button_text" translatable="false">Request IsOpen by Place ID</string>
+  <string name="isOpen_place_id_hint" translatable="false">Enter place ID</string>
+  <string name="isOpen_use_custom_fields_text" translatable="false">Manually set Place Fields?</string>
+  <string name="isOpen_spinner_description" translatable="false">Time Zone</string>
+  <string name="isOpen_date_hint" translatable="false">Select isOpen date</string>
+  <string name="isOpen_time_hint" translatable="false">Select isOpen time</string>
+  <string name="isOpen_use_custom_time_hint" translatable="false">Use custom isOpen time? (must set time zone, date, and time)</string>
+  <string name="isOpen_default_place_id" translatable="false">ChIJD3uTd9hx5kcR1IQvGfr8dbk</string>
 
 </resources>

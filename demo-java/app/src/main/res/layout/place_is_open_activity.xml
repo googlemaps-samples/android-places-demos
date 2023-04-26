@@ -33,11 +33,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="48dp"
-        android:hint="@string/isOpen_placeIdHint"
+        android:hint="@string/isOpen_place_id_hint"
         android:autofillHints=""
         android:imeOptions="actionGo"
         android:inputType="text"
-        android:text="@string/isOpen_defaultPlaceId"/>
+        android:text="@string/isOpen_default_place_id"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -50,7 +50,7 @@
           android:layout_height="wrap_content"
           android:minHeight="48dp"
           android:layout_weight="1"
-          android:text="@string/isOpen_useCustomFieldsText"/>
+          android:text="@string/isOpen_use_custom_fields_text"/>
 
       <TextView
           android:id="@+id/textView_customFieldsList"
@@ -70,7 +70,7 @@
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:text="@string/isOpen_useCustomTimeHint" />
+          android:text="@string/isOpen_use_custom_time_hint" />
 
       <LinearLayout
           android:layout_width="match_parent"
@@ -82,7 +82,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:text="@string/isOpen_spinnerDescription"/>
+            android:text="@string/isOpen_spinner_description"/>
 
         <Spinner
             android:id="@+id/spinner_timeZones"
@@ -104,7 +104,7 @@
           android:focusable="false"
           android:focusableInTouchMode="false"
           android:longClickable="false"
-          android:hint="@string/isOpen_dateHint"
+          android:hint="@string/isOpen_date_hint"
           android:inputType="date" />
 
       <EditText
@@ -117,7 +117,7 @@
           android:focusable="false"
           android:focusableInTouchMode="false"
           android:longClickable="false"
-          android:hint="@string/isOpen_timeHint"
+          android:hint="@string/isOpen_time_hint"
           android:inputType="time" />
 
     </LinearLayout>
@@ -132,7 +132,7 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:text="@string/isOpen_fetchPlaceButtonText"
+          android:text="@string/isOpen_fetch_place_button_text"
           tools:ignore="ButtonStyle" />
 
       <Button
@@ -140,7 +140,7 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:text="@string/isOpen_isOpenButtonText"
+          android:text="@string/isOpen_is_open_button_text"
           tools:ignore="ButtonStyle" />
 
     </LinearLayout>
