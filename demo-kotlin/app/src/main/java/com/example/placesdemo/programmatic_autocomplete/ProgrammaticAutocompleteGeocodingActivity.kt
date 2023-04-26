@@ -174,7 +174,7 @@ class ProgrammaticAutocompleteGeocodingActivity : AppCompatActivity() {
             }.addOnFailureListener { exception: Exception? ->
                 progressBar.isIndeterminate = false
                 if (exception is ApiException) {
-                    Log.e(TAG, "Place not found: " + exception.message)
+                    Log.e(TAG, "Place not found: ${exception.message}")
                 }
             }
     }
@@ -220,7 +220,7 @@ class ProgrammaticAutocompleteGeocodingActivity : AppCompatActivity() {
         queue.add(request)
     }
 
-    private fun displayDialog(place: AutocompletePrediction, result: GeocodingResult): Unit {
+    private fun displayDialog(place: AutocompletePrediction, result: GeocodingResult) {
         AlertDialog.Builder(this)
             .setTitle(place.getPrimaryText(null))
             .setMessage("Geocoding result:\n" + result.geometry?.location)

@@ -129,7 +129,7 @@ class PlaceIsOpenActivity : AppCompatActivity() {
         val placeTask: Task<IsOpenResponse> = placesClient.isOpen(request)
         placeTask.addOnSuccessListener { response ->
             binding.textViewResponse.text =
-                "Is place open? " + response.isOpen + "\nExtra place details: \n" + stringify(place)
+                "Is place open? ${response.isOpen}\nExtra place details: \n${stringify(place)}"
         }
         placeTask.addOnFailureListener {
                 exception ->
