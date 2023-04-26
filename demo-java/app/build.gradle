@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id 'org.jetbrains.kotlin.android' version '1.6.21' apply false
 }
 
 android {
@@ -32,7 +33,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.navigation:navigation-fragment:2.5.3'
     implementation 'androidx.navigation:navigation-ui:2.5.3'
-    implementation "androidx.activity:activity:1.7.1"
+    implementation "androidx.activity:activity:1.6.1"
     implementation "androidx.fragment:fragment:1.5.7"
     implementation 'com.android.volley:volley:1.2.1'
     implementation "com.github.bumptech.glide:glide:4.13.2"

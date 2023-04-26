@@ -12,13 +12,13 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.placesdemo.databinding.PlaceIsOpenActivityBinding;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -44,11 +44,8 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
     private final String defaultTimeZone = "America/Los_Angeles";
     @NonNull
     private Calendar isOpenCalendar = Calendar.getInstance();
+    private PlaceIsOpenActivityBinding binding;
 
-    private EditText editTextIsOpenDate;
-    private EditText editTextIsOpenTime;
-    private TextView textViewResponse;
-    private Spinner spinnerTimeZones;
     private FieldSelector fieldSelector;
     private PlacesClient placesClient;
     private Place place;
@@ -57,24 +54,21 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.place_is_open_activity);
+        binding = PlaceIsOpenActivityBinding.inflate(getLayoutInflater());
+        View rootView = binding.getRoot();
+        setContentView(rootView);
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient(/* context= */ this);
 
-        textViewResponse = findViewById(R.id.textView_response);
-        spinnerTimeZones = findViewById(R.id.spinner_timeZones);
-        editTextIsOpenDate = findViewById(R.id.editText_isOpenDate);
-        editTextIsOpenTime = findViewById(R.id.editText_isOpenTime);
-
         fieldSelector =
                 new FieldSelector(
-                        findViewById(R.id.checkBox_useCustomFields),
-                        findViewById(R.id.textView_customFieldsList),
+                        binding.checkBoxUseCustomFields,
+                        binding.textViewCustomFieldsList,
                         savedInstanceState);
 
-        findViewById(R.id.button_fetchPlace).setOnClickListener(view -> fetchPlace());
-        findViewById(R.id.button_isOpen).setOnClickListener(view -> isOpenByPlaceId());
+        binding.buttonFetchPlace.setOnClickListener(view -> fetchPlace());
+        binding.buttonIsOpen.setOnClickListener(view -> isOpenByPlaceId());
 
         isOpenCalendar = Calendar.getInstance(TimeZone.getTimeZone(defaultTimeZone));
 
@@ -89,7 +83,7 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle bundle) {
+    protected void onSaveInstanceState(@NonNull Bundle bundle) {
         super.onSaveInstanceState(bundle);
         fieldSelector.onSaveInstanceState(bundle);
     }
@@ -99,7 +93,7 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
      */
     private void fetchPlace() {
         clearViews();
-        dismissKeyboard(findViewById(R.id.editText_placeId));
+        dismissKeyboard(binding.editTextPlaceId);
         setLoading(true);
 
         List<Field> placeFields = getPlaceFields();
@@ -115,7 +109,7 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
         placeTask.addOnFailureListener(
                 (exception) -> {
                     exception.printStackTrace();
-                    textViewResponse.setText(exception.getMessage());
+                    binding.textViewResponse.setText(exception.getMessage());
                 });
 
         placeTask.addOnCompleteListener(response -> setLoading(false));
@@ -128,7 +122,7 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void isOpenByPlaceObject(Place place) {
         clearViews();
-        dismissKeyboard(findViewById(R.id.editText_placeId));
+        dismissKeyboard(binding.editTextPlaceId);
         setLoading(true);
 
         IsOpenRequest request;
@@ -137,7 +131,7 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
             request = IsOpenRequest.newInstance(place, isOpenCalendar.getTimeInMillis());
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            textViewResponse.setText(e.getMessage());
+            binding.textViewResponse.setText(e.getMessage());
             setLoading(false);
             return;
         }
@@ -145,17 +139,15 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
         Task<IsOpenResponse> placeTask = placesClient.isOpen(request);
 
         placeTask.addOnSuccessListener(
-                (response) -> {
-                    textViewResponse.setText("Is place open? "
-                                                     + response.isOpen()
-                                                     + "\nExtra place details: \n"
-                                                     + StringUtil.stringify(place));
-                });
+                (response) -> binding.textViewResponse.setText("Is place open? "
+                                                 + response.isOpen()
+                                                 + "\nExtra place details: \n"
+                                                 + StringUtil.stringify(place)));
 
         placeTask.addOnFailureListener(
                 (exception) -> {
                     exception.printStackTrace();
-                    textViewResponse.setText(exception.getMessage());
+                    binding.textViewResponse.setText(exception.getMessage());
                 });
 
         placeTask.addOnCompleteListener(response -> setLoading(false));
@@ -168,7 +160,7 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void isOpenByPlaceId() {
         clearViews();
-        dismissKeyboard(findViewById(R.id.editText_placeId));
+        dismissKeyboard(binding.editTextPlaceId);
         setLoading(true);
 
         IsOpenRequest request;
@@ -177,7 +169,7 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
             request = IsOpenRequest.newInstance(getPlaceId(), isOpenCalendar.getTimeInMillis());
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            textViewResponse.setText(e.getMessage());
+            binding.textViewResponse.setText(e.getMessage());
             setLoading(false);
             return;
         }
@@ -185,14 +177,12 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
         Task<IsOpenResponse> placeTask = placesClient.isOpen(request);
 
         placeTask.addOnSuccessListener(
-                (response) -> {
-                    textViewResponse.setText("Is place open? " + response.isOpen());
-                });
+                (response) -> binding.textViewResponse.setText("Is place open? " + response.isOpen()));
 
         placeTask.addOnFailureListener(
                 (exception) -> {
                     exception.printStackTrace();
-                    textViewResponse.setText(exception.getMessage());
+                    binding.textViewResponse.setText(exception.getMessage());
                 });
 
         placeTask.addOnCompleteListener(response -> setLoading(false));
@@ -208,7 +198,7 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
     }
 
     private String getPlaceId() {
-        return ((TextView) findViewById(R.id.editText_placeId)).getText().toString();
+        return ((TextView) binding.editTextPlaceId).getText().toString();
     }
 
     /**
@@ -216,10 +206,10 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
      * select a custom list of fields. Also fetches name and address for display text.
      */
     private List<Field> getPlaceFields() {
-        if (((CheckBox) findViewById(R.id.checkBox_useCustomFields)).isChecked()) {
+        if (((CheckBox) binding.checkBoxUseCustomFields).isChecked()) {
             return fieldSelector.getSelectedFields();
         } else {
-            return new ArrayList<Field>(Arrays.asList(
+            return new ArrayList<>(Arrays.asList(
                     Field.ADDRESS,
                     Field.BUSINESS_STATUS,
                     Field.CURRENT_OPENING_HOURS,
@@ -232,20 +222,20 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
     }
 
     private void setLoading(boolean loading) {
-        findViewById(R.id.progressBar_loading).setVisibility(loading ? View.VISIBLE : View.INVISIBLE);
+        binding.progressBarLoading.setVisibility(loading ? View.VISIBLE : View.INVISIBLE);
     }
 
     private void clearViews() {
-        textViewResponse.setText(null);
+        binding.textViewResponse.setText(null);
     }
 
     private void initializeSpinnerAndAddListener() {
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, TimeZone.getAvailableIDs());
-        spinnerTimeZones.setAdapter(adapter);
-        spinnerTimeZones.setSelection(adapter.getPosition(defaultTimeZone));
+        binding.spinnerTimeZones.setAdapter(adapter);
+        binding.spinnerTimeZones.setSelection(adapter.getPosition(defaultTimeZone));
 
-        spinnerTimeZones.setOnItemSelectedListener(
+        binding.spinnerTimeZones.setOnItemSelectedListener(
                 new OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -270,21 +260,19 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
                     updateIsOpenDate();
                 };
 
-        editTextIsOpenDate.setOnClickListener(
-                view -> {
-                    new DatePickerDialog(
-                            PlaceIsOpenActivity.this,
-                            listener,
-                            isOpenCalendar.get(Calendar.YEAR),
-                            isOpenCalendar.get(Calendar.MONTH),
-                            isOpenCalendar.get(Calendar.DAY_OF_MONTH))
-                            .show();
-                });
+        binding.editTextIsOpenDate.setOnClickListener(
+                view -> new DatePickerDialog(
+                        PlaceIsOpenActivity.this,
+                        listener,
+                        isOpenCalendar.get(Calendar.YEAR),
+                        isOpenCalendar.get(Calendar.MONTH),
+                        isOpenCalendar.get(Calendar.DAY_OF_MONTH))
+                        .show());
     }
 
     private void updateIsOpenDate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yy", Locale.US);
-        editTextIsOpenDate.setText(dateFormat.format(isOpenCalendar.getTime()));
+        binding.editTextIsOpenDate.setText(dateFormat.format(isOpenCalendar.getTime()));
     }
 
     private void addIsOpenTimeSelectionListener() {
@@ -295,16 +283,14 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
                     updateIsOpenTime();
                 };
 
-        editTextIsOpenTime.setOnClickListener(
-                view -> {
-                    new TimePickerDialog(
-                            PlaceIsOpenActivity.this,
-                            listener,
-                            isOpenCalendar.get(Calendar.HOUR_OF_DAY),
-                            isOpenCalendar.get(Calendar.MINUTE),
-                            true)
-                            .show();
-                });
+        binding.editTextIsOpenTime.setOnClickListener(
+                view -> new TimePickerDialog(
+                        PlaceIsOpenActivity.this,
+                        listener,
+                        isOpenCalendar.get(Calendar.HOUR_OF_DAY),
+                        isOpenCalendar.get(Calendar.MINUTE),
+                        true)
+                        .show());
     }
 
     private void updateIsOpenTime() {
@@ -312,7 +298,7 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
                 String.format(Locale.getDefault(), "%02d", isOpenCalendar.get(Calendar.HOUR_OF_DAY));
         String formattedMinutes =
                 String.format(Locale.getDefault(), "%02d", isOpenCalendar.get(Calendar.MINUTE));
-        editTextIsOpenTime.setText(
+        binding.editTextIsOpenTime.setText(
                 String.format(Locale.getDefault(), "%s:%s", formattedHour, formattedMinutes));
     }
 }
