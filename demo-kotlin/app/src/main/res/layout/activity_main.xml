@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
  Copyright 2020 Google LLC
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +14,7 @@
  limitations under the License.
 -->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,47 +22,47 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-  <Button
-      android:id="@+id/autocomplete_button"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_margin="@dimen/spacing_small"
-      android:text="@string/autocomplete_button"/>
+    <Button
+        android:id="@+id/autocomplete_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_small"
+        android:text="@string/autocomplete_button" />
 
-  <Button
-      android:id="@+id/autocomplete_address_button"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_margin="@dimen/spacing_small"
-      android:text="@string/autocomplete_address_button"/>
+    <Button
+        android:id="@+id/autocomplete_address_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_small"
+        android:text="@string/autocomplete_address_button" />
 
-  <Button
-    android:id="@+id/programmatic_autocomplete_button"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/spacing_small"
-    android:text="@string/programmatic_autocomplete_geocoding"/>
+    <Button
+        android:id="@+id/programmatic_autocomplete_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_small"
+        android:text="@string/programmatic_autocomplete_geocoding" />
 
-  <Button
-      android:id="@+id/current_place_button"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_margin="@dimen/spacing_small"
-      android:text="@string/current_place_button"/>
+    <Button
+        android:id="@+id/current_place_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_small"
+        android:text="@string/current_place_button" />
 
-  <Button
-      android:id="@+id/place_and_photo_button"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_margin="@dimen/spacing_small"
-      android:text="@string/place_and_photo_button"/>
+    <Button
+        android:id="@+id/place_and_photo_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_small"
+        android:text="@string/place_and_photo_button" />
 
-  <Button
-      android:id="@+id/is_open_button"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_margin="@dimen/spacing_small"
-      android:text="@string/main_isOpenButtonText"/>
+    <Button
+        android:id="@+id/is_open_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_small"
+        android:text="@string/main_isOpenButtonText" />
 
 </LinearLayout>
 
