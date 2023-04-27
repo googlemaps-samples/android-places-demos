@@ -14,10 +14,13 @@
 
 package com.google.places;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,12 +32,11 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.PlaceTypes;
 import com.google.android.libraries.places.api.model.RectangularBounds;
-import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
@@ -68,7 +70,7 @@ class PlaceAutocompleteActivity extends AppCompatActivity {
         // [START maps_places_autocomplete_support_fragment]
         // Initialize the AutocompleteSupportFragment.
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
-            getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
         // Specify the types of place data to return.
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
@@ -92,18 +94,18 @@ class PlaceAutocompleteActivity extends AppCompatActivity {
 
         // [START maps_places_autocomplete_location_bias]
         autocompleteFragment.setLocationBias(RectangularBounds.newInstance(
-            new LatLng(-33.880490, 151.184363),
-            new LatLng(-33.858754, 151.229596)));
+                new LatLng(-33.880490, 151.184363),
+                new LatLng(-33.858754, 151.229596)));
         // [END maps_places_autocomplete_location_bias]
 
         // [START maps_places_autocomplete_location_restriction]
         autocompleteFragment.setLocationRestriction(RectangularBounds.newInstance(
-            new LatLng(-33.880490, 151.184363),
-            new LatLng(-33.858754, 151.229596)));
+                new LatLng(-33.880490, 151.184363),
+                new LatLng(-33.858754, 151.229596)));
         // [END maps_places_autocomplete_location_restriction]
 
         // [START maps_places_autocomplete_type_filter]
-        autocompleteFragment.setTypesFilter(Arrays.asList(TypeFilter.ADDRESS.toString()));
+        autocompleteFragment.setTypesFilter(Arrays.asList(PlaceTypes.ADDRESS, PlaceTypes.ESTABLISHMENT));
         // [END maps_places_autocomplete_type_filter]
 
         // [START maps_places_autocomplete_type_filter_multiple]
@@ -113,10 +115,9 @@ class PlaceAutocompleteActivity extends AppCompatActivity {
         List<Place.Field> fields = new ArrayList<>();
         // [START maps_places_intent_type_filter]
         Intent intent = new Autocomplete.IntentBuilder(
-            AutocompleteActivityMode.FULLSCREEN, fields)
-            .setTypesFilter(Arrays.asList(TypeFilter.ADDRESS.toString()))
-            .build(this);
-        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+                AutocompleteActivityMode.FULLSCREEN, fields)
+                .setTypesFilter(Arrays.asList(PlaceTypes.ADDRESS))
+                .build(this);
         // [END maps_places_intent_type_filter]
 
         // [START maps_places_autocomplete_country_filter]
@@ -125,40 +126,36 @@ class PlaceAutocompleteActivity extends AppCompatActivity {
     }
 
     // [START maps_places_autocomplete_intent]
-        private static int AUTOCOMPLETE_REQUEST_CODE = 1;
 
     // [START_EXCLUDE silent]
     private void startAutocompleteIntent() {
-    // [END_EXCLUDE]
+        // [END_EXCLUDE]
         // Set the fields to specify which types of place data to
         // return after the user has made a selection.
         List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
 
         // Start the autocomplete intent.
         Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
-            .build(this);
-        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
-    // [END maps_places_autocomplete_intent]
+                .build(this);
+        startAutocomplete.launch(intent);
+        // [END maps_places_autocomplete_intent]
     }
 
     // [START maps_places_on_activity_result]
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                Place place = Autocomplete.getPlaceFromIntent(data);
-                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
-            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                // TODO: Handle the error.
-                Status status = Autocomplete.getStatusFromIntent(data);
-                Log.i(TAG, status.getStatusMessage());
-            } else if (resultCode == RESULT_CANCELED) {
-                // The user canceled the operation.
-            }
-            return;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
+    private final ActivityResultLauncher<Intent> startAutocomplete = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent intent = result.getData();
+                    if (intent != null) {
+                        Place place = Autocomplete.getPlaceFromIntent(intent);
+                        Log.i(TAG, "Place: {$place.getName()}, ${place.getId()}");
+                    }
+                } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
+                    // The user canceled the operation.
+                    Log.i(TAG, "User canceled autocomplete");
+                }
+            });
     // [END maps_places_on_activity_result]
 
     private void programmaticPlacePredictions(String query) {
@@ -169,19 +166,19 @@ class PlaceAutocompleteActivity extends AppCompatActivity {
 
         // Create a RectangularBounds object.
         RectangularBounds bounds = RectangularBounds.newInstance(
-            new LatLng(-33.880490, 151.184363),
-            new LatLng(-33.858754, 151.229596));
+                new LatLng(-33.880490, 151.184363),
+                new LatLng(-33.858754, 151.229596));
         // Use the builder to create a FindAutocompletePredictionsRequest.
         FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
-            // Call either setLocationBias() OR setLocationRestriction().
-            .setLocationBias(bounds)
-            //.setLocationRestriction(bounds)
-            .setOrigin(new LatLng(-33.8749937,151.2041382))
-            .setCountries("AU", "NZ")
-            .setTypesFilter(Arrays.asList(TypeFilter.ADDRESS.toString()))
-            .setSessionToken(token)
-            .setQuery(query)
-            .build();
+                // Call either setLocationBias() OR setLocationRestriction().
+                .setLocationBias(bounds)
+                //.setLocationRestriction(bounds)
+                .setOrigin(new LatLng(-33.8749937, 151.2041382))
+                .setCountries("AU", "NZ")
+                .setTypesFilter(Arrays.asList(PlaceTypes.ADDRESS))
+                .setSessionToken(token)
+                .setQuery(query)
+                .build();
 
         placesClient.findAutocompletePredictions(request).addOnSuccessListener((response) -> {
             for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
