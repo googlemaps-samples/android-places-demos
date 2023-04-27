@@ -14,6 +14,8 @@
 
 package com.example.placesdemo.model;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 import java.util.Arrays;
 
@@ -71,6 +73,7 @@ public class GeocodingResult implements Serializable {
     /** The Plus Code identifier for this place. */
     public PlusCode plusCode;
 
+    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("[GeocodingResult");

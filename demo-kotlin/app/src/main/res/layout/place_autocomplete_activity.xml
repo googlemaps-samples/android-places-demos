@@ -58,6 +58,7 @@
           android:id="@+id/autocomplete_location_bias_south_west"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
+          android:minHeight="48dp"
           android:layout_weight="1"
           android:hint="@string/autocomplete_location_south_west_hint"
           android:autofillHints=""
@@ -89,6 +90,7 @@
           android:id="@+id/autocomplete_location_restriction_south_west"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
+          android:minHeight="48dp"
           android:layout_weight="1"
           android:hint="@string/autocomplete_location_south_west_hint"
           android:autofillHints=""
@@ -143,6 +145,7 @@
           android:id="@+id/autocomplete_use_types_filter_checkbox"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:minHeight="48dp"
           android:checked="false"
           android:text="@string/autocomplete_use_types_filter"/>
 
@@ -157,29 +160,12 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-      <CheckBox
-          android:id="@+id/autocomplete_use_type_filter"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:checked="false"
-          android:text="@string/autocomplete_use_type_filter"/>
-
-      <Spinner
-          android:id="@+id/autocomplete_type_filter"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"/>
-    </LinearLayout>
-
     <!-- Autocomplete predictions only -->
     <CheckBox
         android:id="@+id/autocomplete_use_session_token"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minHeight="48dp"
         android:checked="false"
         android:text="@string/autocomplete_use_session_token"/>
 
@@ -188,6 +174,7 @@
         android:id="@+id/autocomplete_activity_overlay_mode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minHeight="48dp"
         android:checked="false"
         android:text="@string/autocomplete_activity_overlay_mode"/>
 
@@ -198,9 +185,9 @@
 
       <CheckBox
           android:id="@+id/use_custom_fields"
-          android:layout_width="0dp"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_weight="1"
+          android:minHeight="48dp"
           android:text="@string/use_custom_fields"/>
 
       <TextView
@@ -230,11 +217,12 @@
         android:id="@+id/autocomplete_support_fragment_text_label"
         android:text="@string/autocomplete_support_fragment_text_label"/>
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/autocomplete_support_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"/>
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+        tools:layout="@layout/places_autocomplete_fragment" />
 
     <Button
         android:id="@+id/autocomplete_support_fragment_update_button"
@@ -255,7 +243,6 @@
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:visibility="invisible"/>
 
     <TextView
@@ -266,4 +253,3 @@
 
   </LinearLayout>
 </ScrollView>
-

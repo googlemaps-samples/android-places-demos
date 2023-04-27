@@ -100,13 +100,25 @@ public class CurrentPlaceActivity extends AppCompatActivity {
         List<Field> placeFields = FieldSelector.allExcept(
                 Field.ADDRESS_COMPONENTS,
                 Field.CURBSIDE_PICKUP,
+                Field.CURRENT_OPENING_HOURS,
                 Field.DELIVERY,
                 Field.DINE_IN,
                 Field.OPENING_HOURS,
                 Field.PHONE_NUMBER,
+                Field.RESERVABLE,
+                Field.SECONDARY_OPENING_HOURS,
+                Field.SERVES_BEER,
+                Field.SERVES_BREAKFAST,
+                Field.SERVES_BRUNCH,
+                Field.SERVES_DINNER,
+                Field.SERVES_LUNCH,
+                Field.SERVES_VEGETARIAN_FOOD,
+                Field.SERVES_WINE,
                 Field.UTC_OFFSET,
                 Field.TAKEOUT,
-                Field.WEBSITE_URI);
+                Field.WEBSITE_URI,
+                Field.WHEELCHAIR_ACCESSIBLE_ENTRANCE
+        );
         fieldSelector = new FieldSelector(
                 binding.useCustomFields,
                 binding.customFieldsList,

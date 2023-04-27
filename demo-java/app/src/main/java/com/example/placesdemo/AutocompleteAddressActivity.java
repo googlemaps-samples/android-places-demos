@@ -155,7 +155,7 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
 
         // Build the autocomplete intent with field, country, and type filters applied
         Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
-                .setCountry("US")
+                .setCountries(Arrays.asList("US"))
                 .setTypesFilter(new ArrayList<String>() {{
                     add(TypeFilter.ADDRESS.toString().toLowerCase());
                 }})

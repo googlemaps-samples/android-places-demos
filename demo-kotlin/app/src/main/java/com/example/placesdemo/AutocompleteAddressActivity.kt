@@ -100,7 +100,7 @@ class AutocompleteAddressActivity : AppCompatActivity(R.layout.autocomplete_addr
 
         // Build the autocomplete intent with field, country, and type filters applied
         val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
-            .setCountry("US")
+            .setCountries(listOf("US"))
             //TODO: https://developers.google.com/maps/documentation/places/android-sdk/autocomplete
             .setTypesFilter(listOf(TypeFilter.ADDRESS.toString().lowercase()))
             .build(this)

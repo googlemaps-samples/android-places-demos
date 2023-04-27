@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.ViewAnimator;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -30,6 +31,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.Request.Method;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -43,30 +45,33 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.LocationBias;
+import com.google.android.libraries.places.api.model.PlaceTypes;
 import com.google.android.libraries.places.api.model.RectangularBounds;
-import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * An Activity that demonstrates programmatic as-you-type place predictions. The parameters of the
  * request are currently hard coded in this Activity, to modify these parameters (e.g. location
  * bias, place types, etc.), see {@link ProgrammaticAutocompleteToolbarActivity#getPlacePredictions(String)}.
  *
- * @see https://developers.google.com/places/android-sdk/autocomplete#get_place_predictions_programmatically
+ * @see <a href="https://developers.google.com/places/android-sdk/autocomplete#get_place_predictions_programmatically">documentation</a>
  */
 public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
 
     private static final String TAG = ProgrammaticAutocompleteToolbarActivity.class.getSimpleName();
-    private Handler handler = new Handler();
-    private PlacePredictionAdapter adapter = new PlacePredictionAdapter();
-    private Gson gson = new GsonBuilder().registerTypeAdapter(LatLng.class, new LatLngAdapter())
-        .create();
+    private final Handler handler = new Handler();
+    private final PlacePredictionAdapter adapter = new PlacePredictionAdapter();
+    private final Gson gson = new GsonBuilder().registerTypeAdapter(LatLng.class, new LatLngAdapter())
+            .create();
 
     private RequestQueue queue;
     private PlacesClient placesClient;
@@ -94,7 +99,7 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         final SearchView searchView =
-            (SearchView) menu.findItem(R.id.search).getActionView();
+                (SearchView) menu.findItem(R.id.search).getActionView();
         initSearchView(searchView);
         return super.onCreateOptionsMenu(menu);
     }
@@ -128,9 +133,7 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
                 handler.removeCallbacksAndMessages(null);
 
                 // Start a new place prediction request in 300 ms
-                handler.postDelayed(() -> {
-                    getPlacePredictions(newText);
-                }, 300);
+                handler.postDelayed(() -> getPlacePredictions(newText), 300);
                 return true;
             }
         });
@@ -142,7 +145,7 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         recyclerView
-            .addItemDecoration(new DividerItemDecoration(this, layoutManager.getOrientation()));
+                .addItemDecoration(new DividerItemDecoration(this, layoutManager.getOrientation()));
         adapter.setPlaceClickListener(this::geocodePlaceAndDisplay);
     }
 
@@ -159,19 +162,19 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
         // pass in the appropriate value/s for .setCountries() in the
         // FindAutocompletePredictionsRequest.Builder object as well.
         final LocationBias bias = RectangularBounds.newInstance(
-            new LatLng(22.458744, 88.208162), // SW lat, lng
-            new LatLng(22.730671, 88.524896) // NE lat, lng
+                new LatLng(22.458744, 88.208162), // SW lat, lng
+                new LatLng(22.730671, 88.524896) // NE lat, lng
         );
 
         // Create a new programmatic Place Autocomplete request in Places SDK for Android
         final FindAutocompletePredictionsRequest newRequest = FindAutocompletePredictionsRequest
-            .builder()
-            .setSessionToken(sessionToken)
-            .setLocationBias(bias)
-            .setTypeFilter(TypeFilter.ESTABLISHMENT)
-            .setQuery(query)
-            .setCountries("IN")
-            .build();
+                .builder()
+                .setSessionToken(sessionToken)
+                .setLocationBias(bias)
+                .setQuery(query)
+                .setCountries(Arrays.asList("IN"))
+                .setTypesFilter(Arrays.asList(PlaceTypes.ESTABLISHMENT))
+                .build();
 
         // Perform autocomplete predictions request
         placesClient.findAutocompletePredictions(newRequest).addOnSuccessListener((response) -> {
@@ -192,7 +195,7 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
     /**
      * Performs a Geocoding API request and displays the result in a dialog.
      *
-     * @see https://developers.google.com/maps/documentation/geocoding/intro
+     * @see <a href="https://developers.google.com/maps/documentation/geocoding/intro">documentation</a>
      */
     private void geocodePlaceAndDisplay(AutocompletePrediction placePrediction) {
         // Construct the request URL
@@ -202,23 +205,23 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
 
         // Use the HTTP request URL for Geocoding API to get geographic coordinates for the place
         JsonObjectRequest request = new JsonObjectRequest(Method.GET, requestURL, null,
-            response -> {
-                try {
-                    // Inspect the value of "results" and make sure it's not empty
-                    JSONArray results = response.getJSONArray("results");
-                    if (results.length() == 0) {
-                        Log.w(TAG, "No results from geocoding request.");
-                        return;
-                    }
+                                                          response -> {
+                                                              try {
+                                                                  // Inspect the value of "results" and make sure it's not empty
+                                                                  JSONArray results = response.getJSONArray("results");
+                                                                  if (results.length() == 0) {
+                                                                      Log.w(TAG, "No results from geocoding request.");
+                                                                      return;
+                                                                  }
 
-                    // Use Gson to convert the response JSON object to a POJO
-                    GeocodingResult result = gson.fromJson(
-                        results.getString(0), GeocodingResult.class);
-                    displayDialog(placePrediction, result);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }, error -> Log.e(TAG, "Request failed"));
+                                                                  // Use Gson to convert the response JSON object to a POJO
+                                                                  GeocodingResult result = gson.fromJson(
+                                                                          results.getString(0), GeocodingResult.class);
+                                                                  displayDialog(placePrediction, result);
+                                                              } catch (JSONException e) {
+                                                                  e.printStackTrace();
+                                                              }
+                                                          }, error -> Log.e(TAG, "Request failed"));
 
         // Add the request to the Request queue.
         queue.add(request);
@@ -226,9 +229,9 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
 
     private void displayDialog(AutocompletePrediction place, GeocodingResult result) {
         new AlertDialog.Builder(this)
-            .setTitle(place.getPrimaryText(null))
-            .setMessage("Geocoding result:\n" + result.geometry.location)
-            .setPositiveButton(android.R.string.ok, null)
-            .show();
+                .setTitle(place.getPrimaryText(null))
+                .setMessage("Geocoding result:\n" + result.geometry.location)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
     }
 }

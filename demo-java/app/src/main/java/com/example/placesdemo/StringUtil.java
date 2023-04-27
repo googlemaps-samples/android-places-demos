@@ -16,6 +16,12 @@
 
 package com.example.placesdemo;
 
+import android.graphics.Bitmap;
+import android.text.TextUtils;
+import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
@@ -25,13 +31,6 @@ import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 
-import android.graphics.Bitmap;
-import android.text.TextUtils;
-import android.widget.TextView;
-
-import androidx.annotation.Nullable;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -78,12 +77,11 @@ public final class StringUtil {
   }
 
   static List<String> countriesStringToArrayList(String countriesString) {
+
     // Allow these delimiters: , ; | / \
-    List<String> countries = Arrays.asList(countriesString
+    return Arrays.asList(countriesString
             .replaceAll("\\s", "|")
             .split("[,;|/\\\\]",-1));
-
-    return countries;
   }
 
   static String stringify(FindAutocompletePredictionsResponse response, boolean raw) {
@@ -147,9 +145,7 @@ public final class StringUtil {
     return place.getName()
             + " ("
             + place.getAddress()
-            + ")"
-            + " is open now? "
-            + place.isOpen(System.currentTimeMillis());
+            + ")";
   }
 
   static String stringify(Bitmap bitmap) {

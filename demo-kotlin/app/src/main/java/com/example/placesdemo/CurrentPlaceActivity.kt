@@ -75,13 +75,24 @@ class CurrentPlaceActivity : AppCompatActivity() {
         val placeFields = FieldSelector.allExcept(
             Place.Field.ADDRESS_COMPONENTS,
             Place.Field.CURBSIDE_PICKUP,
+            Place.Field.CURRENT_OPENING_HOURS,
             Place.Field.DELIVERY,
             Place.Field.DINE_IN,
             Place.Field.OPENING_HOURS,
             Place.Field.PHONE_NUMBER,
+            Place.Field.RESERVABLE,
+            Place.Field.SECONDARY_OPENING_HOURS,
+            Place.Field.SERVES_BEER,
+            Place.Field.SERVES_BREAKFAST,
+            Place.Field.SERVES_BRUNCH,
+            Place.Field.SERVES_DINNER,
+            Place.Field.SERVES_LUNCH,
+            Place.Field.SERVES_VEGETARIAN_FOOD,
+            Place.Field.SERVES_WINE,
             Place.Field.TAKEOUT,
             Place.Field.UTC_OFFSET,
-            Place.Field.WEBSITE_URI
+            Place.Field.WEBSITE_URI,
+            Place.Field.WHEELCHAIR_ACCESSIBLE_ENTRANCE
         )
         fieldSelector = FieldSelector(
             binding.useCustomFields,

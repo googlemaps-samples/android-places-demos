@@ -38,7 +38,7 @@
         android:autofillHints=""
         android:imeOptions="actionGo"
         android:inputType="text"
-        android:text="@string/place_id_SFO"/>
+        android:text="@string/place_id_default"/>
 
     <CheckBox
         android:id="@+id/fetch_photo_checkbox"
@@ -169,7 +169,6 @@
           style="?android:attr/progressBarStyleSmall"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_centerHorizontal="true"
           android:visibility="invisible"/>
 
     </LinearLayout>

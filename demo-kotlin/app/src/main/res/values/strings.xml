@@ -41,11 +41,14 @@
   <!-- Button for launching autocomplete address form activity. -->
   <string name="autocomplete_address_button" translatable="false">Place Autocomplete Address Form</string>
 
+  <!-- Button for launching current place test activity. -->
+  <string name="current_place_button" translatable="false">Current Place</string>
+
   <!-- Button for launching place and photo test activity. -->
   <string name="place_and_photo_button" translatable="false">Place Details and Place Photos</string>
 
-  <!-- Button for launching current place test activity. -->
-  <string name="current_place_button" translatable="false">Current Place</string>
+  <!-- Button for launching is open test activity. -->
+  <string name="main_isOpenButtonText" translatable="false">Place is Open?</string>
 
 
   <!-- AUTOCOMPLETE -->
@@ -68,6 +71,9 @@
       Comma separated list of up to 5 place types
     </font>
   </string>
+
+  <!-- Text for the fetch autocomplete predictions submit button. -->
+  <string name="fetch_autocomplete_predictions_button" translatable="false">Fetch Predictions</string>
 
   <!-- AUTOCOMPLETE ADDRESS -->
 
@@ -100,16 +106,6 @@
 
   <!-- Text for the address form reset button. -->
   <string name="autocomplete_reset_button" translatable="false">Clear form</string>
-
-  <!-- KEEP UNTIL v3 REMOVED -->
-
-  <!-- Text for enabling autocomplete prediction's and widget's type filter field. -->
-  <string name="autocomplete_use_type_filter" translatable="false">Use TypeFilter? (Deprecated)</string>
-
-  <!-- Hint Text for the autocomplete prediction's and widget's type filter field. -->
-  <string name="autocomplete_type_filter" translatable="false">Type Filter</string>
-
-  <!-- END KEEP UNTIL v3 REMOVED -->
 
   <!-- Label for the autocomplete prediction's and widget's location origin field. -->
   <string name="autocomplete_location_origin_label" translatable="false">Location Origin (format: -33.2, 128.2)</string>
@@ -150,11 +146,33 @@
   <!-- Text for starting the autocomplete activity button. -->
   <string name="autocomplete_activity_button" translatable="false">Open Activity</string>
 
-  <!-- Text for the fetch autocomplete predictions submit button. -->
-  <string name="fetch_autocomplete_predictions_button" translatable="false">Fetch Predictions</string>
+  <!-- Text for the toast message for a skilled proximity match. -->
+  <string name="autocomplete_skipped_message" translatable="false">Address accepted without checking proximity</string>
 
+  <!-- PROGRAMMATIC AUTOCOMPLETE AND GEOCODING -->
 
-  <!-- FETCH PLACE AND PHOTO -->
+  <string name="programmatic_autocomplete_geocoding">Programmatic Autocomplete + Geocoding</string>
+  <string name="search">Search</string>
+  <string name="search_a_place">Search for a Place</string>
+  <string name="programmatic_place_predictions_instructions">This activity demonstrates as-you-type programmatic place predictions. Tap on the search icon on the toolbar and search for a place.</string>
+
+  <!-- FIND CURRENT PLACE -->
+
+  <!-- Text for the find current place submit button. -->
+  <string name="find_current_place_button" translatable="false">Find Current Place</string>
+  <string name="icon_view_content_description" translatable="false">Icon View</string>
+  <string name="fetch_icon_checkbox" translatable="false">Also fetch icon?</string>
+  <string name="fetch_icon_missing_fields_warning" translatable="false">\'Also fetch icon?\' is selected, but ICON_URL Place Field is not.</string>
+  <string name="fetch_photo_selected_but_no_metadata">\'Also fetch photo?\' is selected, but PHOTO_METADATAS Place Field is not.</string>
+  <string name="custom_photo_reference_but_not_fetch_photo">Using \'Custom photo reference\', but \'Also fetch photo?\' is not selected.</string>
+  <string name="icon_view_image_content_description" translatable="false">Image view to display a Place Icon Image</string>
+  <string name="icon_with_background" translatable="false">Icon with background:</string>
+  <string name="place_photo" translatable="false">Place photo:</string>
+
+  <!-- PLACE DETAILS AND PHOTO -->
+
+  <!-- Place ID for a dining establishment, used as the default for testing in the Place and Photo screen -->
+  <string name="place_id_default" translatable="false">ChIJM3wn3VVYwokRvu2kbqBKUsM</string>
 
   <!-- Hint for the place ID field. -->
   <string name="place_id_field_hint" translatable="false">Enter place ID</string>
@@ -180,27 +198,16 @@
   <!-- Text for the fetch place and photo button. -->
   <string name="fetch_place_and_photo_button" translatable="false">Fetch Place and Photo</string>
 
-  <!-- Text for the toast message for a skilled proximity match. -->
-  <string name="autocomplete_skipped_message" translatable="false">Address accepted without checking proximity</string>
+  <!-- PLACE IS OPEN -->
 
-  <!-- FIND CURRENT PLACE -->
-
-  <!-- Text for the find current place submit button. -->
-  <string name="find_current_place_button" translatable="false">Find Current Place</string>
-  <string name="icon_view_content_description" translatable="false">Icon View</string>
-  <string name="fetch_icon_checkbox" translatable="false">Also fetch icon?</string>
-  <string name="fetch_icon_missing_fields_warning" translatable="false">\'Also fetch icon?\' is selected, but ICON_URL Place Field is not.</string>
-  <string name="fetch_photo_selected_but_no_metadata">\'Also fetch photo?\' is selected, but PHOTO_METADATAS Place Field is not.</string>
-  <string name="custom_photo_reference_but_not_fetch_photo">Using \'Custom photo reference\', but \'Also fetch photo?\' is not selected.</string>
-  <string name="icon_view_image_content_description" translatable="false">Image view to display a Place Icon Image</string>
-  <string name="icon_with_background" translatable="false">Icon with background:</string>
-  <string name="place_photo" translatable="false">Place photo:</string>
-  <!-- Place ID for SFO, used as the default for testing in the Place and Photo screen -->
-  <string name="place_id_SFO" translatable="false">ChIJVVVVVYx3j4ARP-3NGldc8qQ</string>
-
-  <string name="programmatic_autocomplete_geocoding">Programmatic Autocomplete + Geocoding</string>
-  <string name="search">Search</string>
-  <string name="search_a_place">Search a Place</string>
-  <string name="programmatic_place_predictions_instructions">This activity demonstrates as-you-type programmatic place predictions. Tap on the search icon on the toolbar and search for a place.</string>
+  <string name="isOpen_fetch_place_button_text" translatable="false">Fetch Place then check IsOpen</string>
+  <string name="isOpen_is_open_button_text" translatable="false">Request IsOpen by Place ID</string>
+  <string name="isOpen_place_id_hint" translatable="false">Enter place ID</string>
+  <string name="isOpen_use_custom_fields_text" translatable="false">Manually set Place Fields?</string>
+  <string name="isOpen_spinner_description" translatable="false">Time Zone</string>
+  <string name="isOpen_date_hint" translatable="false">Select isOpen date</string>
+  <string name="isOpen_time_hint" translatable="false">Select isOpen time</string>
+  <string name="isOpen_use_custom_time_hint" translatable="false">Use custom isOpen time? (must set time zone, date, and time)</string>
+  <string name="isOpen_default_place_id" translatable="false">ChIJD3uTd9hx5kcR1IQvGfr8dbk</string>
 
 </resources>

@@ -19,7 +19,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
-import android.widget.*
+import android.widget.CheckBox
+import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
@@ -41,7 +43,6 @@ import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
-import java.util.*
 
 /**
  * Activity to demonstrate Place Autocomplete (activity widget intent, fragment widget, and
@@ -126,31 +127,27 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
         }
 
     /**
-     * Called when AutocompleteActivity finishes
+     * Launches Autocomplete activity and handles result
      */
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
-        if (requestCode == AUTOCOMPLETE_REQUEST_CODE && intent != null) {
-            when (resultCode) {
-                AutocompleteActivity.RESULT_OK -> {
-                    val place = Autocomplete.getPlaceFromIntent(intent)
+    private var autocompleteLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        result ->
+        when (result.resultCode) {
+            AutocompleteActivity.RESULT_OK -> {
+                val data: Intent? = result.data
+                if (data != null) {
+                    val place = Autocomplete.getPlaceFromIntent(data)
                     binding.response.text =
                         StringUtil.stringifyAutocompleteWidget(place, isDisplayRawResultsChecked)
                 }
-                AutocompleteActivity.RESULT_ERROR -> {
-                    val status = Autocomplete.getStatusFromIntent(intent)
-                    binding.response.text = status.statusMessage
-                }
-                AutocompleteActivity.RESULT_CANCELED -> {
-                    // The user canceled the operation.
-                }
+            }
+            AutocompleteActivity.RESULT_ERROR -> {
+                val status = Autocomplete.getStatusFromIntent(intent)
+                binding.response.text = status.statusMessage
+            }
+            AutocompleteActivity.RESULT_CANCELED -> {
+                // The user canceled the operation.
             }
         }
-
-        // Required because this class extends AppCompatActivity which extends FragmentActivity
-        // which implements this method to pass onActivityResult calls to child fragments
-        // (eg AutocompleteFragment).
-        super.onActivityResult(requestCode, resultCode, intent)
     }
 
     private fun startAutocompleteActivity() {
@@ -162,7 +159,7 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
             .setLocationRestriction(locationRestriction)
             .setTypesFilter(getTypesFilter())
             .build(this)
-        startActivityForResult(autocompleteIntent, AUTOCOMPLETE_REQUEST_CODE)
+        autocompleteLauncher.launch(autocompleteIntent)
     }
 
     private fun findAutocompletePredictions() {
@@ -289,9 +286,5 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
             .setTitle(R.string.error_alert_title)
             .setMessage(messageResId)
             .show()
-    }
-
-    companion object {
-        private const val AUTOCOMPLETE_REQUEST_CODE = 23487
     }
 }

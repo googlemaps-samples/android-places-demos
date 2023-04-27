@@ -20,6 +20,7 @@
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
   <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
   <application
@@ -49,8 +50,9 @@
     <activity android:name=".AutocompleteAddressActivity" />
     <activity android:name=".PlaceDetailsAndPhotosActivity" />
     <activity android:name=".CurrentPlaceActivity" />
+    <activity android:name=".PlaceIsOpenActivity" />
     <activity
-      android:name=".programmatic_autocomplete.ProgrammaticAutocompleteToolbarActivity"
+      android:name=".programmatic_autocomplete.ProgrammaticAutocompleteGeocodingActivity"
       android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
   </application>
