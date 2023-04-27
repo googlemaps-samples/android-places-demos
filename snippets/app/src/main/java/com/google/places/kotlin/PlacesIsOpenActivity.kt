@@ -35,6 +35,7 @@ class PlacesIsOpenActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     private fun isOpenByPlaceObject() {
         // [START maps_places_place_is_open]
+        val isOpenCalendar: Calendar = Calendar.getInstance()
         var place: Place
         val placeId = "ChIJD3uTd9hx5kcR1IQvGfr8dbk"
         // Specify the required fields for an isOpen request.
@@ -45,7 +46,6 @@ class PlacesIsOpenActivity : AppCompatActivity() {
             Place.Field.OPENING_HOURS,
             Place.Field.UTC_OFFSET
         )
-        val isOpenCalendar: Calendar = Calendar.getInstance()
 
         val placeRequest: FetchPlaceRequest =
             FetchPlaceRequest.newInstance(placeId, placeFields)
@@ -67,14 +67,12 @@ class PlacesIsOpenActivity : AppCompatActivity() {
             isOpenTask.addOnFailureListener { exception ->
                 exception.printStackTrace()
             }
-            isOpenTask.addOnCompleteListener { }
             // [END_EXCLUDE]
         }
         // [START_EXCLUDE]
         placeTask.addOnFailureListener { exception ->
             exception.printStackTrace()
         }
-        placeTask.addOnCompleteListener { }
         // [END_EXCLUDE]
         // [END maps_places_place_is_open]
     }
@@ -86,8 +84,8 @@ class PlacesIsOpenActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     private fun isOpenByPlaceId() {
         // [START maps_places_id_is_open]
-        val placeId = "ChIJD3uTd9hx5kcR1IQvGfr8dbk"
         val isOpenCalendar: Calendar = Calendar.getInstance()
+        val placeId = "ChIJD3uTd9hx5kcR1IQvGfr8dbk"
 
         val request: IsOpenRequest = try {
             IsOpenRequest.newInstance(placeId, isOpenCalendar.timeInMillis)
