@@ -149,7 +149,7 @@ class PlaceAutocompleteActivity extends AppCompatActivity {
                     Intent intent = result.getData();
                     if (intent != null) {
                         Place place = Autocomplete.getPlaceFromIntent(intent);
-                        Log.i(TAG, "Place: {$place.getName()}, ${place.getId()}");
+                        Log.i(TAG, "Place: ${place.getName()}, ${place.getId()}");
                     }
                 } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
                     // The user canceled the operation.

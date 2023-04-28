@@ -26,8 +26,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.model.PlaceTypes
 import com.google.android.libraries.places.api.model.RectangularBounds
-import com.google.android.libraries.places.api.model.TypeFilter
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.libraries.places.api.net.PlacesClient
@@ -97,7 +97,7 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
         // [END maps_places_autocomplete_location_restriction]
 
         // [START maps_places_autocomplete_type_filter]
-        autocompleteFragment.setTypesFilter(listOf(TypeFilter.ADDRESS.toString()))
+        autocompleteFragment.setTypesFilter(listOf(PlaceTypes.ADDRESS))
         // [END maps_places_autocomplete_type_filter]
 
         // [START maps_places_autocomplete_type_filter_multiple]
@@ -107,7 +107,7 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
         val fields: List<Place.Field> = ArrayList()
         // [START maps_places_intent_type_filter]
         val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
-            .setTypesFilter(listOf(TypeFilter.ADDRESS.toString()))
+            .setTypesFilter(listOf(PlaceTypes.ADDRESS))
             .build(this)
         // [END maps_places_intent_type_filter]
 
@@ -140,7 +140,7 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
                 if (intent != null) {
                     val place = Autocomplete.getPlaceFromIntent(intent)
                     Log.i(
-                        TAG, "Place: {\$place.getName()}, \${place.getId()}"
+                        TAG, "Place: ${place.name}, ${place.id}"
                     )
                 }
             } else if (result.resultCode == Activity.RESULT_CANCELED) {
@@ -169,7 +169,7 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
                 //.setLocationRestriction(bounds)
                 .setOrigin(LatLng(-33.8749937, 151.2041382))
                 .setCountries("AU", "NZ")
-                .setTypesFilter(listOf(TypeFilter.ADDRESS.toString()))
+                .setTypesFilter(listOf(PlaceTypes.ADDRESS))
                 .setSessionToken(token)
                 .setQuery(query)
                 .build()
