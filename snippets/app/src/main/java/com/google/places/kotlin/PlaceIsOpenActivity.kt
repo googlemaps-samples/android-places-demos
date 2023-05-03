@@ -25,7 +25,7 @@ import com.google.android.libraries.places.api.net.IsOpenResponse
 import com.google.android.libraries.places.api.net.PlacesClient
 import java.util.Calendar
 
-class PlacesIsOpenActivity : AppCompatActivity() {
+class PlaceIsOpenActivity : AppCompatActivity() {
     private lateinit var placesClient: PlacesClient
 
     /**
