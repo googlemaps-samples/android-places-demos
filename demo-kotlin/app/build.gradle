@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion 33
+    compileSdk 33
     defaultConfig {
         applicationId "com.example.placesdemo"
-        minSdkVersion 21
-        targetSdkVersion 33
+        minSdk 21
+        targetSdk 33
         multiDexEnabled true
         versionCode 1
         versionName "1.0"
@@ -36,9 +36,11 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:4.13.2"
     implementation "com.android.databinding:viewbinding:8.0.0"
 
-    // Places SDK for Android
-    implementation 'com.google.android.libraries.places:places:3.1.0'
-    implementation 'com.google.maps.android:android-maps-utils:2.4.0'
+    // KTX for the Places SDK for Android library
+    implementation 'com.google.maps.android:places-ktx:3.0.0'
+
+    // KTX for the Maps SDK for Android Utility Library
+    implementation 'com.google.maps.android:maps-utils-ktx:5.0.0'
 }
 repositories {
     mavenCentral()
@@ -46,12 +48,13 @@ repositories {
 
 secrets {
     // To add your Google Maps Platform API key to this project:
-    // 1. Create or open file local.properties in this folder, which will be ready by default
-    //    by secrets_gradle_plugin
+    // 1. Create or open file secrets.properties in the root folder of the project, which will be
+    // read by secrets_gradle_plugin
     // 2. Add this line, replacing YOUR_API_KEY with a key from a project with Places API enabled:
     //        PLACES_API_KEY=YOUR_API_KEY
     // 3. Add this line, replacing YOUR_API_KEY with a key from a project with Maps SDK for Android
     //    enabled (can be the same project and key as in Step 2):
     //        MAPS_API_KEY=YOUR_API_KEY
+    propertiesFileName = "secrets.properties"
     defaultPropertiesFileName 'local.defaults.properties'
 }
