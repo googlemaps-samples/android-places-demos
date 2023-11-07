@@ -45,11 +45,11 @@ object StringUtil {
 
     fun convertToLatLngBounds(
         southWest: String?, northEast: String?): LatLngBounds? {
-        val soundWestLatLng = convertToLatLng(southWest)
+        val southWestLatLng = convertToLatLng(southWest)
         val northEastLatLng = convertToLatLng(northEast)
-        return if (soundWestLatLng == null || northEast == null) {
+        return if (southWestLatLng == null || northEastLatLng == null) {
             null
-        } else LatLngBounds(soundWestLatLng, northEastLatLng)
+        } else LatLngBounds(southWestLatLng, northEastLatLng)
     }
 
     fun convertToLatLng(value: String?): LatLng? {

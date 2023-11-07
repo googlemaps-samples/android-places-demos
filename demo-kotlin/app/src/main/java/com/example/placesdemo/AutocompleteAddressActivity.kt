@@ -41,7 +41,7 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.model.TypeFilter
+import com.google.android.libraries.places.api.model.PlaceTypes
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.maps.android.SphericalUtil.computeDistanceBetween
@@ -101,8 +101,7 @@ class AutocompleteAddressActivity : AppCompatActivity(R.layout.autocomplete_addr
         // Build the autocomplete intent with field, country, and type filters applied
         val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
             .setCountries(listOf("US"))
-            //TODO: https://developers.google.com/maps/documentation/places/android-sdk/autocomplete
-            .setTypesFilter(listOf(TypeFilter.ADDRESS.toString().lowercase()))
+            .setTypesFilter(listOf(PlaceTypes.ADDRESS))
             .build(this)
         startAutocomplete.launch(intent)
     }

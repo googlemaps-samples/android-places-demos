@@ -78,6 +78,7 @@ class CurrentPlaceActivity : AppCompatActivity() {
             Place.Field.CURRENT_OPENING_HOURS,
             Place.Field.DELIVERY,
             Place.Field.DINE_IN,
+            Place.Field.EDITORIAL_SUMMARY,
             Place.Field.OPENING_HOURS,
             Place.Field.PHONE_NUMBER,
             Place.Field.RESERVABLE,
