@@ -34,9 +34,10 @@ android {
 
 // [START maps_android_places_install_snippet]
 dependencies {
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:$kotlin_version"))
     // [START_EXCLUDE silent]
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
     implementation 'androidx.core:core-ktx:1.10.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -47,7 +48,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     // [END_EXCLUDE]
     // [START maps_android_places_upgrade_snippet]
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
     implementation 'com.google.android.libraries.places:places:3.3.0'
     // [END maps_android_places_upgrade_snippet]
 }
