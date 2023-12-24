@@ -35,6 +35,7 @@ import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.google.places.BuildConfig
 import com.google.places.R
 
 class PlaceAutocompleteActivity : AppCompatActivity() {
@@ -44,9 +45,9 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val apiKey = "Your API key"
         // [START maps_places_get_started]
         // Initialize the SDK
+        val apiKey = BuildConfig.PLACES_API_KEY
         Places.initialize(applicationContext, apiKey)
 
         // Create a new PlacesClient instance
