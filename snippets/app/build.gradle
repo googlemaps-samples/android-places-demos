@@ -34,8 +34,9 @@ android {
 
 // [START maps_android_places_install_snippet]
 dependencies {
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:$kotlin_version"))
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.21"))
     // [START_EXCLUDE silent]
+    // If updating kotlin-bom version number above, also edit project-level build.gradle definition of $kotlin_version variable
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
     implementation 'androidx.core:core-ktx:1.10.0'
