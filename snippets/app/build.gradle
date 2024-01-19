@@ -62,9 +62,6 @@ secrets {
     // read by secrets_gradle_plugin
     // 2. Add this line, replacing YOUR_API_KEY with a key from a project with Places API enabled:
     //        PLACES_API_KEY=YOUR_API_KEY
-    // 3. Add this line, replacing YOUR_API_KEY with a key from a project with Maps SDK for Android
-    //    enabled (can be the same project and key as in Step 2):
-    //        MAPS_API_KEY=YOUR_API_KEY
     propertiesFileName = "secrets.properties"
     defaultPropertiesFileName 'local.defaults.properties'
 }
