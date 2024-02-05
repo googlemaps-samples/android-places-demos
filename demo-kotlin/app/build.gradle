@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
     defaultConfig {
         applicationId "com.example.placesdemo"
         minSdk 21
-        targetSdk 33
+        targetSdk 34
         multiDexEnabled true
         versionCode 1
         versionName "1.0"
@@ -29,15 +29,15 @@ android {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.core:core-ktx:1.10.0'
+    implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'com.android.support:multidex:1.0.3'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'com.google.android.material:material:1.11.0'
     implementation 'com.android.volley:volley:1.2.1'
-    implementation "com.github.bumptech.glide:glide:4.13.2"
-    implementation "com.android.databinding:viewbinding:8.0.0"
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    implementation "com.android.databinding:viewbinding:8.2.2"
 
     // KTX for the Places SDK for Android library
-    implementation 'com.google.maps.android:places-ktx:3.0.0'
+    implementation 'com.google.maps.android:places-ktx:3.1.0'
 
     // KTX for the Maps SDK for Android Utility Library
     implementation 'com.google.maps.android:maps-utils-ktx:5.0.0'
@@ -48,13 +48,13 @@ repositories {
 
 secrets {
     // To add your Google Maps Platform API key to this project:
-    // 1. Create or open file secrets.properties in the root folder of the project, which will be
-    // read by secrets_gradle_plugin
-    // 2. Add this line, replacing YOUR_API_KEY with a key from a project with Places API enabled:
-    //        PLACES_API_KEY=YOUR_API_KEY
-    // 3. Add this line, replacing YOUR_API_KEY with a key from a project with Maps SDK for Android
-    //    enabled (can be the same project and key as in Step 2):
-    //        MAPS_API_KEY=YOUR_API_KEY
-    propertiesFileName = "secrets.properties"
+    // 1. Copy local.defaults.properties to secrets.properties
+    // 2. Replace PLACES_API_KEY=DEFAULT_API_KEY with a key from a project with Places API enabled
+    // 3. Replace MAPS_API_KEY=DEFAULT_API_KEY with a key from a project with Maps SDK for Android
+    //    enabled (can be the same project and key as in Step 2)
     defaultPropertiesFileName 'local.defaults.properties'
+
+    // Optionally specify a different file name containing your secrets.
+    // The plugin defaults to "local.properties"
+    propertiesFileName = "secrets.properties"
 }
