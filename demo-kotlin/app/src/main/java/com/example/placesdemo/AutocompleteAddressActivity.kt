@@ -40,12 +40,12 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.libraries.places.api.model.AddressComponents
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.PlaceTypes
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.maps.android.SphericalUtil.computeDistanceBetween
-import java.util.*
 
 /**
  *  Activity for using Place Autocomplete to assist filling out an address form.
@@ -197,38 +197,19 @@ class AutocompleteAddressActivity : AppCompatActivity(R.layout.autocomplete_addr
 
     private fun fillInAddress(place: Place) {
         val components = place.addressComponents
-        val address1 = StringBuilder()
-        val postcode = StringBuilder()
 
         // Get each component of the address from the place details,
         // and then fill-in the corresponding field on the form.
         // Possible AddressComponent types are documented at https://goo.gle/32SJPM1
         if (components != null) {
-            for (component in components.asList()) {
-                when (component.types[0]) {
-                    "street_number" -> {
-                        address1.insert(0, component.name)
-                    }
-                    "route" -> {
-                        address1.append(" ")
-                        address1.append(component.shortName)
-                    }
-                    "postal_code" -> {
-                        postcode.insert(0, component.name)
-                    }
-                    "postal_code_suffix" -> {
-                        postcode.append("-").append(component.name)
-                    }
-                    "locality" -> binding.autocompleteCity.setText(component.name)
-                    "administrative_area_level_1" -> {
-                        binding.autocompleteState.setText(component.shortName)
-                    }
-                    "country" -> binding.autocompleteCountry.setText(component.name)
-                }
+            with (components.toAddress()) {
+                binding.autocompleteAddress1.setText(streetAddress)
+                binding.autocompletePostal.setText(fullPostalCode)
+                binding.autocompleteCity.setText(locality)
+                binding.autocompleteState.setText(adminArea)
+                binding.autocompleteCountry.setText(country)
             }
         }
-        binding.autocompleteAddress1.setText(address1.toString())
-        binding.autocompletePostal.setText(postcode.toString())
 
         // After filling the form with address components from the Autocomplete
         // prediction, set cursor focus on the second address line to encourage
@@ -334,5 +315,62 @@ class AutocompleteAddressActivity : AppCompatActivity(R.layout.autocomplete_addr
     companion object {
         private val TAG = AutocompleteAddressActivity::class.java.simpleName
         private const val MAP_FRAGMENT_TAG = "MAP"
+    }
+}
+
+data class Address(
+    val streetNumber: String,
+    val locality: String,
+    val route: String,
+    val postCode: String,
+    val postCodeSuffix: String,
+    val adminArea: String,
+    val country: String
+) {
+    val fullPostalCode: String
+        get() = listOf(postCode, postCodeSuffix).filter { it.isNotBlank() }.joinToString("-")
+    val streetAddress: String
+        get() = listOf(streetNumber, route).filter { it.isNotBlank() }.joinToString(" ")
+
+}
+
+class AddressBuilder {
+    var streetNumber: String = ""
+    var route: String = ""
+    var postCode: String = ""
+    var postCodeSuffix: String = ""
+    var locality: String = ""
+    var adminArea: String = ""
+    var country: String = ""
+
+    fun build() : Address {
+
+        return Address(
+            streetNumber = streetNumber,
+            route = route,
+            postCode = postCode,
+            postCodeSuffix = postCodeSuffix,
+            locality = locality,
+            adminArea = adminArea,
+            country = country,
+        )
+    }
+}
+
+private fun AddressComponents.toAddress(): Address {
+    return with (AddressBuilder()) {
+
+        for ((type, value) in this@toAddress.asList().map { it.types[0] to it.name }) {
+            when (type) {
+                "street_number" -> streetNumber = value
+                "route" -> route = value
+                "postal_code" -> postCode = value
+                "postal_code_suffix" -> postCodeSuffix = value
+                "locality" -> locality = value
+                "administrative_area_level_1" -> adminArea = value
+                "country" -> country = value
+            }
+        }
+        build()
     }
 }
