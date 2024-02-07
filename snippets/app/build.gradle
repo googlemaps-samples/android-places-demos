@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.google.places"
         minSdk 21
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -34,16 +34,16 @@ android {
 
 // [START maps_android_places_install_snippet]
 dependencies {
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.21"))
-    // [START_EXCLUDE silent]
     // If updating kotlin-bom version number above, also edit project-level build.gradle definition of $kotlin_version variable
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:$kotlin_version"))
+    // [START_EXCLUDE silent]
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib"
-    implementation 'androidx.core:core-ktx:1.10.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.android.volley:volley:1.2.1'
-    implementation "com.github.bumptech.glide:glide:4.13.2"
+    implementation "com.github.bumptech.glide:glide:4.16.0"
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
