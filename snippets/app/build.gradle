@@ -1,5 +1,8 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+}
 
 android {
     compileSdk 34
@@ -53,3 +56,13 @@ dependencies {
     // [END maps_android_places_upgrade_snippet]
 }
 // [END maps_android_places_install_snippet]
+
+secrets {
+    // To add your Google Maps Platform API key to this project:
+    // 1. Create or open file secrets.properties in the root folder of the project, which will be
+    // read by secrets_gradle_plugin
+    // 2. Add this line, replacing YOUR_API_KEY with a key from a project with Places API enabled:
+    //        PLACES_API_KEY=YOUR_API_KEY
+    propertiesFileName = "secrets.properties"
+    defaultPropertiesFileName 'local.defaults.properties'
+}
