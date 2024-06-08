@@ -42,12 +42,12 @@ class PlacePhotosActivity : AppCompatActivity() {
                 val place = response.place
 
                 // Get the photo metadata.
-                val metada = place.photoMetadatas
-                if (metada == null || metada.isEmpty()) {
+                val metadata = place.photoMetadatas
+                if (metadata == null || metadata.isEmpty()) {
                     Log.w(TAG, "No photo metadata.")
                     return@addOnSuccessListener
                 }
-                val photoMetadata = metada.first()
+                val photoMetadata = metadata.first()
 
                 // Get the attribution text.
                 val attributions = photoMetadata?.attributions
