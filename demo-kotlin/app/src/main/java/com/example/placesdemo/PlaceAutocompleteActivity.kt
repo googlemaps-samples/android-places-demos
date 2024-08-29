@@ -141,7 +141,7 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
                 }
             }
             AutocompleteActivity.RESULT_ERROR -> {
-                val status = Autocomplete.getStatusFromIntent(data)
+                val status = Autocomplete.getStatusFromIntent(result.data)
                 binding.response.text = "Error: ${status.statusMessage}"
             }
             AutocompleteActivity.RESULT_CANCELED -> {
