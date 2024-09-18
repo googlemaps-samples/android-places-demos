@@ -30,17 +30,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val apiKey = BuildConfig.PLACES_API_KEY
-        if (apiKey.isEmpty()) {
-            Toast.makeText(this, getString(R.string.error_api_key), Toast.LENGTH_LONG).show()
-            return
-        }
-
-        // Setup Places Client
-        if (!Places.isInitialized()) {
-            Places.initialize(applicationContext, apiKey)
-        }
-
         setLaunchActivityClickListener(R.id.autocomplete_button, PlaceAutocompleteActivity::class.java)
         setLaunchActivityClickListener(R.id.autocomplete_address_button, AutocompleteAddressActivity::class.java)
         setLaunchActivityClickListener(R.id.programmatic_autocomplete_button, ProgrammaticAutocompleteGeocodingActivity::class.java)

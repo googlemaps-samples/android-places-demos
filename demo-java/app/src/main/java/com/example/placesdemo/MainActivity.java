@@ -33,18 +33,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final String apiKey = BuildConfig.PLACES_API_KEY;
-
-        if (apiKey.equals("")) {
-            Toast.makeText(this, getString(R.string.error_api_key), Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        // Setup Places Client
-        if (!Places.isInitialized()) {
-            Places.initialize(getApplicationContext(), apiKey);
-        }
-
         setLaunchActivityClickListener(R.id.autocomplete_button, PlaceAutocompleteActivity.class);
         setLaunchActivityClickListener(R.id.autocomplete_address_button, AutocompleteAddressActivity.class);
         setLaunchActivityClickListener(R.id.programmatic_autocomplete_button, ProgrammaticAutocompleteToolbarActivity.class
