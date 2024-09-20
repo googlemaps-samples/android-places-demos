@@ -103,6 +103,8 @@ public class CurrentPlaceActivity extends AppCompatActivity {
                 Field.CURRENT_OPENING_HOURS,
                 Field.DELIVERY,
                 Field.DINE_IN,
+                Field.EDITORIAL_SUMMARY,
+                Field.INTERNATIONAL_PHONE_NUMBER,
                 Field.OPENING_HOURS,
                 Field.PHONE_NUMBER,
                 Field.RESERVABLE,
@@ -114,8 +116,8 @@ public class CurrentPlaceActivity extends AppCompatActivity {
                 Field.SERVES_LUNCH,
                 Field.SERVES_VEGETARIAN_FOOD,
                 Field.SERVES_WINE,
-                Field.UTC_OFFSET,
                 Field.TAKEOUT,
+                Field.UTC_OFFSET,
                 Field.WEBSITE_URI,
                 Field.WHEELCHAIR_ACCESSIBLE_ENTRANCE
         );
