@@ -7,21 +7,22 @@ plugins {
 
 android {
     namespace = "com.example.placesdemo"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.placesdemo"
-        minSdk = 21
-        targetSdk = 34
+        minSdk = 23
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
         multiDexEnabled = true
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(21))
+        }
     }
 
     buildFeatures {
@@ -40,7 +41,7 @@ dependencies {
     implementation(libs.multidex)
 
     // Google Places
-    implementation(libs.places.ktx)
+    implementation(libs.places)
     implementation(libs.maps.utils.ktx)
 }
 

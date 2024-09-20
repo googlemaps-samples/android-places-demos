@@ -42,7 +42,9 @@
         android:hint="@string/autocomplete_location_origin_hint"
         android:autofillHints=""
         android:imeOptions="actionNext"
-        android:inputType="text"/>
+        android:inputType="numberDecimal|numberSigned"
+        android:digits="0123456789.,- "
+        />
 
     <TextView
         android:layout_width="wrap_content"
@@ -63,7 +65,9 @@
           android:hint="@string/autocomplete_location_south_west_hint"
           android:autofillHints=""
           android:imeOptions="actionNext"
-          android:inputType="text"/>
+          android:inputType="numberDecimal|numberSigned"
+          android:digits="0123456789.,- "
+          />
 
       <EditText
           android:id="@+id/autocomplete_location_bias_north_east"
@@ -73,7 +77,9 @@
           android:hint="@string/autocomplete_location_north_east_hint"
           android:autofillHints=""
           android:imeOptions="actionNext"
-          android:inputType="text"/>
+          android:inputType="numberDecimal|numberSigned"
+          android:digits="0123456789.,- "
+          />
     </LinearLayout>
 
     <TextView
@@ -95,7 +101,9 @@
           android:hint="@string/autocomplete_location_south_west_hint"
           android:autofillHints=""
           android:imeOptions="actionNext"
-          android:inputType="text"/>
+          android:inputType="numberDecimal|numberSigned"
+          android:digits="0123456789.,- "
+          />
 
       <EditText
           android:id="@+id/autocomplete_location_restriction_north_east"
@@ -105,7 +113,9 @@
           android:hint="@string/autocomplete_location_north_east_hint"
           android:autofillHints=""
           android:imeOptions="actionNext"
-          android:inputType="text"/>
+          android:inputType="numberDecimal|numberSigned"
+          android:digits="0123456789.,- "
+          />
     </LinearLayout>
 
     <EditText

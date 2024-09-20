@@ -1,15 +1,15 @@
 [versions]
-androidGradlePlugin = "8.4.1"
+androidGradlePlugin = "8.6.1"
 appcompat = "1.7.0"
 coreKtx = "1.13.1"
 glide = "4.16.0"
 kotlin = "2.0.0"
 mapsSecretsGradlePlugin = "2.0.1"
-mapsUtilsKtx = "5.0.0"
+mapsUtilsKtx = "5.1.1"
 material = "1.12.0"
 multidex = "2.0.1"
-placesKtx = "3.2.0"
-viewbinding = "8.4.1"
+places = "4.0.0"
+viewbinding = "8.6.1"
 volley = "1.2.1"
 kotlinParcelize = "1.9.24"
 
@@ -20,7 +20,7 @@ glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 maps-utils-ktx = { module = "com.google.maps.android:maps-utils-ktx", version.ref = "mapsUtilsKtx" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
-places-ktx = { module = "com.google.maps.android:places-ktx", version.ref = "placesKtx" }
+places = { module = "com.google.android.libraries.places:places", version.ref = "places" }
 viewbinding = { module = "com.android.databinding:viewbinding", version.ref = "viewbinding" }
 volley = { module = "com.android.volley:volley", version.ref = "volley" }
 
