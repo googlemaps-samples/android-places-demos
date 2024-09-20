@@ -50,7 +50,7 @@ jobs:
 
     - name: Upload build reports
       if: always()
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v4
       with:
         name: demo-java-build-reports
         path: demo-java/app/build/reports
@@ -76,7 +76,7 @@ jobs:
 
     - name: Upload build reports
       if: always()
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v4
       with:
         name: demo-kotlin-build-reports
         path: demo-kotlin/app/build/reports
@@ -102,7 +102,7 @@ jobs:
 
     - name: Upload build reports
       if: always()
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v4
       with:
         name: snippets-build-reports
         path: snippets/app/build/reports
