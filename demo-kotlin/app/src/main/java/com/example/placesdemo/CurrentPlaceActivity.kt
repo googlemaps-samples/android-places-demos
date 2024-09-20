@@ -79,6 +79,7 @@ class CurrentPlaceActivity : AppCompatActivity() {
             Place.Field.DELIVERY,
             Place.Field.DINE_IN,
             Place.Field.EDITORIAL_SUMMARY,
+            Place.Field.INTERNATIONAL_PHONE_NUMBER,
             Place.Field.OPENING_HOURS,
             Place.Field.PHONE_NUMBER,
             Place.Field.RESERVABLE,
@@ -93,7 +94,7 @@ class CurrentPlaceActivity : AppCompatActivity() {
             Place.Field.TAKEOUT,
             Place.Field.UTC_OFFSET,
             Place.Field.WEBSITE_URI,
-            Place.Field.WHEELCHAIR_ACCESSIBLE_ENTRANCE
+            Place.Field.WHEELCHAIR_ACCESSIBLE_ENTRANCE,
         )
         fieldSelector = FieldSelector(
             binding.useCustomFields,
