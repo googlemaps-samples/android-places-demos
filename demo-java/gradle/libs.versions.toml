@@ -1,31 +1,36 @@
 [versions]
+activity = "1.9.3"
 androidGradlePlugin = "8.6.1"
+androidMapsUtils = "3.8.2"
 appcompat = "1.7.0"
-coreKtx = "1.15.0"
+constraintlayout = "2.2.0"
+fragment = "1.8.5"
 glide = "4.16.0"
-kotlin = "2.0.20"
 mapsSecretsGradlePlugin = "2.0.1"
-mapsUtilsKtx = "5.1.1"
 material = "1.12.0"
 multidex = "2.0.1"
+navigationFragment = "2.8.3"
 places = "4.0.0"
+playServicesMaps = "19.0.0"
 viewbinding = "8.7.2"
 volley = "1.2.1"
-kotlinParcelize = "1.9.24"
 
 [libraries]
+activity = { module = "androidx.activity:activity", version.ref = "activity" }
+android-maps-utils = { module = "com.google.maps.android:android-maps-utils", version.ref = "androidMapsUtils" }
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
+fragment = { module = "androidx.fragment:fragment", version.ref = "fragment" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
-maps-utils-ktx = { module = "com.google.maps.android:maps-utils-ktx", version.ref = "mapsUtilsKtx" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
+navigation-fragment = { module = "androidx.navigation:navigation-fragment", version.ref = "navigationFragment" }
+navigation-ui = { module = "androidx.navigation:navigation-ui", version.ref = "navigationFragment" }
 places = { module = "com.google.android.libraries.places:places", version.ref = "places" }
+play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
 viewbinding = { module = "com.android.databinding:viewbinding", version.ref = "viewbinding" }
 volley = { module = "com.android.volley:volley", version.ref = "volley" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 secrets-gradle-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "mapsSecretsGradlePlugin" }
-jetbrains-kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlinParcelize" }
