@@ -318,7 +318,18 @@ class AutocompleteAddressActivity : AppCompatActivity(R.layout.autocomplete_addr
     }
 }
 
-data class Address(
+/**
+ * Data class representing a postal address.
+ *
+ * @property streetNumber The street number of the address.
+ * @property locality The locality or neighborhood of the address.
+ * @property route The street name or route of the address.
+ * @property postCode The primary part of the postal code.
+ * @property postCodeSuffix The optional suffix or extension of the postal code.
+ * @property adminArea The administrative area, such as state, province, or region.
+ * @property country The country of the address.
+ */
+private data class Address(
     val streetNumber: String,
     val locality: String,
     val route: String,
@@ -331,46 +342,29 @@ data class Address(
         get() = listOf(postCode, postCodeSuffix).filter { it.isNotBlank() }.joinToString("-")
     val streetAddress: String
         get() = listOf(streetNumber, route).filter { it.isNotBlank() }.joinToString(" ")
-
 }
 
-class AddressBuilder {
-    var streetNumber: String = ""
-    var route: String = ""
-    var postCode: String = ""
-    var postCodeSuffix: String = ""
-    var locality: String = ""
-    var adminArea: String = ""
-    var country: String = ""
-
-    fun build() : Address {
-
-        return Address(
-            streetNumber = streetNumber,
-            route = route,
-            postCode = postCode,
-            postCodeSuffix = postCodeSuffix,
-            locality = locality,
-            adminArea = adminArea,
-            country = country,
-        )
-    }
-}
-
+/**
+ * Converts an [AddressComponents] object to an [Address] object.
+ *
+ * This function iterates through the address components, creating a map where the key is the component type
+ * (e.g., "street_number", "route") and the value is the component name. It then uses this map to populate
+ * the fields of an [Address] object.
+ *
+ * If a specific address component type is not found in the [AddressComponents], the corresponding field in
+ * the [Address] object will be set to an empty string.
+ *
+ * @return An [Address] object representing the address information extracted from the [AddressComponents].
+ */
 private fun AddressComponents.toAddress(): Address {
-    return with (AddressBuilder()) {
-
-        for ((type, value) in this@toAddress.asList().map { it.types[0] to it.name }) {
-            when (type) {
-                "street_number" -> streetNumber = value
-                "route" -> route = value
-                "postal_code" -> postCode = value
-                "postal_code_suffix" -> postCodeSuffix = value
-                "locality" -> locality = value
-                "administrative_area_level_1" -> adminArea = value
-                "country" -> country = value
-            }
-        }
-        build()
-    }
+    val addressMap = this.asList().associate { it.types[0] to it.name }
+    return Address(
+        streetNumber = addressMap["street_number"] ?: "",
+        route = addressMap["route"] ?: "",
+        postCode = addressMap["postal_code"] ?: "",
+        postCodeSuffix = addressMap["postal_code_suffix"] ?: "",
+        locality = addressMap["locality"] ?: "",
+        adminArea = addressMap["administrative_area_level_1"] ?: "",
+        country = addressMap["country"] ?: ""
+    )
 }
