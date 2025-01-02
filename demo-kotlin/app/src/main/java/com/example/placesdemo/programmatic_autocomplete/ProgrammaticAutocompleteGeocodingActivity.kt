@@ -53,11 +53,12 @@ import org.json.JSONArray
 import org.json.JSONException
 
 /**
- * An Activity that demonstrates programmatic as-you-type place predictions. The parameters of the
- * request are currently hard coded in this Activity, to modify these parameters (e.g. location
- * bias, place types, etc.), see [ProgrammaticAutocompleteGeocodingActivity.getPlacePredictions]
+ * An Activity that demonstrates programmatic as-you-type place predictions.
+ * The parameters of the request are currently hard coded in this Activity.
+ * To modify these parameters (e.g. location bias, place types, etc.),
+ * see [ProgrammaticAutocompleteGeocodingActivity.getPlacePredictions].
  *
- * @see https://developers.google.com/places/android-sdk/autocomplete#get_place_predictions_programmatically
+ * @see <a href="https://developers.google.com/places/android-sdk/autocomplete#get_place_predictions_programmatically">Get Place Predictions Programmatically</a>
  */
 class ProgrammaticAutocompleteGeocodingActivity : AppCompatActivity() {
 
@@ -181,9 +182,9 @@ class ProgrammaticAutocompleteGeocodingActivity : AppCompatActivity() {
 
     /**
      * Performs a Geocoding API request and displays the result in a dialog.
-     * Be sure to enable Geocoding API in your project and API key restrictions.
+     * Be sure to enable the Geocoding API in your project and set API key restrictions.
      *
-     * @see https://developers.google.com/places/android-sdk/autocomplete#get_place_predictions_programmatically
+     * @see <a href="https://developers.google.com/maps/documentation/geocoding/overview">Geocoding API</a>
      */
     private fun geocodePlaceAndDisplay(placePrediction: AutocompletePrediction) {
         // Construct the request URL
@@ -231,7 +232,7 @@ class ProgrammaticAutocompleteGeocodingActivity : AppCompatActivity() {
     /**
      * Performs a Place Details request and displays the result in a dialog.
      *
-     * @see https://developers.google.com/maps/documentation/places/android-sdk/place-details#maps_places_get_place_by_id-kotlin
+     * @see <a href="https://developers.google.com/maps/documentation/places/android-sdk/place-details">Place Details</a>
      */
     private fun fetchPlaceAndDisplay(placePrediction: AutocompletePrediction) {
         // Specify the fields to return.
@@ -255,7 +256,6 @@ class ProgrammaticAutocompleteGeocodingActivity : AppCompatActivity() {
                 }
             }
     }
-
 
     companion object {
         private val TAG = ProgrammaticAutocompleteGeocodingActivity::class.java.simpleName

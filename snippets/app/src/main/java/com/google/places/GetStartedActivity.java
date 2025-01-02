@@ -29,7 +29,7 @@ class GetStartedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final String apiKey = "You API key";
+        final String apiKey = BuildConfig.PLACES_API_KEY;
         // [START maps_places_get_started]
         // Initialize the SDK
         Places.initialize(getApplicationContext(), apiKey);

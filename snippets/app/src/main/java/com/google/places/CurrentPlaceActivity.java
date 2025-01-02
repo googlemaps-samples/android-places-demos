@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.PlaceLikelihood;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
@@ -35,18 +36,22 @@ import java.util.List;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-class CurrentPlaceActivity extends AppCompatActivity {
+public class CurrentPlaceActivity extends AppCompatActivity {
 
-    private static final String TAG = CurrentPlaceActivity.class.getSimpleName();
-    private PlacesClient placesClient;
+    private static final String TAG = com.google.places.kotlin.CurrentPlaceActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Initialize the SDK
+        Places.initialize(getApplicationContext(), BuildConfig.PLACES_API_KEY);
+        // Create a new PlacesClient instance
+        PlacesClient placesClient = Places.createClient(this);
+
         // [START maps_places_current_place]
         // Use fields to define the data types to return.
-        List<Place.Field> placeFields = Collections.singletonList(Place.Field.NAME);
+        List<Place.Field> placeFields = Collections.singletonList(Place.Field.DISPLAY_NAME);
 
         // Use the builder to create a FindCurrentPlaceRequest.
         FindCurrentPlaceRequest request = FindCurrentPlaceRequest.newInstance(placeFields);
@@ -59,13 +64,12 @@ class CurrentPlaceActivity extends AppCompatActivity {
                     FindCurrentPlaceResponse response = task.getResult();
                     for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
                         Log.i(TAG, String.format("Place '%s' has likelihood: %f",
-                            placeLikelihood.getPlace().getName(),
+                            placeLikelihood.getPlace().getDisplayName(),
                             placeLikelihood.getLikelihood()));
                     }
                 } else {
                     Exception exception = task.getException();
-                    if (exception instanceof ApiException) {
-                        ApiException apiException = (ApiException) exception;
+                    if (exception instanceof ApiException apiException) {
                         Log.e(TAG, "Place not found: " + apiException.getStatusCode());
                     }
                 }
