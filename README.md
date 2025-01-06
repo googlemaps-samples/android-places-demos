@@ -5,11 +5,11 @@
 [![StackOverflow](https://img.shields.io/stackexchange/stackoverflow/t/google-places-api?color=orange&label=google-places-api&logo=stackoverflow)](https://stackoverflow.com/questions/tagged/google-places-api)
 [![Discord](https://img.shields.io/discord/676948200904589322?color=6A7EC2&logo=discord&logoColor=ffffff)][Discord server]
 
-# Google Places SDK for Android Demos
+# Google Places SDK for Android sample applications
 
 ## Description
 
-This repo contains sample apps demonstrating use of the [Google Places SDK for Android](https://developers.google.com/places/android-sdk/).
+This repo contains sample apps demonstrating use of the [Google Places SDK for Android][places-sdk].
 
 ## Samples in this repo
 
@@ -30,6 +30,7 @@ To run the samples, you will need:
 - To [sign up with Google Maps Platform]
 - A Google Maps Platform [project] with the **Places SDK for Android** enabled
 - An [API key] associated with the project above ... follow the [API key instructions] if you're new to the process
+- Java 21+ or Kotlin
 - Android API level 23+ (35+ recommended)
 - Gradle
 
@@ -65,7 +66,6 @@ If you find a bug, or have a feature request, please [file an issue] on GitHub. 
 
 You can also discuss this sample on our [Discord server].
 
-[PRODUCT]: https://developers.google.com/maps/documentation/PRODUCT
 [places-sdk]: https://developers.google.com/places/android-sdk
 [API key]: https://developers.google.com/places/documentation/android-sdk/get-api-key
 [API key instructions]: https://developers.google.com/places/documentation/android-sdk/config#step_3_add_your_api_key_to_the_project
@@ -78,7 +78,7 @@ You can also discuss this sample on our [Discord server].
 [file an issue]: https://github.com/googlemaps/android-places-demos/issues/new/choose
 [license]: LICENSE
 [pull request]: https://github.com/googlemaps/android-places-demos/compare
-[project]: https://developers.google.com/maps/documentation/PRODUCT/cloud-setup#enabling-apis
+[project]: https://developers.google.com/maps/documentation/android-sdk/cloud-setup#enabling-apis
 [Sign up with Google Maps Platform]: https://console.cloud.google.com/google/maps-apis/start
 [SLA]: https://cloud.google.com/maps-platform/terms/sla
 [Technical Support Services Guidelines]: https://cloud.google.com/maps-platform/terms/tssg
