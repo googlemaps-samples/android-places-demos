@@ -15,8 +15,10 @@
 package com.google.places.kotlin
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.libraries.places.api.Places
+import com.google.places.BuildConfig
 import com.google.places.R
 
 class GetStartedActivity : AppCompatActivity() {
@@ -25,7 +27,13 @@ class GetStartedActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val apiKey = "Your API key"
+        val apiKey = BuildConfig.PLACES_API_KEY
+        if (apiKey == "DEFAULT_API_KEY") {
+            Toast.makeText(this, "PLACES_API_KEY has not been configured", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
         // [START maps_places_get_started]
         // Initialize the SDK
         Places.initialize(applicationContext, apiKey)
