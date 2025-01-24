@@ -169,8 +169,8 @@ class PlaceIsOpenActivity : AppCompatActivity() {
     }
 
     //////////////////////////
-// Helper methods below //
-//////////////////////////
+    // Helper methods below //
+    //////////////////////////
     private fun dismissKeyboard(focusedEditText: EditText) {
         val imm: InputMethodManager =
             getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

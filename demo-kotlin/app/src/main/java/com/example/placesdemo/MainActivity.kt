@@ -18,11 +18,9 @@ package com.example.placesdemo
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import com.example.placesdemo.programmatic_autocomplete.ProgrammaticAutocompleteGeocodingActivity
-import com.google.android.libraries.places.api.Places
 
 class MainActivity : AppCompatActivity() {
 

@@ -46,6 +46,7 @@ import com.google.android.libraries.places.api.model.PlaceTypes
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.maps.android.SphericalUtil.computeDistanceBetween
+import androidx.core.view.isGone
 
 /**
  *  Activity for using Place Autocomplete to assist filling out an address form.
@@ -257,7 +258,7 @@ class AutocompleteAddressActivity : AppCompatActivity(R.layout.autocomplete_addr
     private fun updateMap(latLng: LatLng) {
         marker!!.position = latLng
         map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
-        if (mapPanel.visibility == View.GONE) {
+        if (mapPanel.isGone) {
             mapPanel.visibility = View.VISIBLE
         }
     }

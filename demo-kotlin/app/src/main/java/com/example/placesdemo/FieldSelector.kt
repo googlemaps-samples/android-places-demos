@@ -35,16 +35,16 @@ class FieldSelector(
     enableView: CheckBox,
     outputView: TextView,
     savedState: Bundle?,
-    validFields: List<Place.Field> = listOf(*Place.Field.values())
+    validFields: List<Place.Field> = Place.Field.entries
 ) {
 
-    private val fieldStates: MutableMap<Place.Field, State>
+    private val fieldStates: MutableMap<Place.Field, State> = EnumMap(Place.Field::class.java)
     private val outputView: TextView
 
     /**
      * Shows dialog to allow user to select [Field] values they want.
      */
-    fun showDialog(context: Context?) {
+    private fun showDialog(context: Context?) {
         val listView = ListView(context)
         val adapter = PlaceFieldArrayAdapter(context, fieldStates.values.toList())
         listView.adapter = adapter
@@ -101,7 +101,7 @@ class FieldSelector(
 
     private fun restoreState(selectedFields: List<Int>) {
         for (serializedField in selectedFields) {
-            val field = Place.Field.values()[serializedField]
+            val field = Place.Field.entries[serializedField]
             val state = fieldStates[field]
             if (state != null) {
                 state.checked = true
@@ -168,7 +168,6 @@ class FieldSelector(
     }
 
     init {
-        fieldStates = HashMap()
         for (field in validFields) {
             fieldStates[field] = State(field)
         }
