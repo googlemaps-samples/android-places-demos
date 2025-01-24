@@ -110,9 +110,9 @@ class CurrentPlaceActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSaveInstanceState(bundle: Bundle) {
-        super.onSaveInstanceState(bundle)
-        fieldSelector.onSaveInstanceState(bundle)
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        fieldSelector.onSaveInstanceState(outState)
     }
 
     /**
