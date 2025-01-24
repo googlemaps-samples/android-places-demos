@@ -15,6 +15,7 @@
 package com.google.places;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,14 +23,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
-class GetStartedActivity extends AppCompatActivity {
+public class GetStartedActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final String apiKey = "You API key";
+        final String apiKey = BuildConfig.PLACES_API_KEY;
+        if (apiKey.equals("DEFAULT_API_KEY")) {
+            Toast.makeText(this, "PLACES_API_KEY has not been configured", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         // [START maps_places_get_started]
         // Initialize the SDK
         Places.initialize(getApplicationContext(), apiKey);

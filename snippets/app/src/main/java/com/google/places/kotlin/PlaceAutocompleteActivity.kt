@@ -17,6 +17,7 @@ package com.google.places.kotlin
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -35,6 +36,7 @@ import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.google.places.BuildConfig
 import com.google.places.R
 
 class PlaceAutocompleteActivity : AppCompatActivity() {
@@ -44,7 +46,12 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val apiKey = "Your API key"
+        val apiKey = BuildConfig.PLACES_API_KEY
+        if (apiKey == "DEFAULT_API_KEY") {
+            Toast.makeText(this, "PLACES_API_KEY has not been configured", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
         // [START maps_places_get_started]
         // Initialize the SDK
         Places.initialize(applicationContext, apiKey)
