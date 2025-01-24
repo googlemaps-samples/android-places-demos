@@ -17,6 +17,7 @@ package com.google.places.kotlin
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.libraries.places.api.Places
+import com.google.places.BuildConfig
 import com.google.places.R
 
 class GetStartedActivity : AppCompatActivity() {
@@ -25,9 +26,9 @@ class GetStartedActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val apiKey = "Your API key"
         // [START maps_places_get_started]
         // Initialize the SDK
+        val apiKey = BuildConfig.PLACES_API_KEY
         Places.initialize(applicationContext, apiKey)
 
         // Create a new PlacesClient instance
