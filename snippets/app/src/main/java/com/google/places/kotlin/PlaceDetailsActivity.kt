@@ -25,9 +25,9 @@ import com.google.android.libraries.places.api.net.PlacesClient
 class PlaceDetailsActivity : AppCompatActivity() {
     private fun simpleExamples(place: Place) {
         // [START maps_places_place_details_simple]
-        val name = place.name
-        val address = place.address
-        val location = place.latLng
+        val name = place.displayName
+        val address = place.formattedAddress
+        val location = place.location
         // [END maps_places_place_details_simple]
     }
 
@@ -39,7 +39,7 @@ class PlaceDetailsActivity : AppCompatActivity() {
         val placeId = "INSERT_PLACE_ID_HERE"
 
         // Specify the fields to return.
-        val placeFields = listOf(Place.Field.ID, Place.Field.NAME)
+        val placeFields = listOf(Place.Field.ID, Place.Field.DISPLAY_NAME)
 
         // Construct a request object, passing the place ID and fields array.
         val request = FetchPlaceRequest.newInstance(placeId, placeFields)
@@ -47,7 +47,7 @@ class PlaceDetailsActivity : AppCompatActivity() {
         placesClient.fetchPlace(request)
             .addOnSuccessListener { response: FetchPlaceResponse ->
                 val place = response.place
-                Log.i(PlaceDetailsActivity.TAG, "Place found: ${place.name}")
+                Log.i(PlaceDetailsActivity.TAG, "Place found: ${place.displayName}")
             }.addOnFailureListener { exception: Exception ->
                 if (exception is ApiException) {
                     Log.e(TAG, "Place not found: ${exception.message}")

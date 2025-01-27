@@ -1,7 +1,7 @@
 [versions]
 activity = "1.9.3"
-androidGradlePlugin = "8.6.1"
-androidMapsUtils = "3.8.2"
+androidGradlePlugin = "8.7.3"
+androidMapsUtils = "3.9.0"
 appcompat = "1.7.0"
 constraintlayout = "2.2.0"
 fragment = "1.8.5"
@@ -9,10 +9,10 @@ glide = "4.16.0"
 mapsSecretsGradlePlugin = "2.0.1"
 material = "1.12.0"
 multidex = "2.0.1"
-navigationFragment = "2.8.3"
-places = "4.0.0"
+navigationFragment = "2.8.5"
+places = "4.1.0"
 playServicesMaps = "19.0.0"
-viewbinding = "8.7.2"
+viewbinding = "8.7.3"
 volley = "1.2.1"
 
 [libraries]

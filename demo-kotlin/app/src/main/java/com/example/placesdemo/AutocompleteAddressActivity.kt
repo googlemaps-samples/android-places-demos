@@ -95,7 +95,7 @@ class AutocompleteAddressActivity : AppCompatActivity(R.layout.autocomplete_addr
         // return after the user has made a selection.
         val fields = listOf(
             Place.Field.ADDRESS_COMPONENTS,
-            Place.Field.LAT_LNG, Place.Field.VIEWPORT
+            Place.Field.LOCATION, Place.Field.VIEWPORT
         )
 
         // Build the autocomplete intent with field, country, and type filters applied
@@ -222,7 +222,7 @@ class AutocompleteAddressActivity : AppCompatActivity(R.layout.autocomplete_addr
 
     // [START maps_solutions_android_autocomplete_map_add]
     private fun showMap(place: Place) {
-        coordinates = place.latLng as LatLng
+        coordinates = place.location as LatLng
 
         // It isn't possible to set a fragment's id programmatically so we set a tag instead and
         // search for it using that.

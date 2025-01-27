@@ -88,10 +88,10 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSaveInstanceState(bundle: Bundle) {
-        super.onSaveInstanceState(bundle)
-        fieldSelector.onSaveInstanceState(bundle)
-        bundle.putParcelable(FETCHED_PHOTO_KEY, photo)
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        fieldSelector.onSaveInstanceState(outState)
+        outState.putParcelable(FETCHED_PHOTO_KEY, photo)
     }
 
     /**

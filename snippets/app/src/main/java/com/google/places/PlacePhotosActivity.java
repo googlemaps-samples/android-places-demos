@@ -70,8 +70,7 @@ class PlacePhotosActivity extends AppCompatActivity {
                 Bitmap bitmap = fetchPhotoResponse.getBitmap();
                 imageView.setImageBitmap(bitmap);
             }).addOnFailureListener((exception) -> {
-                if (exception instanceof ApiException) {
-                    final ApiException apiException = (ApiException) exception;
+                if (exception instanceof ApiException apiException) {
                     Log.e(TAG, "Place not found: " + exception.getMessage());
                     final int statusCode = apiException.getStatusCode();
                     // TODO: Handle error with given status code.

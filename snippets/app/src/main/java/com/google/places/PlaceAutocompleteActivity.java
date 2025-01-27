@@ -45,10 +45,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-class PlaceAutocompleteActivity extends AppCompatActivity {
+public class PlaceAutocompleteActivity extends AppCompatActivity {
 
     private static final String TAG = PlaceAutocompleteActivity.class.getSimpleName();
-
     private PlacesClient placesClient;
 
     @Override
@@ -56,14 +55,10 @@ class PlaceAutocompleteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final String apiKey = "You API key";
-        // [START maps_places_get_started]
         // Initialize the SDK
-        Places.initialize(getApplicationContext(), apiKey);
-
+        Places.initialize(getApplicationContext(), BuildConfig.PLACES_API_KEY);
         // Create a new PlacesClient instance
-        PlacesClient placesClient = Places.createClient(this);
-        // [END maps_places_get_started]
+        placesClient = Places.createClient(this);
     }
 
     private void initAutocompleteSupportFragment() {
@@ -73,14 +68,15 @@ class PlaceAutocompleteActivity extends AppCompatActivity {
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
         // Specify the types of place data to return.
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+        assert autocompleteFragment != null;
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.DISPLAY_NAME));
 
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 // TODO: Get info about the selected place.
-                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+                Log.i(TAG, "Place: " + place.getDisplayName() + ", " + place.getId());
             }
 
 
@@ -116,7 +112,7 @@ class PlaceAutocompleteActivity extends AppCompatActivity {
         // [START maps_places_intent_type_filter]
         Intent intent = new Autocomplete.IntentBuilder(
                 AutocompleteActivityMode.FULLSCREEN, fields)
-                .setTypesFilter(Arrays.asList(PlaceTypes.ADDRESS))
+                .setTypesFilter(List.of(PlaceTypes.ADDRESS))
                 .build(this);
         // [END maps_places_intent_type_filter]
 
@@ -132,7 +128,7 @@ class PlaceAutocompleteActivity extends AppCompatActivity {
         // [END_EXCLUDE]
         // Set the fields to specify which types of place data to
         // return after the user has made a selection.
-        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.DISPLAY_NAME);
 
         // Start the autocomplete intent.
         Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
@@ -149,7 +145,7 @@ class PlaceAutocompleteActivity extends AppCompatActivity {
                     Intent intent = result.getData();
                     if (intent != null) {
                         Place place = Autocomplete.getPlaceFromIntent(intent);
-                        Log.i(TAG, "Place: ${place.getName()}, ${place.getId()}");
+                        Log.i(TAG, "Place: ${place.getDisplayName()}, ${place.getId()}");
                     }
                 } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
                     // The user canceled the operation.
@@ -175,7 +171,7 @@ class PlaceAutocompleteActivity extends AppCompatActivity {
                 //.setLocationRestriction(bounds)
                 .setOrigin(new LatLng(-33.8749937, 151.2041382))
                 .setCountries("AU", "NZ")
-                .setTypesFilter(Arrays.asList(PlaceTypes.ADDRESS))
+                .setTypesFilter(List.of(PlaceTypes.ADDRESS))
                 .setSessionToken(token)
                 .setQuery(query)
                 .build();
@@ -186,8 +182,7 @@ class PlaceAutocompleteActivity extends AppCompatActivity {
                 Log.i(TAG, prediction.getPrimaryText(null).toString());
             }
         }).addOnFailureListener((exception) -> {
-            if (exception instanceof ApiException) {
-                ApiException apiException = (ApiException) exception;
+            if (exception instanceof ApiException apiException) {
                 Log.e(TAG, "Place not found: " + apiException.getStatusCode());
             }
         });
