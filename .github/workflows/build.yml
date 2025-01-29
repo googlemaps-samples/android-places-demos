@@ -46,7 +46,7 @@ jobs:
         sudo ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --install "ndk;20.0.5594570"
 
     - name: Build and check
-      run: cd demo-java && ./gradlew assemble lint
+      run: cd demo-java && ./gradlew assembleDebug lint
 
     - name: Upload build reports
       if: always()
@@ -72,7 +72,7 @@ jobs:
         sudo ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --install "ndk;20.0.5594570"
 
     - name: Build and check
-      run: cd demo-kotlin && ./gradlew assemble lint
+      run: cd demo-kotlin && ./gradlew assembleDebug lint
 
     - name: Upload build reports
       if: always()
@@ -98,7 +98,7 @@ jobs:
         sudo ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --install "ndk;20.0.5594570"
 
     - name: Build and check
-      run: cd snippets && ./gradlew assemble lint
+      run: cd snippets && ./gradlew assembleDebug lint
 
     - name: Upload build reports
       if: always()
