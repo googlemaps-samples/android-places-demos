@@ -50,6 +50,7 @@ dependencies {
     // Places and Maps SDKs
     implementation("com.google.android.libraries.places:places:4.1.0")
 }
+// [END maps_android_places_install_snippet]
 
 // Secrets for Google Maps API Keys
 secrets {
