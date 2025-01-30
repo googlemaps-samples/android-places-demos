@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -56,7 +57,12 @@ class PlaceAutocompleteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final String apiKey = "You API key";
+        final String apiKey = BuildConfig.PLACES_API_KEY;
+        if (apiKey.equals("DEFAULT_API_KEY")) {
+            Toast.makeText(this, "PLACES_API_KEY has not been configured", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         // [START maps_places_get_started]
         // Initialize the SDK
         Places.initialize(getApplicationContext(), apiKey);
