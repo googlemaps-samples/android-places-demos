@@ -56,31 +56,31 @@ Contributions are welcome and encouraged! If you'd like to contribute, send us a
 
 This sample uses Google Maps Platform services. Use of Google Maps Platform services through this sample is subject to the Google Maps Platform [Terms of Service].
 
-This sample is not a Google Maps Platform Core Service. Therefore, the Google Maps Platform Terms of Service (e.g. Technical Support Services, Service Level Agreements, and Deprecation Policy) do not apply to the code in this sample.
+This sample is not a Google Maps Platform Core Service. Therefore, the Google Maps Platform Terms of Service, e.g., [Technical Support Services Guidelines], Service Level Agreement ["SLA"][SLA], and [Deprecation Policy], do not apply to the code in this sample.
 
 ## Support
 
-This sample is offered via an open source [license]. It is not governed by the Google Maps Platform Support [Technical Support Services Guidelines], the [SLA], or the [Deprecation Policy]. However, any Google Maps Platform services used by the sample remain subject to the Google Maps Platform Terms of Service.
+This sample is offered via an open source [license]. It is not governed by the Google Maps Platform Support Technical Support Services Guidelines, the SLA, or the Deprecation Policy. However, any Google Maps Platform services used by the sample remain subject to the Google Maps Platform Terms of Service.
 
 If you find a bug, or have a feature request, please [file an issue] on GitHub. If you would like to get answers to technical questions from other Google Maps Platform developers, ask through one of our [developer community channels]. If you'd like to contribute, please check the [contributing guide].
 
 You can also discuss this sample on our [Discord server].
 
 [places-sdk]: https://developers.google.com/places/android-sdk
-[API key]: https://developers.google.com/places/documentation/android-sdk/get-api-key
-[API key instructions]: https://developers.google.com/places/documentation/android-sdk/config#step_3_add_your_api_key_to_the_project
+[API key]: https://developers.google.com/maps/documentation/android-sdk/get-api-key
+[API key instructions]: https://developers.google.com/maps/documentation/android-sdk/config#step_3_add_your_api_key_to_the_project
+
 
 [code of conduct]: ?tab=coc-ov-file#readme
 [contributing guide]: CONTRIBUTING.md
 [Deprecation Policy]: https://cloud.google.com/maps-platform/terms
 [developer community channels]: https://developers.google.com/maps/developer-community
 [Discord server]: https://discord.gg/hYsWbmk
-[file an issue]: https://github.com/googlemaps/android-places-demos/issues/new/choose
+[file an issue]: https://github.com/googlemaps-samples/android-places-demos/issues/new/choose
 [license]: LICENSE
-[pull request]: https://github.com/googlemaps/android-places-demos/compare
 [project]: https://developers.google.com/maps/documentation/android-sdk/cloud-setup#enabling-apis
+[pull request]: https://github.com/googlemaps-samples/android-places-demos/compare
 [Sign up with Google Maps Platform]: https://console.cloud.google.com/google/maps-apis/start
 [SLA]: https://cloud.google.com/maps-platform/terms/sla
 [Technical Support Services Guidelines]: https://cloud.google.com/maps-platform/terms/tssg
 [Terms of Service]: https://cloud.google.com/maps-platform/terms
-
