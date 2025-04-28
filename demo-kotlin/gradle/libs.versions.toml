@@ -1,5 +1,5 @@
 [versions]
-androidGradlePlugin = "8.8.0"
+androidGradlePlugin = "8.9.2"
 appcompat = "1.7.0"
 coreKtx = "1.15.0"
 glide = "4.16.0"
