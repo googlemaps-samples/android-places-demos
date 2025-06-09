@@ -1,6 +1,6 @@
 [versions]
 androidGradlePlugin = "8.8.0"
-appcompat = "1.7.0"
+appcompat = "1.7.1"
 coreKtx = "1.15.0"
 glide = "4.16.0"
 kotlin = "2.1.0"
