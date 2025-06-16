@@ -3,6 +3,7 @@ package com.example.placedetailsuikit
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
@@ -11,8 +12,10 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.ViewModel
 import com.example.placedetailsuikit.databinding.ActivityMainBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -32,6 +35,14 @@ import com.google.android.libraries.places.widget.model.Orientation
 private const val TAG = "PlacesUiKit"
 
 /**
+ * A simple ViewModel to store UI state that needs to survive configuration changes.
+ * In this case, it holds the ID of the selected place.
+ */
+class MainViewModel : ViewModel() {
+    var selectedPlaceId: String? = null
+}
+
+/**
  * Main Activity for the application. This class is responsible for:
  * 1. Displaying a Google Map.
  * 2. Handling location permissions to center the map on the user's location.
@@ -43,18 +54,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
     private lateinit var binding: ActivityMainBinding
     private var googleMap: GoogleMap? = null
 
-    // Configuration for the Place Details Fragment.
-    private val orientation: Orientation = Orientation.HORIZONTAL
-
     // The main entry point for interacting with the Places API.
     private lateinit var placesClient: PlacesClient
-    private var placeDetailsFragment: PlaceDetailsCompactFragment? = null
 
     // Client for retrieving the device's last known location.
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     // Modern approach for handling permission requests and their results.
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
+
+    // ViewModel to store state across configuration changes (like screen rotation).
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,6 +123,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
         val mapFragment =
             supportFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
+
+        // After rotation, check if a place was selected. If so, restore the fragment.
+        // Hiding the container first prevents a "flash" of old content if the
+        // FragmentManager had restored the view before this code runs.
+        if (viewModel.selectedPlaceId != null) {
+            binding.placeDetailsContainer.visibility = View.GONE
+            viewModel.selectedPlaceId?.let { placeId ->
+                Log.d(TAG, "Restoring PlaceDetailsFragment for place ID: $placeId")
+                showPlaceDetailsFragment(placeId)
+            }
+        }
     }
 
     /**
@@ -203,6 +224,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
     override fun onPoiClick(poi: PointOfInterest) {
         val placeId = poi.placeId
         Log.d(TAG, "Place ID: $placeId")
+
+        // Save the selected place ID to the ViewModel to survive rotation.
+        viewModel.selectedPlaceId = placeId
+
+        // Hide the container in case a previous place is showing.
+        // This ensures the loading indicator appears correctly on a clean slate.
+        binding.placeDetailsContainer.visibility = View.GONE
+
         // Trigger the display of the place details fragment.
         showPlaceDetailsFragment(placeId)
     }
@@ -212,11 +241,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
      * @param placeId The unique identifier for the place to be displayed.
      */
     private fun showPlaceDetailsFragment(placeId: String) {
-        Log.d(TAG, "Place ID: $placeId")
+        Log.d(TAG, "Showing PlaceDetailsFragment for place ID: $placeId")
 
-        // Provide immediate user feedback by showing a loader. Hide the previous content.
-        binding.placeDetailsContainer.visibility = View.GONE
+        // Provide immediate user feedback by showing a loader.
         binding.loadingIndicator.visibility = View.VISIBLE
+
+        // Determine the orientation based on the device's current configuration.
+        val orientation =
+            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                Orientation.HORIZONTAL
+            } else {
+                Orientation.VERTICAL
+            }
 
         // Create a new instance of the fragment from the Places SDK.
         val fragment = PlaceDetailsCompactFragment.newInstance(
@@ -228,7 +264,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
             // Set a listener to be notified when the place data has been loaded.
             setPlaceLoadListener(object : PlaceLoadListener {
                 override fun onSuccess(place: Place) {
-                    Log.d(TAG, "Place loaded: $place")
+                    Log.d(TAG, "Place loaded: ${place.name}")
                     // Once data is loaded, hide the loader and show the fragment.
                     binding.loadingIndicator.visibility = View.GONE
                     binding.placeDetailsContainer.visibility = View.VISIBLE
@@ -254,8 +290,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
             .commitNow() // Use commitNow to ensure the fragment is immediately available.
 
         // **This is the key step**: Tell the fragment to load data for the given Place ID.
-        fragment.loadWithPlaceId(placeId)
+        // We post this to the view's message queue to ensure the fragment's view is fully
+        // created and attached before this is called, preventing a lifecycle-related crash.
+        binding.root.post {
+            fragment.loadWithPlaceId(placeId)
+        }
+    }
 
-        placeDetailsFragment = fragment
+    override fun onDestroy() {
+        super.onDestroy()
+        // Clear references to avoid memory leaks.
+        googleMap = null
     }
 }

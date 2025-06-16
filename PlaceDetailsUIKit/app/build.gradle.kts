@@ -70,6 +70,9 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     // Provides Kotlin extensions for working with Fragments.
     implementation(libs.androidx.fragment.ktx)
+    // Provides ViewModel, a class designed to store and manage UI-related data in a lifecycle conscious way.
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
 
     // --- Google Play Services ---
     // The core SDK for embedding Google Maps in the application.
