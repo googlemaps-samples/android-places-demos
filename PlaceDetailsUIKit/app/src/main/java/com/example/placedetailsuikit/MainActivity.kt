@@ -264,7 +264,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
             // Set a listener to be notified when the place data has been loaded.
             setPlaceLoadListener(object : PlaceLoadListener {
                 override fun onSuccess(place: Place) {
-                    Log.d(TAG, "Place loaded: ${place.name}")
+                    Log.d(TAG, "Place loaded: ${place.id}")
                     // Once data is loaded, hide the loader and show the fragment.
                     binding.loadingIndicator.visibility = View.GONE
                     binding.placeDetailsContainer.visibility = View.VISIBLE
