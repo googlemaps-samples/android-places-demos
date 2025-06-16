@@ -94,9 +94,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Set up the dismiss button listener
+        binding.dismissButton.setOnClickListener {
+            dismissPlaceDetails()
+        }
 
         // --- Crucial: Initialize Places SDK ---
-        // The API key is required to use Google Maps and Places services.
         val apiKey = BuildConfig.PLACES_API_KEY
         if (apiKey.isEmpty() || apiKey == "YOUR_API_KEY") {
             Log.e(TAG, "No api key")
@@ -125,10 +128,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
         mapFragment?.getMapAsync(this)
 
         // After rotation, check if a place was selected. If so, restore the fragment.
-        // Hiding the container first prevents a "flash" of old content if the
-        // FragmentManager had restored the view before this code runs.
         if (viewModel.selectedPlaceId != null) {
-            binding.placeDetailsContainer.visibility = View.GONE
             viewModel.selectedPlaceId?.let { placeId ->
                 Log.d(TAG, "Restoring PlaceDetailsFragment for place ID: $placeId")
                 showPlaceDetailsFragment(placeId)
@@ -227,12 +227,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
 
         // Save the selected place ID to the ViewModel to survive rotation.
         viewModel.selectedPlaceId = placeId
-
-        // Hide the container in case a previous place is showing.
-        // This ensures the loading indicator appears correctly on a clean slate.
-        binding.placeDetailsContainer.visibility = View.GONE
-
-        // Trigger the display of the place details fragment.
         showPlaceDetailsFragment(placeId)
     }
 
@@ -243,7 +237,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
     private fun showPlaceDetailsFragment(placeId: String) {
         Log.d(TAG, "Showing PlaceDetailsFragment for place ID: $placeId")
 
-        // Provide immediate user feedback by showing a loader.
+        // Show the wrapper, hide the dismiss button, and show the loading indicator.
+        binding.placeDetailsWrapper.visibility = View.VISIBLE
+        binding.dismissButton.visibility = View.GONE
+        binding.placeDetailsContainer.visibility = View.GONE
         binding.loadingIndicator.visibility = View.VISIBLE
 
         // Determine the orientation based on the device's current configuration.
@@ -256,29 +253,25 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
 
         // Create a new instance of the fragment from the Places SDK.
         val fragment = PlaceDetailsCompactFragment.newInstance(
-            content = PlaceDetailsCompactFragment.ALL_CONTENT, // Request all available place details.
-            orientation = orientation,
-            // Optionally, set a custom theme for the fragment.
-            theme = R.style.CustomizedPlaceDetailsTheme,
+            PlaceDetailsCompactFragment.ALL_CONTENT,
+            orientation,
+            R.style.CustomizedPlaceDetailsTheme,
         ).apply {
             // Set a listener to be notified when the place data has been loaded.
             setPlaceLoadListener(object : PlaceLoadListener {
                 override fun onSuccess(place: Place) {
-                    Log.d(TAG, "Place loaded: ${place.id}")
-                    // Once data is loaded, hide the loader and show the fragment.
+                    Log.d(TAG, "Place loaded: ${place.name}")
+                    // Hide loader, show the fragment container and the dismiss button
                     binding.loadingIndicator.visibility = View.GONE
                     binding.placeDetailsContainer.visibility = View.VISIBLE
+                    binding.dismissButton.visibility = View.VISIBLE
                 }
 
                 override fun onFailure(e: Exception) {
                     Log.e(TAG, "Place failed to load", e)
-                    // On failure, hide the loader and notify the user.
-                    binding.loadingIndicator.visibility = View.GONE
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Failed to load place details.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    // Hide everything on failure
+                    dismissPlaceDetails()
+                    Toast.makeText(this@MainActivity, "Failed to load place details.", Toast.LENGTH_SHORT).show()
                 }
             })
         }
@@ -290,11 +283,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
             .commitNow() // Use commitNow to ensure the fragment is immediately available.
 
         // **This is the key step**: Tell the fragment to load data for the given Place ID.
-        // We post this to the view's message queue to ensure the fragment's view is fully
-        // created and attached before this is called, preventing a lifecycle-related crash.
         binding.root.post {
             fragment.loadWithPlaceId(placeId)
         }
+    }
+
+    private fun dismissPlaceDetails() {
+        binding.placeDetailsWrapper.visibility = View.GONE
+        viewModel.selectedPlaceId = null
     }
 
     override fun onDestroy() {
