@@ -10,21 +10,14 @@ material = "1.12.0"
 activity = "1.10.1"
 constraintlayout = "2.2.1"
 
-activityKtx = "1.10.1"
 fragmentKtx = "1.8.8"
-glide = "4.16.0"
 googleMaps = "19.2.0"
 kotlinParcelize = "1.9.24"
 mapsSecretsGradlePlugin = "2.0.1"
-mapsUtilsKtx = "5.2.0"
-multidex = "2.0.1"
 places = "4.3.1"
-viewbinding = "8.10.1"
-volley = "1.2.1"
 
 # Optional play services location SDK for the Fused location provider
 playServicesLocation = "21.3.0"
-
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -36,15 +29,9 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
-activityKtx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
-glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 google-maps-services = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "googleMaps"}
-maps-utils-ktx = { module = "com.google.maps.android:maps-utils-ktx", version.ref = "mapsUtilsKtx" }
-viewbinding = { module = "com.android.databinding:viewbinding", version.ref = "viewbinding" }
-volley = { module = "com.android.volley:volley", version.ref = "volley" }
 places = { module = "com.google.android.libraries.places:places", version.ref = "places" }
-multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 [plugins]

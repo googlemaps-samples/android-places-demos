@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.placedetailsuikit.databinding.ActivityMainBinding
@@ -32,31 +31,44 @@ import com.google.android.libraries.places.widget.model.Orientation
 
 private const val TAG = "PlacesUiKit"
 
+/**
+ * Main Activity for the application. This class is responsible for:
+ * 1. Displaying a Google Map.
+ * 2. Handling location permissions to center the map on the user's location.
+ * 3. Handling clicks on Points of Interest (POIs) on the map.
+ * 4. Displaying a [PlaceDetailsCompactFragment] to show details of a selected POI.
+ */
 class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickListener {
+    // ViewBinding for safe and easy access to views.
     private lateinit var binding: ActivityMainBinding
     private var googleMap: GoogleMap? = null
+
+    // Configuration for the Place Details Fragment.
     private val orientation: Orientation = Orientation.HORIZONTAL
+
+    // The main entry point for interacting with the Places API.
     private lateinit var placesClient: PlacesClient
     private var placeDetailsFragment: PlaceDetailsCompactFragment? = null
+
+    // Client for retrieving the device's last known location.
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    // Modern approach for handling permission requests and their results.
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
 
-    @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Register the permissions callback, which handles the user's response to the
-        // system permissions dialog. Save the return value, an instance of
-        // ActivityResultLauncher. You can use either a val, as shown in this snippet,
-        // or a lateinit var in your onAttach() or onCreate() method.
+        // Initialize the permissions launcher. This defines what to do after the user
+        // responds to the permission request dialog.
         requestPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
                 if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true || permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
-                    // Location permission has been granted.
+                    // Permission was granted. Fetch the user's location.
                     Log.d(TAG, "Location permission granted by user.")
                     fetchLastLocation()
                 } else {
-                    // Location permission has been denied.
+                    // Permission was denied. Show a message and default to a fallback location.
                     Log.d(TAG, "Location permission denied by user.")
                     Toast.makeText(
                         this,
@@ -67,12 +79,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
                 }
             }
 
+        // Standard setup for ViewBinding and enabling edge-to-edge display.
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
 
-        // --- Initialize Places SDK ---
+        // --- Crucial: Initialize Places SDK ---
+        // The API key is required to use Google Maps and Places services.
         val apiKey = BuildConfig.PLACES_API_KEY
         if (apiKey.isEmpty() || apiKey == "YOUR_API_KEY") {
             Log.e(TAG, "No api key")
@@ -84,22 +98,33 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
             finish()
             return
         }
-        Places.initializeWithNewPlacesApiEnabled(applicationContext, apiKey)
-        placesClient = Places.createClient(this)
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        // -----------------------------
 
+        // Initialize the SDK with the application context and API key.
+        Places.initializeWithNewPlacesApiEnabled(applicationContext, apiKey)
+
+        // Create a PlacesClient, the primary object for interacting with the Places API.
+        placesClient = Places.createClient(this)
+
+        // Initialize the location client.
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        // ------------------------------------
+
+        // Obtain the SupportMapFragment and request the map asynchronously.
         val mapFragment =
             supportFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
     }
 
-    @SuppressLint("MissingPermission")
+    /**
+     * Callback triggered when the map is ready to be used.
+     */
     override fun onMapReady(map: GoogleMap) {
         Log.d(TAG, "Map is ready")
         googleMap = map
+        // Set a listener for clicks on Points of Interest.
         googleMap?.setOnPoiClickListener(this)
 
+        // Check for location permissions to determine the initial map position.
         if (isLocationPermissionGranted()) {
             fetchLastLocation()
         } else {
@@ -107,6 +132,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
         }
     }
 
+    /**
+     * Checks if either fine or coarse location permission has been granted.
+     */
     private fun isLocationPermissionGranted(): Boolean {
         return ActivityCompat.checkSelfPermission(
             this,
@@ -118,6 +146,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
                 ) == PackageManager.PERMISSION_GRANTED
     }
 
+    /**
+     * Launches the permission request flow. The result is handled by the
+     * ActivityResultLauncher defined in onCreate.
+     */
     private fun requestLocationPermissions() {
         Log.d(TAG, "Requesting location permissions.")
         requestPermissionLauncher.launch(
@@ -128,65 +160,81 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
         )
     }
 
-    @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
+    /**
+     * Fetches the device's last known location and moves the map camera to it.
+     * This function should only be called after verifying permissions.
+     */
+    @SuppressLint("MissingPermission")
     private fun fetchLastLocation() {
         if (isLocationPermissionGranted()) {
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location: Location? ->
                     if (location != null) {
-                        // A last known location is available, move the camera there.
+                        // Move camera to user's location if available.
                         val userLocation = LatLng(location.latitude, location.longitude)
                         googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 13f))
                         Log.d(TAG, "Moved to user's last known location.")
                     } else {
-                        // Last known location is null, default to Sydney.
+                        // Fallback to a default location if the last location is null.
                         Log.d(TAG, "Last known location is null. Falling back to Sydney.")
                         moveToSydney()
                     }
                 }
                 .addOnFailureListener {
-                    // An error occurred, default to Sydney.
+                    // Handle errors in fetching location.
                     Log.e(TAG, "Failed to get location.", it)
                     moveToSydney()
                 }
         }
     }
 
-
+    /**
+     * A default fallback location for the map camera.
+     */
     private fun moveToSydney() {
         val sydney = LatLng(-33.8688, 151.2093)
         googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 13f))
         Log.d(TAG, "Moved to Sydney")
     }
 
+    /**
+     * Callback for when a Point of Interest on the map is clicked.
+     */
     override fun onPoiClick(poi: PointOfInterest) {
         val placeId = poi.placeId
         Log.d(TAG, "Place ID: $placeId")
+        // Trigger the display of the place details fragment.
         showPlaceDetailsFragment(placeId)
     }
 
+    /**
+     * Instantiates and displays the [PlaceDetailsCompactFragment].
+     * @param placeId The unique identifier for the place to be displayed.
+     */
     private fun showPlaceDetailsFragment(placeId: String) {
         Log.d(TAG, "Place ID: $placeId")
 
-        // Show loading indicator and hide the old card content.
+        // Provide immediate user feedback by showing a loader. Hide the previous content.
         binding.placeDetailsContainer.visibility = View.GONE
         binding.loadingIndicator.visibility = View.VISIBLE
 
-
+        // Create a new instance of the fragment from the Places SDK.
         val fragment = PlaceDetailsCompactFragment.newInstance(
-            content = PlaceDetailsCompactFragment.ALL_CONTENT,
+            content = PlaceDetailsCompactFragment.ALL_CONTENT, // Request all available place details.
             orientation = orientation,
         ).apply {
+            // Set a listener to be notified when the place data has been loaded.
             setPlaceLoadListener(object : PlaceLoadListener {
                 override fun onSuccess(place: Place) {
                     Log.d(TAG, "Place loaded: $place")
-                    // Hide loading and show the new card content.
+                    // Once data is loaded, hide the loader and show the fragment.
                     binding.loadingIndicator.visibility = View.GONE
                     binding.placeDetailsContainer.visibility = View.VISIBLE
                 }
 
                 override fun onFailure(e: Exception) {
                     Log.e(TAG, "Place failed to load", e)
+                    // On failure, hide the loader and notify the user.
                     binding.loadingIndicator.visibility = View.GONE
                     Toast.makeText(
                         this@MainActivity,
@@ -197,12 +245,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
             })
         }
 
+        // Add the fragment to the container in the layout.
         supportFragmentManager
             .beginTransaction()
             .replace(binding.placeDetailsContainer.id, fragment)
-            .commitNow()
+            .commitNow() // Use commitNow to ensure the fragment is immediately available.
 
-        // Load the fragment with a Place ID.
+        // **This is the key step**: Tell the fragment to load data for the given Place ID.
         fragment.loadWithPlaceId(placeId)
 
         placeDetailsFragment = fragment
