@@ -10,8 +10,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.PlaceDetailsUIKit"
-        tools:targetApi="31">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        tools:targetApi="36">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">

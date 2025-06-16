@@ -1,9 +1,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Base.Theme.PlaceDetailsUIKit" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
     </style>
+    <style name="Theme.PlaceDetailsUIKit" parent="android:Theme.Material.Light.NoActionBar" />
 
-    <style name="Theme.PlaceDetailsUIKit" parent="Base.Theme.PlaceDetailsUIKit" />
+    <!--
+    <style name="CustomizedPlaceDetailsTheme" parent="PlacesMaterialsTheme">
+        <item name="placesColorPrimary">@color/app_primary_color</item>
+        <item name="placesColorOnSurface">@color/app_color_on_surface</item>
+        <item name="placesColorOnSurfaceVariant">@color/app_color_on_surface</item>
+        <item name="placesTextAppearanceBodySmall">@style/app_text_appearence_small</item>
+        <item name="placesCornerRadius">20dp</item>
+    </style>
+     -->
+
 </resources>

@@ -1,16 +1,18 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.secrets.gradle.plugin)
+    alias(libs.plugins.jetbrains.kotlin.parcelize)
 }
 
 android {
     namespace = "com.example.placedetailsuikit"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.placedetailsuikit"
-        minSdk = 26
-        targetSdk = 35
+        minSdk = 27
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -27,11 +29,21 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
+    }
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
+    }
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
     }
 }
 
@@ -45,4 +57,25 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation(libs.multidex)
+
+    implementation(libs.volley)
+    implementation(libs.glide)
+    implementation(libs.viewbinding)
+
+    implementation(libs.activityKtx)
+
+    implementation(libs.google.maps.services)
+
+    // Google Places
+    implementation(libs.places)
+    implementation(libs.maps.utils.ktx)
+
+    implementation(libs.androidx.fragment.ktx)
+}
+
+secrets {
+    defaultPropertiesFileName = "local.defaults.properties"
+    propertiesFileName = "secrets.properties"
 }
