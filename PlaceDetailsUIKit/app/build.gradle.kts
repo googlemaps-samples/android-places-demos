@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.maps.utils.ktx)
 
     implementation(libs.androidx.fragment.ktx)
+    implementation(libs.play.services.location)
 }
 
 secrets {

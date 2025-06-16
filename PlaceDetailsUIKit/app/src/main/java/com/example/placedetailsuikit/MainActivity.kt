@@ -1,14 +1,18 @@
 package com.example.placedetailsuikit
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.core.app.ActivityCompat
 import com.example.placedetailsuikit.databinding.ActivityMainBinding
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -31,19 +35,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
     private val orientation: Orientation = Orientation.HORIZONTAL
     private lateinit var placesClient: PlacesClient
     private var placeDetailsFragment: PlaceDetailsCompactFragment? = null
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // Handle insets
-//        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
-//            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-//            insets
-//        }
 
         // --- Initialize Places SDK ---
         val apiKey = BuildConfig.PLACES_API_KEY
@@ -63,14 +61,48 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        // -----------------------------
     }
 
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
-        val sydney = LatLng(-33.8688, 151.2093)
-        val zoomLevel = 13f
-        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, zoomLevel))
+        moveToSydney()
         googleMap?.setOnPoiClickListener(this)
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            // Location permission is granted, try to get the last known location.
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    if (location != null) {
+                        // A last known location is available, move the camera there.
+                        val userLocation = LatLng(location.latitude, location.longitude)
+                        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 13f))
+                        Log.d(TAG, "Moved to user's last known location.")
+                    } else {
+                        // Last known location is null, default to Sydney.
+                        Log.d(TAG, "Last known location is null. Falling back to Sydney.")
+                        moveToSydney()
+                    }
+                }
+                .addOnFailureListener {
+                    // An error occurred, default to Sydney.
+                    Log.e(TAG, "Failed to get location.", it)
+                    moveToSydney()
+                }
+        } else {
+            // Location permission is not granted, default to Sydney.
+            Log.d(TAG, "Location permission not granted. Falling back to Sydney.")
+            moveToSydney()
+        }
+    }
+
+    private fun moveToSydney() {
+        val sydney = LatLng(-33.8688, 151.2093)
+        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 13f))
+        Log.d(TAG, "Moved to Sydney")
     }
 
     override fun onPoiClick(poi: PointOfInterest) {

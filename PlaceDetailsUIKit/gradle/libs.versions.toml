@@ -22,6 +22,9 @@ places = "4.3.1"
 viewbinding = "8.10.1"
 volley = "1.2.1"
 
+# Optional play services location SDK for the Fused location provider
+playServicesLocation = "21.3.0"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,6 +45,7 @@ viewbinding = { module = "com.android.databinding:viewbinding", version.ref = "v
 volley = { module = "com.android.volley:volley", version.ref = "volley" }
 places = { module = "com.google.android.libraries.places:places", version.ref = "places" }
 multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
