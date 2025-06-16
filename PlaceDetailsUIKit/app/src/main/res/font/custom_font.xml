@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file defines a custom font family using Android's Downloadable Fonts feature.
+Instead of bundling the font in the APK, this tells the system to download
+Roboto Mono from the Google Fonts provider when needed.
+-->
+<font-family xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:fontProviderAuthority="com.google.android.gms.fonts"
+    app:fontProviderPackage="com.google.android.gms"
+    app:fontProviderQuery="name=Roboto Mono&amp;weight=400"
+    app:fontProviderCerts="@array/com_google_android_gms_fonts_certs">
+</font-family>

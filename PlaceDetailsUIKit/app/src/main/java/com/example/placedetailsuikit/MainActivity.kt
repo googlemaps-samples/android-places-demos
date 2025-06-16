@@ -222,6 +222,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
         val fragment = PlaceDetailsCompactFragment.newInstance(
             content = PlaceDetailsCompactFragment.ALL_CONTENT, // Request all available place details.
             orientation = orientation,
+            // Optionally, set a custom theme for the fragment.
+            theme = R.style.CustomizedPlaceDetailsTheme,
         ).apply {
             // Set a listener to be notified when the place data has been loaded.
             setPlaceLoadListener(object : PlaceLoadListener {
