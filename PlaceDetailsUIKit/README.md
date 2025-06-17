@@ -27,7 +27,7 @@ to prevent common crashes.
 
 To build and run this sample application, you will need an API key from the Google Cloud Console.
 
-### **1\. Set Up Your API Key**
+### **1. Set Up Your API Key**
 
 1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
 2. Create a new project or select an existing one.
@@ -37,13 +37,14 @@ To build and run this sample application, you will need an API key from the Goog
 5. In the root directory of this project, create a file named secrets.properties. This file is
    already listed in .gitignore to prevent it from being checked into version control.
 6. Add your API key to the secrets.properties file. The key should be assigned to both
-   MAPS\_API\_KEY and PLACES\_API\_KEY:  
-   MAPS\_API\_KEY="YOUR\_API\_KEY\_HERE"  
-   PLACES\_API\_KEY="YOUR\_API\_KEY\_HERE"
+   MAPS_API_KEY and PLACES_API_KEY:
 
-   *Note: The sample uses the same key for both, which is a common practice.*
+```properties
+   MAPS_API_KEY="YOUR_API_KEY_HERE"
+   PLACES_API_KEY="YOUR_API_KEY_HERE"
+```
 
-### **2\. Build and Run**
+### **2. Build and Run**
 
 1. Open the project in Android Studio.
 2. Let Gradle sync the project dependencies.
@@ -56,7 +57,7 @@ PlaceDetailsCompactFragment at the bottom of the screen.
 ## **Code Highlights**
 
 The primary logic is contained within
-app/src/main/java/com/example/placedetailsuikit/MainActivity.kt.
+[`MainActivity.kt`](app/src/main/java/com/example/placedetailsuikit/MainActivity.kt).
 
 ### **MainActivity.kt**
 
@@ -88,20 +89,22 @@ app/src/main/java/com/example/placedetailsuikit/MainActivity.kt.
 
 ### **Customization**
 
-The custom "Synthwave" theme is defined in app/src/main/res/values/themes.xml and
-app/src/main/res/values/colors.xml. By overriding attributes like placesColorSurface,
+The custom "Synthwave" theme is defined in [`themes.xml`](app/src/main/res/values/themes.xml) and
+[`colors.xml`](app/src/main/res/values/colors.xml). By overriding attributes like placesColorSurface,
 placesColorPrimary, and placesTextAppearanceBodyMedium, you can completely change the look and feel
 of the widget to match your app's branding.
 
-\<\!-- In themes.xml \--\>  
-\<style name="CustomizedPlaceDetailsTheme" parent="PlacesMaterialTheme"\>  
-\<\!-- Core Colors \--\>  
-\<item name="placesColorSurface"\>@color/synthwave\_surface\</item\>  
-\<item name="placesColorPrimary"\>@color/synthwave\_primary\</item\>  
+```xml
+<!-- In themes.xml -->  
+<style name="CustomizedPlaceDetailsTheme" parent="PlacesMaterialTheme">  
+<!-- Core Colors -->  
+<item name="placesColorSurface">@color/synthwave_surface</item>  
+<item name="placesColorPrimary">@color/synthwave_primary</item>  
 ...  
-\<\!-- Typography \--\>  
-\<item name="placesTextAppearanceBodyMedium"\>@style/app\_text\_appearence\_mono\</item\>  
-\</style\>
+<!-- Typography -->  
+<item name="placesTextAppearanceBodyMedium">@style/app_text_appearence_mono</item>  
+</style>
+```
 
 This sample provides a complete and robust foundation for integrating the Places UI Kit into your
 own applications.
