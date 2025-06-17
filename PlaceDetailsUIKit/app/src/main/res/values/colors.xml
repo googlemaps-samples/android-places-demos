@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- "Synthwave" Avant-Garde Theme Colors -->
+    <color name="synthwave_surface">#1A0A2D</color> <!-- Deep purple background -->
+    <color name="synthwave_primary">#E0218A</color> <!-- Vibrant magenta for primary actions -->
+    <color name="synthwave_on_surface">#F0F8FF</color> <!-- Alice blue for primary text, high contrast -->
+    <color name="synthwave_on_surface_variant">#9E8BBE</color> <!-- Muted lilac for secondary text -->
+    <color name="synthwave_outline">#00E5FF</color> <!-- Bright cyan for outlines, creating a "neon glow" -->
+    <color name="synthwave_positive">#00E5FF</color> <!-- Cyan for "Open" status -->
+    <color name="synthwave_negative">#FF007F</color> <!-- Hot pink for "Closed" status -->
+</resources>

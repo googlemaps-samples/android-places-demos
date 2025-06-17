@@ -1,0 +1,102 @@
+// The plugins block applies various Gradle plugins to the project.
+plugins {
+    // Core plugin for building an Android application.
+    alias(libs.plugins.android.application)
+    // Plugin for enabling Kotlin support in an Android project.
+    alias(libs.plugins.kotlin.android)
+    // A plugin from Google to manage API keys and other secrets, keeping them out of source control.
+    // It makes keys available in the BuildConfig file.
+    alias(libs.plugins.secrets.gradle.plugin)
+}
+
+android {
+    namespace = "com.example.placedetailsuikit"
+    compileSdk = 36
+
+    defaultConfig {
+        applicationId = "com.example.placedetailsuikit"
+        minSdk = 27
+        targetSdk = 36
+        versionCode = 1
+        versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+    compileOptions {
+        // Sets the Java version compatibility for the source and compiled bytecode.
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        // Configures the Kotlin compiler to target a specific JVM version.
+        jvmTarget = "17"
+    }
+    buildFeatures {
+        // Enables ViewBinding, a type-safe way to access views defined in XML layouts.
+        viewBinding = true
+        // Enables access to build-time constants from the code (e.g., API keys).
+        buildConfig = true
+    }
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
+    }
+}
+
+// The dependencies block declares all the external libraries the app needs.
+dependencies {
+    // --- AndroidX Core & UI Libraries ---
+    // Provides core Kotlin extensions for the Android framework.
+    implementation(libs.androidx.core.ktx)
+    // Provides backward compatibility for newer Android features on older API levels.
+    implementation(libs.androidx.appcompat)
+    // A library for using modern Material Design components.
+    implementation(libs.material)
+    // Core library for managing Activities, including `enableEdgeToEdge` and `registerForActivityResult`.
+    implementation(libs.androidx.activity)
+    // A flexible layout manager for creating responsive UIs. Used for activity_main.xml.
+    implementation(libs.androidx.constraintlayout)
+    // Provides Kotlin extensions for working with Fragments.
+    implementation(libs.androidx.fragment.ktx)
+    // Provides ViewModel, a class designed to store and manage UI-related data in a lifecycle conscious way.
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
+
+    // --- Google Play Services ---
+    // The core SDK for embedding Google Maps in the application.
+    implementation(libs.google.maps.services)
+    // The SDK for accessing Google's rich database of place information.
+    // This provides the `PlaceDetailsCompactFragment`.
+    implementation(libs.places)
+    // Provides access to location services, such as the FusedLocationProviderClient
+    // used to get the device's last known location.
+    implementation(libs.play.services.location)
+
+    // --- Testing Libraries ---
+    // Standard library for writing local unit tests.
+    testImplementation(libs.junit)
+    // AndroidX library for writing instrumented tests that run on a device or emulator.
+    androidTestImplementation(libs.androidx.junit)
+    // AndroidX library for UI testing.
+    androidTestImplementation(libs.androidx.espresso.core)
+}
+
+// Configuration for the Secrets Gradle Plugin.
+secrets {
+    // Specifies a default properties file, useful for CI/CD environments.
+    defaultPropertiesFileName = "local.defaults.properties"
+    // Specifies the local properties file where secret keys are stored. This file should be in .gitignore.
+    propertiesFileName = "secrets.properties"
+}
