@@ -1,3 +1,4 @@
+# PlaceDetailsUIKit/gradle/libs.versions.toml
 [versions]
 agp = "8.10.1"
 kotlin = "2.1.21"
@@ -10,6 +11,8 @@ material = "1.12.0"
 activity = "1.10.1"
 constraintlayout = "2.2.1"
 lifecycle = "2.9.1"
+testRules = "1.6.1"
+testRunner = "1.6.2"
 
 fragmentKtx = "1.8.8"
 googleMaps = "19.2.0"
@@ -31,6 +34,8 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 
+androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "testRules" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "testRunner" }
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
 google-maps-services = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "googleMaps"}
 places = { module = "com.google.android.libraries.places:places", version.ref = "places" }

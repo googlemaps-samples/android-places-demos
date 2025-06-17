@@ -91,6 +91,9 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     // AndroidX library for UI testing.
     androidTestImplementation(libs.androidx.espresso.core)
+    // AndroidX libraries for creating test rules and running tests.
+    androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(libs.androidx.test.runner)
 }
 
 // Configuration for the Secrets Gradle Plugin.
