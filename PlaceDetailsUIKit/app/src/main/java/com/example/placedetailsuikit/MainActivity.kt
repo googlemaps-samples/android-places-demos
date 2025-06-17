@@ -27,7 +27,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.PlaceDetailsCompactFragment
 import com.google.android.libraries.places.widget.PlaceLoadListener
 import com.google.android.libraries.places.widget.model.Orientation
@@ -53,9 +52,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
     // ViewBinding for safe and easy access to views.
     private lateinit var binding: ActivityMainBinding
     private var googleMap: GoogleMap? = null
-
-    // The main entry point for interacting with the Places API.
-    private lateinit var placesClient: PlacesClient
 
     // Client for retrieving the device's last known location.
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -116,7 +112,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
         Places.initializeWithNewPlacesApiEnabled(applicationContext, apiKey)
 
         // Create a PlacesClient, the primary object for interacting with the Places API.
-        placesClient = Places.createClient(this)
+//        placesClient = Places.createClient(this)
 
         // Initialize the location client.
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
