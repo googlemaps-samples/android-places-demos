@@ -11,6 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+# [START placessdkandroid_place_details_ui_kit_add_place_details_component_full]
+
 package com.example.placedetailsuikit
 
 import android.Manifest
@@ -259,7 +262,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
             } else {
                 Orientation.VERTICAL
             }
-
+# [START placessdkandroid_place_details_ui_kit_add_place_details_component_snippet]
+        
         // Create a new instance of the fragment from the Places SDK.
         val fragment = PlaceDetailsCompactFragment.newInstance(
             PlaceDetailsCompactFragment.ALL_CONTENT,
@@ -297,6 +301,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
         }
     }
 
+    # [END placessdkandroid_place_details_ui_kit_add_place_details_component_snippet]
+
     private fun dismissPlaceDetails() {
         binding.placeDetailsWrapper.visibility = View.GONE
         viewModel.selectedPlaceId = null
@@ -308,3 +314,5 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
         googleMap = null
     }
 }
+
+# [END placessdkandroid_place_details_ui_kit_add_place_details_component_full]
