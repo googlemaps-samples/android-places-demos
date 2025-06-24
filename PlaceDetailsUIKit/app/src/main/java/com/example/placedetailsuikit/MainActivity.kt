@@ -127,9 +127,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
         // Initialize the SDK with the application context and API key.
         Places.initializeWithNewPlacesApiEnabled(applicationContext, apiKey)
 
-        // Create a PlacesClient, the primary object for interacting with the Places API.
-//        placesClient = Places.createClient(this)
-
         // Initialize the location client.
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         // ------------------------------------
@@ -262,7 +259,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
             } else {
                 Orientation.VERTICAL
             }
-// [START placessdkandroid_place_details_ui_kit_add_place_details_component_snippet]
+
+        // [START placessdkandroid_place_details_ui_kit_add_place_details_component_snippet]
         
         // Create a new instance of the fragment from the Places SDK.
         val fragment = PlaceDetailsCompactFragment.newInstance(
@@ -300,8 +298,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
             fragment.loadWithPlaceId(placeId)
         }
     }
-    
-// [END placessdkandroid_place_details_ui_kit_add_place_details_component_snippet]
+
+    // [END placessdkandroid_place_details_ui_kit_add_place_details_component_snippet]
 
     private fun dismissPlaceDetails() {
         binding.placeDetailsWrapper.visibility = View.GONE
