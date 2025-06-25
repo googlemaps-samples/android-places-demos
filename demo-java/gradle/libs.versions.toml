@@ -12,7 +12,7 @@ multidex = "2.0.1"
 navigationFragment = "2.9.0"
 places = "4.3.1"
 playServicesMaps = "19.2.0"
-viewbinding = "8.10.1"
+viewbinding = "8.11.0"
 volley = "1.2.1"
 
 [libraries]
