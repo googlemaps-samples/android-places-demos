@@ -109,6 +109,7 @@ dependencies {
     // Provides access to location services, such as the FusedLocationProviderClient
     // used to get the device's last known location.
     implementation(libs.play.services.location)
+    implementation(libs.androidx.ui.tooling.preview.android)
 
     // --- Testing Libraries ---
     // Standard library for writing local unit tests.
