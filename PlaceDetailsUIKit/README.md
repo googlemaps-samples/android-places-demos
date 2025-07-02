@@ -1,12 +1,19 @@
-# **Place Details UI Kit Sample for Android**
+# **Place Details UI Kit Samples for Android**
 
-This Android application is a demonstration of the PlaceDetailsCompactFragment from the new **Places
-UI Kit for Android**. It showcases how to integrate a Google Map, handle user interactions with
-Points of Interest (POIs), and display a fully-featured and customizable place details widget.
+This Android application provides two distinct demonstrations of the **Places** UI Kit for **Android
+**, showcasing how to integrate and customize the PlaceDetailsCompactFragment.
 
-This sample also demonstrates best practices for handling runtime permissions, the Android Activity
-lifecycle (including configuration changes like screen rotation), and lifecycle-aware data loading
-to prevent common crashes.
+1. **Simple Integration (MainActivity)**: A straightforward example of how to add the Place Details
+   widget to an app. It focuses on handling map interactions, displaying the widget with a default
+   set of content, and persisting its state across screen rotations using a ViewModel.
+2. **Configurable Integration (ConfigurablePlaceDetailsActivity)**: A more advanced example that
+   demonstrates how to dynamically configure the content sections displayed within the widget. It
+   features a settings dialog, built with Jetpack Compose, that allows the user to select which
+   place data fields (e.g., Photos, Rating, Website) they want to see.
+
+Both samples demonstrate best practices for handling runtime permissions, the Android Activity
+lifecycle (including configuration changes), and lifecycle-aware data loading to prevent common
+crashes.
 
 ## **Features**
 
@@ -16,10 +23,14 @@ to prevent common crashes.
   about a selected place.
 * **Dynamic Orientation**: The PlaceDetailsCompactFragment automatically adjusts its layout between
   VERTICAL and HORIZONTAL based on the device's orientation.
-* **Robust State Management**: Uses a ViewModel to retain the selected place across configuration
-  changes (e.g., screen rotation), ensuring a seamless user experience.
+* **Robust State Management**: Uses a ViewModel to retain the selected place and/or configuration
+  across configuration changes (e.g., screen rotation), ensuring a seamless user experience.
 * **Advanced Customization**: Features a custom "Synthwave" theme for the
   PlaceDetailsCompactFragment to demonstrate how easily the widget's appearance can be modified.
+* **Dynamic Content Configuration**: The ConfigurablePlaceDetailsActivity shows how to let users
+  choose which Place.Field sections are displayed in the widget at runtime.
+* **Jetpack Compose Integration**: The content selection dialog is built using Jetpack
+  Compose, showcasing its use within a View-based project.
 * **Lifecycle-Aware Implementation**: Includes a robust solution to prevent common lifecycle-related
   crashes when loading the fragment.
 
@@ -27,7 +38,7 @@ to prevent common crashes.
 
 To build and run this sample application, you will need an API key from the Google Cloud Console.
 
-### **1. Set Up Your API Key**
+### **Set Up Your API Key**
 
 1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
 2. Create a new project or select an existing one.
@@ -44,20 +55,24 @@ To build and run this sample application, you will need an API key from the Goog
    PLACES_API_KEY="YOUR_API_KEY_HERE"
 ```
 
-### **2. Build and Run**
+### **Build and Run**
 
 1. Open the project in Android Studio.
 2. Let Gradle sync the project dependencies.
 3. Run the app on an Android emulator or a physical device.
 
+The app has two launcher activities. You can choose which one to run using the "Run/Debug
+Configurations" dropdown in Android Studio.
+
+* **MainActivity**: Launches the simple, non-configurable demo.
+* **ConfigurablePlaceDetailsActivity**: Launches the advanced demo with content selection.
+
 The app will request location permissions. Once granted, it will zoom to your current location.
 Tapping on any POI on the map (e.g., a restaurant, park, or shop) will display the
-PlaceDetailsCompactFragment at the bottom of the screen.
+PlaceDetailsCompactFragment at the bottom of the screen. In the configurable demo, a settings icon
+allows you to customize the widget's content.
 
 ## **Code Highlights**
-
-The primary logic is contained within
-[`MainActivity.kt`](app/src/main/java/com/example/placedetailsuikit/MainActivity.kt).
 
 ### **MainActivity.kt**
 
@@ -86,6 +101,30 @@ The primary logic is contained within
       binding.root.post { ... }. This is a key fix that prevents a
       kotlin.UninitializedPropertyAccessException crash by ensuring the fragment's view is fully
       created and attached before its data is loaded.
+
+### **ConfigurablePlaceDetailsActivity.kt**
+
+This activity demonstrates a more advanced use case where the content of the widget is
+user-configurable.
+
+* **ContentSelectionViewModel.kt**: This ViewModel is more complex. It holds both the
+  selectedPlaceId and the state of the content configuration. It uses StateFlow to expose lists of
+  selected and unselected content items, which the UI observes.
+* **Content Configuration Dialog**:
+    * The configure\_button FAB opens an AlertDialog.
+    * The dialog's view (content\_selector\_dialog.xml) contains a ComposeView.
+    * The UI of the dialog is built declaratively with Jetpack Compose in the DialogContent
+      composable function. It displays two lists with sticky headers for "Selected" and "Unselected"
+      content.
+    * Clicking an item calls viewModel.toggleSelection(), which atomically updates the state flows,
+      causing the Compose UI to automatically re-render.
+* **showPlaceDetailsFragment(placeId: String)**:
+    * This function is similar to the one in MainActivity, but with one key difference.
+    * When creating the PlaceDetailsCompactFragment, it gets the list of content directly from the
+      ViewModel: PlaceDetailsCompactFragment.newInstance(viewModel.selectedContent.value.map {
+      it.content }, ...)
+    * This ensures that whatever content the user has selected in the dialog is what the fragment
+      will request and display.
 
 ### **Customization**
 
