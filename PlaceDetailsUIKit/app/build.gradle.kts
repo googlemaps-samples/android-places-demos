@@ -23,6 +23,8 @@ plugins {
     // A plugin from Google to manage API keys and other secrets, keeping them out of source control.
     // It makes keys available in the BuildConfig file.
     alias(libs.plugins.secrets.gradle.plugin)
+
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -62,6 +64,8 @@ android {
         // Enables ViewBinding, a type-safe way to access views defined in XML layouts.
         viewBinding = true
         // Enables access to build-time constants from the code (e.g., API keys).
+        // Enables Compose for the project.
+        compose = true
         buildConfig = true
     }
 
@@ -69,6 +73,11 @@ android {
         toolchain {
             languageVersion.set(JavaLanguageVersion.of(17))
         }
+    }
+    composeOptions {
+        // Sets the Kotlin compiler extension version for Compose.
+        // Ensure this version is compatible with your Kotlin and Compose versions.
+        kotlinCompilerExtensionVersion = "1.5.1"
     }
 }
 
@@ -100,6 +109,7 @@ dependencies {
     // Provides access to location services, such as the FusedLocationProviderClient
     // used to get the device's last known location.
     implementation(libs.play.services.location)
+    implementation(libs.androidx.ui.tooling.preview.android)
 
     // --- Testing Libraries ---
     // Standard library for writing local unit tests.
@@ -111,6 +121,13 @@ dependencies {
     // AndroidX libraries for creating test rules and running tests.
     androidTestImplementation(libs.androidx.test.rules)
     androidTestImplementation(libs.androidx.test.runner)
+
+    // Compose
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    debugImplementation(libs.androidx.ui.tooling)
 }
 
 // Configuration for the Secrets Gradle Plugin.

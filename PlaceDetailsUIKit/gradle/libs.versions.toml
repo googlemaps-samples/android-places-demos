@@ -1,29 +1,35 @@
 # PlaceDetailsUIKit/gradle/libs.versions.toml
 [versions]
-agp = "8.10.1"
-kotlin = "2.2.0"
+activity = "1.10.1"
+activityCompose = "1.10.1"
+agp = "8.11.0"
+appcompat = "1.7.1"
+constraintlayout = "2.2.1"
 coreKtx = "1.16.0"
+espressoCore = "3.6.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
-espressoCore = "3.6.1"
-appcompat = "1.7.1"
-material = "1.12.0"
-activity = "1.10.1"
-constraintlayout = "2.2.1"
+kotlin = "2.2.0"
 lifecycle = "2.9.1"
+material = "1.12.0"
 testRules = "1.6.1"
 testRunner = "1.6.2"
 
 fragmentKtx = "1.8.8"
 googleMaps = "19.2.0"
-kotlinParcelize = "1.9.24"
+kotlinParcelize = "2.2.0"
 mapsSecretsGradlePlugin = "2.0.1"
 places = "4.3.1"
+composeBom = "2025.06.01"
 
 # Optional play services location SDK for the Fused location provider
 playServicesLocation = "21.3.0"
+uiToolingPreviewAndroid = "1.8.3"
+uiTooling = "1.8.3"
 
 [libraries]
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -33,6 +39,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 
 androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "testRules" }
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "testRunner" }
@@ -40,10 +47,13 @@ androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", ve
 google-maps-services = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "googleMaps"}
 places = { module = "com.google.android.libraries.places:places", version.ref = "places" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "uiToolingPreviewAndroid" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "uiTooling" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 jetbrains-kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlinParcelize" }
 secrets-gradle-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "mapsSecretsGradlePlugin" }
