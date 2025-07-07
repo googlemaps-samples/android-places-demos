@@ -44,6 +44,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
@@ -377,29 +378,26 @@ fun DialogContent(
     onItemClick: (PlaceDetailsCompactItem) -> Unit
 ) {
     LazyColumn {
-        // Display the "Selected" section only if it's not empty.
-        if (selectedContent.isNotEmpty()) {
-            stickyHeader {
-                SectionHeader("Selected Content")
-            }
-            items(selectedContent, key = { it.content.name }) { content ->
-                ContentItem(
-                    item = content,
-                    onItemClick = onItemClick
-                )
-            }
+        stickyHeader {
+            SectionHeader("Selected Content")
         }
-        // Display the "Unselected" section only if it's not empty.
-        if (unselectedContent.isNotEmpty()) {
-            stickyHeader {
-                SectionHeader("Unselected Content")
-            }
-            items(unselectedContent, key = { it.content.name }) { content ->
-                ContentItem(
-                    item = content,
-                    onItemClick = onItemClick
-                )
-            }
+
+        items(selectedContent, key = { it.content.name }) { content ->
+            ContentItem(
+                item = content,
+                onItemClick = onItemClick
+            )
+        }
+
+        stickyHeader {
+            SectionHeader("Unselected Content")
+        }
+
+        items(unselectedContent, key = { it.content.name }) { content ->
+            ContentItem(
+                item = content,
+                onItemClick = onItemClick
+            )
         }
     }
 }
@@ -419,6 +417,7 @@ fun SectionHeader(title: String) {
             .padding(16.dp),
         style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.onTertiaryContainer,
+        textAlign = TextAlign.Center
     )
 }
 
@@ -448,7 +447,7 @@ fun ContentItem(
 /**
  * A preview that displays the dialog content with items in both sections.
  */
-@Preview(name = "Both Sections")
+@Preview(name = "Both Sections", showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun DialogContentPreview_BothSections() {
     MaterialTheme {
@@ -463,7 +462,7 @@ fun DialogContentPreview_BothSections() {
 /**
  * A preview that displays the dialog content with only selected items.
  */
-@Preview(name = "Only Selected")
+@Preview(name = "Only Selected", showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun DialogContentPreview_OnlySelected() {
     MaterialTheme {
@@ -478,7 +477,7 @@ fun DialogContentPreview_OnlySelected() {
 /**
  * A preview that displays the dialog content with only unselected items.
  */
-@Preview(name = "Only Unselected")
+@Preview(name = "Only Unselected", showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun DialogContentPreview_OnlyUnselected() {
     MaterialTheme {
@@ -493,7 +492,7 @@ fun DialogContentPreview_OnlyUnselected() {
 /**
  * A preview that displays the dialog content in its empty state.
  */
-@Preview(name = "Empty State")
+@Preview(name = "Empty State", showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun DialogContentPreview_Empty() {
     MaterialTheme {

@@ -25,6 +25,7 @@ composeBom = "2025.06.01"
 # Optional play services location SDK for the Fused location provider
 playServicesLocation = "21.3.0"
 uiToolingPreviewAndroid = "1.8.3"
+uiTooling = "1.8.3"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -47,6 +48,7 @@ google-maps-services = { group = "com.google.android.gms", name = "play-services
 places = { module = "com.google.android.libraries.places:places", version.ref = "places" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "uiToolingPreviewAndroid" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "uiTooling" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
