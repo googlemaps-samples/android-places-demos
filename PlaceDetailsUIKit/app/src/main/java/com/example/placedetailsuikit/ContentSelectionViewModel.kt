@@ -19,9 +19,13 @@
 package com.example.placedetailsuikit
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.libraries.places.widget.PlaceDetailsCompactFragment.Content
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 /**
@@ -33,8 +37,10 @@ import kotlinx.coroutines.flow.update
  */
 data class PlaceDetailsCompactItem(
     val content: Content,
-    val displayName: String
+    val displayName: String,
+    val isSelected: Boolean = false // New property
 )
+
 
 /**
  * A convenience extension function to convert a [Content] enum into a
@@ -87,55 +93,58 @@ class ContentSelectionViewModel : ViewModel() {
     var selectedPlaceId: String? = null
 
     /**
-     * Private mutable state flow that holds the list of currently *selected* content items.
-     * This is the single source of truth for the selected items.
+     * A [MutableStateFlow] that holds the complete list of [PlaceDetailsCompactItem]s,
+     * representing all available content types. This is the single source of truth for
+     * managing the selection state of each content item.
+     *
+     * It is initialized by mapping all entries of the [Content] enum to
+     * [PlaceDetailsCompactItem] objects. The initial selection state ([PlaceDetailsCompactItem.isSelected])
+     * is determined by whether the [Content] is present in the [standardContent] list.
      */
-    private val _selectedContent =
-        MutableStateFlow(standardContent.map { it.toPlaceDetailsCompactItem() })
+    private val _contentItems = MutableStateFlow(
+        Content.entries.map {
+            PlaceDetailsCompactItem(
+                content = it,
+                displayName = it.getDisplayName(),
+                isSelected = standardContent.contains(it) // Set initial selection state
+            )
+        }
+    )
 
     /**
-     * Publicly exposed, read-only [StateFlow] for the list of selected content items.
-     * UI components should observe this flow to react to changes.
+     * A [StateFlow] that emits the current list of [PlaceDetailsCompactItem]s
+     * that are marked as selected. This flow is derived from [_contentItems]
+     * and updates automatically whenever an item's selection state changes.
+     * It is eagerly started and will retain the last emitted list.
      */
-    val selectedContent = _selectedContent.asStateFlow()
+    val selectedContent: StateFlow<List<PlaceDetailsCompactItem>> =
+        _contentItems.map { items -> items.filter { it.isSelected } }
+            .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     /**
-     * Private mutable state flow that holds the list of currently *unselected* content items.
+     * A [StateFlow] that provides a read-only list of [PlaceDetailsCompactItem]s
+     * that are currently *not* selected by the user. This flow is derived from
+     * the [_contentItems] flow and updates automatically whenever the selection
+     * state of any item changes. It is eagerly started and defaults to an empty list.
      */
-    private val _unselectedContent =
-        MutableStateFlow(standardNonContent.map { it.toPlaceDetailsCompactItem() })
-
-    /**
-     * Publicly exposed, read-only [StateFlow] for the list of unselected content items.
-     */
-    val unselectedContent = _unselectedContent.asStateFlow()
+    val unselectedContent: StateFlow<List<PlaceDetailsCompactItem>> =
+        _contentItems.map { items -> items.filter { !it.isSelected } }
+            .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     /**
      * Toggles the selection status of a given content item.
      * If the item is in the selected list, it's moved to the unselected list, and vice versa.
      *
-     * @param content The [PlaceDetailsCompactItem] to move between lists.
+     * @param itemToToggle The [PlaceDetailsCompactItem] to move between lists.
      */
-    fun toggleSelection(content: PlaceDetailsCompactItem) {
-        // Atomically update the selected content list.
-        _selectedContent.update { currentSelected ->
-            if (currentSelected.contains(content)) {
-                // If it's already selected, create a new list without it.
-                currentSelected - content
-            } else {
-                // If it's not selected, create a new list with it added.
-                currentSelected + content
-            }
-        }
-
-        // Atomically update the unselected content list.
-        _unselectedContent.update { currentUnselected ->
-            if (currentUnselected.contains(content)) {
-                // If it's in the unselected list, remove it.
-                currentUnselected - content
-            } else {
-                // If it was moved from the selected list, add it back to unselected.
-                currentUnselected + content
+    fun toggleSelection(itemToToggle: PlaceDetailsCompactItem) {
+        _contentItems.update { currentItems ->
+            currentItems.map {
+                if (it.content == itemToToggle.content) {
+                    it.copy(isSelected = !it.isSelected)
+                } else {
+                    it
+                }
             }
         }
     }

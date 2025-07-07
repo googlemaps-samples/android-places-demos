@@ -155,24 +155,7 @@ class ConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback
 
         // Set up the button to open the content configuration dialog.
         binding.configureButton.setOnClickListener {
-            val dialogView =
-                LayoutInflater.from(this).inflate(R.layout.content_selector_dialog, null)
-            val composeView = dialogView.findViewById<ComposeView>(R.id.compose_view)
-
-            // Use Jetpack Compose to build the dialog's UI.
-            composeView.setContent {
-                val selectedContent by viewModel.selectedContent.collectAsState()
-                val unselectedContent by viewModel.unselectedContent.collectAsState()
-                DialogContent(selectedContent, unselectedContent) {
-                    viewModel.toggleSelection(it)
-                }
-            }
-
-            // Create and show the AlertDialog.
-            val builder = AlertDialog.Builder(this)
-            builder.setView(dialogView)
-            val dialog = builder.create()
-            dialog.show()
+            showContentSelectionDialog()
         }
     }
 
@@ -344,6 +327,37 @@ class ConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback
     override fun onDestroy() {
         super.onDestroy()
         googleMap = null
+    }
+
+
+    /**
+     * Displays a dialog that allows the user to select which content types
+     * (e.g., Address, Phone Number, Reviews) should be visible in the
+     * [PlaceDetailsCompactFragment]. The dialog uses Jetpack Compose for its UI.
+     *
+     * The selection state is managed by the [ContentSelectionViewModel].
+     * When the user clicks an item in the dialog, it toggles its selection state
+     * via the ViewModel.
+     */
+    private fun showContentSelectionDialog() {
+        val dialogView =
+            LayoutInflater.from(this).inflate(R.layout.content_selector_dialog, null)
+        val composeView = dialogView.findViewById<ComposeView>(R.id.compose_view)
+
+        // Use Jetpack Compose to build the dialog's UI.
+        composeView.setContent {
+            val selectedContent by viewModel.selectedContent.collectAsState()
+            val unselectedContent by viewModel.unselectedContent.collectAsState()
+            DialogContent(selectedContent, unselectedContent) {
+                viewModel.toggleSelection(it)
+            }
+        }
+
+        // Create and show the AlertDialog.
+        val builder = AlertDialog.Builder(this)
+        builder.setView(dialogView)
+        val dialog = builder.create()
+        dialog.show()
     }
 }
 
