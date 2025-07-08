@@ -46,6 +46,19 @@
         app:srcCompat="@drawable/outline_settings_24"
         tools:ignore="SpeakableTextPresentCheck" />
 
+    <!-- New Location Button FAB -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/my_location_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:contentDescription="@string/my_location_button_content_description"
+        app:layout_constraintBottom_toTopOf="@+id/configure_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/outline_my_location_24"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <!-- Wrapper to hold the fragment, the dismiss button, AND the loader -->
     <FrameLayout

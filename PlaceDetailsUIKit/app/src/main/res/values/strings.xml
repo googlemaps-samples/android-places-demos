@@ -18,4 +18,5 @@
     <string name="app_name">Place Details UI Kit</string>
     <string name="dismiss_button_content_description">Dismiss place details</string>
     <string name="configure_button_content_description">"Configure the Place Details component "</string>
+    <string name="my_location_button_content_description">Center map on user\'s current location</string>
 </resources>

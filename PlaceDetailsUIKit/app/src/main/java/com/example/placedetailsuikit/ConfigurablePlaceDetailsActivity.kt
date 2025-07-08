@@ -63,6 +63,9 @@ import com.google.android.libraries.places.widget.PlaceDetailsCompactFragment
 import com.google.android.libraries.places.widget.PlaceDetailsCompactFragment.Content
 import com.google.android.libraries.places.widget.PlaceLoadListener
 import com.google.android.libraries.places.widget.model.Orientation
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 private const val TAG = "ConfigurablePlaceDetailsActivity"
 
@@ -146,6 +149,16 @@ class ConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback
             supportFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
 
+        // Observe changes in selected content and reload the Place Details Fragment if a place is already selected.
+        lifecycleScope.launch {
+            viewModel.selectedContent.collectLatest {
+                viewModel.selectedPlaceId?.let { placeId ->
+                    Log.d(TAG, "Content selection changed. Reloading PlaceDetailsFragment for place ID: $placeId")
+                    showPlaceDetailsFragment(placeId)
+                }
+            }
+        }
+
         // If a place was selected before a configuration change, restore the details view.
         if (viewModel.selectedPlaceId != null) {
             viewModel.selectedPlaceId?.let { placeId ->
@@ -157,6 +170,11 @@ class ConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback
         // Set up the button to open the content configuration dialog.
         binding.configureButton.setOnClickListener {
             showContentSelectionDialog()
+        }
+
+        // Set up the new location button to fetch and move to the last known location.
+        binding.myLocationButton.setOnClickListener {
+            fetchLastLocation()
         }
     }
 
@@ -221,13 +239,26 @@ class ConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback
                         Log.d(TAG, "Moved to user's last known location.")
                     } else {
                         Log.d(TAG, "Last known location is null. Falling back to Sydney.")
+                        Toast.makeText(
+                            this,
+                            "Could not retrieve current location. Showing default location.",
+                            Toast.LENGTH_LONG
+                        ).show()
                         moveToSydney()
                     }
                 }
                 .addOnFailureListener {
                     Log.e(TAG, "Failed to get location.", it)
+                    Toast.makeText(
+                        this,
+                        "Failed to retrieve current location. Showing default location.",
+                        Toast.LENGTH_LONG
+                    ).show()
                     moveToSydney()
                 }
+        } else {
+            // If permissions are not granted, request them.
+            requestLocationPermissions()
         }
     }
 
@@ -349,7 +380,7 @@ class ConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback
         composeView.setContent {
             val selectedContent by viewModel.selectedContent.collectAsState()
             val unselectedContent by viewModel.unselectedContent.collectAsState()
-            DialogContent(selectedContent, unselectedContent) {
+            PlaceContentSelectionDialogContent(selectedContent, unselectedContent) {
                 viewModel.toggleSelection(it)
             }
         }
@@ -357,6 +388,9 @@ class ConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback
         // Create and show the AlertDialog.
         val builder = AlertDialog.Builder(this)
         builder.setView(dialogView)
+            .setPositiveButton("Close") { dialog, _ -> // Added Close button
+                dialog.dismiss()
+            }
         val dialog = builder.create()
         dialog.show()
     }
@@ -372,7 +406,7 @@ class ConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun DialogContent(
+fun PlaceContentSelectionDialogContent( // Renamed DialogContent
     selectedContent: List<PlaceDetailsCompactItem>,
     unselectedContent: List<PlaceDetailsCompactItem>,
     onItemClick: (PlaceDetailsCompactItem) -> Unit
@@ -451,7 +485,7 @@ fun ContentItem(
 @Composable
 fun DialogContentPreview_BothSections() {
     MaterialTheme {
-        DialogContent(
+        PlaceContentSelectionDialogContent( // Renamed call site
             selectedContent = standardContent.toPlaceDetailsCompactItems(),
             unselectedContent = standardNonContent.toPlaceDetailsCompactItems(),
             onItemClick = {}
@@ -466,7 +500,7 @@ fun DialogContentPreview_BothSections() {
 @Composable
 fun DialogContentPreview_OnlySelected() {
     MaterialTheme {
-        DialogContent(
+        PlaceContentSelectionDialogContent( // Renamed call site
             selectedContent = Content.entries.toPlaceDetailsCompactItems(),
             unselectedContent = emptyList(),
             onItemClick = {}
@@ -481,7 +515,7 @@ fun DialogContentPreview_OnlySelected() {
 @Composable
 fun DialogContentPreview_OnlyUnselected() {
     MaterialTheme {
-        DialogContent(
+        PlaceContentSelectionDialogContent( // Renamed call site
             selectedContent = emptyList(),
             unselectedContent = Content.entries.toPlaceDetailsCompactItems(),
             onItemClick = {}
@@ -496,7 +530,7 @@ fun DialogContentPreview_OnlyUnselected() {
 @Composable
 fun DialogContentPreview_Empty() {
     MaterialTheme {
-        DialogContent(
+        PlaceContentSelectionDialogContent( // Renamed call site
             selectedContent = emptyList(),
             unselectedContent = emptyList(),
             onItemClick = {}
