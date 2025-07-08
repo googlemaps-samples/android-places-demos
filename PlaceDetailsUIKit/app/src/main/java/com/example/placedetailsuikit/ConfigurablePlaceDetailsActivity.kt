@@ -225,6 +225,21 @@ class ConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback
     }
 
     /**
+     * Handles the error case when the current location cannot be retrieved.
+     * It logs an error, displays a toast message to the user, and defaults
+     * the map view to Sydney, Australia.
+     */
+    private fun handleLocationError() {
+        Log.d(TAG, "Could not retrieve current location. Falling back to Sydney.")
+        Toast.makeText(
+            this,
+            "Could not retrieve current location. Showing default location.",
+            Toast.LENGTH_LONG
+        ).show()
+        moveToSydney()
+    }
+
+    /**
      * Gets the most recent location available to the device and moves the map camera to it.
      * If the location is unavailable, it falls back to a default location.
      */
@@ -234,30 +249,18 @@ class ConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location: Location? ->
                     if (location != null) {
-                        val userLocation = LatLng(location.latitude, location.longitude)
-                        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 13f))
+                        val latLng = LatLng(location.latitude, location.longitude)
+                        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
                         Log.d(TAG, "Moved to user's last known location.")
                     } else {
-                        Log.d(TAG, "Last known location is null. Falling back to Sydney.")
-                        Toast.makeText(
-                            this,
-                            "Could not retrieve current location. Showing default location.",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        moveToSydney()
+                        handleLocationError() // Use the helper function
                     }
                 }
                 .addOnFailureListener {
                     Log.e(TAG, "Failed to get location.", it)
-                    Toast.makeText(
-                        this,
-                        "Failed to retrieve current location. Showing default location.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    moveToSydney()
+                    handleLocationError() // Use the helper function
                 }
         } else {
-            // If permissions are not granted, request them.
             requestLocationPermissions()
         }
     }
