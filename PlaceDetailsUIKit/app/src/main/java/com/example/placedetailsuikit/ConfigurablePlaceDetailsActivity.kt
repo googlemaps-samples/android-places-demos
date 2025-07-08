@@ -297,7 +297,7 @@ class ConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback
         binding.placeDetailsWrapper.visibility = View.VISIBLE
         binding.dismissButton.visibility = View.GONE
         binding.placeDetailsContainer.visibility = View.GONE
-        binding.loadingIndicator.visibility = View.VISIBLE
+        binding.loadingIndicatorConfigurable.visibility = View.VISIBLE
 
         // Adjust the orientation of the Place Details fragment based on the device's orientation.
         val orientation =
@@ -318,7 +318,7 @@ class ConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback
                 override fun onSuccess(place: Place) {
                     Log.d(TAG, "Place loaded: ${place.id}")
                     // Show the fragment and dismiss button, hide the loading indicator.
-                    binding.loadingIndicator.visibility = View.GONE
+                    binding.loadingIndicatorConfigurable.visibility = View.GONE
                     binding.placeDetailsContainer.visibility = View.VISIBLE
                     binding.dismissButton.visibility = View.VISIBLE
                 }
