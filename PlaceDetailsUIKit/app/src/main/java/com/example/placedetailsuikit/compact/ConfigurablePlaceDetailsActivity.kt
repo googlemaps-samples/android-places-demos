@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.example.placedetailsuikit
+package com.example.placedetailsuikit.compact
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -64,6 +64,8 @@ import com.google.android.libraries.places.widget.PlaceDetailsCompactFragment.Co
 import com.google.android.libraries.places.widget.PlaceLoadListener
 import com.google.android.libraries.places.widget.model.Orientation
 import androidx.lifecycle.lifecycleScope
+import com.example.placedetailsuikit.BuildConfig
+import com.example.placedetailsuikit.R
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 

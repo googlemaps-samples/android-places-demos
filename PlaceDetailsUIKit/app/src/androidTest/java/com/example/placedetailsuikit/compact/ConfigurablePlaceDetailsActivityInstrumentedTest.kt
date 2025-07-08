@@ -1,35 +1,20 @@
-// Copyright 2025 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//   http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-package com.example.placedetailsuikit
+package com.example.placedetailsuikit.compact
 
 import android.Manifest
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
+import com.example.placedetailsuikit.R
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
-import org.hamcrest.CoreMatchers.not
+import org.hamcrest.CoreMatchers
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -64,7 +49,7 @@ class ConfigurablePlaceDetailsActivityInstrumentedTest {
     @Test
     fun test_configureDialogOpensAndDismisses() {
         // 1. Click the "Configure" FAB to open the dialog
-        onView(withId(R.id.configure_button)).perform(click())
+        Espresso.onView(ViewMatchers.withId(R.id.configure_button)).perform(ViewActions.click())
 
         // 2. Verify that the Compose-based dialog content is displayed
         // We check for the sticky headers to confirm the LazyColumn is there.
@@ -75,7 +60,7 @@ class ConfigurablePlaceDetailsActivityInstrumentedTest {
         composeTestRule.onNodeWithText("Rating").assertIsDisplayed()
 
         // 3. Click the "Close" button on the AlertDialog
-        onView(withText("Close")).perform(click())
+        Espresso.onView(ViewMatchers.withText("Close")).perform(ViewActions.click())
 
         // 4. Verify the dialog is gone by checking that its content is no longer visible
         composeTestRule.onNodeWithText("Selected Content").assertDoesNotExist()
@@ -88,7 +73,7 @@ class ConfigurablePlaceDetailsActivityInstrumentedTest {
     @Test
     fun test_selectionStatePersistsOnConfigurationChange() {
         // 1. Open the configuration dialog
-        onView(withId(R.id.configure_button)).perform(click())
+        Espresso.onView(ViewMatchers.withId(R.id.configure_button)).perform(ViewActions.click())
 
         // 2. Toggle an item (e.g., move "Rating" from selected to unselected)
         composeTestRule.onNodeWithText("Rating").performClick()
@@ -99,13 +84,13 @@ class ConfigurablePlaceDetailsActivityInstrumentedTest {
 
 
         // 3. Close the dialog
-        onView(withText("Close")).perform(click())
+        Espresso.onView(ViewMatchers.withText("Close")).perform(ViewActions.click())
 
         // 4. Recreate the activity to simulate a screen rotation
         composeTestRule.activityRule.scenario.recreate()
 
         // 5. Re-open the dialog and verify the state was restored
-        onView(withId(R.id.configure_button)).perform(click())
+        Espresso.onView(ViewMatchers.withId(R.id.configure_button)).perform(ViewActions.click())
 
         // Check that "Rating" is still in the unselected list.
         composeTestRule.onNodeWithText("Unselected Content").assertIsDisplayed()
@@ -130,21 +115,27 @@ class ConfigurablePlaceDetailsActivityInstrumentedTest {
 
         // 2. Verify UI After Click
         // The wrapper view should be visible, and the loader should be showing initially.
-        onView(withId(R.id.place_details_wrapper)).check(matches(isDisplayed()))
-        onView(withId(R.id.loading_indicator_configurable)).check(matches(isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(R.id.place_details_wrapper))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(R.id.loading_indicator_configurable))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         // Wait for the place to load. For a real app, use Espresso Idling Resources.
         Thread.sleep(3000)
 
         // The loader should be gone, and the fragment container should be visible.
-        onView(withId(R.id.loading_indicator_configurable)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.place_details_container)).check(matches(isDisplayed()))
-        onView(withId(R.id.dismiss_button)).check(matches(isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(R.id.loading_indicator_configurable))
+            .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isDisplayed())))
+        Espresso.onView(ViewMatchers.withId(R.id.place_details_container))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(R.id.dismiss_button))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         // 3. Click the Dismiss Button
-        onView(withId(R.id.dismiss_button)).perform(click())
+        Espresso.onView(ViewMatchers.withId(R.id.dismiss_button)).perform(ViewActions.click())
 
         // 4. Verify UI After Dismiss
-        onView(withId(R.id.place_details_wrapper)).check(matches(not(isDisplayed())))
+        Espresso.onView(ViewMatchers.withId(R.id.place_details_wrapper))
+            .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isDisplayed())))
     }
 }

@@ -16,10 +16,11 @@
  * This file contains the ViewModel and related data classes/extensions for managing
  * the state of the Place Details content configuration UI.
  */
-package com.example.placedetailsuikit
+package com.example.placedetailsuikit.compact
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.libraries.places.widget.PlaceDetailsCompactFragment
 import com.google.android.libraries.places.widget.PlaceDetailsCompactFragment.Content
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -66,14 +67,7 @@ fun Iterable<Content>.toPlaceDetailsCompactItems() = this.map { it.toPlaceDetail
 /**
  * A default list of [Content] types that are commonly displayed in the Place Details view.
  */
-val standardContent = listOf(
-    Content.MEDIA,
-    Content.RATING,
-    Content.TYPE,
-    Content.PRICE,
-    Content.ACCESSIBLE_ENTRANCE_ICON,
-    Content.OPEN_NOW_STATUS,
-)
+val standardContent = PlaceDetailsCompactFragment.STANDARD_CONTENT
 
 /**
  * A list containing all [Content] types that are not in the [standardContent] list.
