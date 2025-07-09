@@ -88,7 +88,7 @@ class MainActivityInstrumentedTest {
         // This avoids ambiguity with the loader inside the PlaceDetailsCompactFragment.
         onView(
             allOf(
-                withId(R.id.loading_indicator),
+                withId(R.id.loading_indicator_main),
                 withParent(withId(R.id.place_details_wrapper))
             )
         ).check(matches(isDisplayed()))
@@ -102,7 +102,7 @@ class MainActivityInstrumentedTest {
         // Check that our specific loader is now gone.
         onView(
             allOf(
-                withId(R.id.loading_indicator),
+                withId(R.id.loading_indicator_main),
                 withParent(withId(R.id.place_details_wrapper))
             )
         ).check(matches(not(isDisplayed())))
