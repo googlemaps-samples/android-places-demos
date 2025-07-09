@@ -1,5 +1,5 @@
 [versions]
-androidGradlePlugin = "8.10.1"
+androidGradlePlugin = "8.11.0"
 appcompat = "1.7.1"
 coreKtx = "1.16.0"
 glide = "4.16.0"
@@ -9,9 +9,9 @@ mapsUtilsKtx = "5.2.0"
 material = "1.12.0"
 multidex = "2.0.1"
 places = "4.3.1"
-viewbinding = "8.10.1"
+viewbinding = "8.11.0"
 volley = "1.2.1"
-kotlinParcelize = "1.9.24"
+kotlinParcelize = "2.2.0"
 
 [libraries]
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
