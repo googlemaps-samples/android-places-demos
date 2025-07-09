@@ -19,7 +19,7 @@ fragmentKtx = "1.8.8"
 googleMaps = "19.2.0"
 kotlinParcelize = "2.2.0"
 mapsSecretsGradlePlugin = "2.0.1"
-places = "4.3.1"
+places = "4.4.1"
 composeBom = "2025.06.01"
 
 # Optional play services location SDK for the Fused location provider

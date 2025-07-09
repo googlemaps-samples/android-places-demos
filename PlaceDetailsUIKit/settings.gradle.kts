@@ -32,6 +32,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url = uri("/Users/dkhawk/Downloads/places_sdk")
+        }
     }
 }
 
