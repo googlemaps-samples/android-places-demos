@@ -29,6 +29,9 @@
 
   <string name="error_api_key" translatable="false">No API key defined in gradle.properties</string>
 
+  <!-- Text for exit menu item. -->
+  <string name="action_exit" translatable="false">Exit</string>
+
   <!-- Text for raw results checkbox. When checked raw return values will be displayed. -->
   <string name="display_raw_results" translatable="false">Display raw results?</string>
 
@@ -154,7 +157,8 @@
   <string name="programmatic_autocomplete_geocoding">Programmatic Autocomplete + Geocoding</string>
   <string name="search">Search</string>
   <string name="search_a_place">Search for a Place</string>
-  <string name="programmatic_place_predictions_instructions">This activity demonstrates as-you-type programmatic place predictions. Tap on the search icon on the toolbar and search for a place.</string>
+  <string name="programmatic_place_predictions_instructions" translatable="false">This activity demonstrates as-you-type programmatic place predictions. Tap on the search icon on the toolbar and search for a place.</string>
+  <string name="programmatic_place_predictions_no_matches" translatable="false">No matching search results</string>
 
   <!-- FIND CURRENT PLACE -->
 

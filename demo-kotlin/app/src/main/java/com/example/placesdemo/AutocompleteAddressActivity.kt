@@ -31,7 +31,6 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.placesdemo.databinding.AutocompleteAddressActivityBinding
 import com.google.android.gms.location.LocationServices
@@ -51,7 +50,7 @@ import androidx.core.view.isGone
 /**
  *  Activity for using Place Autocomplete to assist filling out an address form.
  */
-class AutocompleteAddressActivity : AppCompatActivity(R.layout.autocomplete_address_activity),
+class AutocompleteAddressActivity : BaseActivity(),
     OnMapReadyCallback {
     private lateinit var mapPanel: View
 
@@ -112,8 +111,13 @@ class AutocompleteAddressActivity : AppCompatActivity(R.layout.autocomplete_addr
         super.onCreate(savedInstanceState)
 
         binding = AutocompleteAddressActivityBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+        setContentView(binding.root)
+
+        setSupportActionBar(binding.topBar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.topBar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
 
         // Attach an Autocomplete intent to the Address 1 EditText field
         binding.autocompleteAddress1.setOnClickListener(startAutocompleteIntentListener)

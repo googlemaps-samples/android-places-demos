@@ -25,7 +25,6 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.placesdemo.databinding.PlaceDetailsAndPhotosActivityBinding
 import com.google.android.libraries.places.api.Places
@@ -40,7 +39,7 @@ import com.google.android.libraries.places.api.net.PlacesClient
 /**
  * Activity to demonstrate [PlacesClient.fetchPlace].
  */
-class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
+class PlaceDetailsAndPhotosActivity : BaseActivity() {
     private lateinit var placesClient: PlacesClient
     private lateinit var fieldSelector: FieldSelector
 
@@ -53,6 +52,12 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
 
         binding = PlaceDetailsAndPhotosActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setSupportActionBar(binding.topBar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.topBar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient(this)

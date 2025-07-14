@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
- Copyright 2020 Google LLC
+ Copyright 2025 Google LLC
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,251 +15,266 @@
  limitations under the License.
 -->
 
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/spacing_large"
     tools:context=".PlaceAutocompleteActivity">
 
-  <LinearLayout
-      android:id="@+id/autocomplete_scroll_container"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical">
+  <com.google.android.material.appbar.MaterialToolbar
+      android:id="@+id/top_bar"
+      style="@style/Widget.MaterialComponents.Toolbar.Primary"
+      android:layout_width="0dp"
+      android:layout_height="?attr/actionBarSize"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:title="@string/autocomplete_button"
+      app:titleTextColor="?attr/colorOnPrimary" />
 
-    <!--Autocomplete parameters-->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/autocomplete_location_origin_label"/>
-
-    <EditText
-        android:id="@+id/autocomplete_location_origin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/autocomplete_location_origin_hint"
-        android:autofillHints=""
-        android:imeOptions="actionNext"
-        android:inputType="numberDecimal|numberSigned"
-        android:digits="0123456789.,- "
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/autocomplete_location_bias_label"/>
+  <ScrollView
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      app:layout_constraintTop_toBottomOf="@+id/top_bar"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent">
 
     <LinearLayout
+        android:id="@+id/autocomplete_scroll_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-      <EditText
-          android:id="@+id/autocomplete_location_bias_south_west"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:minHeight="48dp"
-          android:layout_weight="1"
-          android:hint="@string/autocomplete_location_south_west_hint"
-          android:autofillHints=""
-          android:imeOptions="actionNext"
-          android:inputType="numberDecimal|numberSigned"
-          android:digits="0123456789.,- "
-          />
-
-      <EditText
-          android:id="@+id/autocomplete_location_bias_north_east"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_weight="1"
-          android:hint="@string/autocomplete_location_north_east_hint"
-          android:autofillHints=""
-          android:imeOptions="actionNext"
-          android:inputType="numberDecimal|numberSigned"
-          android:digits="0123456789.,- "
-          />
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/autocomplete_location_restriction_label"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-      <EditText
-          android:id="@+id/autocomplete_location_restriction_south_west"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:minHeight="48dp"
-          android:layout_weight="1"
-          android:hint="@string/autocomplete_location_south_west_hint"
-          android:autofillHints=""
-          android:imeOptions="actionNext"
-          android:inputType="numberDecimal|numberSigned"
-          android:digits="0123456789.,- "
-          />
-
-      <EditText
-          android:id="@+id/autocomplete_location_restriction_north_east"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_weight="1"
-          android:hint="@string/autocomplete_location_north_east_hint"
-          android:autofillHints=""
-          android:imeOptions="actionNext"
-          android:inputType="numberDecimal|numberSigned"
-          android:digits="0123456789.,- "
-          />
-    </LinearLayout>
-
-    <EditText
-        android:id="@+id/autocomplete_query"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/autocomplete_query_hint"
-        android:autofillHints=""
-        android:imeOptions="actionNext"
-        android:inputType="text"/>
-
-    <!-- Autocomplete fragment only -->
-    <EditText
-        android:id="@+id/autocomplete_hint"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/autocomplete_hint_hint"
-        android:autofillHints=""
-        android:imeOptions="actionNext"
-        android:inputType="text"/>
-
-    <EditText
-        android:id="@+id/autocomplete_country"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/autocomplete_country_hint"
-        android:autofillHints=""
-        android:imeOptions="actionNext"
-        android:inputType="text"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:padding="@dimen/spacing_large"
         android:orientation="vertical">
 
-      <CheckBox
-          android:id="@+id/autocomplete_use_types_filter_checkbox"
+      <!--Autocomplete parameters-->
+      <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:minHeight="48dp"
-          android:checked="false"
-          android:text="@string/autocomplete_use_types_filter"/>
+          android:text="@string/autocomplete_location_origin_label" />
 
       <EditText
-          android:id="@+id/autocomplete_types_filter_edittext"
-          android:autofillHints=""
-          android:enabled="false"
+          android:id="@+id/autocomplete_location_origin"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:hint="@string/autocomplete_types_filter_hint"
-          android:inputType="text"/>
-
-    </LinearLayout>
-
-    <!-- Autocomplete predictions only -->
-    <CheckBox
-        android:id="@+id/autocomplete_use_session_token"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:checked="false"
-        android:text="@string/autocomplete_use_session_token"/>
-
-    <!-- Autocomplete activity only -->
-    <CheckBox
-        android:id="@+id/autocomplete_activity_overlay_mode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:checked="false"
-        android:text="@string/autocomplete_activity_overlay_mode"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-      <CheckBox
-          android:id="@+id/use_custom_fields"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:minHeight="48dp"
-          android:text="@string/use_custom_fields"/>
+          android:autofillHints=""
+          android:digits="0123456789.,- "
+          android:hint="@string/autocomplete_location_origin_hint"
+          android:imeOptions="actionNext"
+          android:inputType="numberDecimal|numberSigned" />
 
       <TextView
-          android:id="@+id/custom_fields_list"
-          android:layout_width="0dp"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_weight="1"/>
+          android:text="@string/autocomplete_location_bias_label" />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/autocomplete_location_bias_south_west"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:autofillHints=""
+            android:digits="0123456789.,- "
+            android:hint="@string/autocomplete_location_south_west_hint"
+            android:imeOptions="actionNext"
+            android:inputType="numberDecimal|numberSigned"
+            android:minHeight="48dp" />
+
+        <EditText
+            android:id="@+id/autocomplete_location_bias_north_east"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:autofillHints=""
+            android:digits="0123456789.,- "
+            android:hint="@string/autocomplete_location_north_east_hint"
+            android:imeOptions="actionNext"
+            android:inputType="numberDecimal|numberSigned" />
+      </LinearLayout>
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/autocomplete_location_restriction_label" />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/autocomplete_location_restriction_south_west"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:autofillHints=""
+            android:digits="0123456789.,- "
+            android:hint="@string/autocomplete_location_south_west_hint"
+            android:imeOptions="actionNext"
+            android:inputType="numberDecimal|numberSigned"
+            android:minHeight="48dp" />
+
+        <EditText
+            android:id="@+id/autocomplete_location_restriction_north_east"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:autofillHints=""
+            android:digits="0123456789.,- "
+            android:hint="@string/autocomplete_location_north_east_hint"
+            android:imeOptions="actionNext"
+            android:inputType="numberDecimal|numberSigned" />
+      </LinearLayout>
+
+      <EditText
+          android:id="@+id/autocomplete_query"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:autofillHints=""
+          android:hint="@string/autocomplete_query_hint"
+          android:imeOptions="actionNext"
+          android:inputType="text" />
+
+      <!-- Autocomplete fragment only -->
+      <EditText
+          android:id="@+id/autocomplete_hint"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:autofillHints=""
+          android:hint="@string/autocomplete_hint_hint"
+          android:imeOptions="actionNext"
+          android:inputType="text" />
+
+      <EditText
+          android:id="@+id/autocomplete_country"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:autofillHints=""
+          android:hint="@string/autocomplete_country_hint"
+          android:imeOptions="actionNext"
+          android:inputType="text" />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+        <CheckBox
+            android:id="@+id/autocomplete_use_types_filter_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:minHeight="48dp"
+            android:text="@string/autocomplete_use_types_filter" />
+
+        <EditText
+            android:id="@+id/autocomplete_types_filter_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints=""
+            android:enabled="false"
+            android:hint="@string/autocomplete_types_filter_hint"
+            android:inputType="text" />
+
+      </LinearLayout>
+
+      <!-- Autocomplete predictions only -->
+      <CheckBox
+          android:id="@+id/autocomplete_use_session_token"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:checked="false"
+          android:minHeight="48dp"
+          android:text="@string/autocomplete_use_session_token" />
+
+      <!-- Autocomplete activity only -->
+      <CheckBox
+          android:id="@+id/autocomplete_activity_overlay_mode"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:checked="false"
+          android:minHeight="48dp"
+          android:text="@string/autocomplete_activity_overlay_mode" />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/use_custom_fields"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="@string/use_custom_fields" />
+
+        <TextView
+            android:id="@+id/custom_fields_list"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+      </LinearLayout>
+
+      <Button
+          android:id="@+id/fetch_autocomplete_predictions_button"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/fetch_autocomplete_predictions_button" />
+
+      <Button
+          android:id="@+id/autocomplete_activity_button"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/autocomplete_activity_button" />
+
+      <!-- Autocomplete support fragment -->
+      <TextView
+          android:id="@+id/autocomplete_support_fragment_text_label"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/autocomplete_support_fragment_text_label" />
+
+      <androidx.fragment.app.FragmentContainerView
+          android:id="@+id/autocomplete_support_fragment"
+          android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          tools:layout="@layout/places_autocomplete_fragment" />
+
+      <Button
+          android:id="@+id/autocomplete_support_fragment_update_button"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/autocomplete_support_fragment_update_button" />
+
+      <!-- Results -->
+      <CheckBox
+          android:id="@+id/display_raw_results"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:checked="false"
+          android:text="@string/display_raw_results" />
+
+      <ProgressBar
+          android:id="@+id/loading"
+          style="?android:attr/progressBarStyleSmall"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:visibility="invisible" />
+
+      <TextView
+          android:id="@+id/response"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textIsSelectable="true" />
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/fetch_autocomplete_predictions_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/fetch_autocomplete_predictions_button"/>
-
-    <Button
-        android:id="@+id/autocomplete_activity_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/autocomplete_activity_button"/>
-
-    <!-- Autocomplete support fragment -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/autocomplete_support_fragment_text_label"
-        android:text="@string/autocomplete_support_fragment_text_label"/>
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/autocomplete_support_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-        tools:layout="@layout/places_autocomplete_fragment" />
-
-    <Button
-        android:id="@+id/autocomplete_support_fragment_update_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/autocomplete_support_fragment_update_button"/>
-
-    <!-- Results -->
-    <CheckBox
-        android:id="@+id/display_raw_results"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:checked="false"
-        android:text="@string/display_raw_results"/>
-
-    <ProgressBar
-        android:id="@+id/loading"
-        style="?android:attr/progressBarStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"/>
-
-    <TextView
-        android:id="@+id/response"
-        android:textIsSelectable="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-  </LinearLayout>
-</ScrollView>
+  </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

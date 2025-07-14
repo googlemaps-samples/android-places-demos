@@ -25,7 +25,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import com.example.placesdemo.databinding.PlaceAutocompleteActivityBinding
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.model.LatLng
@@ -48,7 +47,7 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
  * Activity to demonstrate Place Autocomplete (activity widget intent, fragment widget, and
  * [PlacesClient.findAutocompletePredictions]).
  */
-class PlaceAutocompleteActivity : AppCompatActivity() {
+class PlaceAutocompleteActivity : BaseActivity() {
 
     private lateinit var placesClient: PlacesClient
     private lateinit var fieldSelector: FieldSelector
@@ -60,6 +59,12 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
 
         binding = PlaceAutocompleteActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setSupportActionBar(binding.topBar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.topBar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient(this)
