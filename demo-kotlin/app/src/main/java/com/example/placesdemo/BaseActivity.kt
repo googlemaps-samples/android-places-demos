@@ -31,7 +31,7 @@ open class BaseActivity : AppCompatActivity() {
                 Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_NO
         insetsController.isAppearanceLightStatusBars = isLightTheme
 
-        // It'''s recommended to apply insets using a listener like this,
+        // It's recommended to apply insets using a listener like this,
         // especially when dealing with normal views rather than Compose.
         // This makes sure that the insets are applied after the view is attached
         // and ensures that the insets are applied correctly every time the
@@ -39,12 +39,12 @@ open class BaseActivity : AppCompatActivity() {
         val contentView = findViewById<android.view.View>(android.R.id.content)
         ViewCompat.setOnApplyWindowInsetsListener(contentView) { view, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-            // Apply the insets as padding to the view. Here we'''re setting all of the
+            // Apply the insets as padding to the view. Here we're setting all of the
             // dimensions, but apply as appropriate to your layout.
             // This is where you can adjust your UI based on the cutouts.
             view.setPadding(insets.left, insets.top, insets.right, insets.bottom)
 
-            // Return CONSUMED if you don'''t want to pass the insets down to the children
+            // Return CONSUMED if you don't want to pass the insets down to the children
             WindowInsetsCompat.CONSUMED
         }
     }

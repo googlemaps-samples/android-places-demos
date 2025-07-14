@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// TODO(issue/224006159): Remove this when the Place Fields Sample is implemented.
 package com.example.placesdemo.programmatic_autocomplete
 
 import com.google.android.material.search.SearchView
