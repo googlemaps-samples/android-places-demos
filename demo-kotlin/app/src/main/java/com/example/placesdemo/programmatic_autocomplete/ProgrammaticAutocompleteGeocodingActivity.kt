@@ -26,6 +26,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AlertDialog
@@ -78,7 +79,8 @@ class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
 
     private val handler = Handler(Looper.getMainLooper())
     private val adapter = PlacePredictionAdapter()
-    private val gson = GsonBuilder().registerTypeAdapter(LatLng::class.java, LatLngAdapter()).create()
+    private val gson =
+        GsonBuilder().registerTypeAdapter(LatLng::class.java, LatLngAdapter()).create()
 
     private lateinit var queue: RequestQueue
     private lateinit var placesClient: PlacesClient
@@ -112,7 +114,8 @@ class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
-        val searchView = menu.findItem(R.id.search).actionView as com.google.android.material.search.SearchView
+        val searchView =
+            menu.findItem(R.id.search).actionView as com.google.android.material.search.SearchView
         initSearchView(searchView)
         return super.onCreateOptionsMenu(menu)
     }
@@ -134,13 +137,18 @@ class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val query = s.toString()
-//                binding.progressBar.isIndeterminate = true
 
                 // Cancel any previous place prediction requests
                 handler.removeCallbacksAndMessages(null)
 
+
                 // Start a new place prediction request after a 300ms delay
-                handler.postDelayed({ getPlacePredictions(query) }, 300)
+                handler.postDelayed({
+                        if (query.isNotEmpty()) binding.progressBar.visibility = View.VISIBLE
+                        getPlacePredictions(query)
+                    },
+                    300
+                )
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -193,10 +201,11 @@ class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
             .addOnSuccessListener { response ->
                 val predictions = response.autocompletePredictions
                 adapter.setPredictions(predictions)
-//                binding.progressBar.isIndeterminate = false
-                binding.resultsViewAnimator.displayedChild = if (predictions.isEmpty() && query.isNotEmpty()) 1 else 0
+                binding.progressBar.visibility = View.INVISIBLE
+                binding.resultsViewAnimator.displayedChild =
+                    if (predictions.isEmpty() && query.isNotEmpty()) 1 else 0
             }.addOnFailureListener { exception: Exception? ->
-//                binding.progressBar.isIndeterminate = false
+                binding.progressBar.visibility = View.INVISIBLE
                 if (exception is ApiException) {
                     Log.e(TAG, "Place not found: ${exception.message}")
                 }
@@ -231,7 +240,8 @@ class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
                 }
 
                 // Use Gson to convert the response JSON object to a POJO
-                val result: GeocodingResult = gson.fromJson(results.getString(0), GeocodingResult::class.java)
+                val result: GeocodingResult =
+                    gson.fromJson(results.getString(0), GeocodingResult::class.java)
                 displayDialog(placePrediction, result)
             } catch (e: JSONException) {
                 e.printStackTrace()

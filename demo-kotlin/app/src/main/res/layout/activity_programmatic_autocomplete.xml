@@ -56,6 +56,20 @@
       android:hint="@string/search_a_place"
       app:layout_anchor="@id/search_bar">
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:paddingHorizontal="0dp"
+        android:paddingVertical="0dp"
+        android:layout_marginBottom="-8dp"
+        android:layout_marginTop="-6dp"
+        android:visibility="invisible"
+        tools:visibility="invisible"
+        />
+
     <ViewAnimator
         android:id="@+id/results_view_animator"
         android:layout_width="match_parent"
@@ -67,7 +81,6 @@
           android:layout_height="match_parent" />
 
       <TextView
-          android:id="@+id/search_error"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:layout_margin="16dp"

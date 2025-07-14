@@ -159,6 +159,7 @@
   <string name="search_a_place">Search for a Place</string>
   <string name="programmatic_place_predictions_instructions" translatable="false">This activity demonstrates as-you-type programmatic place predictions. Tap on the search icon on the toolbar and search for a place.</string>
   <string name="programmatic_place_predictions_no_matches" translatable="false">No matching search results</string>
+  <string name="programmatic_place_predictions_error" translatable="false">Error fetching place search results</string>
 
   <!-- FIND CURRENT PLACE -->
 
