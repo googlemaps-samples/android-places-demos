@@ -48,6 +48,8 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.activity.EdgeToEdge;
+
 /**
  * Activity to demonstrate {@link PlacesClient#fetchPlace(FetchPlaceRequest)}.
  */
@@ -62,6 +64,8 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        // Enable edge-to-edge display. This must be called before calling super.onCreate().
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
 
         binding = PlaceDetailsAndPhotosActivityBinding.inflate(getLayoutInflater());

@@ -63,6 +63,7 @@ import java.util.List;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.google.maps.android.SphericalUtil.computeDistanceBetween;
+import androidx.activity.EdgeToEdge;
 
 /**
  * Activity for using Place Autocomplete to assist filling out an address form.
@@ -118,6 +119,8 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Enable edge-to-edge display. This must be called before calling super.onCreate().
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
 
         binding = AutocompleteAddressActivityBinding.inflate(getLayoutInflater());
