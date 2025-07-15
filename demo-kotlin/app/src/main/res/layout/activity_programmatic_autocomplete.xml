@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
- Copyright 2020 Google LLC
+ Copyright 2025 Google LLC
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,51 +15,82 @@
  limitations under the License.
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:orientation="vertical"
-  tools:context=".programmatic_autocomplete.ProgrammaticAutocompleteGeocodingActivity">
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".programmatic_autocomplete.ProgrammaticAutocompleteGeocodingActivity"
+    >
 
   <com.google.android.material.appbar.AppBarLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <androidx.appcompat.widget.Toolbar
-      android:id="@+id/toolbar"
       android:layout_width="match_parent"
-      android:layout_height="?attr/actionBarSize"
-      android:background="?attr/colorPrimary" />
-
-    <ProgressBar
-      android:id="@+id/progress_bar"
-      style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="-7dp"
-      android:layout_marginBottom="-7dp" />
-
+      android:layout_height="wrap_content">
+    <com.google.android.material.search.SearchBar
+        android:id="@+id/search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/search_a_place" />
   </com.google.android.material.appbar.AppBarLayout>
 
-  <ViewAnimator
-    android:id="@+id/view_animator"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <TextView
+  <androidx.core.widget.NestedScrollView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:layout_margin="16dp"
-      android:gravity="center"
-      android:lineSpacingMultiplier="1.15"
-      android:text="@string/programmatic_place_predictions_instructions"
-      android:textSize="20sp" />
+      app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:lineSpacingMultiplier="1.15"
+        android:text="@string/programmatic_place_predictions_instructions"
+        android:textSize="20sp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/recycler_view"
+  </androidx.core.widget.NestedScrollView>
+
+  <com.google.android.material.search.SearchView
+      android:id="@+id/search_view"
       android:layout_width="match_parent"
-      android:layout_height="match_parent" />
-  </ViewAnimator>
+      android:layout_height="match_parent"
+      android:hint="@string/search_a_place"
+      app:layout_anchor="@id/search_bar">
 
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:paddingHorizontal="0dp"
+        android:paddingVertical="0dp"
+        android:layout_marginBottom="-8dp"
+        android:layout_marginTop="-6dp"
+        android:visibility="invisible"
+        tools:visibility="invisible"
+        />
+
+    <ViewAnimator
+        android:id="@+id/results_view_animator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+      <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/place_search_results_view"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent" />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_margin="16dp"
+          android:gravity="center"
+          android:lineSpacingMultiplier="1.15"
+          android:text="@string/programmatic_place_predictions_no_matches"
+          android:textSize="20sp"
+          android:visibility="gone" />
+
+    </ViewAnimator>
+
+  </com.google.android.material.search.SearchView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

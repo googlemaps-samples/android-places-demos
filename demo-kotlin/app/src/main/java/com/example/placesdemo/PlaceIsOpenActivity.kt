@@ -25,7 +25,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
-import androidx.appcompat.app.AppCompatActivity
 import com.example.placesdemo.StringUtil.stringify
 import com.example.placesdemo.databinding.PlaceIsOpenActivityBinding
 import com.google.android.gms.tasks.Task
@@ -43,7 +42,7 @@ import java.util.TimeZone.*
 /**
  * Activity to demonstrate [PlacesClient.isOpen].
  */
-class PlaceIsOpenActivity : AppCompatActivity() {
+class PlaceIsOpenActivity : BaseActivity() {
     private val defaultTimeZone = getDefault()
     private val defaultTimeZoneID: String = defaultTimeZone.id
 
@@ -58,6 +57,12 @@ class PlaceIsOpenActivity : AppCompatActivity() {
 
         binding = PlaceIsOpenActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setSupportActionBar(binding.topBar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.topBar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient( /* context = */this)

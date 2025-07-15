@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
- Copyright 2020 Google LLC
+ Copyright 2025 Google LLC
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,66 +15,85 @@
  limitations under the License.
 -->
 
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/spacing_large"
     tools:context=".CurrentPlaceActivity">
 
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical">
+  <com.google.android.material.appbar.MaterialToolbar
+      android:id="@+id/top_bar"
+      style="@style/Widget.MaterialComponents.Toolbar.Primary"
+      android:layout_width="0dp"
+      android:layout_height="?attr/actionBarSize"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:title="@string/current_place_button"
+      app:titleTextColor="?attr/colorOnPrimary" />
+
+  <ScrollView
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      app:layout_constraintTop_toBottomOf="@+id/top_bar"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:padding="@dimen/spacing_large"
+        android:orientation="vertical">
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/use_custom_fields"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/use_custom_fields" />
+
+        <TextView
+            android:id="@+id/custom_fields_list"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+      </LinearLayout>
+
+      <Button
+          android:id="@+id/find_current_place_button"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/find_current_place_button" />
 
       <CheckBox
-          android:id="@+id/use_custom_fields"
-          android:layout_width="0dp"
+          android:id="@+id/display_raw_results"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_weight="1"
-          android:text="@string/use_custom_fields"/>
+          android:checked="false"
+          android:text="@string/display_raw_results" />
+
+      <ProgressBar
+          android:id="@+id/loading"
+          style="?android:attr/progressBarStyleSmall"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:visibility="invisible" />
 
       <TextView
-          android:id="@+id/custom_fields_list"
-          android:layout_width="0dp"
+          android:id="@+id/response"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_weight="1"/>
+          android:textIsSelectable="true" />
 
     </LinearLayout>
+  </ScrollView>
 
-    <Button
-        android:id="@+id/find_current_place_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/find_current_place_button"/>
-
-    <CheckBox
-        android:id="@+id/display_raw_results"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:checked="false"
-        android:text="@string/display_raw_results"/>
-
-    <ProgressBar
-        android:id="@+id/loading"
-        style="?android:attr/progressBarStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"/>
-
-    <TextView
-        android:id="@+id/response"
-        android:textIsSelectable="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-  </LinearLayout>
-
-</ScrollView>
-
+</androidx.constraintlayout.widget.ConstraintLayout>

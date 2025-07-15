@@ -15,32 +15,41 @@
  */
 package com.example.placesdemo
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
-import androidx.annotation.IdRes
-import androidx.appcompat.app.AppCompatActivity
+import com.example.placesdemo.databinding.ActivityMainBinding
 import com.example.placesdemo.programmatic_autocomplete.ProgrammaticAutocompleteGeocodingActivity
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
+
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.topBar)
+        binding.topBar.setNavigationIcon(R.drawable.ic_exit)
+        binding.topBar.setNavigationOnClickListener {
+            finishAffinity() // Closes the app and all parent activities
+        }
 
-        setLaunchActivityClickListener(R.id.autocomplete_button, PlaceAutocompleteActivity::class.java)
-        setLaunchActivityClickListener(R.id.autocomplete_address_button, AutocompleteAddressActivity::class.java)
-        setLaunchActivityClickListener(R.id.programmatic_autocomplete_button, ProgrammaticAutocompleteGeocodingActivity::class.java)
-        setLaunchActivityClickListener(R.id.current_place_button, CurrentPlaceActivity::class.java)
-        setLaunchActivityClickListener(R.id.place_and_photo_button, PlaceDetailsAndPhotosActivity::class.java)
-        setLaunchActivityClickListener(R.id.is_open_button, PlaceIsOpenActivity::class.java)
+        setLaunchActivityClickListener(binding.autocompleteButton, PlaceAutocompleteActivity::class.java)
+        setLaunchActivityClickListener(binding.autocompleteAddressButton, AutocompleteAddressActivity::class.java)
+        setLaunchActivityClickListener(binding.programmaticAutocompleteButton, ProgrammaticAutocompleteGeocodingActivity::class.java)
+        setLaunchActivityClickListener(binding.currentPlaceButton, CurrentPlaceActivity::class.java)
+        setLaunchActivityClickListener(binding.placeAndPhotoButton, PlaceDetailsAndPhotosActivity::class.java)
+        setLaunchActivityClickListener(binding.isOpenButton, PlaceIsOpenActivity::class.java)
     }
 
-    private fun setLaunchActivityClickListener(@IdRes onClickResId: Int, activityClassToLaunch: Class<out AppCompatActivity>) {
-        findViewById<Button>(onClickResId).setOnClickListener {
+    private fun setLaunchActivityClickListener(button: Button, activityClassToLaunch: Class<out Activity>) {
+        button.setOnClickListener {
             val intent = Intent(this@MainActivity, activityClassToLaunch)
             startActivity(intent)
         }
     }
-
 }

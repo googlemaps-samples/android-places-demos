@@ -35,7 +35,7 @@ import com.google.android.libraries.places.api.net.PlacesClient
 /**
  * Activity to demonstrate [PlacesClient.findCurrentPlace].
  */
-class CurrentPlaceActivity : AppCompatActivity() {
+class CurrentPlaceActivity : BaseActivity() {
     private lateinit var placesClient: PlacesClient
     private lateinit var fieldSelector: FieldSelector
 
@@ -66,6 +66,11 @@ class CurrentPlaceActivity : AppCompatActivity() {
 
         binding = CurrentPlaceActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSupportActionBar(binding.topBar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.topBar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient(this)

@@ -14,26 +14,31 @@
 
 package com.example.placesdemo.programmatic_autocomplete
 
+import com.google.android.material.search.SearchView
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ProgressBar
-import android.widget.SearchView
-import android.widget.ViewAnimator
+import android.view.View
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.example.placesdemo.BaseActivity
 import com.example.placesdemo.BuildConfig
 import com.example.placesdemo.R
+import com.example.placesdemo.databinding.ActivityProgrammaticAutocompleteBinding
 import com.example.placesdemo.model.GeocodingResult
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
@@ -53,42 +58,63 @@ import org.json.JSONArray
 import org.json.JSONException
 
 /**
+ * Extension function to get a color from the current theme using its attribute resource ID.
+ */
+@ColorInt
+fun Context.getColorFromTheme(@AttrRes colorAttributeResId: Int): Int {
+    val typedValue = TypedValue()
+    theme.resolveAttribute(colorAttributeResId, typedValue, true)
+    return typedValue.data
+}
+
+/**
  * An Activity that demonstrates programmatic as-you-type place predictions. The parameters of the
  * request are currently hard coded in this Activity, to modify these parameters (e.g. location
  * bias, place types, etc.), see [ProgrammaticAutocompleteGeocodingActivity.getPlacePredictions]
  *
  * @see https://developers.google.com/places/android-sdk/autocomplete#get_place_predictions_programmatically
  */
-class ProgrammaticAutocompleteGeocodingActivity : AppCompatActivity() {
+class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
 
     private val handler = Handler(Looper.getMainLooper())
     private val adapter = PlacePredictionAdapter()
-    private val gson = GsonBuilder().registerTypeAdapter(LatLng::class.java, LatLngAdapter()).create()
+    private val gson =
+        GsonBuilder().registerTypeAdapter(LatLng::class.java, LatLngAdapter()).create()
 
     private lateinit var queue: RequestQueue
     private lateinit var placesClient: PlacesClient
     private var sessionToken: AutocompleteSessionToken? = null
+    private lateinit var binding: ActivityProgrammaticAutocompleteBinding
 
-    private lateinit var viewAnimator: ViewAnimator
-    private lateinit var progressBar: ProgressBar
+    private var colorOnPrimary: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityProgrammaticAutocompleteBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        setContentView(R.layout.activity_programmatic_autocomplete)
-        setSupportActionBar(findViewById(R.id.toolbar))
+        // In your Fragment's onViewCreated or Activity's onCreate
+        val searchBar = binding.searchBar // view.findViewById<SearchBar>(R.id.search_bar)
+        val searchView = binding.searchView // view.findViewById<SearchView>(R.id.search_view)
+
+        // This is the critical line that makes it work!
+        searchView.setupWithSearchBar(searchBar)
+
+        // Now you can initialize your SearchView listeners
+        initSearchView(searchView)
 
         // Initialize members
-        progressBar = findViewById(R.id.progress_bar)
-        viewAnimator = findViewById(R.id.view_animator)
         placesClient = Places.createClient(this)
         queue = Volley.newRequestQueue(this)
         initRecyclerView()
+
+        colorOnPrimary = this.getColorFromTheme(com.google.android.material.R.attr.colorOnPrimary)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
-        val searchView = menu.findItem(R.id.search).actionView as SearchView
+        val searchView =
+            menu.findItem(R.id.search).actionView as com.google.android.material.search.SearchView
         initSearchView(searchView)
         return super.onCreateOptionsMenu(menu)
     }
@@ -102,31 +128,36 @@ class ProgrammaticAutocompleteGeocodingActivity : AppCompatActivity() {
     }
 
     private fun initSearchView(searchView: SearchView) {
-        searchView.queryHint = getString(R.string.search_a_place)
-        searchView.isIconifiedByDefault = false
-        searchView.isFocusable = true
-        searchView.isIconified = false
-        searchView.requestFocusFromTouch()
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                return false
+        // Add a TextWatcher to the underlying EditText to listen for changes
+        searchView.editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // No action needed here
             }
 
-            override fun onQueryTextChange(newText: String): Boolean {
-                progressBar.isIndeterminate = true
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = s.toString()
 
                 // Cancel any previous place prediction requests
                 handler.removeCallbacksAndMessages(null)
 
-                // Start a new place prediction request in 300 ms
-                handler.postDelayed({ getPlacePredictions(newText) }, 300)
-                return true
+
+                // Start a new place prediction request after a 300ms delay
+                handler.postDelayed({
+                        if (query.isNotEmpty()) binding.progressBar.visibility = View.VISIBLE
+                        getPlacePredictions(query)
+                    },
+                    300
+                )
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                // No action needed here
             }
         })
     }
 
     private fun initRecyclerView() {
-        val recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
+        val recyclerView = binding.placeSearchResultsView
         val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
@@ -140,24 +171,24 @@ class ProgrammaticAutocompleteGeocodingActivity : AppCompatActivity() {
 
     /**
      * This method demonstrates the programmatic approach to getting place predictions. The
-     * parameters in this request are currently biased to Kolkata, India.
+     * parameters in this request are currently biased to Boulder, Colorado, USA.
      *
      * @param query the plus code query string (e.g. "GCG2+3M K")
      */
     private fun getPlacePredictions(query: String) {
         // The value of 'bias' biases prediction results to the rectangular region provided
-        // (currently Kolkata). Modify these values to get results for another area. Make sure to
+        // (currently Boulder). Modify these values to get results for another area. Make sure to
         // pass in the appropriate value/s for .setCountries() in the
         // FindAutocompletePredictionsRequest.Builder object as well.
         val bias: LocationBias = RectangularBounds.newInstance(
-            LatLng(22.458744, 88.208162),  // SW lat, lng
-            LatLng(22.730671, 88.524896) // NE lat, lng
+            LatLng(39.9614, -105.3017),  // SW lat, lng (South Boulder)
+            LatLng(40.0953, -105.1843)   // NE lat, lng (Northeast Boulder)
         )
 
         // Create a new programmatic Place Autocomplete request in Places SDK for Android
         val newRequest = FindAutocompletePredictionsRequest.builder()
             .setLocationBias(bias)
-            .setCountries("IN")
+            .setCountries("US")
             .setTypesFilter(listOf(PlaceTypes.ESTABLISHMENT))
             // Session Token only used to link related Place Details call. See https://goo.gle/paaln
             .setSessionToken(sessionToken)
@@ -169,10 +200,11 @@ class ProgrammaticAutocompleteGeocodingActivity : AppCompatActivity() {
             .addOnSuccessListener { response ->
                 val predictions = response.autocompletePredictions
                 adapter.setPredictions(predictions)
-                progressBar.isIndeterminate = false
-                viewAnimator.displayedChild = if (predictions.isEmpty()) 0 else 1
+                binding.progressBar.visibility = View.INVISIBLE
+                binding.resultsViewAnimator.displayedChild =
+                    if (predictions.isEmpty() && query.isNotEmpty()) 1 else 0
             }.addOnFailureListener { exception: Exception? ->
-                progressBar.isIndeterminate = false
+                binding.progressBar.visibility = View.INVISIBLE
                 if (exception is ApiException) {
                     Log.e(TAG, "Place not found: ${exception.message}")
                 }
@@ -207,7 +239,8 @@ class ProgrammaticAutocompleteGeocodingActivity : AppCompatActivity() {
                 }
 
                 // Use Gson to convert the response JSON object to a POJO
-                val result: GeocodingResult = gson.fromJson(results.getString(0), GeocodingResult::class.java)
+                val result: GeocodingResult =
+                    gson.fromJson(results.getString(0), GeocodingResult::class.java)
                 displayDialog(placePrediction, result)
             } catch (e: JSONException) {
                 e.printStackTrace()
@@ -261,4 +294,3 @@ class ProgrammaticAutocompleteGeocodingActivity : AppCompatActivity() {
         private val TAG = ProgrammaticAutocompleteGeocodingActivity::class.java.simpleName
     }
 }
-

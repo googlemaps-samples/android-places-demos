@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
- Copyright 2020 Google LLC
+ Copyright 2025 Google LLC
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,12 +16,10 @@
 -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
-
+    xmlns:app="http://schemas.android.com/apk/res-auto">
   <item
-    android:id="@+id/search"
-    android:icon="@drawable/ic_search_black_24dp"
-    android:title="@string/search"
-    app:actionViewClass="com.google.android.material.search.SearchView"
-    app:showAsAction="collapseActionView|ifRoom" />
+      android:id="@+id/action_exit"
+      android:icon="@drawable/ic_exit_to_app_black_24dp"
+      android:title="@string/action_exit"
+      app:showAsAction="always" />
 </menu>
