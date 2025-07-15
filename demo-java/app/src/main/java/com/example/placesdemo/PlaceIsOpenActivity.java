@@ -53,6 +53,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import androidx.activity.EdgeToEdge;
+
 /**
  * Activity to demonstrate {@link PlacesClient#isOpen(IsOpenRequest)}.
  */
@@ -68,6 +70,8 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        // Enable edge-to-edge display. This must be called before calling super.onCreate().
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
 
         binding = PlaceIsOpenActivityBinding.inflate(getLayoutInflater());

@@ -15,20 +15,26 @@
  limitations under the License.
 -->
 
+<!--
+  The ScrollView is used to ensure that all content is visible on smaller devices.
+  android:fitsSystemWindows="true" is required to be set on the root view so that the
+  system insets are applied to the content, preventing it from being obscured by the system bars.
+-->
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/spacing_large"
+    android:fitsSystemWindows="true"
     tools:context=".PlaceDetailsAndPhotosActivity">
 
   <LinearLayout
       android:id="@+id/place_scroll_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="vertical">
+      android:orientation="vertical"
+      android:padding="@dimen/spacing_large">
 
     <EditText
         android:id="@+id/place_id_field"

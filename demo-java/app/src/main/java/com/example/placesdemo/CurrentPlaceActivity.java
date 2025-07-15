@@ -45,6 +45,8 @@ import androidx.core.content.ContextCompat;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.ACCESS_WIFI_STATE;
 
+import androidx.activity.EdgeToEdge;
+
 /**
  * Activity to demonstrate {@link PlacesClient#findCurrentPlace(FindCurrentPlaceRequest)}.
  */
@@ -88,6 +90,8 @@ public class CurrentPlaceActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        // Enable edge-to-edge display. This must be called before calling super.onCreate().
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
 
         binding = CurrentPlaceActivityBinding.inflate(getLayoutInflater());
