@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         binding.map3dView.onCreate(savedInstanceState)
-        binding.map3dView.getMap3DViewAsync(.this)
+        binding.map3dView.getMap3DViewAsync(this)
 
         if (viewModel.selectedPlaceId != null) {
             viewModel.selectedPlaceId?.let { placeId ->
@@ -224,7 +224,7 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
         // Launch in the main dispatcher using the global scope.
         CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
             binding.placeDetailsWrapper.visibility = View.VISIBLE
-            binding.loadingIndicator.visibility = View.VISIBLE
+            binding.loadingContainer.visibility = View.VISIBLE
             binding.dismissButton.visibility = View.GONE
             binding.placeDetailsContainer.visibility = View.GONE
 
@@ -243,14 +243,14 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
                 setPlaceLoadListener(object : PlaceLoadListener {
                     override fun onSuccess(place: Place) {
                         Log.d(TAG, "Place loaded: ${place.id}")
-                        binding.loadingIndicator.visibility = View.GONE
+                        binding.loadingContainer.visibility = View.GONE
                         binding.placeDetailsContainer.visibility = View.VISIBLE
                         binding.dismissButton.visibility = View.VISIBLE
                     }
 
                     override fun onFailure(e: Exception) {
                         Log.e(TAG, "Place failed to load", e)
-                        binding.loadingIndicator.visibility = View.GONE
+                        binding.loadingContainer.visibility = View.GONE
                         dismissPlaceDetails()
                         Toast.makeText(this@MainActivity, "Failed to load place details.", Toast.LENGTH_SHORT).show()
                     }
