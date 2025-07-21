@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:map3d="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/map_container"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.google.android.gms.maps3d.Map3DView
+        android:id="@+id/map3dView"
+        map3d:mode="hybrid"
+        map3d:centerLat="40.748392"
+        map3d:centerLng="-73.986060"
+        map3d:centerAlt="175"
+        map3d:heading="26"
+        map3d:tilt="67"
+        map3d:range="4000"
+        map3d:roll="0"
+        map3d:minAltitude="0"
+        map3d:maxAltitude="1000000"
+        map3d:minHeading="0"
+        map3d:maxHeading="360"
+        map3d:minTilt="0"
+        map3d:maxTilt="90"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/my_location_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_my_location"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="My Location" />
+
+
+    <!-- Wrapper to hold the fragment, the dismiss button, AND the loader -->
+    <FrameLayout
+        android:id="@+id/place_details_wrapper"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="26dp"
+        android:elevation="4dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="gone">
+
+        <!-- The container for the fragment -->
+        <FrameLayout
+            android:id="@+id/place_details_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- The loader, shown on top of the empty container -->
+        <ProgressBar
+            android:id="@+id/loading_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="visible"
+            tools:visibility="visible" />
+
+        <!-- The dismiss button with a background. It's hidden initially. -->
+        <ImageButton
+            android:id="@+id/dismiss_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/close_button_background"
+            android:contentDescription="@string/dismiss_button_content_description"
+            android:padding="12dp"
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_close"
+            app:tint="@android:color/white"
+            tools:visibility="visible" />
+    </FrameLayout>
+
+
+    <!--
+    <FrameLayout
+        android:id="@+id/place_details_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="26dp"
+        android:background="@android:color/transparent"
+        android:elevation="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="gone"
+        android:visibility="gone">
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/place_details_fragment_host"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </FrameLayout>
+     -->
+</androidx.constraintlayout.widget.ConstraintLayout>
