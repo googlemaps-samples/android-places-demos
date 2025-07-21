@@ -109,7 +109,21 @@ dependencies {
     // Provides access to location services, such as the FusedLocationProviderClient
     // used to get the device's last known location.
     implementation(libs.play.services.location)
-    implementation(libs.androidx.ui.tooling.preview.android)
+
+    // Compose
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    debugImplementation(libs.androidx.ui.tooling)
+
+    // UI Testing for Jetpack Compose
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.test.manifest)
 
     // --- Testing Libraries ---
     // Standard library for writing local unit tests.
@@ -118,21 +132,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     // AndroidX library for UI testing.
     androidTestImplementation(libs.androidx.espresso.core)
-    // AndroidX libraries for creating test rules and running tests.
-    androidTestImplementation(libs.androidx.test.rules)
-    androidTestImplementation(libs.androidx.test.runner)
-
-    // Compose
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    debugImplementation(libs.androidx.ui.tooling)
-
-    // UI Testing for Jetpack Compose
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.test.manifest)
 }
 
 // Configuration for the Secrets Gradle Plugin.
