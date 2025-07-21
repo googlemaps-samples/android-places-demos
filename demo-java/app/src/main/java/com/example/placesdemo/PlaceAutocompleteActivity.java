@@ -55,6 +55,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.activity.EdgeToEdge;
+
 /**
  * Activity to demonstrate Place Autocomplete (activity widget intent, fragment widget, and
  * {@link PlacesClient#([PlacesClient.findAutocompletePredictions])}).
@@ -68,6 +70,8 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        // Enable edge-to-edge display. This must be called before calling super.onCreate().
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.place_autocomplete_activity);

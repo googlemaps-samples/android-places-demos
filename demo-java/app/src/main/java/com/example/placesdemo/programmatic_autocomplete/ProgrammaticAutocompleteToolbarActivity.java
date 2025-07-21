@@ -55,8 +55,9 @@ import com.google.gson.GsonBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.util.Arrays;
 import java.util.List;
+
+import androidx.activity.EdgeToEdge;
 
 /**
  * An Activity that demonstrates programmatic as-you-type place predictions. The parameters of the
@@ -82,6 +83,8 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        // Enable edge-to-edge display. This must be called before calling super.onCreate().
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_programmatic_autocomplete);
@@ -100,6 +103,7 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu, menu);
         final SearchView searchView =
                 (SearchView) menu.findItem(R.id.search).getActionView();
+        assert searchView != null;
         initSearchView(searchView);
         return super.onCreateOptionsMenu(menu);
     }
@@ -151,9 +155,9 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
 
     /**
      * This method demonstrates the programmatic approach to getting place predictions. The
-     * parameters in this request are currently biased to Kolkata, India.
+     * parameters in this request are currently biased to Boulder, Colorado.
      *
-     * @param query the plus code query string (e.g. "GCG2+3M K")
+     * @param query the plus code query string (e.g. "85GP2Q2X+2R")
      */
     private void getPlacePredictions(String query) {
 
@@ -162,8 +166,8 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
         // pass in the appropriate value/s for .setCountries() in the
         // FindAutocompletePredictionsRequest.Builder object as well.
         final LocationBias bias = RectangularBounds.newInstance(
-                new LatLng(22.458744, 88.208162), // SW lat, lng
-                new LatLng(22.730671, 88.524896) // NE lat, lng
+                new LatLng(39.91, -105.75), // SW lat, lng
+                new LatLng(40.26, -105.02) // NE lat, lng
         );
 
         // Create a new programmatic Place Autocomplete request in Places SDK for Android
@@ -172,8 +176,8 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
                 .setSessionToken(sessionToken)
                 .setLocationBias(bias)
                 .setQuery(query)
-                .setCountries(Arrays.asList("IN"))
-                .setTypesFilter(Arrays.asList(PlaceTypes.ESTABLISHMENT))
+                .setCountries(List.of("US"))
+                .setTypesFilter(List.of(PlaceTypes.ESTABLISHMENT))
                 .build();
 
         // Perform autocomplete predictions request
@@ -185,8 +189,7 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
             viewAnimator.setDisplayedChild(predictions.isEmpty() ? 0 : 1);
         }).addOnFailureListener((exception) -> {
             progressBar.setIndeterminate(false);
-            if (exception instanceof ApiException) {
-                ApiException apiException = (ApiException) exception;
+            if (exception instanceof ApiException apiException) {
                 Log.e(TAG, "Place not found: " + apiException.getStatusCode());
             }
         });
