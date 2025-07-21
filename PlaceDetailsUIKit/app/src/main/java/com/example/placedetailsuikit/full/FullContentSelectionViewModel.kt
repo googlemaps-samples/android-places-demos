@@ -12,15 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * This file contains the ViewModel and related data classes/extensions for managing
- * the state of the Place Details content configuration UI for the full PlaceDetailsFragment.
- */
 package com.example.placedetailsuikit.full
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.libraries.places.widget.PlaceDetailsFragment.Companion.STANDARD_CONTENT
+import com.google.android.libraries.places.widget.PlaceDetailsFragment
 import com.google.android.libraries.places.widget.PlaceDetailsFragment.Content
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,11 +26,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 /**
- * A data class that wraps a [Content] enum with a user-friendly [displayName].
- * This is used to populate the content selection list in the UI.
+ * A data class that represents a single configurable item for the [PlaceDetailsFragment].
+ * It wraps the library's [Content] enum with additional properties needed for the UI.
  *
  * @param content The actual [Content] enum value from the Place Details library.
  * @param displayName A formatted, human-readable string for the content type.
+ * @param isSelected A boolean indicating whether the user has selected this content to be displayed.
  */
 data class PlaceDetailsFullItem(
     val content: Content,
@@ -42,100 +39,104 @@ data class PlaceDetailsFullItem(
     val isSelected: Boolean = false
 ) {
     companion object {
-        /** Default selected content for PlaceDetailsFragment. */
-        val standardContent = STANDARD_CONTENT.toPlaceDetailsFullItems()
+        /**
+         * The default list of content fields displayed by the [PlaceDetailsFragment].
+         * We use this to set the initial state of the configuration dialog.
+         */
+        val standardContent: List<PlaceDetailsFullItem> =
+            PlaceDetailsFragment.STANDARD_CONTENT.toPlaceDetailsFullItems()
 
-        /** Content not in the default selection. */
-        val standardNonContent = Content.entries.filter { !standardContent.map { it.content }.contains(it) }
-            .toPlaceDetailsFullItems()
+        /**
+         * A list of all available content fields that are not included in the default set.
+         */
+        val standardNonContent: List<PlaceDetailsFullItem> =
+            Content.entries.filterNot { content ->
+                standardContent.any { it.content == content }
+            }.toPlaceDetailsFullItems()
     }
 }
 
 /**
- * A convenience extension function to convert a [Content] enum into a
- * [PlaceDetailsFullItem].
+ * An extension function to convert a [Content] enum into a [PlaceDetailsFullItem].
  */
-private fun Content.toPlaceDetailsFullItem() =
-    PlaceDetailsFullItem(this, this.getDisplayName())
+private fun Content.toPlaceDetailsFullItem(): PlaceDetailsFullItem =
+    PlaceDetailsFullItem(
+        content = this,
+        displayName = this.getDisplayName(),
+        isSelected = PlaceDetailsFragment.STANDARD_CONTENT.contains(this)
+    )
 
 /**
- * Formats the enum entry name into a user-friendly, readable string.
- * Example: `ACCESSIBLE_ENTRANCE_ICON` becomes "Accessible entrance icon".
+ * An extension function that formats a [Content] enum name into a user-friendly, readable string.
+ * For example, `REVIEWS` becomes "Reviews".
  *
  * @return A capitalized, space-separated string representation of the enum name.
  */
-fun Content.getDisplayName() = this.name.replace('_', ' ').lowercase().replaceFirstChar { it.uppercase() }
+fun Content.getDisplayName(): String =
+    this.name.replace('_', ' ').lowercase().replaceFirstChar { it.uppercase() }
 
 /**
- * A convenience extension function to convert an iterable collection of [Content] enums
- * into a list of [PlaceDetailsFullItem]s.
+ * An extension function to convert a collection of [Content] enums into a list of
+ * [PlaceDetailsFullItem]s, ready to be used by the UI.
  */
-fun Iterable<Content>.toPlaceDetailsFullItems() = this.map { it.toPlaceDetailsFullItem() }
+fun Iterable<Content>.toPlaceDetailsFullItems(): List<PlaceDetailsFullItem> =
+    this.map { it.toPlaceDetailsFullItem() }
 
 /**
- * A [ViewModel] responsible for holding and managing the UI-related data for the
- * Place Details content selection. It survives configuration changes, ensuring that
- * the user's selections and the currently displayed place are not lost.
+ * A [ViewModel] for the [FullConfigurablePlaceDetailsActivity] that manages the
+ * state for the content selection UI. It follows the same reactive pattern as the
+ * compact version's ViewModel.
  */
 class FullContentSelectionViewModel : ViewModel() {
     /**
-     * The ID of the place currently being displayed. This is preserved across
-     * configuration changes to allow the UI to be restored automatically.
+     * The ID of the place currently being displayed. Stored in the ViewModel to
+     * survive configuration changes.
      */
     var selectedPlaceId: String? = null
 
     /**
-     * A [MutableStateFlow] that holds the complete list of [PlaceDetailsFullItem]s,
-     * representing all available content types. This is the single source of truth for
-     * managing the selection state of each content item.
-     *
-     * It is initialized by mapping all entries of the [Content] enum to
-     * [PlaceDetailsFullItem] objects. The initial selection state ([PlaceDetailsFullItem.isSelected])
-     * is determined by whether the [Content] is present in the [PlaceDetailsFullItem.standardContent] list.
+     * The private, mutable state holder for the list of all content items. This is the
+     * single source of truth for the selection state.
      */
     private val _contentItems = MutableStateFlow(
         Content.entries.map {
             PlaceDetailsFullItem(
                 content = it,
                 displayName = it.getDisplayName(),
-                isSelected = PlaceDetailsFullItem.standardContent.map { it.content }.contains(it)
+                isSelected = PlaceDetailsFragment.STANDARD_CONTENT.contains(it)
             )
         }
     )
 
     /**
-     * A [StateFlow] that emits the current list of [PlaceDetailsFullItem]s
-     * that are marked as selected. This flow is derived from [_contentItems]
-     * and updates automatically whenever an item's selection state changes.
-     * It is eagerly started and will retain the last emitted list.
+     * A read-only `StateFlow` that exposes the list of currently **selected** content items.
+     * The UI collects this flow to display the list of selected items.
      */
     val selectedContent: StateFlow<List<PlaceDetailsFullItem>> =
         _contentItems.map { items -> items.filter { it.isSelected } }
             .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     /**
-     * A [StateFlow] that provides a read-only list of [PlaceDetailsFullItem]s
-     * that are currently *not* selected by the user. This flow is derived from
-     * the [_contentItems] flow and updates automatically whenever the selection
-     * state of any item changes. It is eagerly started and defaults to an empty list.
+     * A read-only `StateFlow` that exposes the list of currently **unselected** content items.
+     * The UI collects this flow to display the list of available items.
      */
     val unselectedContent: StateFlow<List<PlaceDetailsFullItem>> =
-        _contentItems.map { items -> items.filter { !it.isSelected } }
+        _contentItems.map { items -> items.filterNot { it.isSelected } }
             .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     /**
-     * Toggles the selection status of a given content item.
-     * If the item is in the selected list, it's moved to the unselected list, and vice versa.
+     * This function handles the logic of toggling an item's selection status. It is called
+     * from the UI when a user interacts with the selection dialog.
      *
-     * @param itemToToggle The [PlaceDetailsFullItem] to move between lists.
+     * @param itemToToggle The [PlaceDetailsFullItem] that the user clicked.
      */
     fun toggleSelection(itemToToggle: PlaceDetailsFullItem) {
         _contentItems.update { currentItems ->
-            currentItems.map {
-                if (it.content == itemToToggle.content) {
-                    it.copy(isSelected = !it.isSelected)
+            currentItems.map { item ->
+                if (item.content == itemToToggle.content) {
+                    item.copy(isSelected = !item.isSelected)
                 } else {
-                    it
+                    item
                 }
             }
         }

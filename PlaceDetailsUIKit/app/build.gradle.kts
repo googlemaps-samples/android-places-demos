@@ -14,36 +14,52 @@
  * limitations under the License.
  */
 
-// The plugins block applies various Gradle plugins to the project.
+// The `plugins` block is where we apply Gradle plugins to this module.
+// Plugins add new tasks and configurations to our build process.
 plugins {
-    // Core plugin for building an Android application.
+    // The core plugin for building an Android application. It provides tasks like `assembleDebug`, `installDebug`, etc.
     alias(libs.plugins.android.application)
-    // Plugin for enabling Kotlin support in an Android project.
+    // This plugin enables Kotlin support in the Android project, allowing us to write code in Kotlin.
     alias(libs.plugins.kotlin.android)
-    // A plugin from Google to manage API keys and other secrets, keeping them out of source control.
-    // It makes keys available in the BuildConfig file.
+    // This plugin from Google helps manage API keys and other secrets by reading them from a `secrets.properties`
+    // file (which should be in .gitignore) and exposing them in the `BuildConfig` file at compile time.
+    // This is crucial for keeping sensitive data out of version control.
     alias(libs.plugins.secrets.gradle.plugin)
-
+    // This plugin provides the necessary integration for using Jetpack Compose with the Kotlin compiler.
     alias(libs.plugins.kotlin.compose)
 }
 
+// The `android` block is where we configure all the Android-specific build options.
 android {
+    // The `namespace` is a unique identifier for the app's generated R class. It's also used
+    // as the default `applicationId` if not specified in `defaultConfig`.
     namespace = "com.example.placedetailsuikit"
+    // `compileSdk` specifies the Android API level the app is compiled against.
+    // Using a recent version allows us to use the latest Android features.
     compileSdk = 36
 
     defaultConfig {
+        // `applicationId` is the unique identifier for the app on the Google Play Store and on the device.
         applicationId = "com.example.placedetailsuikit"
+        // `minSdk` is the minimum API level required to run the app. Devices below this level cannot install it.
         minSdk = 27
+        // `targetSdk` indicates the API level the app was tested against. Android may enable
+        // compatibility behaviors on newer OS versions if the target is lower.
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
+        // Specifies the instrumentation runner for running Android tests.
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
+        // The `release` block configures settings for the release build of the app.
         release {
+            // `isMinifyEnabled` enables code shrinking with R8 to reduce the app's size.
+            // It's disabled here for simplicity in a sample app, but highly recommended for production.
             isMinifyEnabled = false
+            // `proguardFiles` specifies the files that define the R8 shrinking and obfuscation rules.
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -51,93 +67,95 @@ android {
         }
     }
     compileOptions {
-        // Sets the Java version compatibility for the source and compiled bytecode.
+        // Sets the Java language compatibility for the source code and compiled bytecode.
+        // Using Java 17 is required for modern Android development.
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlin {
+        // Configures Kotlin-specific compiler options.
         compilerOptions {
+            // Sets the target JVM version for the compiled Kotlin code.
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
     }
     buildFeatures {
-        // Enables ViewBinding, a type-safe way to access views defined in XML layouts.
+        // `viewBinding` generates a binding class for each XML layout file, providing a type-safe
+        // way to access views without `findViewById`. This is used in the XML-based activities.
         viewBinding = true
-        // Enables access to build-time constants from the code (e.g., API keys).
-        // Enables Compose for the project.
+        // `compose` enables Jetpack Compose for the project.
         compose = true
+        // `buildConfig` generates a `BuildConfig` class that contains constants from the build configuration,
+        // such as the API key from the secrets plugin.
         buildConfig = true
     }
 
     java {
+        // Specifies the Java language version for the project's toolchain.
         toolchain {
             languageVersion.set(JavaLanguageVersion.of(17))
         }
     }
     composeOptions {
-        // Sets the Kotlin compiler extension version for Compose.
-        // Ensure this version is compatible with your Kotlin and Compose versions.
+        // Sets the version of the Kotlin compiler extension for Compose. This version must be
+        // compatible with the Kotlin version used in the project.
         kotlinCompilerExtensionVersion = "1.5.1"
     }
 }
 
-// The dependencies block declares all the external libraries the app needs.
+// The `dependencies` block is where we declare all the external libraries the app needs.
+// These are fetched from repositories like Maven Central and Google's Maven repository.
 dependencies {
-    // --- AndroidX Core & UI Libraries ---
-    // Provides core Kotlin extensions for the Android framework.
+    // --- Core AndroidX & UI Libraries ---
+    // These are foundational libraries for building modern Android apps.
     implementation(libs.androidx.core.ktx)
-    // Provides backward compatibility for newer Android features on older API levels.
     implementation(libs.androidx.appcompat)
-    // A library for using modern Material Design components.
-    implementation(libs.material)
-    // Core library for managing Activities, including `enableEdgeToEdge` and `registerForActivityResult`.
+    implementation(libs.material) // For Material Design components (used in XML layouts).
     implementation(libs.androidx.activity)
-    // A flexible layout manager for creating responsive UIs. Used for activity_main.xml.
     implementation(libs.androidx.constraintlayout)
-    // Provides Kotlin extensions for working with Fragments.
     implementation(libs.androidx.fragment.ktx)
-    // Provides ViewModel, a class designed to store and manage UI-related data in a lifecycle conscious way.
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-
+    implementation(libs.androidx.lifecycle.viewmodel.ktx) // For the ViewModel architecture component.
 
     // --- Google Play Services ---
-    // The core SDK for embedding Google Maps in the application.
-    implementation(libs.google.maps.services)
-    // The SDK for accessing Google's rich database of place information.
-    // This provides the `PlaceDetailsCompactFragment`.
-    implementation(libs.places)
-    // Provides access to location services, such as the FusedLocationProviderClient
-    // used to get the device's last known location.
-    implementation(libs.play.services.location)
+    // These are the essential libraries for this sample, providing Maps and Places functionality.
+    implementation(libs.google.maps.services) // The core SDK for embedding Google Maps.
+    implementation(libs.places) // The SDK for the Places UI Kit (PlaceDetails fragments).
+    implementation(libs.play.services.location) // Needed for the FusedLocationProviderClient to get the device's location.
 
-    // Compose
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
+    // --- Jetpack Compose ---
+    // These libraries are for building UIs with Jetpack Compose.
+    implementation(libs.androidx.material3) // The latest Material Design components for Compose.
+    implementation(libs.androidx.activity.compose) // Integration between Activity and Compose.
+    implementation(platform(libs.androidx.compose.bom)) // The Compose Bill of Materials (BOM) ensures all Compose libraries use compatible versions.
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    debugImplementation(libs.androidx.ui.tooling)
-
-    // UI Testing for Jetpack Compose
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.androidx.ui.tooling.preview) // For displaying @Preview composables in Android Studio.
+    debugImplementation(libs.androidx.ui.tooling) // Provides tools for inspecting Compose UIs.
 
     // --- Testing Libraries ---
-    // Standard library for writing local unit tests.
+    // These libraries are for writing and running tests.
+    // `testImplementation` is for local unit tests (running on the JVM).
     testImplementation(libs.junit)
-    // AndroidX library for writing instrumented tests that run on a device or emulator.
+    // `androidTestImplementation` is for instrumented tests (running on an Android device or emulator).
     androidTestImplementation(libs.androidx.junit)
-    // AndroidX library for UI testing.
-    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.espresso.core) // For UI testing with the View system.
+    // AndroidX libraries for creating test rules and running tests.
+    androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(libs.androidx.test.runner)
+
+    // --- Compose Testing ---
+    // These are specific to testing Jetpack Compose UIs.
+    androidTestImplementation(platform(libs.androidx.compose.bom)) // BOM for testing libraries.
+    androidTestImplementation(libs.androidx.ui.test.junit4) // The main library for Compose UI tests.
+    debugImplementation(libs.androidx.ui.test.manifest) // Provides a manifest for UI tests.
 }
 
-// Configuration for the Secrets Gradle Plugin.
+// This block configures the Secrets Gradle Plugin.
 secrets {
-    // Specifies a default properties file, useful for CI/CD environments.
+    // Specifies a default properties file. This is useful for CI/CD environments where
+    // you might not have a local `secrets.properties` file.
     defaultPropertiesFileName = "local.defaults.properties"
-    // Specifies the local properties file where secret keys are stored. This file should be in .gitignore.
+    // Specifies the local properties file where secret keys (like the Places API key) are stored.
+    // This file should be added to .gitignore to prevent it from being committed to version control.
     propertiesFileName = "secrets.properties"
 }

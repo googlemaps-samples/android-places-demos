@@ -71,18 +71,14 @@ import kotlinx.coroutines.launch
 private const val TAG = "FullConfigurablePlaceDetailsActivity"
 
 /**
- * This activity demonstrates how to use the Place Details UI Kit with a Google Map.
- * It allows the user to click on a Point of Interest (POI) on the map to display its details.
- * The content displayed in the Place Details UI can be configured through a dialog.
+ * This activity demonstrates an advanced use case of the **full-screen** Place Details UI Kit.
+ * It is structurally similar to the "compact" example but uses the [PlaceDetailsFragment]
+ * instead of the [com.google.android.libraries.places.widget.PlaceDetailsCompactFragment].
  *
- * Key features:
- * - Displays a Google Map.
- * - Requests location permissions to center the map on the user's current location.
- * - Handles POI clicks on the map.
- * - Shows a [PlaceDetailsFragment] when a POI is clicked.
- * - Allows customization of the content displayed in the [PlaceDetailsFragment]
- * via a configuration dialog.
- * - Persists the selected place and configuration across activity recreation (e.g., orientation changes).
+ * Key features demonstrated:
+ * - Dynamic content configuration for the full-screen widget.
+ * - Use of a [FullContentSelectionViewModel] to manage UI state.
+ * - Reactive UI updates using Kotlin Flows.
  */
 class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback,
     GoogleMap.OnPoiClickListener {
@@ -92,16 +88,12 @@ class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCall
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
 
-    /**
-     * The ViewModel that holds the state for the selected place ID and the
-     * configuration of the content to be displayed.
-     */
+    // The ViewModel holds all the state that needs to survive configuration changes.
     private val viewModel: FullContentSelectionViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Register the permissions callback to handle the user's response to the system dialog.
         requestPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
                 if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true || permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
@@ -126,7 +118,6 @@ class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCall
             dismissPlaceDetails()
         }
 
-        // Check for a valid Places API key.
         val apiKey = BuildConfig.PLACES_API_KEY
         if (apiKey.isEmpty() || apiKey == "YOUR_API_KEY") {
             Log.e(TAG, "No api key")
@@ -141,15 +132,15 @@ class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCall
 
         // Initialize the Places SDK.
         Places.initializeWithNewPlacesApiEnabled(applicationContext, apiKey)
-
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        // Get the SupportMapFragment and request notification when the map is ready to be used.
         val mapFragment =
             supportFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
 
-        // Observe changes in selected content and reload the Place Details Fragment if a place is already selected.
+        // This coroutine observes the content selection from the ViewModel.
+        // `collectLatest` ensures that if the user changes the selection multiple times quickly,
+        // only the latest selection is used to update the UI, preventing unnecessary work.
         lifecycleScope.launch {
             viewModel.selectedContent.collectLatest {
                 viewModel.selectedPlaceId?.let { placeId ->
@@ -159,7 +150,7 @@ class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCall
             }
         }
 
-        // If a place was selected before a configuration change, restore the details view.
+        // Restore the fragment if a place was already selected before a configuration change.
         if (viewModel.selectedPlaceId != null) {
             viewModel.selectedPlaceId?.let { placeId ->
                 Log.d(TAG, "Restoring PlaceDetailsFragment for place ID: $placeId")
@@ -167,28 +158,20 @@ class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCall
             }
         }
 
-        // Set up the button to open the content configuration dialog.
         binding.configureButton.setOnClickListener {
             showContentSelectionDialog()
         }
 
-        // Set up the new location button to fetch and move to the last known location.
         binding.myLocationButton.setOnClickListener {
             fetchLastLocation()
         }
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * @param map The [GoogleMap] that is ready.
-     */
     override fun onMapReady(map: GoogleMap) {
         Log.d(TAG, "Map is ready")
         googleMap = map
         googleMap?.setOnPoiClickListener(this)
 
-        // Check for location permissions and either fetch the location or request permissions.
         if (isLocationPermissionGranted()) {
             fetchLastLocation()
         } else {
@@ -196,10 +179,6 @@ class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCall
         }
     }
 
-    /**
-     * Checks if the user has granted either fine or coarse location permissions.
-     * @return `true` if permission is granted, `false` otherwise.
-     */
     private fun isLocationPermissionGranted(): Boolean {
         return ActivityCompat.checkSelfPermission(
             this,
@@ -211,9 +190,6 @@ class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCall
                 ) == PackageManager.PERMISSION_GRANTED
     }
 
-    /**
-     * Launches the system dialog to request location permissions from the user.
-     */
     private fun requestLocationPermissions() {
         Log.d(TAG, "Requesting location permissions.")
         requestPermissionLauncher.launch(
@@ -224,11 +200,6 @@ class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCall
         )
     }
 
-    /**
-     * Handles the error case when the current location cannot be retrieved.
-     * It logs an error, displays a toast message to the user, and defaults
-     * the map view to Sydney, Australia.
-     */
     private fun handleLocationError() {
         Log.d(TAG, "Could not retrieve current location. Falling back to Sydney.")
         Toast.makeText(
@@ -239,10 +210,6 @@ class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCall
         moveToSydney()
     }
 
-    /**
-     * Gets the most recent location available to the device and moves the map camera to it.
-     * If the location is unavailable, it falls back to a default location.
-     */
     @SuppressLint("MissingPermission")
     private fun fetchLastLocation() {
         if (isLocationPermissionGranted()) {
@@ -253,42 +220,35 @@ class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCall
                         googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
                         Log.d(TAG, "Moved to user's last known location.")
                     } else {
-                        handleLocationError() // Use the helper function
+                        handleLocationError()
                     }
                 }
                 .addOnFailureListener {
                     Log.e(TAG, "Failed to get location.", it)
-                    handleLocationError() // Use the helper function
+                    handleLocationError()
                 }
         } else {
             requestLocationPermissions()
         }
     }
 
-    /**
-     * Moves the map camera to a default location (Sydney, Australia).
-     */
     private fun moveToSydney() {
         val sydney = LatLng(-33.8688, 151.2093)
         googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 13f))
         Log.d(TAG, "Moved to Sydney")
     }
 
-    /**
-     * Callback for when the user clicks on a Point of Interest (POI) on the map.
-     * @param poi The [PointOfInterest] that was clicked.
-     */
     override fun onPoiClick(poi: PointOfInterest) {
         val placeId = poi.placeId
         Log.d(TAG, "Place ID: $placeId")
-        // Store the selected place ID in the ViewModel to survive configuration changes.
         viewModel.selectedPlaceId = placeId
         showPlaceDetailsFragment(placeId)
     }
 
     /**
      * Displays the [PlaceDetailsFragment] for a given place ID.
-     * It handles the UI visibility for loading states and success/failure callbacks.
+     * The content shown in the fragment is determined by the user's selection,
+     * which is retrieved from the [FullContentSelectionViewModel].
      *
      * @param placeId The ID of the place to display.
      */
@@ -299,7 +259,6 @@ class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCall
         binding.placeDetailsContainer.visibility = View.GONE
         binding.loadingIndicatorConfigurable.visibility = View.VISIBLE
 
-        // Adjust the orientation of the Place Details fragment based on the device's orientation.
         val orientation =
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 Orientation.HORIZONTAL
@@ -307,17 +266,16 @@ class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCall
                 Orientation.VERTICAL
             }
 
-        // Create a new instance of the fragment with the configured content.
+        // The key step: Create a new instance of the fragment, passing the list of
+        // selected content from the ViewModel. This ensures the fragment respects the user's configuration.
         val fragment = PlaceDetailsFragment.newInstance(
             viewModel.selectedContent.value.map { it.content },
             orientation,
             R.style.CustomizedPlaceDetailsTheme,
         ).apply {
-            // Set a listener to handle the result of the place loading operation.
             setPlaceLoadListener(object : PlaceLoadListener {
                 override fun onSuccess(place: Place) {
                     Log.d(TAG, "Place loaded: ${place.id}")
-                    // Show the fragment and dismiss button, hide the loading indicator.
                     binding.loadingIndicatorConfigurable.visibility = View.GONE
                     binding.placeDetailsContainer.visibility = View.VISIBLE
                     binding.dismissButton.visibility = View.VISIBLE
@@ -325,7 +283,6 @@ class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCall
 
                 override fun onFailure(e: Exception) {
                     Log.e(TAG, "Place failed to load", e)
-                    // Hide the UI and show a toast message on failure.
                     dismissPlaceDetails()
                     Toast.makeText(
                         this@FullConfigurablePlaceDetailsActivity,
@@ -336,72 +293,60 @@ class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCall
             })
         }
 
-        // Add the fragment to the container.
         supportFragmentManager
             .beginTransaction()
             .replace(binding.placeDetailsContainer.id, fragment)
             .commitNow()
 
-        // Start loading the place data after the fragment has been committed.
         binding.root.post {
             fragment.loadWithPlaceId(placeId)
         }
     }
 
-    /**
-     * Hides the Place Details UI components and clears the selected place ID from the ViewModel.
-     */
     private fun dismissPlaceDetails() {
         binding.placeDetailsWrapper.visibility = View.GONE
         viewModel.selectedPlaceId = null
     }
 
-    /**
-     * Cleans up resources when the activity is destroyed.
-     */
     override fun onDestroy() {
         super.onDestroy()
         googleMap = null
     }
 
-
     /**
      * Displays a dialog that allows the user to select which content types
-     * (e.g., Address, Phone Number, Reviews) should be visible in the
-     * [PlaceDetailsFragment]. The dialog uses Jetpack Compose for its UI.
-     *
-     * The selection state is managed by the [FullContentSelectionViewModel].
-     * When the user clicks an item in the dialog, it toggles its selection state
-     * via the ViewModel.
+     * should be visible in the [PlaceDetailsFragment].
+     * This demonstrates embedding a Jetpack Compose UI inside a View-based dialog.
      */
     private fun showContentSelectionDialog() {
         val dialogView =
             LayoutInflater.from(this).inflate(R.layout.content_selector_dialog, null)
         val composeView = dialogView.findViewById<ComposeView>(R.id.compose_view)
 
-        // Use Jetpack Compose to build the dialog's UI.
         composeView.setContent {
+            // `collectAsState` observes the ViewModel's Flows and triggers recomposition
+            // automatically when the state changes.
             val selectedContent by viewModel.selectedContent.collectAsState()
             val unselectedContent by viewModel.unselectedContent.collectAsState()
+
+            // We pass the state down to the Composable and hoist the events up to the ViewModel.
             PlaceContentSelectionDialogContent(selectedContent, unselectedContent) {
                 viewModel.toggleSelection(it)
             }
         }
 
-        // Create and show the AlertDialog.
-        val builder = AlertDialog.Builder(this)
-        builder.setView(dialogView)
+        AlertDialog.Builder(this)
+            .setView(dialogView)
             .setPositiveButton("Close") { dialog, _ ->
                 dialog.dismiss()
             }
-        val dialog = builder.create()
-        dialog.show()
+            .create()
+            .show()
     }
 }
 
 /**
- * A Composable that displays two lists of content: selected and unselected.
- * It uses sticky headers to keep the section titles visible during scrolling.
+ * A Composable that displays the content selection UI.
  *
  * @param selectedContent The list of items that are currently selected.
  * @param unselectedContent The list of items that are available but not selected.
@@ -441,8 +386,6 @@ fun PlaceContentSelectionDialogContent(
 
 /**
  * A Composable that renders a styled header for a section in the list.
- *
- * @param title The text to display in the header.
  */
 @Composable
 fun SectionHeader(title: String) {
@@ -460,9 +403,6 @@ fun SectionHeader(title: String) {
 
 /**
  * A Composable that renders a single clickable item in the content selection list.
- *
- * @param item The content item to display.
- * @param onItemClick A callback function invoked when this item is clicked.
  */
 @Composable
 fun ContentItem(
@@ -480,10 +420,8 @@ fun ContentItem(
 }
 
 // --- Previews ---
+// These previews allow for rapid UI development of the dialog content in various states.
 
-/**
- * A preview that displays the dialog content with items in both sections.
- */
 @Preview(name = "Both Sections", showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun DialogContentPreview_BothSections() {
@@ -496,9 +434,6 @@ fun DialogContentPreview_BothSections() {
     }
 }
 
-/**
- * A preview that displays the dialog content with only selected items.
- */
 @Preview(name = "Only Selected", showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun DialogContentPreview_OnlySelected() {
@@ -511,9 +446,6 @@ fun DialogContentPreview_OnlySelected() {
     }
 }
 
-/**
- * A preview that displays the dialog content with only unselected items.
- */
 @Preview(name = "Only Unselected", showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun DialogContentPreview_OnlyUnselected() {
@@ -526,9 +458,6 @@ fun DialogContentPreview_OnlyUnselected() {
     }
 }
 
-/**
- * A preview that displays the dialog content in its empty state.
- */
 @Preview(name = "Empty State", showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun DialogContentPreview_Empty() {
