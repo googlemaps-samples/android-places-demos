@@ -28,6 +28,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Retrieve the API key from the local.properties file.
+        // See https://github.com/googlemaps/android-places-demos#installation for more details.
         val apiKey = BuildConfig.PLACES_API_KEY
         if (apiKey.isEmpty() || apiKey == "YOUR_API_KEY") {
             Log.e("PlacesCompose", "No api key")
@@ -39,6 +41,9 @@ class MainActivity : AppCompatActivity() {
             finish()
             return
         }
+
+        // Initialize the Places SDK. This must be done before calling any other Places API methods.
+        // The 'newPlacesApiEnabled' flag indicates that the new Places API should be used.
         Places.initializeWithNewPlacesApiEnabled(applicationContext, apiKey)
 
         enableEdgeToEdge()

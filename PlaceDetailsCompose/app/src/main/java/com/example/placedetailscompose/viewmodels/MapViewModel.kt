@@ -28,20 +28,26 @@ import kotlinx.coroutines.flow.asStateFlow
 
 private const val TAG = "MapViewModel"
 
+// A ViewModel for the map screen.
 class MapViewModel(application: Application) : AndroidViewModel(application) {
     private val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(application)
 
-    private val _sydney = LatLng(-33.8688, 151.2093)
-    val sydney: LatLng
-        get() = _sydney
+    // A default location (Sydney, Australia) to use when the user's location is not available.
+    val sydney = LatLng(-33.8688, 151.2093)
 
+    // The user's current location.
     private val _deviceLocation = MutableStateFlow<LatLng?>(null)
-    val deviceLocation = _deviceLocation
+    val deviceLocation = _deviceLocation.asStateFlow()
 
+    // The currently selected place of interest.
     private val _selectedPlace = MutableStateFlow<PointOfInterest?>(null)
     val selectedPlace = _selectedPlace.asStateFlow()
 
+    /**
+     * Gets the user's last known location and updates the `deviceLocation` state flow.
+     * This is called when the map is first displayed.
+     */
     @SuppressLint("MissingPermission")
     fun getDeviceLocation() {
         fusedLocationClient.lastLocation
@@ -49,15 +55,21 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
                 if (location != null) {
                     _deviceLocation.value = LatLng(location.latitude, location.longitude)
                 } else {
-                    _deviceLocation.value = _sydney
+                    // If the location is null, fall back to the default location.
+                    _deviceLocation.value = sydney
                 }
             }
             .addOnFailureListener { e ->
                 Log.e(TAG, "Failed to get location.", e)
-                _deviceLocation.value = _sydney
+                _deviceLocation.value = sydney
             }
     }
 
+    /**
+     * Called when a point of interest (POI) is clicked on the map.
+     * This updates the `selectedPlace` state flow, which triggers the display of the
+     * place details fragment.
+     */
     fun onPoiClicked(poi: PointOfInterest) {
         if (poi.placeId.isBlank()) {
             Log.e(TAG, "Place ID is null or blank.")
@@ -67,6 +79,10 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    /**
+     * Called when the place details fragment is dismissed.
+     * This clears the `selectedPlace` state flow, which hides the fragment.
+     */
     fun onDismissPlace() {
         _selectedPlace.value = null
     }
