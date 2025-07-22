@@ -128,7 +128,7 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
         binding.map3dView.onCreate(savedInstanceState)
         binding.map3dView.getMap3DViewAsync(this)
 
-        if (viewModel.selectedPlaceId != null) {
+        if (!viewModel.selectedPlaceId.isNullOrEmpty()) {
             viewModel.selectedPlaceId?.let { placeId ->
                 Log.d(TAG, "Restoring PlaceDetailsFragment for place ID: $placeId")
                 showPlaceDetailsFragment(placeId)
@@ -147,7 +147,7 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
                 "MainActivity",
                 "onMap3DClick: ${location.latitude}, ${location.longitude}, ${location.altitude}, $placeId",
             )
-            if (placeId != null) {
+            if (!placeId.isNullOrEmpty()) {
                 viewModel.selectedPlaceId = placeId
                 showPlaceDetailsFragment(placeId)
             } else {
