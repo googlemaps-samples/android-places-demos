@@ -30,10 +30,10 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
-import com.example.placesuikit3d.utils.toValidCamera
 import com.example.placesuikit3d.databinding.ActivityMainBinding
+import com.example.placesuikit3d.utils.feet
+import com.example.placesuikit3d.utils.toValidCamera
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps3d.GoogleMap3D
@@ -48,26 +48,9 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.PlaceDetailsCompactFragment
 import com.google.android.libraries.places.widget.PlaceLoadListener
 import com.google.android.libraries.places.widget.model.Orientation
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
-
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
-/**
- * A simple ViewModel to hold the selected place ID.
- *
- * Using a ViewModel allows the state to survive configuration changes, like screen rotations,
- * ensuring the selected place isn't lost.
- */
-class MainViewModel : ViewModel() {
-    fun setSelectedPlaceId(placeId: String?) {
-        _placeId.value = placeId
-    }
-
-    private val _placeId = MutableStateFlow<String?>(null)
-    val placeId = _placeId.asStateFlow()
-}
+import kotlinx.coroutines.withContext
 
 /**
  * The main activity for the 3D map demo.
@@ -86,21 +69,6 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
     private val viewModel: MainViewModel by viewModels()
-
-    /**
-     * Defines the initial camera position for the map.
-     * This is used when the app starts or when the user's location is unavailable.
-     */
-    private val initialCamera: Camera = camera {
-        center = latLngAltitude {
-            latitude = 47.62053235109065
-            longitude = -122.34927268590577
-            altitude = 56.0
-        }
-        heading = 152.0
-        tilt = 60.0
-        range = 3000.0
-    }.toValidCamera()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -125,10 +93,6 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // Asynchronously initializes the map and registers the [OnMap3DViewReadyCallback].
-        binding.map3dView.onCreate(savedInstanceState)
-        binding.map3dView.getMap3DViewAsync(this)
 
         // Allows the app to draw behind the system bars for a more immersive experience.
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -299,57 +263,64 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
     private fun showPlaceDetailsFragment(placeId: String) {
         Log.d(TAG, "Showing PlaceDetailsFragment for place ID: $placeId")
 
-        // Launch in the main dispatcher to ensure UI operations are safe.
-        CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
-            // Show loading indicator and hide the main details view initially.
-            binding.placeDetailsWrapper.visibility = View.VISIBLE
-            binding.loadingContainer.visibility = View.VISIBLE
-            binding.dismissButton.visibility = View.GONE
-            binding.placeDetailsContainer.visibility = View.GONE
+        lifecycleScope.launch {
+            // Launch in the main dispatcher to ensure UI operations are safe.
+            withContext(Dispatchers.Main) {
 
-            // Adjust the orientation of the Place Details view based on the device's orientation.
-            val orientation =
-                if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    Orientation.HORIZONTAL
-                } else {
-                    Orientation.VERTICAL
+                // Show loading indicator and hide the main details view initially.
+                binding.placeDetailsWrapper.visibility = View.VISIBLE
+                binding.loadingContainer.visibility = View.VISIBLE
+                binding.dismissButton.visibility = View.GONE
+                binding.placeDetailsContainer.visibility = View.GONE
+
+                // Adjust the orientation of the Place Details view based on the device's orientation.
+                val orientation =
+                    if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                        Orientation.HORIZONTAL
+                    } else {
+                        Orientation.VERTICAL
+                    }
+
+                // Create a new instance of the fragment.
+                placeDetailsFragment = PlaceDetailsCompactFragment.newInstance(
+                    PlaceDetailsCompactFragment.ALL_CONTENT,
+                    orientation,
+                    R.style.CustomizedPlaceDetailsTheme,
+                ).apply {
+                    // Set a listener to handle the result of loading the place details.
+                    setPlaceLoadListener(object : PlaceLoadListener {
+                        override fun onSuccess(place: Place) {
+                            Log.d(TAG, "Place loaded: ${place.id}")
+                            // Once loaded, show the details and hide the loading indicator.
+                            binding.loadingContainer.visibility = View.GONE
+                            binding.placeDetailsContainer.visibility = View.VISIBLE
+                            binding.dismissButton.visibility = View.VISIBLE
+                        }
+
+                        override fun onFailure(e: Exception) {
+                            Log.e(TAG, "Place failed to load", e)
+                            // If loading fails, hide the loading indicator and show a toast.
+                            binding.loadingContainer.visibility = View.GONE
+                            Toast.makeText(
+                                this@MainActivity,
+                                "Failed to load place details.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            // Clear the selected place to hide the details view.
+                            viewModel.setSelectedPlaceId(null)
+                        }
+                    })
                 }
 
-            // Create a new instance of the fragment.
-            placeDetailsFragment = PlaceDetailsCompactFragment.newInstance(
-                PlaceDetailsCompactFragment.ALL_CONTENT,
-                orientation,
-                R.style.CustomizedPlaceDetailsTheme,
-            ).apply {
-                // Set a listener to handle the result of loading the place details.
-                setPlaceLoadListener(object : PlaceLoadListener {
-                    override fun onSuccess(place: Place) {
-                        Log.d(TAG, "Place loaded: ${place.id}")
-                        // Once loaded, show the details and hide the loading indicator.
-                        binding.loadingContainer.visibility = View.GONE
-                        binding.placeDetailsContainer.visibility = View.VISIBLE
-                        binding.dismissButton.visibility = View.VISIBLE
-                    }
+                // Replace the container with the fragment.
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(binding.placeDetailsContainer.id, placeDetailsFragment!!)
+                    .commitNow()
 
-                    override fun onFailure(e: Exception) {
-                        Log.e(TAG, "Place failed to load", e)
-                        // If loading fails, hide the loading indicator and show a toast.
-                        binding.loadingContainer.visibility = View.GONE
-                        Toast.makeText(this@MainActivity, "Failed to load place details.", Toast.LENGTH_SHORT).show()
-                        // Clear the selected place to hide the details view.
-                        viewModel.setSelectedPlaceId(null)
-                    }
-                })
+                // Load the place details using the provided place ID.
+                placeDetailsFragment?.loadWithPlaceId(placeId)
             }
-
-            // Replace the container with the fragment.
-            supportFragmentManager
-                .beginTransaction()
-                .replace(binding.placeDetailsContainer.id, placeDetailsFragment!!)
-                .commitNow()
-
-            // Load the place details using the provided place ID.
-            placeDetailsFragment?.loadWithPlaceId(placeId)
         }
     }
 
@@ -409,5 +380,22 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         binding.map3dView.onSaveInstanceState(outState)
+    }
+
+    companion object {
+        /**
+         * Defines the initial camera position for the map.
+         * This is used when the app starts or when the user's location is unavailable.
+         */
+        private val initialCamera: Camera = camera {
+            center = latLngAltitude {
+                latitude = 39.982129291022446
+                longitude = -105.30156359691158
+                altitude = 8148.feet.value
+            }
+            heading = 26.0
+            tilt = 67.0
+            range = 4000.0
+        }.toValidCamera()
     }
 }
