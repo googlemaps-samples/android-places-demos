@@ -31,6 +31,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
 import com.example.placesuikit3d.utils.toValidCamera
 import com.example.placesuikit3d.databinding.ActivityMainBinding
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -48,10 +49,18 @@ import com.google.android.libraries.places.widget.PlaceDetailsCompactFragment
 import com.google.android.libraries.places.widget.PlaceLoadListener
 import com.google.android.libraries.places.widget.model.Orientation
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
-    var selectedPlaceId: String? = null
+    fun setSelectedPlaceId(placeId: String?) {
+        _placeId.tryEmit(placeId)
+    }
+
+    private val _placeId = MutableStateFlow<String?>(null)
+    val placeId = _placeId.asStateFlow()
 }
 
 class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
@@ -120,7 +129,7 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
         }
 
         binding.dismissButton.setOnClickListener {
-            dismissPlaceDetails()
+            viewModel.setSelectedPlaceId(null)
         }
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -128,10 +137,13 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
         binding.map3dView.onCreate(savedInstanceState)
         binding.map3dView.getMap3DViewAsync(this)
 
-        if (!viewModel.selectedPlaceId.isNullOrEmpty()) {
-            viewModel.selectedPlaceId?.let { placeId ->
-                Log.d(TAG, "Restoring PlaceDetailsFragment for place ID: $placeId")
-                showPlaceDetailsFragment(placeId)
+        lifecycleScope.launch {
+            viewModel.placeId.collect { placeId ->
+                if (placeId.isNullOrEmpty()) {
+                    dismissPlaceDetails()
+                } else {
+                    showPlaceDetailsFragment(placeId)
+                }
             }
         }
     }
@@ -147,12 +159,8 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
                 "MainActivity",
                 "onMap3DClick: ${location.latitude}, ${location.longitude}, ${location.altitude}, $placeId",
             )
-            if (!placeId.isNullOrEmpty()) {
-                viewModel.selectedPlaceId = placeId
-                showPlaceDetailsFragment(placeId)
-            } else {
-                dismissPlaceDetails()
-            }
+
+            viewModel.setSelectedPlaceId(placeId)
         }
 
         if (isLocationPermissionGranted()) {
@@ -264,8 +272,8 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
                     override fun onFailure(e: Exception) {
                         Log.e(TAG, "Place failed to load", e)
                         binding.loadingContainer.visibility = View.GONE
-                        dismissPlaceDetails()
                         Toast.makeText(this@MainActivity, "Failed to load place details.", Toast.LENGTH_SHORT).show()
+                        viewModel.setSelectedPlaceId(null)
                     }
                 })
             }
@@ -281,7 +289,6 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
 
     private fun dismissPlaceDetails() {
         binding.placeDetailsWrapper.visibility = View.GONE
-        viewModel.selectedPlaceId = null
     }
 
     override fun onError(error: Exception) {
