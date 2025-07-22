@@ -250,9 +250,7 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
                         val userLocation = latLngAltitude {
                             latitude = location.latitude
                             longitude = location.longitude
-                            // Altitude from location providers can be unreliable.
-                            // Setting it to 0.0 ensures a consistent ground-level view.
-                            altitude = 0.0
+                            altitude = location.altitude
                         }
                         googleMap3D?.flyCameraTo(
                             flyToOptions {
@@ -357,7 +355,7 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
 
     /**
      * Hides the place details view.
-     * This is called when the dismiss button is clicked or the selected place is cleared.
+     * This is called when the selected place is cleared.
      */
     private fun dismissPlaceDetails() {
         binding.placeDetailsWrapper.visibility = View.GONE
