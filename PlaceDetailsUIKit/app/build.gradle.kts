@@ -127,8 +127,6 @@ dependencies {
     implementation(libs.androidx.material3) // The latest Material Design components for Compose.
     implementation(libs.androidx.activity.compose) // Integration between Activity and Compose.
     implementation(platform(libs.androidx.compose.bom)) // The Compose Bill of Materials (BOM) ensures all Compose libraries use compatible versions.
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview) // For displaying @Preview composables in Android Studio.
     debugImplementation(libs.androidx.ui.tooling) // Provides tools for inspecting Compose UIs.
 
