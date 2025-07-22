@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.PlaceDetailsCompose" parent="Theme.AppCompat.Light.NoActionBar" />
+
+    <style name="CustomizedPlaceDetailsTheme" parent="PlacesMaterialTheme">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:background">@android:color/holo_blue_light</item>
+    </style>
+</resources>
