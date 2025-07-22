@@ -250,7 +250,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
         binding.placeDetailsWrapper.visibility = View.VISIBLE
         binding.dismissButton.visibility = View.GONE
         binding.placeDetailsContainer.visibility = View.GONE
-        binding.loadingIndicator.visibility = View.VISIBLE
+        binding.loadingIndicatorMain.visibility = View.VISIBLE
 
         // Determine the orientation based on the device's current configuration.
         val orientation =
@@ -273,7 +273,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
                 override fun onSuccess(place: Place) {
                     Log.d(TAG, "Place loaded: ${place.id}")
                     // Hide loader, show the fragment container and the dismiss button
-                    binding.loadingIndicator.visibility = View.GONE
+                    binding.loadingIndicatorMain.visibility = View.GONE
                     binding.placeDetailsContainer.visibility = View.VISIBLE
                     binding.dismissButton.visibility = View.VISIBLE
                 }
