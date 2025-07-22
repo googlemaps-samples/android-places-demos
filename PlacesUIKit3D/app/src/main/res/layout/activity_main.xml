@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Copyright 2025 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:map3d="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/map_container"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.google.android.gms.maps3d.Map3DView
+        android:id="@+id/map3dView"
+        map3d:mode="hybrid"
+        map3d:centerLat="39.982129291022446"
+        map3d:centerLng="-105.30156359691158"
+        map3d:centerAlt="2483"
+        map3d:heading="270"
+        map3d:tilt="75"
+        map3d:range="6000"
+        map3d:roll="0"
+        map3d:minAltitude="0"
+        map3d:maxAltitude="1000000"
+        map3d:minHeading="0"
+        map3d:maxHeading="360"
+        map3d:minTilt="0"
+        map3d:maxTilt="90"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/my_location_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@drawable/outline_my_location_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/my_location" />
+
+
+    <!-- Wrapper to hold the fragment, the dismiss button, AND the loader -->
+    <FrameLayout
+        android:id="@+id/place_details_wrapper"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="26dp"
+        android:elevation="4dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="gone">
+
+        <!-- The container for the fragment -->
+        <FrameLayout
+            android:id="@+id/place_details_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- The loader, shown on top of the empty container -->
+        <LinearLayout
+            android:id="@+id/loading_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/loader_background"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <ProgressBar
+                android:id="@+id/loading_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/loading"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+
+        <!-- The dismiss button with a background. It's hidden initially. -->
+        <ImageButton
+            android:id="@+id/dismiss_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/close_button_background"
+            android:contentDescription="@string/dismiss_button_content_description"
+            android:padding="12dp"
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_close"
+            app:tint="@android:color/white"
+            tools:visibility="visible" />
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
