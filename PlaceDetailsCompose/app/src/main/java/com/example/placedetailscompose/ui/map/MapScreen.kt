@@ -101,7 +101,7 @@ fun MapScreen(mapViewModel: MapViewModel = viewModel()) {
         val place = selectedPlace
 
         if (place != null) {
-            Column(
+            Box(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(16.dp)
@@ -113,8 +113,8 @@ fun MapScreen(mapViewModel: MapViewModel = viewModel()) {
                 FloatingActionButton(
                     onClick = { mapViewModel.onDismissPlace() },
                     modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(top = 8.dp)
+                        .align(Alignment.TopEnd)
+                        .padding(top = 8.dp, end = 8.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Close,
