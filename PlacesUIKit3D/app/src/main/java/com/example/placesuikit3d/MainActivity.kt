@@ -54,26 +54,43 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * A simple ViewModel to hold the selected place ID.
+ *
+ * Using a ViewModel allows the state to survive configuration changes, like screen rotations,
+ * ensuring the selected place isn't lost.
+ */
 class MainViewModel : ViewModel() {
     fun setSelectedPlaceId(placeId: String?) {
-        _placeId.tryEmit(placeId)
+        _placeId.value = placeId
     }
 
     private val _placeId = MutableStateFlow<String?>(null)
     val placeId = _placeId.asStateFlow()
 }
 
+/**
+ * The main activity for the 3D map demo.
+ *
+ * This activity demonstrates how to integrate the Places UI Kit with a 3D map view.
+ * It handles map initialization, location permissions, and displaying place details.
+ *
+ * Implements [OnMap3DViewReadyCallback] to receive the [GoogleMap3D] instance once it's ready.
+ */
 class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
     private val TAG = this::class.java.simpleName
     private lateinit var binding: ActivityMainBinding
     private var googleMap3D: GoogleMap3D? = null
     private var placeDetailsFragment: PlaceDetailsCompactFragment? = null
-    private val orientation: Orientation = Orientation.HORIZONTAL
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
     private val viewModel: MainViewModel by viewModels()
 
+    /**
+     * Defines the initial camera position for the map.
+     * This is used when the app starts or when the user's location is unavailable.
+     */
     private val initialCamera: Camera = camera {
         center = latLngAltitude {
             latitude = 47.62053235109065
@@ -88,6 +105,8 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Registers a callback for the result of requesting permissions.
+        // This is the modern way to handle permission requests, replacing onActivityResult.
         requestPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
                 if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true || permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
@@ -107,16 +126,21 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Asynchronously initializes the map and registers the [OnMap3DViewReadyCallback].
         binding.map3dView.onCreate(savedInstanceState)
         binding.map3dView.getMap3DViewAsync(this)
 
+        // Allows the app to draw behind the system bars for a more immersive experience.
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
+        // Adjusts the status bar icons for better visibility against the app's theme.
         val insetsController = WindowCompat.getInsetsController(window, window.decorView)
         val isLightTheme = resources.configuration.uiMode and
                 Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_NO
         insetsController.isAppearanceLightStatusBars = isLightTheme
 
+        // Applies window insets as padding to the content view.
+        // This prevents UI elements from being obscured by the system bars.
         val contentView = findViewById<View>(android.R.id.content)
         ViewCompat.setOnApplyWindowInsetsListener(contentView) { view, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -124,19 +148,24 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
             WindowInsetsCompat.CONSUMED
         }
 
+        // Sets up a click listener to fetch the user's location and move the camera.
         binding.myLocationButton.setOnClickListener {
             fetchLastLocation()
         }
 
+        // Clears the selected place, which will hide the details view.
         binding.dismissButton.setOnClickListener {
             viewModel.setSelectedPlaceId(null)
         }
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
+        // Asynchronously initializes the map and registers the [OnMap3DViewReadyCallback].
         binding.map3dView.onCreate(savedInstanceState)
         binding.map3dView.getMap3DViewAsync(this)
 
+        // Collects the selected place ID from the ViewModel.
+        // This ensures the UI reacts to changes in the selected place.
         lifecycleScope.launch {
             viewModel.placeId.collect { placeId ->
                 if (placeId.isNullOrEmpty()) {
@@ -148,12 +177,20 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
         }
     }
 
+    /**
+     * Called when the map is ready to be used.
+     * This is where we configure the map's initial state and set up listeners.
+     */
     override fun onMap3DViewReady(googleMap3D: GoogleMap3D) {
         this.googleMap3D = googleMap3D
+        // Hybrid mode shows satellite imagery with road maps overlaid.
         googleMap3D.setMapMode(Map3DMode.HYBRID)
+        // A null restriction allows the camera to move freely.
         googleMap3D.setCameraRestriction(null)
         googleMap3D.setCamera(initialCamera)
 
+        // Sets a listener for clicks on the map.
+        // This is used to select a place and show its details.
         googleMap3D.setMap3DClickListener { location: LatLngAltitude, placeId: String? ->
             Log.d(
                 "MainActivity",
@@ -163,6 +200,7 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
             viewModel.setSelectedPlaceId(placeId)
         }
 
+        // After the map is ready, check for location permissions and act accordingly.
         if (isLocationPermissionGranted()) {
             fetchLastLocation()
         } else {
@@ -170,6 +208,10 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
         }
     }
 
+    /**
+     * Checks if the app has been granted location permissions.
+     * It's good practice to check for permissions before accessing location services.
+     */
     private fun isLocationPermissionGranted(): Boolean {
         return ActivityCompat.checkSelfPermission(
             this,
@@ -181,6 +223,10 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
                 ) == PackageManager.PERMISSION_GRANTED
     }
 
+    /**
+     * Requests location permissions from the user.
+     * The result is handled by the [requestPermissionLauncher].
+     */
     private fun requestLocationPermissions() {
         Log.d(TAG, "Requesting location permissions.")
         requestPermissionLauncher.launch(
@@ -191,6 +237,10 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
         )
     }
 
+    /**
+     * Fetches the user's last known location and moves the camera to it.
+     * This provides a quick and battery-efficient way to get the user's location.
+     */
     @SuppressLint("MissingPermission")
     private fun fetchLastLocation() {
         if (isLocationPermissionGranted()) {
@@ -200,7 +250,9 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
                         val userLocation = latLngAltitude {
                             latitude = location.latitude
                             longitude = location.longitude
-                            altitude = 0.0 // Altitude from location provider is not always reliable
+                            // Altitude from location providers can be unreliable.
+                            // Setting it to 0.0 ensures a consistent ground-level view.
+                            altitude = 0.0
                         }
                         googleMap3D?.flyCameraTo(
                             flyToOptions {
@@ -225,6 +277,10 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
         }
     }
 
+    /**
+     * Moves the camera to the predefined initial location.
+     * This is used as a fallback when the user's location is not available.
+     */
     private fun moveToDefaultLocation() {
         googleMap3D?.flyCameraTo(
             flyToOptions {
@@ -238,17 +294,22 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
         Log.d(TAG, "Moved to default location")
     }
 
-
+    /**
+     * Shows the [PlaceDetailsCompactFragment] for a given place ID.
+     * This function handles the fragment transaction and UI visibility changes.
+     */
     private fun showPlaceDetailsFragment(placeId: String) {
         Log.d(TAG, "Showing PlaceDetailsFragment for place ID: $placeId")
 
-        // Launch in the main dispatcher using the global scope.
+        // Launch in the main dispatcher to ensure UI operations are safe.
         CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
+            // Show loading indicator and hide the main details view initially.
             binding.placeDetailsWrapper.visibility = View.VISIBLE
             binding.loadingContainer.visibility = View.VISIBLE
             binding.dismissButton.visibility = View.GONE
             binding.placeDetailsContainer.visibility = View.GONE
 
+            // Adjust the orientation of the Place Details view based on the device's orientation.
             val orientation =
                 if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     Orientation.HORIZONTAL
@@ -256,14 +317,17 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
                     Orientation.VERTICAL
                 }
 
+            // Create a new instance of the fragment.
             placeDetailsFragment = PlaceDetailsCompactFragment.newInstance(
                 PlaceDetailsCompactFragment.ALL_CONTENT,
                 orientation,
                 R.style.CustomizedPlaceDetailsTheme,
             ).apply {
+                // Set a listener to handle the result of loading the place details.
                 setPlaceLoadListener(object : PlaceLoadListener {
                     override fun onSuccess(place: Place) {
                         Log.d(TAG, "Place loaded: ${place.id}")
+                        // Once loaded, show the details and hide the loading indicator.
                         binding.loadingContainer.visibility = View.GONE
                         binding.placeDetailsContainer.visibility = View.VISIBLE
                         binding.dismissButton.visibility = View.VISIBLE
@@ -271,52 +335,79 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
 
                     override fun onFailure(e: Exception) {
                         Log.e(TAG, "Place failed to load", e)
+                        // If loading fails, hide the loading indicator and show a toast.
                         binding.loadingContainer.visibility = View.GONE
                         Toast.makeText(this@MainActivity, "Failed to load place details.", Toast.LENGTH_SHORT).show()
+                        // Clear the selected place to hide the details view.
                         viewModel.setSelectedPlaceId(null)
                     }
                 })
             }
 
+            // Replace the container with the fragment.
             supportFragmentManager
                 .beginTransaction()
                 .replace(binding.placeDetailsContainer.id, placeDetailsFragment!!)
                 .commitNow()
 
+            // Load the place details using the provided place ID.
             placeDetailsFragment?.loadWithPlaceId(placeId)
         }
     }
 
+    /**
+     * Hides the place details view.
+     * This is called when the dismiss button is clicked or the selected place is cleared.
+     */
     private fun dismissPlaceDetails() {
         binding.placeDetailsWrapper.visibility = View.GONE
     }
 
+    /**
+     * Forwards map errors to the superclass.
+     */
     override fun onError(error: Exception) {
         Log.e(TAG, "Error loading map", error)
         super.onError(error)
     }
 
+    /**
+     * It's important to forward lifecycle events to the Map3DView.
+     * This ensures that the map behaves correctly, for example, by refreshing data when the app resumes.
+     */
     override fun onResume() {
         super.onResume()
         binding.map3dView.onResume()
     }
 
+    /**
+     * Forwarding onPause is crucial to stop rendering and save battery when the app is in the background.
+     */
     override fun onPause() {
         super.onPause()
         binding.map3dView.onPause()
     }
 
+    /**
+     * Forwarding onDestroy cleans up map resources and prevents memory leaks.
+     */
     override fun onDestroy() {
         super.onDestroy()
         binding.map3dView.onDestroy()
     }
 
+    /**
+     * Forwarding onLowMemory allows the map to release non-critical resources when the system is under memory pressure.
+     */
     @Deprecated("Deprecated in Java")
     override fun onLowMemory() {
         super.onLowMemory()
         binding.map3dView.onLowMemory()
     }
 
+    /**
+     * Forwarding onSaveInstanceState ensures the map's state is saved and can be restored.
+     */
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         binding.map3dView.onSaveInstanceState(outState)
