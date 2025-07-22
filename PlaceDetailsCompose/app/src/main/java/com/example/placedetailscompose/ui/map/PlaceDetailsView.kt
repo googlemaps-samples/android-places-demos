@@ -44,7 +44,7 @@ fun PlaceDetailsView(
             Orientation.VERTICAL
         }
 
-        val fragment = remember {
+        val fragment = remember(place) {
             PlaceDetailsCompactFragment.newInstance(
                 PlaceDetailsCompactFragment.ALL_CONTENT,
                 orientation,
@@ -61,29 +61,23 @@ fun PlaceDetailsView(
         update = { view ->
             val fragmentManager = (view.context as? AppCompatActivity)?.supportFragmentManager
             if (fragmentManager != null) {
-                val placeDetailsCompactFragment : PlaceDetailsCompactFragment =
-                    (fragmentManager.findFragmentById(view.id) ?: run {
+                fragmentManager.beginTransaction()
+                    .replace(view.id, fragment)
+                    .commit()
 
-                        fragmentManager.beginTransaction()
-                            .replace(view.id, fragment)
-                            .commit()
+                fragment.setPlaceLoadListener(object : PlaceLoadListener {
+                    override fun onSuccess(place: Place) {
+                        Log.d("PlaceDetailsView", "Place loaded: $place")
+                    }
 
-                        fragment.setPlaceLoadListener(object : PlaceLoadListener {
-                            override fun onSuccess(place: Place) {
-                                Log.d("PlaceDetailsView", "Place loaded: $place")
-                            }
-
-                            override fun onFailure(e: Exception) {
-                                Log.d("PlaceDetailsView", "Place failed to load place: ${e.message}")
-                                onDismiss()
-                            }
-                        })
-
-                        fragment
-                    }) as PlaceDetailsCompactFragment
+                    override fun onFailure(e: Exception) {
+                        Log.d("PlaceDetailsView", "Place failed to load place: ${e.message}")
+                        onDismiss()
+                    }
+                })
 
                 view.rootView.post {
-                    placeDetailsCompactFragment.loadWithPlaceId(place.placeId)
+                    fragment.loadWithPlaceId(place.placeId)
                 }
             }
         }
