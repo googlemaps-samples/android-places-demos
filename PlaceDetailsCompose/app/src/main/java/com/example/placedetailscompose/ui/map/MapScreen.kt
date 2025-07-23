@@ -40,10 +40,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.placedetailscompose.viewmodels.MapViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapColorScheme
 import com.google.maps.android.compose.ComposeMapColorScheme
 import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
@@ -101,6 +99,8 @@ fun MapScreen(
         }
     }
 
+    val markerState = rememberMarkerState(position = selectedPlace?.latLng ?: mapViewModel.sydney)
+
     Box(modifier.fillMaxSize()) {
         GoogleMap(
             modifier = Modifier.matchParentSize(),
@@ -111,9 +111,7 @@ fun MapScreen(
             mapColorScheme = ComposeMapColorScheme.FOLLOW_SYSTEM
         ) {
             // Show a marker for the selected place.
-            selectedPlace?.latLng?.let {
-                MovableMarker(position = it)
-            }
+            Marker(state = markerState)
         }
 
         val place = selectedPlace
@@ -158,15 +156,10 @@ private fun hasLocationPermission(context: Context): Boolean {
     ) == PackageManager.PERMISSION_GRANTED
 }
 
-/**
- * A composable that shows a simple marker on the map.
- */
 @Composable
-fun MovableMarker(
-    position: LatLng,
-    modifier: Modifier = Modifier,
-) {
-    val state = remember { MarkerState(position = position) }
-    state.position = position
-    Marker(state = state)
+fun rememberMarkerState(position: LatLng): MarkerState {
+    return remember(position) { // Keyed remember to re-create if initial position key changes
+        MarkerState(position = position)
+    }
 }
+

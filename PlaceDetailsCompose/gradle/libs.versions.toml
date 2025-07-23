@@ -11,7 +11,6 @@ kotlin = "2.2.0"
 coreKtx = "1.16.0"
 fragmentKtx = "1.8.8"
 material = "1.12.0"
-constraintlayout = "2.2.1"
 lifecycleViewModelCompose = "2.9.2"
 
 # --- Jetpack Compose ---
@@ -51,7 +50,6 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleViewModelCompose" }
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
 # --- Jetpack Compose ---
 # The Compose BOM (Bill of Materials) simplifies dependency management by coordinating the versions of various Compose libraries.
