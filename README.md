@@ -8,6 +8,9 @@ This repo contains the following apps that demonstrate use of the [Google Places
 
 1. [demo-kotlin](demo-kotlin) Kotlin demo app for the Places SDK.
 2. [demo-java](demo-java) Java demo app for the Places SDK.
+3. [PlaceDetailsCompose](PlaceDetailsCompose) Compose demo app for the Places SDK.
+4. [PlaceDetailsUIKit](PlaceDetailsUIKit) UIKit demo app for the Places SDK.
+5. [PlacesUIKit3D](PlacesUIKit3D) 3D demo app for the Places SDK.
 
 Additionally, the [snippets](snippets) app contains code snippets used for documentation found in https://developers.google.com/places/android-sdk
 
