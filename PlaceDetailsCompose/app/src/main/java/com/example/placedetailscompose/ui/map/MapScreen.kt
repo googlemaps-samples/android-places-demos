@@ -53,7 +53,10 @@ import com.google.maps.android.compose.rememberCameraPositionState
  * point of interest to see details about it.
  */
 @Composable
-fun MapScreen(mapViewModel: MapViewModel = viewModel()) {
+fun MapScreen(
+    modifier: Modifier = Modifier,
+    mapViewModel: MapViewModel = viewModel()
+) {
     val context = LocalContext.current
     // Collect the device location and selected place from the ViewModel.
     // This allows the UI to react to changes in these values.
@@ -98,7 +101,7 @@ fun MapScreen(mapViewModel: MapViewModel = viewModel()) {
         }
     }
 
-    Box(Modifier.fillMaxSize()) {
+    Box(modifier.fillMaxSize()) {
         GoogleMap(
             modifier = Modifier.matchParentSize(),
             cameraPositionState = cameraPositionState,
@@ -159,7 +162,10 @@ private fun hasLocationPermission(context: Context): Boolean {
  * A composable that shows a simple marker on the map.
  */
 @Composable
-fun MovableMarker(position: LatLng) {
+fun MovableMarker(
+    position: LatLng,
+    modifier: Modifier = Modifier,
+) {
     val state = remember { MarkerState(position = position) }
     state.position = position
     Marker(state = state)

@@ -43,7 +43,8 @@ import com.google.android.libraries.places.widget.model.Orientation
 @Composable
 fun PlaceDetailsView(
     place: PointOfInterest,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     // Determine the orientation of the device and set the orientation of the fragment accordingly.
     val orientation =
@@ -69,7 +70,7 @@ fun PlaceDetailsView(
     // It takes a `factory` lambda that is used to create the view, and an `update` lambda
     // that is used to update the view when the state changes.
     AndroidView(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         factory = { context ->
             // The `factory` lambda is called only once to create the view.
             // We inflate a `FragmentContainerView` from an XML layout file.
