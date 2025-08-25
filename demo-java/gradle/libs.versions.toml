@@ -1,6 +1,6 @@
 [versions]
 activity = "1.10.1"
-androidGradlePlugin = "8.11.1"
+androidGradlePlugin = "8.12.1"
 androidMapsUtils = "3.14.0"
 appcompat = "1.7.1"
 constraintlayout = "2.2.1"
