@@ -2,7 +2,7 @@
 androidGradlePlugin = "8.11.0"
 appcompat = "1.7.1"
 coreKtx = "1.16.0"
-glide = "4.16.0"
+glide = "5.0.3"
 kotlin = "2.2.0"
 mapsSecretsGradlePlugin = "2.0.1"
 mapsUtilsKtx = "5.2.0"
