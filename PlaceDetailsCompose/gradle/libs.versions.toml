@@ -6,37 +6,37 @@
 [versions]
 # --- Core Android & Kotlin ---
 # These are the fundamental versions for building the Android app.
-agp = "8.11.1"
-kotlin = "2.2.0"
-coreKtx = "1.16.0"
-fragmentKtx = "1.8.8"
-material = "1.12.0"
-lifecycleViewModelCompose = "2.9.2"
+agp = "8.13.0"
+kotlin = "2.2.10"
+coreKtx = "1.17.0"
+fragmentKtx = "1.8.9"
+material = "1.13.0"
+lifecycleViewModelCompose = "2.9.3"
 
 # --- Jetpack Compose ---
 # Versions for Jetpack Compose, Android's modern UI toolkit.
 # The Compose BOM (Bill of Materials) manages the versions of different Compose libraries
 # to ensure they are compatible with each other.
-composeBom = "2025.07.00"
+composeBom = "2025.08.01"
 activityCompose = "1.10.1"
-ui = "1.8.3"
-uiTooling = "1.8.3"
-uiViewbinding = "1.8.3"
+ui = "1.9.0"
+uiTooling = "1.9.0"
+uiViewbinding = "1.9.0"
 
 # --- Google Services (Maps, Places, Location) ---
 # Versions for Google Play Services libraries, which are essential for this sample.
 googleMaps = "19.2.0"
 places = "4.4.1"
 playServicesLocation = "21.3.0" # Required for the FusedLocationProviderClient to get the device's location.
-mapsCompose = "6.7.0"
+mapsCompose = "6.10.0"
 
 # --- Testing ---
 # Versions for testing libraries.
 junit = "4.13.2"
-junitVersion = "1.2.1"
-espressoCore = "3.6.1"
-testRules = "1.6.1"
-testRunner = "1.6.2"
+junitVersion = "1.3.0"
+espressoCore = "3.7.0"
+testRules = "1.7.0"
+testRunner = "1.7.0"
 
 # --- Gradle Plugins ---
 # Versions for Gradle plugins used in the build process.

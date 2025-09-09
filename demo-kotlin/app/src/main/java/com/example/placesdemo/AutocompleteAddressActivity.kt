@@ -179,7 +179,7 @@ class AutocompleteAddressActivity : BaseActivity(),
                 }
                 deviceLocation = LatLng(location.latitude, location.longitude)
                 // [START_EXCLUDE]
-                Log.d(TAG, "device location = " + deviceLocation.toString())
+                Log.d(TAG, "device location = $deviceLocation")
                 Log.d(TAG, "entered location = $enteredLocation")
 
                 // [START maps_solutions_android_location_distance]
