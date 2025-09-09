@@ -25,7 +25,6 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse
-import java.util.*
 
 /**
  * Utility class for converting objects to viewable strings and back.
@@ -61,9 +60,9 @@ object StringUtil {
             null
         } else try {
             LatLng(split[0].toDouble(), split[1].toDouble())
-        } catch (e: NullPointerException) {
+        } catch (_: NullPointerException) {
             null
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
     }
@@ -125,7 +124,7 @@ object StringUtil {
     }
 
     fun stringify(place: Place): String {
-        return "${place.name?.plus(" (") ?: ""}${place.address?.plus(")") ?: ""}"
+        return "${place.displayName?.plus(" (") ?: ""}${place.formattedAddress?.plus(")") ?: ""}"
     }
 
     fun stringify(bitmap: Bitmap): String {

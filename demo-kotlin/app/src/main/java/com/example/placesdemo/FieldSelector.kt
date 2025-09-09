@@ -30,7 +30,7 @@ import androidx.appcompat.app.AlertDialog
 import com.google.android.libraries.places.api.model.Place
 import java.util.*
 
-/** Helper class for selecting [Field] values.  */
+/** Helper class for selecting [Place.Field] values.  */
 class FieldSelector(
     enableView: CheckBox,
     outputView: TextView,
@@ -42,7 +42,7 @@ class FieldSelector(
     private val outputView: TextView
 
     /**
-     * Shows dialog to allow user to select [Field] values they want.
+     * Shows dialog to allow user to select [Place.Field] values they want.
      */
     private fun showDialog(context: Context?) {
         val listView = ListView(context)
@@ -59,13 +59,13 @@ class FieldSelector(
     }
 
     /**
-     * Returns all [Field] that are selectable.
+     * Returns all [Place.Field] that are selectable.
      */
     val allFields: List<Place.Field>
         get() = ArrayList(fieldStates.keys)
 
     /**
-     * Returns all [Field] values the user selected.
+     * Returns all [Place.Field] values the user selected.
      */
     val selectedFields: List<Place.Field>
         get() {
@@ -79,7 +79,7 @@ class FieldSelector(
         }
 
     /**
-     * Returns a String representation of all selected [Field] values. See [ ][.getSelectedFields].
+     * Returns a String representation of all selected [Place.Field] values. See [ ][.getSelectedFields].
      */
     val selectedString: String
         get() {
@@ -153,15 +153,14 @@ class FieldSelector(
         private const val SELECTED_PLACE_FIELDS_KEY = "selected_place_fields"
 
         /**
-         * Returns all [Field] values except those passed in.
-         *
-         *
-         * Convenience method for when most [Field] values are desired. Useful for APIs that do
-         * no support all [Field] values.
+         * Returns all [Place.Field] values except those passed in.
+         * <p>
+         * Convenience method for when most [Place.Field] values are desired. Useful for APIs that do
+         * no support all [Place.Field] values.
          */
         fun allExcept(vararg placeFieldsToOmit: Place.Field): List<Place.Field> {
             // Arrays.asList is immutable, create a mutable list to allow removing fields
-            val placeFields: MutableList<Place.Field> = ArrayList(Arrays.asList(*Place.Field.values()))
+            val placeFields: MutableList<Place.Field> = ArrayList(listOf(*Place.Field.entries.toTypedArray()))
             placeFields.removeAll(placeFieldsToOmit)
             return placeFields
         }

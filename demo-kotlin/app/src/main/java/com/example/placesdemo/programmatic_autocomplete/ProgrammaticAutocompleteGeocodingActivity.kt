@@ -114,7 +114,7 @@ class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
         val searchView =
-            menu.findItem(R.id.search).actionView as com.google.android.material.search.SearchView
+            menu.findItem(R.id.search).actionView as SearchView
         initSearchView(searchView)
         return super.onCreateOptionsMenu(menu)
     }
@@ -277,18 +277,17 @@ class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
             .addOnSuccessListener { response: FetchPlaceResponse ->
                 val place = response.place
                 AlertDialog.Builder(this)
-                    .setTitle(place.name)
-                    .setMessage("located at:\n" + place.address)
+                    .setTitle(place.displayName)
+                    .setMessage("located at:\n" + place.formattedAddress)
                     .setPositiveButton(android.R.string.ok, null)
                     .show()
-                Log.i(TAG, "Place found: ${place.name}")
+                Log.i(TAG, "Place found: ${place.displayName}")
             }.addOnFailureListener { exception: Exception ->
                 if (exception is ApiException) {
                     Log.e(TAG, "Place not found: ${exception.message} ${exception.statusCode}")
                 }
             }
     }
-
 
     companion object {
         private val TAG = ProgrammaticAutocompleteGeocodingActivity::class.java.simpleName

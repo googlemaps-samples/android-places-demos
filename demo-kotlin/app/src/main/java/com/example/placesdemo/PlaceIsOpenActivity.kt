@@ -18,7 +18,6 @@ package com.example.placesdemo
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -37,7 +36,9 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-import java.util.TimeZone.*
+import java.util.TimeZone.getAvailableIDs
+import java.util.TimeZone.getDefault
+import java.util.TimeZone.getTimeZone
 
 /**
  * Activity to demonstrate [PlacesClient.isOpen].
@@ -178,7 +179,7 @@ class PlaceIsOpenActivity : BaseActivity() {
     //////////////////////////
     private fun dismissKeyboard(focusedEditText: EditText) {
         val imm: InputMethodManager =
-            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(focusedEditText.windowToken, 0)
     }
 

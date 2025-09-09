@@ -18,8 +18,6 @@ package com.example.placesdemo
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.Button
 import com.example.placesdemo.databinding.ActivityMainBinding
 import com.example.placesdemo.programmatic_autocomplete.ProgrammaticAutocompleteGeocodingActivity
