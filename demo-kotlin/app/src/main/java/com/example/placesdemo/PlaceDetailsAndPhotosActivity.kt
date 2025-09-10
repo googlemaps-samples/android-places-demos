@@ -15,7 +15,7 @@
  */
 package com.example.placesdemo
 
-import android.content.Context
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -61,8 +61,9 @@ class PlaceDetailsAndPhotosActivity : BaseActivity() {
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient(this)
-        if (savedInstanceState != null && savedInstanceState.containsKey(FETCHED_PHOTO_KEY)) {
-            photo = savedInstanceState.getParcelable(FETCHED_PHOTO_KEY)
+        // Restore photo from saved instance state if it exists
+        savedInstanceState?.getParcelable<PhotoMetadata>(FETCHED_PHOTO_KEY)?.let { savedPhoto ->
+            photo = savedPhoto
         }
 
         binding.fetchPhotoCheckbox.setOnCheckedChangeListener { _, isChecked: Boolean ->
@@ -148,7 +149,7 @@ class PlaceDetailsAndPhotosActivity : BaseActivity() {
     private fun attemptFetchIcon(place: Place) {
         binding.icon.setImageBitmap(null)
         place.iconBackgroundColor?.let { binding.icon.setBackgroundColor(it) }
-        val url = place.iconUrl
+        val url = place.iconMaskUrl
         Glide.with(this).load(url).into(binding.icon)
     }
 
@@ -192,7 +193,7 @@ class PlaceDetailsAndPhotosActivity : BaseActivity() {
     // Helper methods below //
     //////////////////////////
     private fun dismissKeyboard(focusedEditText: EditText) {
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(focusedEditText.windowToken, 0)
     }
 

@@ -23,7 +23,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresPermission
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.placesdemo.databinding.CurrentPlaceActivityBinding
 import com.google.android.libraries.places.api.Places
