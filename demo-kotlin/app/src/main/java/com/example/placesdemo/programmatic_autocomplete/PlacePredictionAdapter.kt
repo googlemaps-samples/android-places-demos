@@ -61,10 +61,17 @@ class PlacePredictionAdapter : RecyclerView.Adapter<PlacePredictionViewHolder>()
     class PlacePredictionViewHolder(itemView: View) : ViewHolder(itemView) {
         private val title: TextView = itemView.findViewById(R.id.text_view_title)
         private val address: TextView = itemView.findViewById(R.id.text_view_address)
+        private val distance: TextView = itemView.findViewById(R.id.text_view_distance)
 
         fun setPrediction(prediction: AutocompletePrediction) {
             title.text = prediction.getPrimaryText(null)
             address.text = prediction.getSecondaryText(null)
+            val distanceMeters = prediction.distanceMeters
+            if (distanceMeters != null) {
+                distance.text = itemView.context.getString(R.string.distance_in_meters, distanceMeters)
+            } else {
+                distance.text = ""
+            }
         }
     }
 
