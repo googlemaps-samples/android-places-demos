@@ -203,6 +203,13 @@
 
   <!-- Text for the fetch place and photo button. -->
   <string name="fetch_place_and_photo_button" translatable="false">Fetch Place and Photo</string>
+  <string name="get_business_status_button" translatable="false">Get Business Status</string>
+  <string name="get_plus_code_button" translatable="false">Get Plus Code</string>
+  <string name="get_price_level_button" translatable="false">Get Price Level</string>
+  <string name="get_rating_button" translatable="false">Get Rating</string>
+  <string name="get_user_ratings_total_button" translatable="false">Get User Ratings Total</string>
+  <string name="get_utc_offset_minutes_button" translatable="false">Get UTC Offset Minutes</string>
+  <string name="get_website_uri_button" translatable="false">Get Website URI</string>
 
   <!-- PLACE IS OPEN -->
 

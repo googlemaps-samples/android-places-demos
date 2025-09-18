@@ -204,6 +204,113 @@
           android:freezesText="true"
           android:textIsSelectable="true" />
 
+      <GridLayout
+          android:id="@+id/place_methods_buttons"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:columnCount="2"
+          android:visibility="gone">
+
+        <Button
+            android:id="@+id/get_business_status_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/get_business_status_button" />
+
+        <TextView
+            android:id="@+id/businessStatusResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginStart="8dp"
+            android:textIsSelectable="true" />
+
+        <Button
+            android:id="@+id/get_plus_code_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/get_plus_code_button" />
+
+        <TextView
+            android:id="@+id/plusCodeResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginStart="8dp"
+            android:textIsSelectable="true" />
+
+        <Button
+            android:id="@+id/get_price_level_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/get_price_level_button" />
+
+        <TextView
+            android:id="@+id/priceLevelResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginStart="8dp"
+            android:textIsSelectable="true" />
+
+        <Button
+            android:id="@+id/get_rating_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/get_rating_button" />
+
+        <TextView
+            android:id="@+id/ratingResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginStart="8dp"
+            android:textIsSelectable="true" />
+
+        <Button
+            android:id="@+id/get_user_ratings_total_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/get_user_ratings_total_button" />
+
+        <TextView
+            android:id="@+id/userRatingsTotalResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginStart="8dp"
+            android:textIsSelectable="true" />
+
+        <Button
+            android:id="@+id/get_utc_offset_minutes_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/get_utc_offset_minutes_button" />
+
+        <TextView
+            android:id="@+id/utcOffsetMinutesResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginStart="8dp"
+            android:textIsSelectable="true" />
+
+        <Button
+            android:id="@+id/get_website_uri_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/get_website_uri_button" />
+
+        <TextView
+            android:id="@+id/websiteUriResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginStart="8dp"
+            android:textIsSelectable="true" />
+      </GridLayout>
+
     </LinearLayout>
   </ScrollView>
 
