@@ -190,14 +190,13 @@ class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
         // adapter.onPlaceClickListener = { fetchPlaceAndDisplay(it) }
     }
 
-    /**
-     * Fetches place predictions from the Places API.
-     *
-     * @param query The search query.
-     *
-     * @see https://developers.google.com/maps/documentation/places/android-sdk/autocomplete#get_place_predictions_programmatically
-     */
-    private fun getPlacePredictions(query: String) {
+         /**
+          * Fetches place predictions from the Places API.
+          *
+          * @param query The search query string.
+          *
+          * @see https://developers.google.com/maps/documentation/places/android-sdk/autocomplete#get_place_predictions_programmatically
+          */    private fun getPlacePredictions(query: String) {
         val latLng = LatLng(lastKnownLocation?.latitude ?: defaultLocation.latitude, lastKnownLocation?.longitude ?: defaultLocation.longitude)
         val bias: LocationBias = RectangularBounds.newInstance(
             LatLng(latLng.latitude - RADIUS_DEGREES, latLng.longitude - RADIUS_DEGREES),
@@ -339,7 +338,7 @@ class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
                 }
             }
         } catch (e: SecurityException) {
-            Log.e("Exception: %s", e.message, e)
+            Log.e(TAG, "Exception: ${e.message}", e)
         }
     }
 
