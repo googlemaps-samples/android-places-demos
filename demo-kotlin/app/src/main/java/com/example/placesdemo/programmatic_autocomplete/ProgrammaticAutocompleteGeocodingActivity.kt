@@ -15,7 +15,10 @@
 package com.example.placesdemo.programmatic_autocomplete
 
 import com.google.android.material.search.SearchView
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -29,6 +32,8 @@ import android.view.View
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
@@ -41,6 +46,8 @@ import com.example.placesdemo.R
 import com.example.placesdemo.databinding.ActivityProgrammaticAutocompleteBinding
 import com.example.placesdemo.model.GeocodingResult
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompletePrediction
@@ -57,6 +64,8 @@ import com.google.gson.GsonBuilder
 import org.json.JSONArray
 import org.json.JSONException
 
+private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
+
 /**
  * Extension function to get a color from the current theme using its attribute resource ID.
  */
@@ -68,14 +77,13 @@ fun Context.getColorFromTheme(@AttrRes colorAttributeResId: Int): Int {
 }
 
 /**
- * An Activity that demonstrates programmatic as-you-type place predictions. The parameters of the
- * request are currently hard coded in this Activity, to modify these parameters (e.g. location
- * bias, place types, etc.), see [ProgrammaticAutocompleteGeocodingActivity.getPlacePredictions]
+ * An activity that demonstrates programmatic as-you-type place predictions.
  *
- * @see https://developers.google.com/places/android-sdk/autocomplete#get_place_predictions_programmatically
+ * @see https://developers.google.com/maps/documentation/places/android-sdk/autocomplete#get_place_predictions_programmatically
  */
 class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
 
+    // A handler for delaying place prediction requests.
     private val handler = Handler(Looper.getMainLooper())
     private val adapter = PlacePredictionAdapter()
     private val gson =
@@ -85,6 +93,13 @@ class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
     private lateinit var placesClient: PlacesClient
     private var sessionToken: AutocompleteSessionToken? = null
     private lateinit var binding: ActivityProgrammaticAutocompleteBinding
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+
+    // The geographical location where the device is currently located. That is, the last-known
+    // location retrieved by the Fused Location Provider.
+    private var lastKnownLocation: Location? = null
+    private var locationPermissionGranted = false
+    private val defaultLocation = LatLng(40.0150, -105.2705) // Boulder, Colorado
 
     private var colorOnPrimary: Int = 0
 
@@ -103,6 +118,12 @@ class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
         // Now you can initialize your SearchView listeners
         initSearchView(searchView)
 
+        // Construct a FusedLocationProviderClient.
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+
+        // Prompt the user for permission.
+        getLocationPermission()
+        
         // Initialize members
         placesClient = Places.createClient(this)
         queue = Volley.newRequestQueue(this)
@@ -128,7 +149,7 @@ class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
     }
 
     private fun initSearchView(searchView: SearchView) {
-        // Add a TextWatcher to the underlying EditText to listen for changes
+        // This listener will be invoked when the user types in the search bar.
         searchView.editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // No action needed here
@@ -141,7 +162,7 @@ class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
                 handler.removeCallbacksAndMessages(null)
 
 
-                // Start a new place prediction request after a 300ms delay
+                // This is a common practice to avoid making too many requests while the user is typing.
                 handler.postDelayed({
                         if (query.isNotEmpty()) binding.progressBar.visibility = View.VISIBLE
                         getPlacePredictions(query)
@@ -169,26 +190,24 @@ class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
         // adapter.onPlaceClickListener = { fetchPlaceAndDisplay(it) }
     }
 
-    /**
-     * This method demonstrates the programmatic approach to getting place predictions. The
-     * parameters in this request are currently biased to Boulder, Colorado, USA.
-     *
-     * @param query the plus code query string (e.g. "GCG2+3M K")
-     */
-    private fun getPlacePredictions(query: String) {
-        // The value of 'bias' biases prediction results to the rectangular region provided
-        // (currently Boulder). Modify these values to get results for another area. Make sure to
-        // pass in the appropriate value/s for .setCountries() in the
-        // FindAutocompletePredictionsRequest.Builder object as well.
+         /**
+          * Fetches place predictions from the Places API.
+          *
+          * @param query The search query string.
+          *
+          * @see https://developers.google.com/maps/documentation/places/android-sdk/autocomplete#get_place_predictions_programmatically
+          */    private fun getPlacePredictions(query: String) {
+        val latLng = LatLng(lastKnownLocation?.latitude ?: defaultLocation.latitude, lastKnownLocation?.longitude ?: defaultLocation.longitude)
         val bias: LocationBias = RectangularBounds.newInstance(
-            LatLng(39.9614, -105.3017),  // SW lat, lng (South Boulder)
-            LatLng(40.0953, -105.1843)   // NE lat, lng (Northeast Boulder)
+            LatLng(latLng.latitude - RADIUS_DEGREES, latLng.longitude - RADIUS_DEGREES),
+            LatLng(latLng.latitude + RADIUS_DEGREES, latLng.longitude + RADIUS_DEGREES)
         )
 
         // Create a new programmatic Place Autocomplete request in Places SDK for Android
         val newRequest = FindAutocompletePredictionsRequest.builder()
+            .setOrigin(latLng)
+            // A location bias is a soft restriction that can be used to filter results to a specific area.
             .setLocationBias(bias)
-            .setCountries("US")
             .setTypesFilter(listOf(PlaceTypes.ESTABLISHMENT))
             // Session Token only used to link related Place Details call. See https://goo.gle/paaln
             .setSessionToken(sessionToken)
@@ -212,10 +231,11 @@ class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
     }
 
     /**
-     * Performs a Geocoding API request and displays the result in a dialog.
-     * Be sure to enable Geocoding API in your project and API key restrictions.
+     * Fetches the geographic coordinates for a place and displays the result in a dialog.
      *
-     * @see https://developers.google.com/places/android-sdk/autocomplete#get_place_predictions_programmatically
+     * @param placePrediction The place prediction to geocode.
+     *
+     * @see https://developers.google.com/maps/documentation/geocoding/overview
      */
     private fun geocodePlaceAndDisplay(placePrediction: AutocompletePrediction) {
         // Construct the request URL
@@ -223,7 +243,8 @@ class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
         val requestURL =
             "https://maps.googleapis.com/maps/api/geocode/json?place_id=${placePrediction.placeId}&key=$apiKey"
 
-        // Use the HTTP request URL for Geocoding API to get geographic coordinates for the place
+        // The Places SDK for Android does not support geocoding.
+        // This sample uses Volley to make a request to the Geocoding API.
         val request = JsonObjectRequest(Request.Method.GET, requestURL, null, { response ->
             try {
                 val status: String = response.getString("status")
@@ -262,9 +283,11 @@ class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
     }
 
     /**
-     * Performs a Place Details request and displays the result in a dialog.
+     * Fetches details for a place and displays the result in a dialog.
      *
-     * @see https://developers.google.com/maps/documentation/places/android-sdk/place-details#maps_places_get_place_by_id-kotlin
+     * @param placePrediction The prediction to fetch details for.
+     *
+     * @see https://developers.google.com/maps/documentation/places/android-sdk/place-details
      */
     private fun fetchPlaceAndDisplay(placePrediction: AutocompletePrediction) {
         // Specify the fields to return.
@@ -284,12 +307,86 @@ class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
                 Log.i(TAG, "Place found: ${place.displayName}")
             }.addOnFailureListener { exception: Exception ->
                 if (exception is ApiException) {
-                    Log.e(TAG, "Place not found: ${exception.message} ${exception.statusCode}")
                 }
             }
     }
 
+    /**
+     * Gets the last known location of the device.
+     */
+    private fun getDeviceLocation() {
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+        try {
+            if (locationPermissionGranted) {
+                val locationResult = fusedLocationProviderClient.lastLocation
+                locationResult.addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        // Set the map's camera position to the current location of the device.
+                        lastKnownLocation = task.result
+                        if (lastKnownLocation != null) {
+                            Log.d(TAG, "Last known location: " + lastKnownLocation!!.latitude + ", " + lastKnownLocation!!.longitude)
+                        } else {
+                            Log.d(TAG, "Last known location is null. Using defaults.")
+                        }
+                    } else {
+                        Log.d(TAG, "Current location is null. Using defaults.")
+                        Log.e(TAG, "Exception: %s", task.exception)
+                    }
+                }
+            }
+        } catch (e: SecurityException) {
+            Log.e(TAG, "Exception: ${e.message}", e)
+        }
+    }
+
+    /**
+     * Prompts the user for permission to use the device location.
+     */
+    private fun getLocationPermission() {
+        /*
+         * Request location permission, so that we can get the location of the
+         * device. The result of the permission request is handled by a callback,
+         * onRequestPermissionsResult.
+         */
+        if (ContextCompat.checkSelfPermission(this.applicationContext,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
+            locationPermissionGranted = true
+            getDeviceLocation()
+        } else {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
+        }
+    }
+
+    /**
+     * Handles the result of the request for location permissions.
+     */
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>,
+                                            grantResults: IntArray) {
+        locationPermissionGranted = false
+        when (requestCode) {
+            PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION -> {
+
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.isNotEmpty() &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    locationPermissionGranted = true
+                    getDeviceLocation()
+                }
+            }
+            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
+
+
+
     companion object {
         private val TAG = ProgrammaticAutocompleteGeocodingActivity::class.java.simpleName
+        private const val RADIUS_DEGREES = 0.001
     }
 }
