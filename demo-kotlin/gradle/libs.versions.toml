@@ -11,7 +11,7 @@ multidex = "2.0.1"
 places = "4.4.1"
 viewbinding = "8.13.0"
 volley = "1.2.1"
-kotlinParcelize = "2.2.10"
+kotlinParcelize = "2.2.20"
 
 [libraries]
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
