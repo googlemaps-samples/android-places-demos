@@ -134,7 +134,7 @@ class PlaceAutocompleteActivity : BaseActivity() {
     /**
      * Launches Autocomplete activity and handles result
      */
-    private var autocompleteLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+    private val autocompleteLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         result ->
         when (result.resultCode) {
             RESULT_OK -> {
@@ -146,8 +146,8 @@ class PlaceAutocompleteActivity : BaseActivity() {
                 }
             }
             AutocompleteActivity.RESULT_ERROR -> {
-                val status = Autocomplete.getStatusFromIntent(intent)
-                binding.response.text = status.statusMessage
+                val status = Autocomplete.getStatusFromIntent(result.data)
+                binding.response.text = "Error: ${status.statusMessage}"
             }
             RESULT_CANCELED -> {
                 // The user canceled the operation.
