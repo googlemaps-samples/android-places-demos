@@ -14,50 +14,80 @@
 
 package com.google.places;
 
+import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
 
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
-
+import com.google.places.data.PlaceIdProvider;
+import com.google.places.databinding.ActivityPlaceDetailsBinding;
+import com.google.places.kotlin.MainApplication;
 import java.util.Arrays;
 import java.util.List;
 
-class PlaceDetailsActivity extends AppCompatActivity {
+public class PlaceDetailsActivity extends AppCompatActivity {
 
     private static final String TAG = PlaceDetailsActivity.class.getSimpleName();
+    private PlacesClient placesClient;
+    private ActivityPlaceDetailsBinding binding;
 
-    private void simpleExamples(Place place) {
-        // [START maps_places_place_details_simple]
-        final CharSequence name = place.getName();
-        final CharSequence address = place.getAddress();
-        final LatLng location = place.getLatLng();
-        // [END maps_places_place_details_simple]
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Enable edge-to-edge display.
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
+        binding = ActivityPlaceDetailsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        setSupportActionBar(binding.toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(getTitle() + " (Java)");
+        }
+
+        placesClient = ((MainApplication) getApplication()).getPlacesClient();
+
+        getPlaceById();
     }
 
-    private PlacesClient placesClient;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     private void getPlaceById() {
         // [START maps_places_get_place_by_id]
         // Define a Place ID.
-        final String placeId = "INSERT_PLACE_ID_HERE";
+        final String placeId = PlaceIdProvider.getRandomPlaceId();
 
         // Specify the fields to return.
-        final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+        final List<Place.Field> placeFields =
+            Arrays.asList(Place.Field.ID, Place.Field.DISPLAY_NAME, Place.Field.FORMATTED_ADDRESS);
 
         // Construct a request object, passing the place ID and fields array.
         final FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, placeFields);
 
         placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
             Place place = response.getPlace();
-            Log.i(TAG, "Place found: " + place.getName());
+            binding.placeName.setText(place.getDisplayName());
+            binding.placeAddress.setText(place.getFormattedAddress());
+            Log.i(TAG, "Place found: " + place.getDisplayName());
         }).addOnFailureListener((exception) -> {
-            if (exception instanceof ApiException) {
-                final ApiException apiException = (ApiException) exception;
+            if (exception instanceof ApiException apiException) {
+                final String message = getString(R.string.place_not_found, apiException.getMessage());
+                binding.placeName.setText(message);
                 Log.e(TAG, "Place not found: " + exception.getMessage());
                 final int statusCode = apiException.getStatusCode();
                 // TODO: Handle error with given status code.

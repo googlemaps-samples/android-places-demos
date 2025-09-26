@@ -14,22 +14,54 @@
 
 package com.google.places.kotlin
 
-import android.widget.ImageView
+import android.graphics.Color
+import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.libraries.places.api.model.Place
 import com.bumptech.glide.Glide
+import com.google.android.libraries.places.api.model.Place
+import com.google.places.databinding.ActivityPlacesIconBinding
 
 class PlacesIconActivity : AppCompatActivity() {
-    private lateinit var imageView: ImageView
+    private lateinit var binding: ActivityPlacesIconBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityPlacesIconBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "$title (Kotlin)"
+
+        binding.placesIconButton.setOnClickListener {
+            // In a real app, you would get a Place object from a Place Details request or similar.
+            // For this snippet, we'll create a dummy Place object.
+            val place = Place.builder()
+                .setIconBackgroundColor(Color.BLUE)
+                .setIconMaskUrl("https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/generic_business-71.png")
+                .build()
+            getPlacesIcon(place)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun getPlacesIcon(place: Place) {
         // [START maps_places_places_icon_and_bg_color]
         // Set the image view's background color to match the place's icon background color
-        imageView.setBackgroundColor(place.iconBackgroundColor)
+        val bgColor = place.iconBackgroundColor ?: Color.TRANSPARENT
+        binding.placesIconResult.setBackgroundColor(bgColor)
 
         // Fetch the icon using Glide and set the result in the image view
         Glide.with(this)
-            .load(place.iconUrl)
-            .into(imageView)
+            .load(place.iconMaskUrl)
+            .into(binding.placesIconResult)
         // [END maps_places_places_icon_and_bg_color]
     }
 }

@@ -15,10 +15,13 @@
 package com.google.places;
 
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageView;
+import android.view.MenuItem;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
@@ -26,20 +29,51 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPhotoRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
-
+import com.google.places.data.PlaceIdProvider;
+import com.google.places.databinding.ActivityPlacePhotosBinding;
+import com.google.places.kotlin.MainApplication;
 import java.util.Collections;
 import java.util.List;
 
-class PlacePhotosActivity extends AppCompatActivity {
+public class PlacePhotosActivity extends AppCompatActivity {
     private static final String TAG = PlacePhotosActivity.class.getSimpleName();
 
     private PlacesClient placesClient;
-    private ImageView imageView;
+    private ActivityPlacePhotosBinding binding;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Enable edge-to-edge display.
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
+        binding = ActivityPlacePhotosBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        setSupportActionBar(binding.toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(getTitle() + " (Java)");
+        }
+
+        placesClient = ((MainApplication) getApplication()).getPlacesClient();
+
+        binding.placePhotosButton.setOnClickListener(v -> getPlacePhoto());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     private void getPlacePhoto() {
         // [START maps_places_get_place_photos]
         // Define a Place ID.
-        final String placeId = "INSERT_PLACE_ID_HERE";
+        final String placeId = PlaceIdProvider.getRandomPlaceId();
 
         // Specify fields. Requests for photos must always have the PHOTO_METADATAS field.
         final List<Place.Field> fields = Collections.singletonList(Place.Field.PHOTO_METADATAS);
@@ -60,6 +94,7 @@ class PlacePhotosActivity extends AppCompatActivity {
 
             // Get the attribution text.
             final String attributions = photoMetadata.getAttributions();
+            binding.placePhotosAttributions.setText(attributions);
 
             // Create a FetchPhotoRequest.
             final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
@@ -68,10 +103,9 @@ class PlacePhotosActivity extends AppCompatActivity {
                 .build();
             placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
                 Bitmap bitmap = fetchPhotoResponse.getBitmap();
-                imageView.setImageBitmap(bitmap);
+                binding.placePhotosResult.setImageBitmap(bitmap);
             }).addOnFailureListener((exception) -> {
-                if (exception instanceof ApiException) {
-                    final ApiException apiException = (ApiException) exception;
+                if (exception instanceof ApiException apiException) {
                     Log.e(TAG, "Place not found: " + exception.getMessage());
                     final int statusCode = apiException.getStatusCode();
                     // TODO: Handle error with given status code.
