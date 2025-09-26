@@ -16,17 +16,18 @@
 
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.secrets.gradle.plugin)
 }
 
 android {
     namespace = "com.google.places"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.google.places"
         minSdk = 23
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -53,6 +54,7 @@ dependencies {
     implementation(libs.fragment)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+    implementation(libs.core.ktx)
 
     implementation(libs.appcompat)
     implementation(libs.material)
@@ -65,7 +67,7 @@ dependencies {
 
     // Places and Maps SDKs
     // [START maps_android_places_upgrade_snippet]
-    implementation("com.google.android.libraries.places:places:4.3.1")
+    implementation("com.google.android.libraries.places:places:4.4.1")
     // [END maps_android_places_upgrade_snippet]
 }
 // [END maps_android_places_install_snippet]
