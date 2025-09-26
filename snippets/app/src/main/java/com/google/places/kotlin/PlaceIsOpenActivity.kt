@@ -15,6 +15,9 @@
 package com.google.places.kotlin
 
 import android.annotation.SuppressLint
+import android.os.Bundle
+import android.util.Log
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tasks.Task
 import com.google.android.libraries.places.api.model.Place
@@ -23,10 +26,40 @@ import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.IsOpenRequest
 import com.google.android.libraries.places.api.net.IsOpenResponse
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.places.R
+import com.google.places.data.PlaceIdProvider
+import com.google.places.databinding.ActivityPlaceIsOpenBinding
 import java.util.Calendar
 
 class PlaceIsOpenActivity : AppCompatActivity() {
     private lateinit var placesClient: PlacesClient
+    private lateinit var binding: ActivityPlaceIsOpenBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityPlaceIsOpenBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "$title (Kotlin)"
+
+        placesClient = (application as MainApplication).getPlacesClient()
+
+        binding.isOpenByObjectButton.setOnClickListener {
+            isOpenByPlaceObject()
+        }
+        binding.isOpenByIdButton.setOnClickListener {
+            isOpenByPlaceId()
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     /**
      * Check if the place is open at the time specified in the input fields.
@@ -37,14 +70,14 @@ class PlaceIsOpenActivity : AppCompatActivity() {
         // [START maps_places_place_is_open]
         val isOpenCalendar: Calendar = Calendar.getInstance()
         var place: Place
-        val placeId = "ChIJD3uTd9hx5kcR1IQvGfr8dbk"
+        val placeId = PlaceIdProvider.getRandomPlaceId()
         // Specify the required fields for an isOpen request.
         val placeFields: List<Place.Field> = listOf(
             Place.Field.BUSINESS_STATUS,
             Place.Field.CURRENT_OPENING_HOURS,
             Place.Field.ID,
             Place.Field.OPENING_HOURS,
-            Place.Field.UTC_OFFSET
+            Place.Field.DISPLAY_NAME
         )
 
         val placeRequest: FetchPlaceRequest =
@@ -56,22 +89,31 @@ class PlaceIsOpenActivity : AppCompatActivity() {
             val isOpenRequest: IsOpenRequest = try {
                 IsOpenRequest.newInstance(place, isOpenCalendar.timeInMillis)
             } catch (e: IllegalArgumentException) {
-                e.printStackTrace()
+                Log.e("PlaceIsOpen", "Error: " + e.message)
                 return@addOnSuccessListener
             }
             val isOpenTask: Task<IsOpenResponse> = placesClient.isOpen(isOpenRequest)
             isOpenTask.addOnSuccessListener { isOpenResponse ->
-                val isOpen = isOpenResponse.isOpen
+                val isOpen = when (isOpenResponse.isOpen) {
+                    true -> getString(R.string.is_open)
+                    else -> getString(R.string.is_closed)
+                }
+                binding.isOpenByObjectResult.text = getString(
+                    R.string.is_open_by_object,
+                    place.displayName,
+                    isOpen
+                )
+                Log.d("PlaceIsOpen", "Is open by object: $isOpen")
             }
             // [START_EXCLUDE]
             isOpenTask.addOnFailureListener { exception ->
-                exception.printStackTrace()
+                Log.e("PlaceIsOpen", "Error: " + exception.message)
             }
             // [END_EXCLUDE]
         }
         // [START_EXCLUDE]
         placeTask.addOnFailureListener { exception ->
-            exception.printStackTrace()
+            Log.e("PlaceIsOpen", "Error: " + exception.message)
         }
         // [END_EXCLUDE]
         // [END maps_places_place_is_open]
@@ -85,21 +127,23 @@ class PlaceIsOpenActivity : AppCompatActivity() {
     private fun isOpenByPlaceId() {
         // [START maps_places_id_is_open]
         val isOpenCalendar: Calendar = Calendar.getInstance()
-        val placeId = "ChIJD3uTd9hx5kcR1IQvGfr8dbk"
+        val placeId = PlaceIdProvider.getRandomPlaceId()
 
         val request: IsOpenRequest = try {
             IsOpenRequest.newInstance(placeId, isOpenCalendar.timeInMillis)
         } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
+            Log.e("PlaceIsOpen", "Error: " + e.message)
             return
         }
         val isOpenTask: Task<IsOpenResponse> = placesClient.isOpen(request)
         isOpenTask.addOnSuccessListener { response ->
-            val isOpen = response.isOpen
+            val isOpen = response.isOpen ?: false
+            binding.isOpenByIdResult.text = getString(R.string.is_open_by_id, isOpen.toString())
+            Log.d("PlaceIsOpen", "Is open by ID: $isOpen")
         }
         // [START_EXCLUDE]
         isOpenTask.addOnFailureListener { exception ->
-            exception.printStackTrace()
+            Log.e("PlaceIsOpen", "Error: " + exception.message)
         }
         isOpenTask.addOnCompleteListener { }
         // [END_EXCLUDE]

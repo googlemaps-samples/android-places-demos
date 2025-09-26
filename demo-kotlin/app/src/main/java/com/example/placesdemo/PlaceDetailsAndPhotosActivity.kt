@@ -44,7 +44,6 @@ class PlaceDetailsAndPhotosActivity : BaseActivity() {
     private lateinit var fieldSelector: FieldSelector
 
     private var photo: PhotoMetadata? = null
-    private var place: Place? = null
 
     private lateinit var binding: PlaceDetailsAndPhotosActivityBinding
 
@@ -86,30 +85,6 @@ class PlaceDetailsAndPhotosActivity : BaseActivity() {
         // Set listeners for programmatic Fetch Place
         binding.fetchPlaceAndPhotoButton.setOnClickListener { fetchPlace() }
 
-        // Set listeners for place methods
-        binding.getBusinessStatusButton.setOnClickListener {
-            binding.businessStatusResult.text = place?.businessStatus?.toString()
-        }
-        binding.getPlusCodeButton.setOnClickListener {
-            binding.plusCodeResult.text = place?.plusCode?.toString()
-        }
-        binding.getPriceLevelButton.setOnClickListener {
-            binding.priceLevelResult.text = place?.priceLevel?.toString()
-        }
-        binding.getRatingButton.setOnClickListener {
-            binding.ratingResult.text = place?.rating?.toString()
-        }
-        binding.getUserRatingsTotalButton.setOnClickListener {
-            binding.userRatingsTotalResult.text = place?.userRatingsTotal?.toString()
-        }
-        binding.getUtcOffsetMinutesButton.setOnClickListener {
-            binding.utcOffsetMinutesResult.text = place?.utcOffsetMinutes?.toString()
-        }
-        binding.getWebsiteUriButton.setOnClickListener {
-            binding.websiteUriResult.text = place?.websiteUri?.toString()
-        }
-
-
         // UI initialization
         setLoading(false)
         setPhotoSizingEnabled(binding.fetchPhotoCheckbox.isChecked)
@@ -149,9 +124,7 @@ class PlaceDetailsAndPhotosActivity : BaseActivity() {
         val request = FetchPlaceRequest.newInstance(placeId, placeFields)
         val placeTask = placesClient.fetchPlace(request)
         placeTask.addOnSuccessListener { response: FetchPlaceResponse ->
-            place = response.place
             binding.response.text = StringUtil.stringify(response, isDisplayRawResultsChecked)
-            binding.placeMethodsButtons.visibility = View.VISIBLE
             if (isFetchPhotoChecked) {
                 attemptFetchPhoto(response.place)
             }
@@ -311,14 +284,6 @@ class PlaceDetailsAndPhotosActivity : BaseActivity() {
         binding.photo.setImageBitmap(null)
         binding.photoMetadata.text = null
         binding.icon.setImageBitmap(null)
-        binding.businessStatusResult.text = null
-        binding.plusCodeResult.text = null
-        binding.priceLevelResult.text = null
-        binding.ratingResult.text = null
-        binding.userRatingsTotalResult.text = null
-        binding.utcOffsetMinutesResult.text = null
-        binding.websiteUriResult.text = null
-        binding.placeMethodsButtons.visibility = View.GONE
     }
 
     companion object {
