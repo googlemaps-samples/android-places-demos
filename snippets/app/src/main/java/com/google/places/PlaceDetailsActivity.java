@@ -75,12 +75,12 @@ public class PlaceDetailsActivity extends AppCompatActivity {
 
         // Specify the fields to return.
         final List<Place.Field> placeFields =
-            Arrays.asList(
-                    Place.Field.ID,
-                    Place.Field.DISPLAY_NAME,
-                    Place.Field.FORMATTED_ADDRESS,
-                    Place.Field.LOCATION
-            );
+                Arrays.asList(
+                        Place.Field.ID,
+                        Place.Field.DISPLAY_NAME,
+                        Place.Field.FORMATTED_ADDRESS,
+                        Place.Field.LOCATION
+                );
 
         // Construct a request object, passing the place ID and fields array.
         final FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, placeFields);
