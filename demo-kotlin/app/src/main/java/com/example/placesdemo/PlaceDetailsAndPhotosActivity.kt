@@ -15,7 +15,6 @@
  */
 package com.example.placesdemo
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
