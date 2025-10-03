@@ -230,11 +230,11 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
             return fieldSelector.getSelectedFields();
         } else {
             return new ArrayList<>(Arrays.asList(
-                    Field.ADDRESS,
+                    Field.FORMATTED_ADDRESS,
                     Field.BUSINESS_STATUS,
                     Field.CURRENT_OPENING_HOURS,
                     Field.ID,
-                    Field.NAME,
+                    Field.DISPLAY_NAME,
                     Field.OPENING_HOURS,
                     Field.UTC_OFFSET
             ));

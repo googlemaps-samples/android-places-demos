@@ -4,6 +4,13 @@
 # https://docs.gradle.org/current/userguide/version_catalog_basics.html
 
 [versions]
+# --- Android SDK Versions ---
+# These versions define the API levels for compiling, targeting, and running the app.
+# By centralizing them here, we ensure all modules in the project are aligned.
+compileSdk = "36"
+minSdk = "27"
+targetSdk = "36"
+
 # --- Core Android & Kotlin ---
 # These are the fundamental versions for building the Android app.
 agp = "8.13.0"

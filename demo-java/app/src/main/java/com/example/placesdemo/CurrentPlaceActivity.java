@@ -110,7 +110,6 @@ public class CurrentPlaceActivity extends AppCompatActivity {
                 Field.EDITORIAL_SUMMARY,
                 Field.INTERNATIONAL_PHONE_NUMBER,
                 Field.OPENING_HOURS,
-                Field.PHONE_NUMBER,
                 Field.RESERVABLE,
                 Field.SECONDARY_OPENING_HOURS,
                 Field.SERVES_BEER,
@@ -122,8 +121,7 @@ public class CurrentPlaceActivity extends AppCompatActivity {
                 Field.SERVES_WINE,
                 Field.TAKEOUT,
                 Field.UTC_OFFSET,
-                Field.WEBSITE_URI,
-                Field.WHEELCHAIR_ACCESSIBLE_ENTRANCE
+                Field.WEBSITE_URI
         );
         fieldSelector = new FieldSelector(
                 binding.useCustomFields,
