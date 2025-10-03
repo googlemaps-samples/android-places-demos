@@ -22,12 +22,12 @@ plugins {
 
 android {
     namespace = "com.google.places"
-    compileSdk = 36
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.google.places"
-        minSdk = 23
-        targetSdk = 36
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
 
@@ -67,7 +67,7 @@ dependencies {
 
     // Places and Maps SDKs
     // [START maps_android_places_upgrade_snippet]
-    implementation("com.google.android.libraries.places:places:4.4.1")
+    implementation("com.google.android.libraries.places:places:5.0.0")
     // [END maps_android_places_upgrade_snippet]
 }
 // [END maps_android_places_install_snippet]
