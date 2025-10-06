@@ -17,6 +17,7 @@ package com.example.placesdemo
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
+import android.net.Uri
 import android.text.TextUtils
 import android.widget.TextView
 import com.google.android.gms.maps.model.LatLng
@@ -25,6 +26,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse
+import com.google.android.libraries.places.api.net.SearchNearbyResponse
 
 /**
  * Utility class for converting objects to viewable strings and back.
@@ -73,6 +75,48 @@ object StringUtil {
             .replace("\\s".toRegex(), "|")
             .split("[,;|/\\\\]").dropLastWhile { it.isEmpty() }.toTypedArray())
     }
+
+    fun stringify(response: SearchNearbyResponse, raw: Boolean): String {
+        val builder = StringBuilder()
+        val places = response.places
+        builder
+            .append(places.size)
+            .append(" Nearby Places Results:")
+
+        if (raw) {
+            builder.append(RESULT_SEPARATOR)
+            appendListToStringBuilder(builder, places)
+        } else {
+            for (place in places) {
+                builder
+                    .append(RESULT_SEPARATOR)
+                    .append(place.displayName ?: "Unnamed Place")
+                    .append(" (")
+                    .append(place.id ?: "no_id")
+                    .append(")")
+            }
+        }
+
+        // Optionally include routing summaries if present
+        val routingSummaries = response.routingSummaries
+        if (!routingSummaries.isNullOrEmpty()) {
+            builder.append(RESULT_SEPARATOR)
+                .append(routingSummaries.size)
+                .append(" Routing Summaries:")
+            if (raw) {
+                builder.append(RESULT_SEPARATOR)
+                appendListToStringBuilder(builder, routingSummaries)
+            } else {
+                for (summary in routingSummaries) {
+                    builder.append(RESULT_SEPARATOR)
+                        .append(summary.toString())
+                }
+            }
+        }
+
+        return builder.toString()
+    }
+
 
     fun stringify(response: FindAutocompletePredictionsResponse, raw: Boolean): String {
         val builder = StringBuilder()
@@ -126,6 +170,11 @@ object StringUtil {
     fun stringify(place: Place): String {
         return "${place.displayName?.plus(" (") ?: ""}${place.formattedAddress?.plus(")") ?: ""}"
     }
+
+    fun stringify(uri: Uri): String {
+        return uri.toString()
+    }
+
 
     fun stringify(bitmap: Bitmap): String {
         val builder = StringBuilder()
