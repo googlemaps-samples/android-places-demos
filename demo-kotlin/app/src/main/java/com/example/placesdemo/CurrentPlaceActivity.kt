@@ -85,7 +85,7 @@ class CurrentPlaceActivity : BaseActivity() {
             Place.Field.EDITORIAL_SUMMARY,
             Place.Field.INTERNATIONAL_PHONE_NUMBER,
             Place.Field.OPENING_HOURS,
-            Place.Field.PHONE_NUMBER,
+            Place.Field.NATIONAL_PHONE_NUMBER,
             Place.Field.RESERVABLE,
             Place.Field.SECONDARY_OPENING_HOURS,
             Place.Field.SERVES_BEER,
@@ -98,7 +98,7 @@ class CurrentPlaceActivity : BaseActivity() {
             Place.Field.TAKEOUT,
             Place.Field.UTC_OFFSET,
             Place.Field.WEBSITE_URI,
-            Place.Field.WHEELCHAIR_ACCESSIBLE_ENTRANCE,
+            Place.Field.ACCESSIBILITY_OPTIONS,
         )
         fieldSelector = FieldSelector(
             binding.useCustomFields,
