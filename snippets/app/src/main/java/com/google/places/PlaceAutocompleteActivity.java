@@ -154,6 +154,7 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
 
     // [START_EXCLUDE silent]
     private void startAutocompleteIntent() {
+        // [END_EXCLUDE]
         // Set the fields to specify which types of place data to
         // return after the user has made a selection.
         List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.DISPLAY_NAME, Place.Field.FORMATTED_ADDRESS);
@@ -162,8 +163,10 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
         Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
                 .build(this);
         startAutocomplete.launch(intent);
+        // [END maps_places_autocomplete_intent]
     }
 
+    // [START maps_places_on_activity_result]
     private final ActivityResultLauncher<Intent> startAutocomplete = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
