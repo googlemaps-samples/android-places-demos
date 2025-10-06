@@ -58,8 +58,6 @@ class PlaceDetailsAndPhotosActivity : BaseActivity() {
             onBackPressedDispatcher.onBackPressed()
         }
 
-        Places.initializeWithNewPlacesApiEnabled(applicationContext, BuildConfig.PLACES_API_KEY)
-
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient(this)
         // Restore photo from saved instance state if it exists

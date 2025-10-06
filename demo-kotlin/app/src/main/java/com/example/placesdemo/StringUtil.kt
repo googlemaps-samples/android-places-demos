@@ -16,23 +16,23 @@
 package com.example.placesdemo
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
+import android.graphics.Typeface
 import android.net.Uri
 import android.text.TextUtils
+import android.text.style.StyleSpan
 import android.widget.TextView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
-import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse
 import com.google.android.libraries.places.api.net.SearchNearbyResponse
 
 /**
  * Utility class for converting objects to viewable strings and back.
  */
 object StringUtil {
-    private const val FIELD_SEPARATOR = "\n\t"
     private const val RESULT_SEPARATOR = "\n---\n\t"
 
     @SuppressLint("SetTextI18n")
@@ -147,49 +147,34 @@ object StringUtil {
         return builder.toString()
     }
 
-    fun stringify(response: FindCurrentPlaceResponse, raw: Boolean): String {
-        val builder = StringBuilder()
-        builder.append(response.placeLikelihoods.size).append(" Current Place Results:")
-        if (raw) {
-            builder.append(RESULT_SEPARATOR)
-            appendListToStringBuilder(builder, response.placeLikelihoods)
-        } else {
-            for (placeLikelihood in response.placeLikelihoods) {
-                builder
-                    .append(RESULT_SEPARATOR)
-                    .append("Likelihood: ")
-                    .append(placeLikelihood.likelihood)
-                    .append(FIELD_SEPARATOR)
-                    .append("Place: ")
-                    .append(stringify(placeLikelihood.place))
-            }
-        }
-        return builder.toString()
-    }
-
     fun stringify(place: Place): String {
         return "${place.displayName?.plus(" (") ?: ""}${place.formattedAddress?.plus(")") ?: ""}"
+    }
+
+    fun stringify(place: AutocompletePrediction?): String {
+        val primary = place?.getPrimaryText(StyleSpan(Typeface.BOLD)).toString()
+        val secondary = place?.getSecondaryText(StyleSpan(Typeface.NORMAL)).toString()
+        return "$primary ($secondary)"
     }
 
     fun stringify(uri: Uri): String {
         return uri.toString()
     }
 
-
-    fun stringify(bitmap: Bitmap): String {
-        val builder = StringBuilder()
-        builder
-            .append("Photo size (width x height)")
-            .append(RESULT_SEPARATOR)
-            .append(bitmap.width)
-            .append(", ")
-            .append(bitmap.height)
-        return builder.toString()
-    }
-
     fun stringifyAutocompleteWidget(place: Place, raw: Boolean): String {
         val builder = StringBuilder()
         builder.append("Autocomplete Widget Result:").append(RESULT_SEPARATOR)
+        if (raw) {
+            builder.append(place)
+        } else {
+            builder.append(stringify(place))
+        }
+        return builder.toString()
+    }
+
+    fun stringifyAutocompletePrediction(place: AutocompletePrediction?, raw: Boolean): String {
+        val builder = StringBuilder()
+        builder.append("Autocomplete Prediction Result:").append(RESULT_SEPARATOR)
         if (raw) {
             builder.append(place)
         } else {
