@@ -22,7 +22,8 @@
     <string name="start_autocomplete_intent">Start Autocomplete Intent</string>
     <string name="current_place_likelihood">Place \'%1$s\' has likelihood: %2$f\nAddress: %3$s</string>
     <string name="place_not_found">Place not found: %1$s</string>
-    <string name="place_selection">Place: %1$s, %2$s</string>
+    <string name="place_selection">Place: %1$s, %2$s\n%3$s</string>
+    <string name="place_location">%1$.5f, %2$.5f</string>
     <string name="an_error_occurred">An error occurred: %1$s</string>
     <string name="user_canceled_autocomplete">User canceled autocomplete</string>
     <string name="place_found">Place found: %1$s</string>

@@ -61,7 +61,12 @@ class PlaceDetailsActivity : AppCompatActivity() {
         val placeId = PlaceIdProvider.getRandomPlaceId()
 
         // Specify the fields to return.
-        val placeFields = listOf(Place.Field.ID, Place.Field.DISPLAY_NAME, Place.Field.FORMATTED_ADDRESS)
+        val placeFields = listOf(
+            Place.Field.ID,
+            Place.Field.DISPLAY_NAME,
+            Place.Field.FORMATTED_ADDRESS,
+            Place.Field.LOCATION
+        )
 
         // Construct a request object, passing the place ID and fields array.
         val request = FetchPlaceRequest.newInstance(placeId, placeFields)
@@ -69,8 +74,22 @@ class PlaceDetailsActivity : AppCompatActivity() {
         placesClient.fetchPlace(request)
             .addOnSuccessListener { response: FetchPlaceResponse ->
                 val place = response.place
-                binding.placeName.text = place.displayName
-                binding.placeAddress.text = place.formattedAddress
+
+                // [START maps_places_place_details_simple]
+                val name = place.displayName
+                val address = place.formattedAddress
+                val location = place.location
+                // [END maps_places_place_details_simple]
+
+                binding.placeName.text = name
+                binding.placeAddress.text = address
+                if (location != null) {
+                    binding.placeLocation.text = getString(
+                        R.string.place_location, location.latitude, location.longitude
+                    )
+                } else {
+                    binding.placeLocation.text = null
+                }
                 Log.i(TAG, "Place found: ${place.displayName}")
             }.addOnFailureListener { exception: Exception ->
                 if (exception is ApiException) {

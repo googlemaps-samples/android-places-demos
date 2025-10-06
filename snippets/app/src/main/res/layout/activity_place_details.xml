@@ -82,6 +82,17 @@
                     app:layout_constraintTop_toBottomOf="@id/place_name"
                     tools:text="123 Main St, Anytown, USA" />
 
+                <TextView
+                    android:id="@+id/place_location"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textAppearance="?attr/textAppearanceBody2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/place_address"
+                    tools:text="40.25487, -105.61603" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.card.MaterialCardView>

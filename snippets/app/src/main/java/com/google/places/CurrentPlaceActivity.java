@@ -99,9 +99,14 @@ public class CurrentPlaceActivity extends AppCompatActivity {
     private void findCurrentPlace() {
         binding.progressBar.setVisibility(View.VISIBLE);
 
+        // [START maps_places_current_place]
+        // Use fields to define the data types to return.
         List<Place.Field> placeFields = Arrays.asList(Place.Field.DISPLAY_NAME, Place.Field.FORMATTED_ADDRESS, Place.Field.LOCATION);
+
+        // Use the builder to create a FindCurrentPlaceRequest.
         FindCurrentPlaceRequest request = FindCurrentPlaceRequest.newInstance(placeFields);
 
+        // Call findCurrentPlace and handle the response (first check that the user has granted permission).
         if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             Task<FindCurrentPlaceResponse> placeResponse = placesClient.findCurrentPlace(request);
             placeResponse.addOnCompleteListener(task -> {
@@ -117,9 +122,14 @@ public class CurrentPlaceActivity extends AppCompatActivity {
                 }
             });
         } else {
+            // [START_EXCLUDE silent]
             binding.progressBar.setVisibility(View.GONE);
+            // [END_EXCLUDE]
+            // A local method to request required permissions;
+            // See https://developer.android.com/training/permissions/requesting
             getLocationPermission();
         }
+        // [END maps_places_current_place]
     }
 
     private void getLocationPermission() {

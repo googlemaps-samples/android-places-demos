@@ -104,7 +104,14 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                binding.autocompleteResult.setText(getString(R.string.place_selection, place.getDisplayName(), place.getId()));
+                binding.autocompleteResult.setText(
+                        getString(
+                                R.string.place_selection,
+                                place.getDisplayName(),
+                                place.getId(),
+                                place.getFormattedAddress()
+                        )
+                );
                 Log.i(TAG, "Place: " + place.getDisplayName() + ", " + place.getId());
             }
 
@@ -145,6 +152,10 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
         autocompleteFragment.setTypesFilter(List.of(PlaceTypes.ESTABLISHMENT));
         // [END maps_places_autocomplete_type_filter]
 
+        // [START maps_places_autocomplete_type_filter_multiple]
+        autocompleteFragment.setTypesFilter(List.of("landmark", "restaurant", "store"));
+        // [END maps_places_autocomplete_type_filter_multiple]
+
         // [START maps_places_autocomplete_country_filter]
         autocompleteFragment.setCountries("AU", "NZ");
         // [END maps_places_autocomplete_country_filter]
@@ -160,8 +171,11 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
         List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.DISPLAY_NAME, Place.Field.FORMATTED_ADDRESS);
 
         // Start the autocomplete intent.
+        // [START maps_places_intent_type_filter]
         Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                .setTypesFilter(List.of(PlaceTypes.ESTABLISHMENT))
                 .build(this);
+        // [END maps_places_intent_type_filter]
         startAutocomplete.launch(intent);
         // [END maps_places_autocomplete_intent]
     }
@@ -174,7 +188,14 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
                     Intent intent = result.getData();
                     if (intent != null) {
                         Place place = Autocomplete.getPlaceFromIntent(intent);
-                        binding.autocompleteResult.setText(getString(R.string.place_selection, place.getDisplayName(), place.getId()));
+                        binding.autocompleteResult.setText(
+                                getString(
+                                        R.string.place_selection,
+                                        place.getDisplayName(),
+                                        place.getId(),
+                                        place.getFormattedAddress()
+                                )
+                        );
                         Log.i(TAG, "Place: " + place.getDisplayName() + ", " + place.getId());
                     }
                 } else if (result.getResultCode() == Activity.RESULT_CANCELED) {

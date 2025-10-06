@@ -85,7 +85,12 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
-                binding.autocompleteResult.text = getString(R.string.place_selection, place.displayName, place.id)
+                binding.autocompleteResult.text = getString(
+                    R.string.place_selection,
+                    place.displayName,
+                    place.id,
+                    place.formattedAddress
+                )
                 Log.i(TAG, "Place: ${place.displayName}, ${place.id}")
             }
 
@@ -123,12 +128,6 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
         autocompleteFragment.setTypesFilter(listOf("landmark", "restaurant", "store"))
         // [END maps_places_autocomplete_type_filter_multiple]
 
-        val fields: List<Place.Field> = ArrayList()
-        // [START maps_places_intent_type_filter]
-        val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
-            .setTypesFilter(listOf(PlaceTypes.ADDRESS))
-            .build(this)
-        // [END maps_places_intent_type_filter]
 
         // [START maps_places_autocomplete_country_filter]
         autocompleteFragment.setCountries("AU", "NZ")
@@ -142,11 +141,14 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
         // [END_EXCLUDE]
         // Set the fields to specify which types of place data to
         // return after the user has made a selection.
-        val fields = listOf(Place.Field.ID, Place.Field.DISPLAY_NAME)
+        val fields = listOf(Place.Field.ID, Place.Field.DISPLAY_NAME, Place.Field.FORMATTED_ADDRESS)
 
-        // Start the autocomplete intent.
+        // [START maps_places_intent_type_filter]
         val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+            .setTypesFilter(listOf(PlaceTypes.ESTABLISHMENT))
             .build(this)
+        // [END maps_places_intent_type_filter]
+
         startAutocomplete.launch(intent)
         // [END maps_places_autocomplete_intent]
     }
@@ -158,7 +160,11 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
                 val intent = result.data
                 if (intent != null) {
                     val place = Autocomplete.getPlaceFromIntent(intent)
-                    binding.autocompleteResult.text = getString(R.string.place_selection, place.displayName, place.id)
+                    binding.autocompleteResult.text = getString(
+                        R.string.place_selection,
+                        place.displayName,
+                        place.id,
+                        place.formattedAddress)
                     Log.i(
                         TAG, "Place: ${place.displayName}, ${place.id}"
                     )

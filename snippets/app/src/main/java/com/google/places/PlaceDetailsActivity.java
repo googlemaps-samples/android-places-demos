@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -74,15 +75,35 @@ public class PlaceDetailsActivity extends AppCompatActivity {
 
         // Specify the fields to return.
         final List<Place.Field> placeFields =
-            Arrays.asList(Place.Field.ID, Place.Field.DISPLAY_NAME, Place.Field.FORMATTED_ADDRESS);
+            Arrays.asList(
+                    Place.Field.ID,
+                    Place.Field.DISPLAY_NAME,
+                    Place.Field.FORMATTED_ADDRESS,
+                    Place.Field.LOCATION
+            );
 
         // Construct a request object, passing the place ID and fields array.
         final FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, placeFields);
 
         placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
             Place place = response.getPlace();
-            binding.placeName.setText(place.getDisplayName());
-            binding.placeAddress.setText(place.getFormattedAddress());
+
+            // [START maps_places_place_details_simple]
+            final CharSequence name = place.getDisplayName();
+            final CharSequence address = place.getFormattedAddress();
+            final LatLng location = place.getLocation();
+            // [END maps_places_place_details_simple]
+
+            binding.placeName.setText(name);
+            binding.placeAddress.setText(address);
+            if (location != null) {
+                binding.placeLocation.setText(
+                        getString(R.string.place_location, location.latitude, location.longitude)
+                );
+            } else {
+                binding.placeLocation.setText(null);
+            }
+
             Log.i(TAG, "Place found: " + place.getDisplayName());
         }).addOnFailureListener((exception) -> {
             if (exception instanceof ApiException apiException) {

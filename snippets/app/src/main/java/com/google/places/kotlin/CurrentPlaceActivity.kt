@@ -84,9 +84,12 @@ class CurrentPlaceActivity : AppCompatActivity() {
     private fun findCurrentPlace() {
         binding.progressBar.visibility = View.VISIBLE
 
+        // [START maps_places_current_place]
+        // Use fields to define the data types to return.
         val placeFields = listOf(Place.Field.DISPLAY_NAME, Place.Field.FORMATTED_ADDRESS, Place.Field.LOCATION)
         val request = FindCurrentPlaceRequest.newInstance(placeFields)
 
+        // Call findCurrentPlace and handle the response (first check that the user has granted permission).
         if (ContextCompat.checkSelfPermission(this, permission.ACCESS_FINE_LOCATION) ==
             PackageManager.PERMISSION_GRANTED
         ) {
@@ -100,9 +103,14 @@ class CurrentPlaceActivity : AppCompatActivity() {
                 }
             }
         } else {
+            // [START_EXCLUDE silent]
             binding.progressBar.visibility = View.GONE
+            // [END_EXCLUDE]
+            // A local method to request required permissions;
+            // See https://developer.android.com/training/permissions/requesting
             getLocationPermission()
         }
+        // [END maps_places_current_place]
     }
 
     private fun getLocationPermission() {
