@@ -212,7 +212,7 @@ class PlaceDetailsAndPhotosActivity : BaseActivity() {
             binding.response.setText(R.string.custom_photo_reference_but_not_fetch_photo)
             return false
         }
-        if (isFetchIconChecked && !placeFields.contains(Place.Field.ICON_URL)) {
+        if (isFetchIconChecked && !placeFields.contains(Place.Field.ICON_MASK_URL)) {
             binding.response.setText(R.string.fetch_icon_missing_fields_warning)
             return false
         }

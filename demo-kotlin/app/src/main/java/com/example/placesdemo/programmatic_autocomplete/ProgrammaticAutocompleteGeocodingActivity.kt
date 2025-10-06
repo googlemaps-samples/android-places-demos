@@ -268,7 +268,7 @@ class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
      */
     private fun fetchPlaceAndDisplay(placePrediction: AutocompletePrediction) {
         // Specify the fields to return.
-        val placeFields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS)
+        val placeFields = listOf(Place.Field.ID, Place.Field.DISPLAY_NAME, Place.Field.FORMATTED_ADDRESS)
 
         // Construct a request object, passing the place ID and fields array.
         val request = FetchPlaceRequest.newInstance(placePrediction.placeId, placeFields)
