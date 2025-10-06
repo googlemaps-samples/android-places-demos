@@ -195,11 +195,11 @@ class PlaceIsOpenActivity : BaseActivity() {
             fieldSelector.selectedFields
         } else {
             listOf(
-                Place.Field.ADDRESS,
+                Place.Field.FORMATTED_ADDRESS,
                 Place.Field.BUSINESS_STATUS,
                 Place.Field.CURRENT_OPENING_HOURS,
                 Place.Field.ID,
-                Place.Field.NAME,
+                Place.Field.DISPLAY_NAME,
                 Place.Field.OPENING_HOURS,
                 Place.Field.UTC_OFFSET
             )

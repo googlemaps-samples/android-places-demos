@@ -18,9 +18,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
+        android:name=".kotlin.MainApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -28,21 +30,74 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".GetStartedActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <!--
+        This is a demo application and all activities are exported so that they can be individually
+        launched from Android Studio. In a production application, it is best practice to only export
+        activities that are intended to be launched by other applications.
+        -->
 
-    <activity android:name=".kotlin.GetStartedActivity"
-        android:exported="true">
+        <activity
+            android:name=".kotlin.KotlinMainActivity"
+            android:exported="true"
+            android:label="@string/main_activity_title">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".JavaMainActivity"
+            android:exported="true"
+            android:label="@string/main_activity_title" />
+        <activity
+            android:name=".PlaceIsOpenActivity"
+            android:exported="true"
+            android:label="@string/place_is_open" />
+        <activity
+            android:name=".CurrentPlaceActivity"
+            android:exported="true"
+            android:label="@string/current_place_title" />
+        <activity
+            android:name=".PlaceAutocompleteActivity"
+            android:exported="true"
+            android:label="@string/place_autocomplete_title" />
+        <activity
+            android:name=".PlaceDetailsActivity"
+            android:exported="true"
+            android:label="@string/place_details_title" />
+        <activity
+            android:name=".PlacePhotosActivity"
+            android:exported="true"
+            android:label="@string/place_photos_title" />
+        <activity
+            android:name=".PlacesIconActivity"
+            android:exported="true"
+            android:label="@string/places_icon_title" />
+        <activity
+            android:name=".kotlin.CurrentPlaceActivity"
+            android:exported="true"
+            android:label="@string/current_place_title" />
+        <activity
+            android:name=".kotlin.PlaceAutocompleteActivity"
+            android:exported="true"
+            android:label="@string/place_autocomplete_title" />
+        <activity
+            android:name=".kotlin.PlaceDetailsActivity"
+            android:exported="true"
+            android:label="@string/place_details_title" />
+        <activity
+            android:name=".kotlin.PlacePhotosActivity"
+            android:exported="true"
+            android:label="@string/place_photos_title" />
+        <activity
+            android:name=".kotlin.PlacesIconActivity"
+            android:exported="true"
+            android:label="@string/places_icon_title" />
+        <activity
+            android:name=".kotlin.PlaceIsOpenActivity"
+            android:exported="true"
+            android:label="@string/place_is_open"
+            />
     </application>
 
 </manifest>

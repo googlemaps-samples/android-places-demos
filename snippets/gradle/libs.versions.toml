@@ -1,21 +1,28 @@
 [versions]
-activity = "1.10.1"
-androidGradlePlugin = "8.11.0"
+compileSdk = "36"
+minSdk = "24"
+targetSdk = "36"
+
+activity = "1.11.0"
+androidGradlePlugin = "8.13.0"
 appcompat = "1.7.1"
 constraintlayout = "2.2.1"
-fragment = "1.8.8"
-glide = "4.16.0"
+coreKtx = "1.17.0"
+fragment = "1.8.9"
+glide = "5.0.5"
+kotlin = "2.2.20"
 mapsSecretsGradlePlugin = "2.0.1"
-material = "1.12.0"
+material = "1.13.0"
 multidex = "2.0.1"
-navigationFragment = "2.9.1"
-viewbinding = "8.11.0"
+navigationFragment = "2.9.5"
+viewbinding = "8.13.0"
 volley = "1.2.1"
 
 [libraries]
 activity = { module = "androidx.activity:activity", version.ref = "activity" }
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
+core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 fragment = { module = "androidx.fragment:fragment", version.ref = "fragment" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
@@ -27,4 +34,5 @@ volley = { module = "com.android.volley:volley", version.ref = "volley" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 secrets-gradle-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "mapsSecretsGradlePlugin" }

@@ -142,9 +142,9 @@ public final class StringUtil {
   }
 
   static String stringify(Place place) {
-    return place.getName()
+    return place.getDisplayName()
             + " ("
-            + place.getAddress()
+            + place.getFormattedAddress()
             + ")";
   }
 

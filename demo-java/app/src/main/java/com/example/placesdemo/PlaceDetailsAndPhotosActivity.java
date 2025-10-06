@@ -31,6 +31,7 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -159,8 +160,9 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
 
     private void attemptFetchIcon(Place place) {
         binding.icon.setImageBitmap(null);
-        binding.icon.setBackgroundColor(place.getIconBackgroundColor());
-        String url = place.getIconUrl();
+        Integer bc = place.getIconBackgroundColor();
+        binding.icon.setBackgroundColor(bc == null ? Color.TRANSPARENT : bc);
+        String url = place.getIconMaskUrl();
         Glide.with(this).load(url).into(binding.icon);
     }
 
@@ -234,7 +236,7 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
                     "Using 'Custom photo reference', but 'Also fetch photo?' is not selected.");
             return false;
         }
-        if (isFetchIconChecked && !placeFields.contains(Field.ICON_URL)) {
+        if (isFetchIconChecked && !placeFields.contains(Field.ICON_MASK_URL)) {
             binding.response.setText(R.string.fetch_icon_missing_fields_warning);
             return false;
         }
