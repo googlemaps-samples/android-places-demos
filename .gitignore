@@ -1,8 +1,15 @@
+# Build output
 build/
-.idea
-.gradle
+.gradle/
+
+# IDE files
+.idea/
 *.iml
-local.properties
-secrets.properties
+
+# Local machine-specific configs
+**/local.properties
+**/secrets.properties
+
+# OS junk
 .DS_Store
 .java-version
