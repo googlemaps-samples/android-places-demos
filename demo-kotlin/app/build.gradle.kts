@@ -19,6 +19,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.secrets.gradle.plugin)
     alias(libs.plugins.jetbrains.kotlin.parcelize)
+    kotlin("kapt")
 }
 
 android {
@@ -54,6 +55,7 @@ dependencies {
 
     implementation(libs.volley)
     implementation(libs.glide)
+    kapt(libs.glide.compiler)
     implementation(libs.viewbinding)
     implementation(libs.multidex)
 

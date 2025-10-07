@@ -86,7 +86,7 @@ class AutocompleteAddressActivity : BaseActivity(),
                 // The user canceled the operation.
                 Log.i(TAG, "User canceled autocomplete")
             }
-        } as ActivityResultCallback<ActivityResult>)
+        })
     // [END maps_solutions_android_autocomplete_define]
 
     // [START maps_solutions_android_autocomplete_intent]

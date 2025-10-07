@@ -14,11 +14,11 @@ targetSdk = "36"
 # --- Core Android & Kotlin ---
 # These are the fundamental versions for building the Android app.
 agp = "8.13.0"
-kotlin = "2.2.10"
+kotlin = "2.2.20"
 coreKtx = "1.17.0"
 appcompat = "1.7.1"
-activity = "1.10.1"
-lifecycle = "2.9.3"
+activity = "1.11.0"
+lifecycle = "2.9.4"
 fragmentKtx = "1.8.9"
 material = "1.13.0"
 constraintlayout = "2.2.1"
@@ -27,15 +27,14 @@ constraintlayout = "2.2.1"
 # Versions for Jetpack Compose, Android's modern UI toolkit.
 # The Compose BOM (Bill of Materials) manages the versions of different Compose libraries
 # to ensure they are compatible with each other.
-composeBom = "2025.08.01"
-activityCompose = "1.10.1"
-ui = "1.9.0"
-uiTooling = "1.9.0"
+composeBom = "2025.09.01"
+activityCompose = "1.11.0"
+ui = "1.9.2"
 
 # --- Google Services (Maps, Places, Location) ---
 # Versions for Google Play Services libraries, which are essential for this sample.
 googleMaps = "19.2.0"
-places = "4.4.1"
+places = "5.0.0"
 playServicesLocation = "21.3.0" # Required for the FusedLocationProviderClient to get the device's location.
 
 # --- Testing ---
@@ -68,7 +67,7 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
-androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "uiTooling" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "ui" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "ui" }
 
 # --- Google Services (Maps, Places, Location) ---

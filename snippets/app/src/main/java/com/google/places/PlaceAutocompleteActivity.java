@@ -132,8 +132,8 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
             // [START maps_places_autocomplete_location_restriction]
             autocompleteFragment.setLocationRestriction(
                     RectangularBounds.newInstance(
-                        new LatLng(-33.880490, 151.184363),
-                        new LatLng(-33.858754, 151.229596)
+                            new LatLng(-33.880490, 151.184363),
+                            new LatLng(-33.858754, 151.229596)
                     )
             );
             // [END maps_places_autocomplete_location_restriction]

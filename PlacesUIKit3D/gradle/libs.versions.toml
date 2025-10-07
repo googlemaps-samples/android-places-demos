@@ -7,9 +7,9 @@
 # --- Core Android & Kotlin ---
 # These are the fundamental versions for building the Android app.
 agp = "8.13.0"
-kotlin = "2.2.10"
+kotlin = "2.2.20"
 coreKtx = "1.17.0"
-lifecycleRuntimeKtx = "2.9.3"
+lifecycleRuntimeKtx = "2.9.4"
 fragmentKtx = "1.8.9"
 material = "1.13.0"
 
@@ -17,32 +17,32 @@ material = "1.13.0"
 # Versions for Jetpack Compose, Android's modern UI toolkit.
 # The Compose BOM (Bill of Materials) manages the versions of different Compose libraries
 # to ensure they are compatible with each other.
-composeBom = "2025.08.01"
-activityCompose = "1.10.1"
+composeBom = "2025.09.01"
+activityCompose = "1.11.0"
 fragmentCompose = "1.8.9"
 
 # --- Google Services (Maps, Places, Location) ---
 # Versions for Google Play Services libraries, which are essential for this sample.
 playServicesMaps3d = "0.0.2"
-places = "4.4.1"
+places = "5.0.0"
 mapsUtilsKtx = "5.2.0"
 
 # --- Dependency Injection ---
 # Version for Hilt, a dependency injection library for Android.
-hilt = "2.57.1"
+hilt = "2.57.2"
 
 # --- Testing ---
 # Versions for testing libraries.
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
-truth = "1.4.4"
+truth = "1.4.5"
 
 # --- Gradle Plugins ---
 # Versions for Gradle plugins used in the build process.
 secretsGradlePlugin = "2.0.1"
-ksp = "2.2.10-2.0.2"
-kotlinParcelize = "2.2.10"
+ksp = "2.2.20-2.0.3"
+kotlinParcelize = "2.2.20"
 
 # --- Miscellaneous ---
 # Other libraries used in the project.

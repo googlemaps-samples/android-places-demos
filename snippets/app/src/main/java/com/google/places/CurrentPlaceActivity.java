@@ -34,11 +34,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.model.LocationRestriction;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.PlaceLikelihood;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.api.net.SearchNearbyRequest;
 import com.google.places.databinding.ActivityCurrentPlaceBinding;
 import com.google.places.databinding.ListItemPlaceBinding;
 import com.google.places.kotlin.MainApplication;
