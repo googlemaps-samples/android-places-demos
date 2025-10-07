@@ -67,8 +67,4 @@ class PlacePredictionAdapter : RecyclerView.Adapter<PlacePredictionViewHolder>()
             address.text = prediction.getSecondaryText(null)
         }
     }
-
-    interface OnPlaceClickListener {
-        fun onPlaceClicked(place: AutocompletePrediction)
-    }
 }

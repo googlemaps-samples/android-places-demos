@@ -52,6 +52,7 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AddressComponent;
 import com.google.android.libraries.places.api.model.AddressComponents;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.PlaceTypes;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;

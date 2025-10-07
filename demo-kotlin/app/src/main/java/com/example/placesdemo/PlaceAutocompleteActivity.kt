@@ -37,9 +37,9 @@ import com.google.android.libraries.places.api.model.RectangularBounds
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.libraries.places.api.net.PlacesClient
-import com.google.android.libraries.places.widget.Autocomplete
-import com.google.android.libraries.places.widget.AutocompleteActivity
+import com.google.android.libraries.places.widget.PlaceAutocompleteActivity
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
+import com.google.android.libraries.places.widget.PlaceAutocomplete
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 
@@ -140,14 +140,14 @@ class PlaceAutocompleteActivity : BaseActivity() {
             RESULT_OK -> {
                 val data: Intent? = result.data
                 if (data != null) {
-                    val place = Autocomplete.getPlaceFromIntent(data)
+                    val place = PlaceAutocomplete.getPredictionFromIntent(data)
                     binding.response.text =
-                        StringUtil.stringifyAutocompleteWidget(place, isDisplayRawResultsChecked)
+                        StringUtil.stringifyAutocompletePrediction(place, isDisplayRawResultsChecked)
                 }
             }
-            AutocompleteActivity.RESULT_ERROR -> {
-                val status = Autocomplete.getStatusFromIntent(intent)
-                binding.response.text = status.statusMessage
+            PlaceAutocompleteActivity.RESULT_ERROR -> {
+                val status = PlaceAutocomplete.getResultStatusFromIntent(intent)
+                binding.response.text = status?.statusMessage
             }
             RESULT_CANCELED -> {
                 // The user canceled the operation.
@@ -156,9 +156,8 @@ class PlaceAutocompleteActivity : BaseActivity() {
     }
 
     private fun startAutocompleteActivity() {
-        val autocompleteIntent = Autocomplete.IntentBuilder(mode, placeFields)
+        val autocompleteIntent = PlaceAutocomplete.IntentBuilder()
             .setInitialQuery(query)
-            .setHint(hint)
             .setCountries(countries)
             .setLocationBias(locationBias)
             .setLocationRestriction(locationRestriction)
@@ -269,6 +268,7 @@ class PlaceAutocompleteActivity : BaseActivity() {
         else emptyList()
     }
 
+    // This Enum is deprecated, but there is no replacement. See https://developers.google.com/maps/documentation/places/android-sdk/reference/com/google/android/libraries/places/widget/model/AutocompleteActivityMode
     private val mode: AutocompleteActivityMode
         get() {
             val isOverlayMode =

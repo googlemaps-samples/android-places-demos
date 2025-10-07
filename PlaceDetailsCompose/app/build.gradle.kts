@@ -116,6 +116,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.compose.material.icons.core)
 
     // --- Google Play Services ---
     // These are the essential libraries for this sample, providing Maps and Places functionality.

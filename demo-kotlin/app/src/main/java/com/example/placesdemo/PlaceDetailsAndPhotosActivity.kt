@@ -15,7 +15,6 @@
  */
 package com.example.placesdemo
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -30,10 +29,10 @@ import com.example.placesdemo.databinding.PlaceDetailsAndPhotosActivityBinding
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.PhotoMetadata
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.net.FetchPhotoRequest
-import com.google.android.libraries.places.api.net.FetchPhotoResponse
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FetchPlaceResponse
+import com.google.android.libraries.places.api.net.FetchResolvedPhotoUriRequest
+import com.google.android.libraries.places.api.net.FetchResolvedPhotoUriResponse
 import com.google.android.libraries.places.api.net.PlacesClient
 
 /**
@@ -167,7 +166,7 @@ class PlaceDetailsAndPhotosActivity : BaseActivity() {
         if (!TextUtils.isEmpty(customPhotoReference)) {
             localPhotoMetadata = PhotoMetadata.builder(customPhotoReference).build()
         }
-        val photoRequestBuilder = FetchPhotoRequest.builder(localPhotoMetadata!!)
+        val photoRequestBuilder = FetchResolvedPhotoUriRequest.builder(localPhotoMetadata!!)
         val maxWidth = readIntFromTextView(binding.photoMaxWidth)
         if (maxWidth != null) {
             photoRequestBuilder.maxWidth = maxWidth
@@ -176,11 +175,18 @@ class PlaceDetailsAndPhotosActivity : BaseActivity() {
         if (maxHeight != null) {
             photoRequestBuilder.maxHeight = maxHeight
         }
-        val photoTask = placesClient.fetchPhoto(photoRequestBuilder.build())
-        photoTask.addOnSuccessListener { response: FetchPhotoResponse ->
-            val bitmap = response.bitmap
-            binding.photo.setImageBitmap(bitmap)
-            StringUtil.prepend(binding.photoMetadata, StringUtil.stringify(bitmap))
+        val photoTask = placesClient.fetchResolvedPhotoUri(photoRequestBuilder.build())
+        photoTask.addOnSuccessListener { response: FetchResolvedPhotoUriResponse ->
+            val uri = response.uri
+            if (uri != null) {
+                Glide.with(binding.photo.context)
+                    .load(uri)
+                    .into(binding.photo)
+
+                StringUtil.prepend(binding.photoMetadata, StringUtil.stringify(uri))
+            } else {
+                StringUtil.prepend(binding.photoMetadata, "No photo available")
+            }
         }
         photoTask.addOnFailureListener { exception: Exception ->
             exception.printStackTrace()
