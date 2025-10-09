@@ -43,8 +43,24 @@ data class PlaceDetailsFullItem(
          * The default list of content fields displayed by the [PlaceDetailsFragment].
          * We use this to set the initial state of the configuration dialog.
          */
-        val standardContent: List<PlaceDetailsFullItem> =
-            PlaceDetailsFragment.STANDARD_CONTENT.toPlaceDetailsFullItems()
+        val standardContent: List<PlaceDetailsFullItem> = listOf(
+            PlaceDetailsFragment.Content.ADDRESS,
+            PlaceDetailsFragment.Content.ID,
+            PlaceDetailsFragment.Content.LAT_LNG,
+            PlaceDetailsFragment.Content.NAME,
+            PlaceDetailsFragment.Content.OPENING_HOURS,
+            PlaceDetailsFragment.Content.PHONE_NUMBER,
+            PlaceDetailsFragment.Content.PHOTO_METADATAS,
+            PlaceDetailsFragment.Content.PLUS_CODE,
+            PlaceDetailsFragment.Content.PRICE_LEVEL,
+            PlaceDetailsFragment.Content.RATING,
+            PlaceDetailsFragment.Content.REVIEWS,
+            PlaceDetailsFragment.Content.TYPES,
+            PlaceDetailsFragment.Content.USER_RATINGS_TOTAL,
+            PlaceDetailsFragment.Content.UTC_OFFSET,
+            PlaceDetailsFragment.Content.VIEWPORT,
+            PlaceDetailsFragment.Content.WEBSITE_URI,
+        ).toPlaceDetailsFullItems()
 
         /**
          * A list of all available content fields that are not included in the default set.
@@ -63,7 +79,7 @@ private fun Content.toPlaceDetailsFullItem(): PlaceDetailsFullItem =
     PlaceDetailsFullItem(
         content = this,
         displayName = this.getDisplayName(),
-        isSelected = PlaceDetailsFragment.STANDARD_CONTENT.contains(this)
+        isSelected = PlaceDetailsFullItem.standardContent.any { it.content == this }
     )
 
 /**
