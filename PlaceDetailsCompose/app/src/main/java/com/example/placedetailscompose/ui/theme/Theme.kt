@@ -50,7 +50,7 @@ fun PlaceDetailsComposeTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val activity = view.context as Activity
-            setStatusBarColor(activity, colorScheme.primary.toArgb(), true)
+            activity.window.statusBarColor = android.graphics.Color.TRANSPARENT
             WindowCompat.getInsetsController(activity.window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }

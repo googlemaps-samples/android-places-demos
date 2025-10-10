@@ -123,6 +123,8 @@ dependencies {
     implementation(libs.places) // The SDK for the Places UI Kit (PlaceDetails fragments).
     implementation(libs.play.services.location) // Needed for the FusedLocationProviderClient to get the device's location.
     implementation(libs.maps.compose)
+    implementation(libs.maps.compose.widgets)
+    implementation(libs.maps.utils.ktx)
     implementation(libs.material) // For Material Design components (used in XML layouts).
 
     // --- Jetpack Compose ---
@@ -131,6 +133,7 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom)) // The Compose Bill of Materials (BOM) ensures all Compose libraries use compatible versions.
     implementation(libs.androidx.ui.tooling.preview) // For displaying @Preview composables in Android Studio.
     implementation(libs.androidx.ui.viewbinding)
+    implementation(libs.androidx.material.icons.extended)
     debugImplementation(libs.androidx.ui.tooling) // Provides tools for inspecting Compose UIs.
 
     // --- Testing Libraries ---

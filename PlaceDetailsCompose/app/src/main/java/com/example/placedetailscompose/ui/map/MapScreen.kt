@@ -24,6 +24,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.MyLocation
+import androidx.compose.material.icons.outlined.LocationSearching
+import androidx.compose.material.icons.outlined.MyLocation
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -31,6 +34,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -38,13 +42,14 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.placedetailscompose.viewmodels.MapViewModel
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.ComposeMapColorScheme
 import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.ktx.utils.sphericalDistance
+import kotlinx.coroutines.launch
 
 /**
  * The main screen of the app. This screen shows a map and allows the user to select a
@@ -56,67 +61,92 @@ fun MapScreen(
     mapViewModel: MapViewModel = viewModel()
 ) {
     val context = LocalContext.current
-    // Collect the device location and selected place from the ViewModel.
-    // This allows the UI to react to changes in these values.
     val deviceLocation by mapViewModel.deviceLocation.collectAsState()
     val selectedPlace by mapViewModel.selectedPlace.collectAsState()
+    val isMapFollowingUser by mapViewModel.isMapFollowingUser.collectAsState()
+
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(mapViewModel.sydney, 13f)
     }
 
-    // This launcher is used to request location permissions.
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        if (permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) ||
-            permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false)
-        ) {
-            // If permission is granted, get the device location.
-            mapViewModel.getDeviceLocation()
-        }
-    }
+    ) { /* Permissions result is handled by the flow */ }
 
-    // This effect is run when the composable is first displayed.
-    // It checks for location permissions and requests them if they are not granted.
-    LaunchedEffect(Unit) {
-        if (hasLocationPermission(context)) {
-            mapViewModel.getDeviceLocation()
-        } else {
-            locationPermissionLauncher.launch(
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
+    if (deviceLocation != null) {
+        LaunchedEffect(Unit) {
+            if (!hasLocationPermission(context)) {
+                locationPermissionLauncher.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
                 )
-            )
+            }
         }
     }
 
-    // This effect is run whenever the device location changes.
-    // It moves the camera to the new location.
-    LaunchedEffect(deviceLocation) {
-        deviceLocation?.let {
-            cameraPositionState.position = CameraPosition.fromLatLngZoom(it, 13f)
+    LaunchedEffect(deviceLocation, isMapFollowingUser) {
+        deviceLocation?.let { location ->
+            if (isMapFollowingUser) {
+                val currentPosition = cameraPositionState.position.target
+                val distance = currentPosition.sphericalDistance(location)
+                if (distance > 100) { // Only animate if moved more than 100 meters
+                    cameraPositionState.animate(
+                        CameraUpdateFactory.newLatLngZoom(location, 15f)
+                    )
+                }
+            }
         }
     }
 
-    val markerState = rememberMarkerState(position = selectedPlace?.latLng ?: mapViewModel.sydney)
+    if (cameraPositionState.isMoving) {
+        mapViewModel.onMapDragged()
+    }
 
+    val coroutineScope = rememberCoroutineScope()
     Box(modifier.fillMaxSize()) {
         GoogleMap(
             modifier = Modifier.matchParentSize(),
             cameraPositionState = cameraPositionState,
             onPOIClick = {
+                coroutineScope.launch {
+                    val cameraPosition = CameraPosition.builder()
+                        .target(it.latLng)
+                        .zoom(15f)
+                        .build()
+                    cameraPositionState.animate(
+                        CameraUpdateFactory.newCameraPosition(cameraPosition), 2000
+                    )
+                }
                 mapViewModel.onPoiClicked(it)
             },
             mapColorScheme = ComposeMapColorScheme.FOLLOW_SYSTEM
         ) {
-            // Show a marker for the selected place.
-            Marker(state = markerState)
+        }
+
+        FloatingActionButton(
+            onClick = {
+                mapViewModel.onMyLocationClicked()
+                coroutineScope.launch {
+                    deviceLocation?.let {
+                        cameraPositionState.animate(
+                            CameraUpdateFactory.newLatLngZoom(it, 15f)
+                        )
+                    }
+                }
+            },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 64.dp, end = 16.dp)
+        ) {
+            Icon(
+                imageVector = if (isMapFollowingUser) Icons.Filled.MyLocation else Icons.Outlined.MyLocation,
+                contentDescription = "My Location"
+            )
         }
 
         val place = selectedPlace
-
-        // If a place is selected, show the place details fragment.
         if (place != null) {
             Box(
                 modifier = Modifier
@@ -143,9 +173,6 @@ fun MapScreen(
     }
 }
 
-/**
- * Checks if the app has location permissions.
- */
 private fun hasLocationPermission(context: Context): Boolean {
     return ContextCompat.checkSelfPermission(
         context,
@@ -154,12 +181,5 @@ private fun hasLocationPermission(context: Context): Boolean {
         context,
         Manifest.permission.ACCESS_COARSE_LOCATION
     ) == PackageManager.PERMISSION_GRANTED
-}
-
-@Composable
-fun rememberMarkerState(position: LatLng): MarkerState {
-    return remember(position) { // Keyed remember to re-create if initial position key changes
-        MarkerState(position = position)
-    }
 }
 

@@ -20,9 +20,19 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.example.placedetailscompose.ui.map.MapScreen
 import com.example.placedetailscompose.ui.theme.PlaceDetailsComposeTheme
 import com.google.android.libraries.places.api.Places
+import com.google.maps.android.compose.internal.InitializationState
+import com.google.maps.android.compose.internal.LocalGoogleMapsInitializer
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,8 +58,27 @@ class MainActivity : AppCompatActivity() {
 
         enableEdgeToEdge()
         setContent {
+            val googleMapsInitializer = LocalGoogleMapsInitializer.current
+            val initializationState by googleMapsInitializer.state
+
+            if (initializationState != InitializationState.SUCCESS) {
+                val context = LocalContext.current
+                LaunchedEffect(Unit) {
+                    googleMapsInitializer.initialize(context)
+                }
+            }
+
             PlaceDetailsComposeTheme {
-                MapScreen()
+                if (initializationState == InitializationState.SUCCESS) {
+                    MapScreen()
+                } else {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
             }
         }
     }
