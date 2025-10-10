@@ -47,6 +47,7 @@ import com.google.maps.android.compose.Circle
 import com.google.maps.android.compose.ComposeMapColorScheme
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.ktx.utils.sphericalDistance
 import com.google.maps.android.ktx.utils.withSphericalOffset
 import kotlinx.coroutines.launch
 
@@ -109,6 +110,20 @@ fun MapScreen(
         }
     }
 
+    LaunchedEffect(deviceLocation, isMapFollowingUser) {
+        deviceLocation?.let { location ->
+            if (isMapFollowingUser) {
+                val currentPosition = cameraPositionState.position.target
+                val distance = currentPosition.sphericalDistance(location)
+                if (distance > 100) { // Only animate if moved more than 100 meters
+                    cameraPositionState.animate(
+                        CameraUpdateFactory.newLatLngZoom(location, 15f)
+                    )
+                }
+            }
+        }
+    }
+
     if (cameraPositionState.isMoving) {
         mapViewModel.onMapDragged()
     }
@@ -118,6 +133,15 @@ fun MapScreen(
             modifier = Modifier.matchParentSize(),
             cameraPositionState = cameraPositionState,
             onPOIClick = {
+                coroutineScope.launch {
+                    val cameraPosition = CameraPosition.builder()
+                        .target(it.latLng)
+                        .zoom(15f)
+                        .build()
+                    cameraPositionState.animate(
+                        CameraUpdateFactory.newCameraPosition(cameraPosition), 2000
+                    )
+                }
                 mapViewModel.onPoiClicked(it)
             },
             mapColorScheme = ComposeMapColorScheme.FOLLOW_SYSTEM
@@ -146,7 +170,7 @@ fun MapScreen(
             },
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(top = 16.dp, end = 16.dp)
+                .padding(top = 64.dp, end = 16.dp)
         ) {
             Icon(
                 imageVector = if (isMapFollowingUser) Icons.Filled.MyLocation else Icons.Outlined.MyLocation,
@@ -190,4 +214,3 @@ private fun hasLocationPermission(context: Context): Boolean {
         Manifest.permission.ACCESS_COARSE_LOCATION
     ) == PackageManager.PERMISSION_GRANTED
 }
-
