@@ -16,16 +16,16 @@ package com.example.placedetailscompose.ui.map
 
 import android.content.res.Configuration
 import android.util.Log
-import android.view.LayoutInflater
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.FragmentContainerView
-import com.example.placedetailscompose.R
 import com.google.android.gms.maps.model.PointOfInterest
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.PlaceDetailsCompactFragment
@@ -54,61 +54,62 @@ fun PlaceDetailsView(
             Orientation.VERTICAL
         }
 
-    // The `remember` composable is used to create and remember a `PlaceDetailsCompactFragment`
-    // instance. The `key` is the `place` object, which means that a new fragment will be
-    // created whenever the selected place changes. This is important because the fragment
-    // is initialized with the place ID, and we need to create a new fragment to show a
-    // different place.
-    val fragment = remember(place) {
-        PlaceDetailsCompactFragment.newInstance(
-            PlaceDetailsCompactFragment.ALL_CONTENT,
-            orientation,
-        )
-    }
+    val context = LocalContext.current
+    val fragmentManager = (context as? AppCompatActivity)?.supportFragmentManager
+
+    // Create a stable and unique ID for the FragmentContainerView
+    val fragmentContainerId = remember { View.generateViewId() }
 
     // The `AndroidView` composable is used to embed a classic Android View into a Compose UI.
     // It takes a `factory` lambda that is used to create the view, and an `update` lambda
     // that is used to update the view when the state changes.
     AndroidView(
         modifier = modifier.fillMaxWidth(),
-        factory = { context ->
+        factory = { ctx ->
             // The `factory` lambda is called only once to create the view.
-            // We inflate a `FragmentContainerView` from an XML layout file.
-            // This view will be used to host the `PlaceDetailsCompactFragment`.
-            val view = LayoutInflater.from(context).inflate(R.layout.place_details_fragment, null) as FragmentContainerView
-            view.id = R.id.fragment_container_view // Ensure a unique ID
-            view
+            // We create a `FragmentContainerView` to host the `PlaceDetailsCompactFragment`.
+            FragmentContainerView(ctx).apply {
+                id = fragmentContainerId
+            }
         },
         update = { view ->
+            if (fragmentManager == null) return@AndroidView
+
             // The `update` lambda is called whenever the state changes.
-            // We get the `FragmentManager` from the context and use it to replace the
-            // `FragmentContainerView` with the `PlaceDetailsCompactFragment`.
-            val fragmentManager = (view.context as? AppCompatActivity)?.supportFragmentManager
-            if (fragmentManager != null) {
+            // We get the `FragmentManager` from the context and use it to manage the fragment.
+            var fragment =
+                fragmentManager.findFragmentById(view.id) as? PlaceDetailsCompactFragment
+
+            if (fragment == null) {
+                // If the fragment doesn't exist, create a new one and add it to the container.
+                fragment = PlaceDetailsCompactFragment.newInstance(
+                    PlaceDetailsCompactFragment.ALL_CONTENT,
+                    orientation,
+                )
                 fragmentManager.beginTransaction()
                     .replace(view.id, fragment)
                     .commit()
+            }
 
-                // We set a `PlaceLoadListener` on the fragment to be notified when the
-                // place details are loaded.
-                fragment.setPlaceLoadListener(object : PlaceLoadListener {
-                    override fun onSuccess(place: Place) {
-                        Log.d("PlaceDetailsView", "Place loaded: $place")
-                    }
-
-                    override fun onFailure(e: Exception) {
-                        Log.d("PlaceDetailsView", "Place failed to load place: ${e.message}")
-                        // If the place fails to load, we dismiss the fragment.
-                        onDismiss()
-                    }
-                })
-
-                // We need to post the `loadWithPlaceId` call to the view's message queue
-                // to ensure that the fragment is attached to the view hierarchy before
-                // the call is made.
-                view.rootView.post {
-                    fragment.loadWithPlaceId(place.placeId)
+            // We set a `PlaceLoadListener` on the fragment to be notified when the
+            // place details are loaded.
+            fragment.setPlaceLoadListener(object : PlaceLoadListener {
+                override fun onSuccess(place: Place) {
+                    Log.d("PlaceDetailsView", "Place loaded: $place")
                 }
+
+                override fun onFailure(e: Exception) {
+                    Log.d("PlaceDetailsView", "Place failed to load place: ${e.message}")
+                    // If the place fails to load, we dismiss the fragment.
+                    onDismiss()
+                }
+            })
+
+            // We need to post the `loadWithPlaceId` call to the view's message queue
+            // to ensure that the fragment is attached to the view hierarchy before
+            // the call is made.
+            view.post {
+                fragment.loadWithPlaceId(place.placeId)
             }
         }
     )
