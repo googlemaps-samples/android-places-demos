@@ -85,6 +85,7 @@ fun MapScreen(
         }
     }
 
+    val hasAnimatedToPlace by mapViewModel.hasAnimatedToPlace.collectAsState()
     LaunchedEffect(selectedPlace) {
         selectedPlace?.let { place ->
             // Create a CameraPosition with the target zoom level that is shifted slightly south.
@@ -95,9 +96,16 @@ fun MapScreen(
                 .zoom(15f)
                 .build()
 
-            cameraPositionState.animate(
-                CameraUpdateFactory.newCameraPosition(placeCameraPosition), 1000
-            )
+            if (hasAnimatedToPlace) {
+                cameraPositionState.move(
+                    CameraUpdateFactory.newCameraPosition(placeCameraPosition)
+                )
+            } else {
+                cameraPositionState.animate(
+                    CameraUpdateFactory.newCameraPosition(placeCameraPosition), 1000
+                )
+                mapViewModel.onAnimateToPlaceFinish()
+            }
         }
     }
 

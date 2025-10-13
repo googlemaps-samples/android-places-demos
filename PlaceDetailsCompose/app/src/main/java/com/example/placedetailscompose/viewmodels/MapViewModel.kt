@@ -32,6 +32,13 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     private val _isMapFollowingUser = MutableStateFlow(true)
     val isMapFollowingUser: StateFlow<Boolean> = _isMapFollowingUser.asStateFlow()
 
+    private val _hasAnimatedToPlace = MutableStateFlow(false)
+    val hasAnimatedToPlace: StateFlow<Boolean> = _hasAnimatedToPlace.asStateFlow()
+
+    fun onAnimateToPlaceFinish() {
+        _hasAnimatedToPlace.value = true
+    }
+
     fun onMapDragged() {
         _isMapFollowingUser.value = false
     }
@@ -46,5 +53,6 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
 
     fun onDismissPlace() {
         _selectedPlace.value = null
+        _hasAnimatedToPlace.value = false
     }
 }
