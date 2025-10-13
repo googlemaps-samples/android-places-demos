@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.MyLocation
-import androidx.compose.material.icons.outlined.LocationSearching
 import androidx.compose.material.icons.outlined.MyLocation
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -33,10 +32,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -44,11 +43,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.placedetailscompose.viewmodels.MapViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.Circle
 import com.google.maps.android.compose.ComposeMapColorScheme
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.google.maps.android.ktx.utils.sphericalDistance
+import com.google.maps.android.ktx.utils.withSphericalOffset
 import kotlinx.coroutines.launch
 
 /**
@@ -86,43 +85,44 @@ fun MapScreen(
         }
     }
 
-    LaunchedEffect(deviceLocation, isMapFollowingUser) {
-        deviceLocation?.let { location ->
-            if (isMapFollowingUser) {
-                val currentPosition = cameraPositionState.position.target
-                val distance = currentPosition.sphericalDistance(location)
-                if (distance > 100) { // Only animate if moved more than 100 meters
-                    cameraPositionState.animate(
-                        CameraUpdateFactory.newLatLngZoom(location, 15f)
-                    )
-                }
-            }
+    LaunchedEffect(selectedPlace) {
+        selectedPlace?.let { place ->
+            // Create a CameraPosition with the target zoom level that is shifted slightly south.
+            val focalPoint = place.latLng.withSphericalOffset(300.0, 180.0)
+
+            val placeCameraPosition = CameraPosition.builder()
+                .target(focalPoint)
+                .zoom(15f)
+                .build()
+
+            cameraPositionState.animate(
+                CameraUpdateFactory.newCameraPosition(placeCameraPosition), 1000
+            )
         }
     }
 
     if (cameraPositionState.isMoving) {
         mapViewModel.onMapDragged()
     }
-
     val coroutineScope = rememberCoroutineScope()
     Box(modifier.fillMaxSize()) {
         GoogleMap(
             modifier = Modifier.matchParentSize(),
             cameraPositionState = cameraPositionState,
             onPOIClick = {
-                coroutineScope.launch {
-                    val cameraPosition = CameraPosition.builder()
-                        .target(it.latLng)
-                        .zoom(15f)
-                        .build()
-                    cameraPositionState.animate(
-                        CameraUpdateFactory.newCameraPosition(cameraPosition), 2000
-                    )
-                }
                 mapViewModel.onPoiClicked(it)
             },
             mapColorScheme = ComposeMapColorScheme.FOLLOW_SYSTEM
         ) {
+            selectedPlace?.latLng?.let {
+                Circle(
+                    center = it,
+                    radius = 75.0,
+                    fillColor = Color(0x880088FF),
+                    strokeWidth = 2f,
+                    strokeColor = Color(0xAA000000)
+                )
+            }
         }
 
         FloatingActionButton(
@@ -138,7 +138,7 @@ fun MapScreen(
             },
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(top = 64.dp, end = 16.dp)
+                .padding(top = 16.dp, end = 16.dp)
         ) {
             Icon(
                 imageVector = if (isMapFollowingUser) Icons.Filled.MyLocation else Icons.Outlined.MyLocation,
