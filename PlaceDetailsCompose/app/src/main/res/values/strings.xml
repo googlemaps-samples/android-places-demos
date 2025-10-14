@@ -15,5 +15,5 @@
 -->
 <resources>
     <string name="app_name">Place Details Compose</string>
-    <string name="map_id">UNSET_MAP_ID</string>
+    <string name="map_id">YOUR_MAP_ID</string>
 </resources>

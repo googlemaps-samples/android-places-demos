@@ -82,9 +82,9 @@ class PlaceDetailsComposeApplication : Application() {
      * @return The valid map ID or null if no valid map ID is found.
      */
     val mapId: String? by lazy {
-        if (BuildConfig.MAP_ID != "UNSET_MAP_ID") {
+        if (BuildConfig.MAP_ID != "YOUR_MAP_ID") {
             BuildConfig.MAP_ID
-        } else if (getString(R.string.map_id) != "UNSET_MAP_ID") {
+        } else if (getString(R.string.map_id) != "YOUR_MAP_ID") {
             getString(R.string.map_id)
         } else {
             Log.w(TAG, "Map ID is not set. See README for instructions.")

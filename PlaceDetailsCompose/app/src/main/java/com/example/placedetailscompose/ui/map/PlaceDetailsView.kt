@@ -65,10 +65,10 @@ fun PlaceDetailsView(
     // that is used to update the view when the state changes.
     AndroidView(
         modifier = modifier.fillMaxWidth(),
-        factory = { ctx ->
+        factory = { context ->
             // The `factory` lambda is called only once to create the view.
             // We create a `FragmentContainerView` to host the `PlaceDetailsCompactFragment`.
-            FragmentContainerView(ctx).apply {
+            FragmentContainerView(context).apply {
                 id = fragmentContainerId
             }
         },
