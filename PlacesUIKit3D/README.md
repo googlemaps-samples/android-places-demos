@@ -10,6 +10,10 @@ This sample demonstrates how to integrate the Places SDK for Android's `PlaceDet
 - **Location-Aware**: Requests location permissions to center the map on the user's current location.
 - **Secrets Management**: Uses the Secrets Gradle Plugin for Android to securely handle the Google Maps API key.
 
+## Screenshot
+
+![App Screenshot](places-ui-kit-3d-demo.png)
+
 ## Requirements
 
 - Android Studio
