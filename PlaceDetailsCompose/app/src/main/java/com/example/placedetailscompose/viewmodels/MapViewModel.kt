@@ -14,76 +14,57 @@
 
 package com.example.placedetailscompose.viewmodels
 
-import android.annotation.SuppressLint
 import android.app.Application
-import android.location.Location
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import androidx.lifecycle.viewModelScope
+import com.example.placedetailscompose.repository.LocationRepository
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 private const val TAG = "MapViewModel"
 
-// A ViewModel for the map screen.
 class MapViewModel(application: Application) : AndroidViewModel(application) {
-    private val fusedLocationClient: FusedLocationProviderClient =
-        LocationServices.getFusedLocationProviderClient(application)
+    private val locationRepository = LocationRepository(application)
 
-    // A default location (Sydney, Australia) to use when the user's location is not available.
-    val sydney = LatLng(-33.8688, 151.2093)
+    val sydney = LatLng(40.01833081193422, -105.27805050328878)
 
-    // The user's current location.
-    private val _deviceLocation = MutableStateFlow<LatLng?>(null)
-    val deviceLocation = _deviceLocation.asStateFlow()
+    val deviceLocation: StateFlow<LatLng?> = locationRepository.getDeviceLocation()
+        .map { LatLng(it.latitude, it.longitude) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 
-    // The currently selected place of interest.
     private val _selectedPlace = MutableStateFlow<PointOfInterest?>(null)
     val selectedPlace = _selectedPlace.asStateFlow()
 
-    /**
-     * Gets the user's last known location and updates the `deviceLocation` state flow.
-     * This is called when the map is first displayed.
-     */
-    @SuppressLint("MissingPermission")
-    fun getDeviceLocation() {
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location: Location? ->
-                if (location != null) {
-                    _deviceLocation.value = LatLng(location.latitude, location.longitude)
-                } else {
-                    // If the location is null, fall back to the default location.
-                    _deviceLocation.value = sydney
-                }
-            }
-            .addOnFailureListener { e ->
-                Log.e(TAG, "Failed to get location.", e)
-                _deviceLocation.value = sydney
-            }
+    private val _isMapFollowingUser = MutableStateFlow(true)
+    val isMapFollowingUser: StateFlow<Boolean> = _isMapFollowingUser.asStateFlow()
+
+    private val _hasAnimatedToPlace = MutableStateFlow(false)
+    val hasAnimatedToPlace: StateFlow<Boolean> = _hasAnimatedToPlace.asStateFlow()
+
+    fun onAnimateToPlaceFinish() {
+        _hasAnimatedToPlace.value = true
     }
 
-    /**
-     * Called when a point of interest (POI) is clicked on the map.
-     * This updates the `selectedPlace` state flow, which triggers the display of the
-     * place details fragment.
-     */
+    fun onMapDragged() {
+        _isMapFollowingUser.value = false
+    }
+
+    fun onMyLocationClicked() {
+        _isMapFollowingUser.value = true
+    }
+
     fun onPoiClicked(poi: PointOfInterest) {
-        if (poi.placeId.isBlank()) {
-            Log.e(TAG, "Place ID is null or blank.")
-            _selectedPlace.value = null
-        } else {
-            _selectedPlace.value = poi
-        }
+        _selectedPlace.value = poi
     }
 
-    /**
-     * Called when the place details fragment is dismissed.
-     * This clears the `selectedPlace` state flow, which hides the fragment.
-     */
     fun onDismissPlace() {
         _selectedPlace.value = null
+        _hasAnimatedToPlace.value = false
     }
 }

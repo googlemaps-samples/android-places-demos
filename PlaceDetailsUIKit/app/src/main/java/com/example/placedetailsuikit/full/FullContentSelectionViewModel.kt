@@ -43,8 +43,7 @@ data class PlaceDetailsFullItem(
          * The default list of content fields displayed by the [PlaceDetailsFragment].
          * We use this to set the initial state of the configuration dialog.
          */
-        val standardContent: List<PlaceDetailsFullItem> =
-            PlaceDetailsFragment.STANDARD_CONTENT.toPlaceDetailsFullItems()
+        val standardContent: List<PlaceDetailsFullItem> = PlaceDetailsFragment.STANDARD_CONTENT.toPlaceDetailsFullItems()
 
         /**
          * A list of all available content fields that are not included in the default set.
