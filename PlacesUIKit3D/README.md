@@ -12,7 +12,7 @@ This sample demonstrates how to integrate the Places SDK for Android's `PlaceDet
 
 ## Screenshot
 
-![App Screenshot](places-ui-kit-3d-demo.png)
+![App Screenshot](screenshots/places-ui-kit-3d-demo.png)
 
 ## Requirements
 
