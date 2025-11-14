@@ -31,35 +31,37 @@ The demos also require that you add your own API key:
 3. Add a single line to `local.properties` that looks like `PLACES_API_KEY=YOUR_API_KEY`, where `YOUR_API_KEY` is the API key you obtained in the first step. You can also take a look at `local.defaults.properties` as an example.
 4. Build and run.
 
-Support
--------
+## Terms of Service
 
-- Stack Overflow: https://stackoverflow.com/questions/tagged/google-places-api
-
-If you've found an error in these samples, please file an issue:
-https://github.com/googlemaps/android-places-demos/issues
-
-Patches are encouraged, and may be submitted according to the instructions in
-CONTRIBUTING.md.
+This sample uses Google Maps Platform services. Use of Google Maps Platform services through this sample is subject to the Google Maps Platform [Terms of Service].
 
 If your billing address is in the European Economic Area, effective on 8 July 2025, the [Google Maps Platform EEA Terms of Service](https://cloud.google.com/terms/maps-platform/eea) will apply to your use of the Services. Functionality varies by region. [Learn more](https://developers.google.com/maps/comms/eea/faq).
 
-License
--------
+This sample is not a Google Maps Platform Core Service. Therefore, the Google Maps Platform Terms of Service (e.g. Technical Support Services, Service Level Agreements, and Deprecation Policy) do not apply to the code in this sample.
 
-Copyright 2019 Google, Inc.
+## Support
 
-Licensed to the Apache Software Foundation (ASF) under one or more contributor
-license agreements.  See the NOTICE file distributed with this work for
-additional information regarding copyright ownership.  The ASF licenses this
-file to you under the Apache License, Version 2.0 (the "License"); you may not
-use this file except in compliance with the License.  You may obtain a copy of
-the License at
+This sample is offered via an open source [license]. It is not governed by the Google Maps Platform Support [Technical Support Services Guidelines], the [SLA], or the [Deprecation Policy]. However, any Google Maps Platform services used by the sample remain subject to the Google Maps Platform Terms of Service.
 
-  http://www.apache.org/licenses/LICENSE-2.0
+If you find a bug, or have a feature request, please [file an issue] on GitHub. If you would like to get answers to technical questions from other Google Maps Platform developers, ask through one of our [developer community channels]. If you'd like to contribute, please check the [contributing guide].
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
-License for the specific language governing permissions and limitations under
-the License.
+You can also discuss this sample on our [Discord server].
+
+[API key]: https://developers.google.com/maps/documentation/android-sdk/get-api-key
+[API key instructions]: https://developers.google.com/maps/documentation/android-sdk/config#step_3_add_your_api_key_to_the_project
+
+[code of conduct]: CODE_OF_CONDUCT.md
+[contributing guide]: CONTRIBUTING.md
+[Deprecation Policy]: https://cloud.google.com/maps-platform/terms
+[developer community channels]: https://developers.google.com/maps/developer-community
+[Discord server]: https://discord.gg/hYsWbmk
+[file an issue]: https://github.com/googlemaps-samples/android-places-demos/issues/new/choose
+[license]: LICENSE
+[pull request]: https://github.com/googlemaps-samples/android-places-demos/compare
+[project]: https://developers.google.com/maps/documentation/android-sdk/cloud-setup#enabling-apis
+[Sign up with Google Maps Platform]: https://console.cloud.google.com/google/maps-apis/start
+[SLA]: https://cloud.google.com/maps-platform/terms/sla
+[Technical Support Services Guidelines]: https://cloud.google.com/maps-platform/terms/tssg
+[Terms of Service]: https://cloud.google.com/maps-platform/terms
+[Google Maps Platform EEA Terms of Service]: https://cloud.google.com/terms/maps-platform/eea
+[Learn more]: https://developers.google.com/maps/comms/eea/faq
