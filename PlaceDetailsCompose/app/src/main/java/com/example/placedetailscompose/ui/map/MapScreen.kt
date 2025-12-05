@@ -31,6 +31,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.outlined.MyLocation
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.ChevronLeft
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -217,42 +224,71 @@ fun MapScreen(
         }
 
         // **Controls Overlay**
+        // We use a collapsible panel to save screen real estate.
+        var isControlsExpanded by rememberSaveable { mutableStateOf(false) }
+
         Column(
             modifier = Modifier
                 .padding(top = 48.dp, start = 16.dp)
-                .align(Alignment.TopStart)
-                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f), RoundedCornerShape(8.dp))
-                .padding(8.dp)
+                .align(Alignment.TopStart),
+            horizontalAlignment = Alignment.Start
         ) {
-            // **View Mode Toggle**
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = 8.dp)
+            // Toggle Button
+            FloatingActionButton(
+                onClick = { isControlsExpanded = !isControlsExpanded },
+                modifier = Modifier.padding(bottom = 8.dp),
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onSurface
             ) {
-                Text(
-                    text = if (isFullView) "Full View" else "Compact View",
-                    style = MaterialTheme.typography.labelMedium,
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                Switch(
-                    checked = isFullView,
-                    onCheckedChange = { isFullView = it }
+                Icon(
+                    imageVector = if (isControlsExpanded) Icons.Default.ChevronLeft else Icons.Default.Settings,
+                    contentDescription = if (isControlsExpanded) "Collapse Settings" else "Expand Settings"
                 )
             }
 
-            // **Coordinate Mode Toggle**
-            Row(
-                verticalAlignment = Alignment.CenterVertically
+            // Expanded Controls
+            AnimatedVisibility(
+                visible = isControlsExpanded,
+                enter = expandHorizontally(expandFrom = Alignment.Start) + fadeIn(),
+                exit = shrinkHorizontally(shrinkTowards = Alignment.Start) + fadeOut()
             ) {
-                Text(
-                    text = if (isCoordinateMode) "Coords Mode" else "POI Mode",
-                    style = MaterialTheme.typography.labelMedium,
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                Switch(
-                    checked = isCoordinateMode,
-                    onCheckedChange = { viewModel.onToggleCoordinateMode(it) }
-                )
+                Column(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f), RoundedCornerShape(8.dp))
+                        .padding(8.dp),
+                    horizontalAlignment = Alignment.End // Align switches to the end
+                ) {
+                    // **View Mode Toggle**
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    ) {
+                        Text(
+                            text = if (isFullView) "Full View" else "Compact View",
+                            style = MaterialTheme.typography.labelMedium,
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        Switch(
+                            checked = isFullView,
+                            onCheckedChange = { isFullView = it }
+                        )
+                    }
+
+                    // **Coordinate Mode Toggle**
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = if (isCoordinateMode) "Coords Mode" else "POI Mode",
+                            style = MaterialTheme.typography.labelMedium,
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        Switch(
+                            checked = isCoordinateMode,
+                            onCheckedChange = { viewModel.onToggleCoordinateMode(it) }
+                        )
+                    }
+                }
             }
         }
 
