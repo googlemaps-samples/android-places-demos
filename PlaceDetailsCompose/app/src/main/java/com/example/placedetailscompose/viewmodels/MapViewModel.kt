@@ -24,6 +24,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
@@ -34,13 +36,44 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
 
     val sydney = LatLng(40.01833081193422, -105.27805050328878)
 
-    val deviceLocation: StateFlow<LatLng?> = locationRepository.getDeviceLocation()
-        .map { LatLng(it.latitude, it.longitude) }
+    // **Permission Handling**
+    // We use a StateFlow to track whether location permissions have been granted.
+    // This is crucial because we don't want to start collecting location updates
+    // until we know we have the necessary permissions.
+    private val _permissionGranted = MutableStateFlow(false)
+
+    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+    val deviceLocation: StateFlow<LatLng?> = _permissionGranted
+        .flatMapLatest { hasPermission ->
+            // **Lazy Location Collection**
+            // We use `flatMapLatest` to switch between flows based on the permission state.
+            // If permission is granted, we start collecting from the repository.
+            // If not, we emit `null` (or keep the previous state).
+            // This prevents `SecurityException` crashes and ensures we only ask for location
+            // when it's safe to do so.
+            if (hasPermission) {
+                locationRepository.getDeviceLocation()
+            } else {
+                flowOf(null)
+            }
+        }
+        .map { it?.let { loc -> LatLng(loc.latitude, loc.longitude) } }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+
+    /**
+     * Called when the UI has confirmed that location permissions are granted.
+     * This triggers the [deviceLocation] flow to start fetching updates.
+     */
+    fun onPermissionGranted() {
+        _permissionGranted.value = true
+    }
 
     private val _selectedPlace = MutableStateFlow<PointOfInterest?>(null)
     val selectedPlace = _selectedPlace.asStateFlow()
 
+    // **User Tracking State**
+    // This state determines if the map camera should automatically follow the user's device location.
+    // It starts as `true` (following) but can be disabled by user interaction (dragging).
     private val _isMapFollowingUser = MutableStateFlow(true)
     val isMapFollowingUser: StateFlow<Boolean> = _isMapFollowingUser.asStateFlow()
 
@@ -51,10 +84,18 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
         _hasAnimatedToPlace.value = true
     }
 
+    /**
+     * Called when the user manually drags the map.
+     * We disable user tracking so the map doesn't jump back to the user's location while they are exploring.
+     */
     fun onMapDragged() {
         _isMapFollowingUser.value = false
     }
 
+    /**
+     * Called when the "My Location" button is clicked.
+     * We re-enable user tracking to snap the camera back to the user's location.
+     */
     fun onMyLocationClicked() {
         _isMapFollowingUser.value = true
     }

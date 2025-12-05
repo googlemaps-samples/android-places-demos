@@ -19,20 +19,27 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.outlined.MyLocation
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -71,18 +78,24 @@ fun MapScreen(
 
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { /* Permissions result is handled by the flow */ }
+    ) { permissions ->
+        if (permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) ||
+            permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false)
+        ) {
+            mapViewModel.onPermissionGranted()
+        }
+    }
 
-    if (deviceLocation != null) {
-        LaunchedEffect(Unit) {
-            if (!hasLocationPermission(context)) {
-                locationPermissionLauncher.launch(
-                    arrayOf(
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    )
+    LaunchedEffect(Unit) {
+        if (hasLocationPermission(context)) {
+            mapViewModel.onPermissionGranted()
+        } else {
+            locationPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
                 )
-            }
+            )
         }
     }
 
@@ -128,6 +141,9 @@ fun MapScreen(
         mapViewModel.onMapDragged()
     }
     val coroutineScope = rememberCoroutineScope()
+    // State to track which view mode is active (Compact vs Full)
+    var isFullView by remember { mutableStateOf(false) }
+
     Box(modifier.fillMaxSize()) {
         GoogleMap(
             modifier = Modifier.matchParentSize(),
@@ -153,6 +169,33 @@ fun MapScreen(
                     fillColor = Color(0x880088FF),
                     strokeWidth = 2f,
                     strokeColor = Color(0xAA000000)
+                )
+            }
+        }
+
+        // **View Mode Toggle**
+        // This switch allows the user to dynamically swap between the Compact and Full versions
+        // of the Place Details UI. Because both Composables (`PlaceDetailsCompactView` and `PlaceDetailsFullView`)
+        // take the same parameters (place and onDismiss), we can switch between them
+        // based on the `isFullView` state.
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(top = 64.dp, start = 16.dp)
+                .background(MaterialTheme.colorScheme.surface, CircleShape)
+                .padding(horizontal = 12.dp, vertical = 8.dp)
+        ) {
+            androidx.compose.foundation.layout.Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                androidx.compose.material3.Text(
+                    text = "Full View",
+                    style = MaterialTheme.typography.labelMedium
+                )
+                androidx.compose.foundation.layout.Spacer(Modifier.width(8.dp))
+                androidx.compose.material3.Switch(
+                    checked = isFullView,
+                    onCheckedChange = { isFullView = it }
                 )
             }
         }
@@ -185,10 +228,21 @@ fun MapScreen(
                     .align(Alignment.BottomCenter)
                     .padding(16.dp)
             ) {
-                PlaceDetailsView(
-                    place = place,
-                    onDismiss = { mapViewModel.onDismissPlace() }
-                )
+                // **Conditional Rendering**
+                // Based on the toggle state, we render either the Compact or Full view.
+                // Since `place` is hoisted in the parent `MapScreen`, the selected place
+                // is preserved even when switching views.
+                if (isFullView) {
+                    PlaceDetailsFullView(
+                        place = place,
+                        onDismiss = { mapViewModel.onDismissPlace() }
+                    )
+                } else {
+                    PlaceDetailsCompactView(
+                        place = place,
+                        onDismiss = { mapViewModel.onDismissPlace() }
+                    )
+                }
                 FloatingActionButton(
                     onClick = { mapViewModel.onDismissPlace() },
                     modifier = Modifier

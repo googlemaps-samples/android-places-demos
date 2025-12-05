@@ -6,31 +6,31 @@
 [versions]
 # --- Core Android & Kotlin ---
 # These are the fundamental versions for building the Android app.
-agp = "8.13.0"
-kotlin = "2.2.20"
+agp = "8.13.1"
+kotlin = "2.2.21"
 coreKtx = "1.17.0"
 fragmentKtx = "1.8.9"
 material = "1.13.0"
-lifecycleViewModelCompose = "2.9.4"
+lifecycleViewModelCompose = "2.10.0"
 
 # --- Jetpack Compose ---
 # Versions for Jetpack Compose, Android's modern UI toolkit.
 # The Compose BOM (Bill of Materials) manages the versions of different Compose libraries
 # to ensure they are compatible with each other.
-composeBom = "2025.10.00"
-activityCompose = "1.11.0"
-ui = "1.9.3"
-uiTooling = "1.9.3"
-uiViewbinding = "1.9.3"
+composeBom = "2025.12.00"
+activityCompose = "1.12.1"
+ui = "1.10.0"
+uiTooling = "1.10.0"
+uiViewbinding = "1.10.0"
 materialIconsExtended = "1.7.8"
 
 # --- Google Services (Maps, Places, Location) ---
 # Versions for Google Play Services libraries, which are essential for this sample.
 googleMaps = "19.2.0"
-places = "5.0.0"
+places = "5.1.1"
 playServicesLocation = "21.3.0" # Required for the FusedLocationProviderClient to get the device's location.
-mapsCompose = "6.12.1"
-mapsUtilsKtx = "5.2.0"
+mapsCompose = "6.12.2"
+mapsUtilsKtx = "5.2.1"
 
 # --- Testing ---
 # Versions for testing libraries.

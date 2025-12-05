@@ -1,47 +1,75 @@
 # Place Details Compose Sample
 
-This sample demonstrates how to use the Places SDK for Android's `PlaceDetailsCompactFragment` within a Jetpack Compose-based application. It allows users to tap on a Point of Interest (POI) on a Google Map to display its details in a compact, embedded view.
+This sample demonstrates how to integrate the **Places UI Kit** (specifically `PlaceDetailsCompactFragment` and `PlaceDetailsFragment`) into a **Jetpack Compose** application.
+
+It showcases how to wrap these View-based fragments using `AndroidView` to create seamless Composable wrappers: `PlaceDetailsCompactView` and `PlaceDetailsFullView`.
 
 ## Features
 
-- **Jetpack Compose UI**: The entire application is built using Jetpack Compose, showcasing modern Android UI development.
-- **Google Maps Integration**: Utilizes the `GoogleMap` composable from the Maps Compose library to display an interactive map.
-- **Place Details**: On tapping a POI on the map, the app displays the place's details using the `PlaceDetailsCompactFragment`.
-- **MVVM Architecture**: Follows the Model-View-ViewModel pattern, with a `MapViewModel` managing the UI state.
-- **Location-Aware**: Requests location permissions to center the map on the user's current location.
-- **Secrets Management**: Uses the Secrets Gradle Plugin for Android to securely handle the Google Maps API key.
+- **Jetpack Compose Integration**: Demonstrates the `AndroidView` pattern for embedding Places UI Kit fragments.
+- **Compact & Full Views**: Supports both the Compact (bottom sheet style) and Full (fullscreen style) variants of the UI Kit.
+- **Dynamic Toggling**: Users can switch between Compact and Full views at runtime using a toggle switch.
+- **Google Maps Integration**: Uses the Maps Compose library to display an interactive map.
+- **MVVM Architecture**: Manages state (selected place, view mode) using a `MapViewModel`.
+- **Secrets Management**: Securely handles API keys using the Secrets Gradle Plugin.
 
-## Requirements
-
-- Android Studio
-- An Android device or emulator
-- A Google Maps API key
-
-## Setup and Installation
+## Getting Started
 
 1.  **Clone the repository:**
     ```bash
     git clone https://github.com/googlemaps-samples/android-places-demos.git
     ```
-2.  **Open the project in Android Studio:**
-    Open the `PlaceDetailsCompose` directory in Android Studio.
+2.  **Open in Android Studio:** Open the `PlaceDetailsCompose` directory.
+3.  **Add API Key:**
+    -   Create `secrets.properties` in the project root.
+    -   Add your key: `PLACES_API_KEY="YOUR_API_KEY"` (ensure Places API and Maps SDK are enabled).
+4.  **Run:** Build and run on a device/emulator.
 
-3.  **Add your API Key:**
-    -   Create a file named `secrets.properties` in the root directory of the `PlaceDetailsCompose` project (`/Users/dkhawk/AndroidStudioProjects/github-maps-code/android-places-demos/PlaceDetailsCompose`).
-    -   Add your Google Maps API key to the `secrets.properties` file, making sure that the Maps SDK for Android and the Places API are enabled for the key. Both `MAPS_API_KEY` and `PLACES_API_KEY` can use the same key.
-        ```
-        MAPS_API_KEY="YOUR_API_KEY"
-        PLACES_API_KEY="YOUR_API_KEY"
-        ```
-    - Note: The `secrets.properties` file is included in the `.gitignore` file to prevent it from being checked into version control.
+## Code Highlights
 
-## Running the Application
+### 1. Wrapping Fragments in Compose (`PlaceDetailsView.kt`)
 
-Once the project is set up and the API key is added, you can run the application on an Android device or emulator directly from Android Studio.
+The core of this integration is wrapping the `PlaceDetailsCompactFragment` and `PlaceDetailsFragment` in a Composable. We use `AndroidView` to host a `FragmentContainerView`.
 
-- The app will request location permissions.
-- The map will center on the user's location if permission is granted, otherwise it will default to Sydney, Australia.
-- Tap on any POI on the map to see the Place Details view.
+**Key Steps:**
+-   **Unique ID**: Generate a unique view ID (`View.generateViewId()`) for the container so `FragmentManager` can identify it.
+-   **Fragment Management**: In the `update` block, check if the fragment exists. If not, create and add it.
+-   **Safe Loading**: Use `view.post { ... }` to call `loadWithPlaceId`. This ensures the fragment's view is fully attached before data loading begins, preventing crashes.
+
+```kotlin
+@Composable
+fun PlaceDetailsCompactView(place: PointOfInterest, ...) {
+    val fragmentContainerId = remember { View.generateViewId() }
+    
+    AndroidView(
+        factory = { context ->
+            FragmentContainerView(context).apply { id = fragmentContainerId }
+        },
+        update = { view ->
+            // ... Fragment transaction logic ...
+            view.post { fragment.loadWithPlaceId(place.placeId) }
+        }
+    )
+}
+```
+
+### 2. Switching Views (`MapScreen.kt`)
+
+The app demonstrates how to dynamically switch between the Compact and Full views while maintaining the selected place context.
+
+```kotlin
+var isFullView by remember { mutableStateOf(false) }
+
+if (isFullView) {
+    PlaceDetailsFullView(place = place, ...)
+} else {
+    PlaceDetailsCompactView(place = place, ...)
+}
+```
+
+### 3. Handling Events
+
+We use `PlaceLoadListener` attached to the fragment to listen for success/failure events. These are propagated back to the Compose layer via callbacks (e.g., `onDismiss`).
 
 ## License
 

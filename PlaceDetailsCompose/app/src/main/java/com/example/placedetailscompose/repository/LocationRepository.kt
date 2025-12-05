@@ -46,11 +46,18 @@ class LocationRepository(context: Context) {
             }
         }
 
-        fusedLocationClient.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            Looper.getMainLooper()
-        )
+        try {
+            fusedLocationClient.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                Looper.getMainLooper()
+            )
+        } catch (e: SecurityException) {
+            // Permissions were likely denied.
+            // In a real app, we might want to emit an error state or log this.
+            // For now, we just close the flow to avoid a crash.
+            close(e)
+        }
 
         awaitClose {
             fusedLocationClient.removeLocationUpdates(locationCallback)
