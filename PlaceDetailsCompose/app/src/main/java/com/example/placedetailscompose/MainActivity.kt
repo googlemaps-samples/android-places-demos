@@ -58,6 +58,7 @@ class MainActivity : AppCompatActivity() {
 
         // Initialize the Places SDK. This must be done before calling any other Places API methods.
         // The 'newPlacesApiEnabled' flag indicates that the new Places API should be used.
+        // This can happen in an Activity or the Application.
         Places.initializeWithNewPlacesApiEnabled(applicationContext, apiKey)
 
         enableEdgeToEdge()
