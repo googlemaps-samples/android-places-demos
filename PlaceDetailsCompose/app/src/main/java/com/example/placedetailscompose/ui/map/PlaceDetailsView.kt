@@ -19,6 +19,7 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -30,6 +31,17 @@ import com.google.android.gms.maps.model.PointOfInterest
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.PlaceDetailsCompactFragment
 import com.google.android.libraries.places.widget.PlaceLoadListener
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
 import com.google.android.libraries.places.widget.model.Orientation
 
 /**
@@ -46,7 +58,7 @@ import com.google.android.libraries.places.widget.model.Orientation
  */
 @Composable
 fun PlaceDetailsCompactView(
-    place: PointOfInterest,
+    place: Place,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -71,63 +83,90 @@ fun PlaceDetailsCompactView(
     // We use `remember` so this ID persists across recompositions.
     val fragmentContainerId = remember { View.generateViewId() }
 
-    AndroidView(
-        modifier = modifier.fillMaxWidth(),
-        factory = { context ->
-            // **The Factory Block**
-            // This runs only once when the AndroidView is first created.
-            // We create the container view that will hold our Fragment.
-            FragmentContainerView(context).apply {
-                id = fragmentContainerId
-            }
-        },
-        update = { view ->
-            // **The Update Block**
-            // This runs whenever the Composable recomposes (e.g., when `place` changes).
-            
-            if (fragmentManager == null) return@AndroidView
+    Box(modifier = modifier.fillMaxWidth()) {
+        AndroidView(
+            modifier = Modifier.fillMaxWidth(),
+            factory = { context ->
+                // **The Factory Block**
+                // This runs only once when the AndroidView is first created.
+                // We create the container view that will hold our Fragment.
+                FragmentContainerView(context).apply {
+                    id = fragmentContainerId
+                }
+            },
+            update = { view ->
+                // **The Update Block**
+                // This runs whenever the Composable recomposes (e.g., when `place` changes).
+                
+                if (fragmentManager == null) return@AndroidView
 
-            // Check if we've already added the fragment to this container.
-            var fragment =
-                fragmentManager.findFragmentById(view.id) as? PlaceDetailsCompactFragment
+                // Check if we've already added the fragment to this container.
+                var fragment =
+                    fragmentManager.findFragmentById(view.id) as? PlaceDetailsCompactFragment
 
-            if (fragment == null) {
-                // **First Time Setup**
-                // If the fragment doesn't exist yet, we create it and add it to the container.
-                fragment = PlaceDetailsCompactFragment.newInstance(
-                    PlaceDetailsCompactFragment.ALL_CONTENT,
-                    orientation,
-                )
-                fragmentManager.beginTransaction()
-                    .replace(view.id, fragment)
-                    .commit()
-            }
-
-            // **Listening for Load Events**
-            // We attach a listener to know when the data has successfully loaded or failed.
-            // This allows us to react in the Compose layer (e.g., logging or dismissing on error).
-            fragment.setPlaceLoadListener(object : PlaceLoadListener {
-                override fun onSuccess(place: Place) {
-                    Log.d("PlaceDetailsView", "Place loaded: $place")
+                if (fragment == null) {
+                    // **First Time Setup**
+                    // If the fragment doesn't exist yet, we create it and add it to the container.
+                    fragment = PlaceDetailsCompactFragment.newInstance(
+                        PlaceDetailsCompactFragment.ALL_CONTENT,
+                        orientation,
+                    )
+                    fragmentManager.beginTransaction()
+                        .replace(view.id, fragment)
+                        .commit()
                 }
 
-                override fun onFailure(e: Exception) {
-                    Log.d("PlaceDetailsView", "Place failed to load place: ${e.message}")
-                    onDismiss()
-                }
-            })
+                // **Listening for Load Events**
+                // We attach a listener to know when the data has successfully loaded or failed.
+                // This allows us to react in the Compose layer (e.g., logging or dismissing on error).
+                fragment.setPlaceLoadListener(object : PlaceLoadListener {
+                    override fun onSuccess(place: Place) {
+                        // If we have a name, log it (just for debugging)
+                        if (place.displayName != null) {
+                             Log.d("PlaceDetails", "Loading details for: ${place.displayName}")
+                        }
+                        Log.d("PlaceDetailsView", "Place loaded: ${place.displayName}")
+                    }
 
-            // **Why `view.post`?**
-            // This is a critical piece of glue code. The `loadWithPlaceId` method needs the Fragment's
-            // view hierarchy to be fully initialized and attached to the window.
-            // By posting this runnable to the view's message queue, we ensure that the load call
-            // happens *after* the current layout pass is complete and the view is ready.
-            // Without this, you might see crashes or undefined behavior.
-            view.post {
-                fragment.loadWithPlaceId(place.placeId)
+                    override fun onFailure(e: Exception) {
+                        Log.d("PlaceDetailsView", "Place failed to load place: ${e.message}")
+                        onDismiss()
+                    }
+                })
+
+                // **Why `view.post`?**
+                // This is a critical piece of glue code. The `loadWithPlaceId` method needs the Fragment's
+                // view hierarchy to be fully initialized and attached to the window.
+                // By posting this runnable to the view's message queue, we ensure that the load call
+                // happens *after* the current layout pass is complete and the view is ready.
+                // Without this, you might see crashes or undefined behavior.
+                view.post {
+                    if (place.id != null) {
+                        fragment.loadWithPlaceId(place.id)
+                    } else if (place.location != null) {
+                         fragment.loadWithCoordinates(place.location!!)
+                    } else {
+                        Log.e("PlaceDetailsView", "Place has no ID and no location: $place")
+                    }
+                }
             }
+        )
+
+        // Close Button
+        IconButton(
+            onClick = onDismiss,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(16.dp)
+                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f), shape = CircleShape)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = "Close",
+                tint = MaterialTheme.colorScheme.onSurface
+            )
         }
-    )
+    }
 }
 
 /**
@@ -138,7 +177,7 @@ fun PlaceDetailsCompactView(
  */
 @Composable
 fun PlaceDetailsFullView(
-    place: PointOfInterest,
+    place: Place,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -154,43 +193,67 @@ fun PlaceDetailsFullView(
 
     val fragmentContainerId = remember { View.generateViewId() }
 
-    AndroidView(
-        modifier = modifier.fillMaxWidth(),
-        factory = { context ->
-            FragmentContainerView(context).apply {
-                id = fragmentContainerId
-            }
-        },
-        update = { view ->
-            if (fragmentManager == null) return@AndroidView
+    Box(modifier = modifier.fillMaxWidth()) {
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = { context ->
+                FragmentContainerView(context).apply {
+                    id = fragmentContainerId
+                }
+            },
+            update = { view ->
+                if (fragmentManager == null) return@AndroidView
 
-            var fragment =
-                fragmentManager.findFragmentById(view.id) as? com.google.android.libraries.places.widget.PlaceDetailsFragment
+                var fragment =
+                    fragmentManager.findFragmentById(view.id) as? com.google.android.libraries.places.widget.PlaceDetailsFragment
 
-            if (fragment == null) {
-                fragment = com.google.android.libraries.places.widget.PlaceDetailsFragment.newInstance(
-                    com.google.android.libraries.places.widget.PlaceDetailsFragment.STANDARD_CONTENT,
-                    orientation,
-                )
-                fragmentManager.beginTransaction()
-                    .replace(view.id, fragment)
-                    .commit()
-            }
-
-            fragment.setPlaceLoadListener(object : PlaceLoadListener {
-                override fun onSuccess(place: Place) {
-                    Log.d("PlaceDetailsFullView", "Place loaded: $place")
+                if (fragment == null) {
+                    fragment = com.google.android.libraries.places.widget.PlaceDetailsFragment.newInstance(
+                        com.google.android.libraries.places.widget.PlaceDetailsFragment.STANDARD_CONTENT,
+                        orientation,
+                    )
+                    fragmentManager.beginTransaction()
+                        .replace(view.id, fragment)
+                        .commit()
                 }
 
-                override fun onFailure(e: Exception) {
-                    Log.d("PlaceDetailsFullView", "Place failed to load place: ${e.message}")
-                    onDismiss()
-                }
-            })
+                fragment.setPlaceLoadListener(object : PlaceLoadListener {
+                    override fun onSuccess(place: Place) {
+                        Log.d("PlaceDetailsFullView", "Place loaded: $place")
+                    }
 
-            view.post {
-                fragment.loadWithPlaceId(place.placeId)
+                    override fun onFailure(e: Exception) {
+                        Log.d("PlaceDetailsFullView", "Place failed to load place: ${e.message}")
+                        onDismiss()
+                    }
+                })
+
+                view.post {
+                    if (place.id != null) {
+                        fragment.loadWithPlaceId(place.id)
+                    } else if (place.location != null) {
+                        fragment.loadWithCoordinates(place.location!!)
+                    } else {
+                         Log.e("PlaceDetailsFullView", "Place has no ID and no location: $place")
+                    }
+                }
             }
+        )
+
+        // Close Button
+        IconButton(
+            onClick = onDismiss,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(16.dp)
+                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f), shape = CircleShape)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = "Close",
+                tint = MaterialTheme.colorScheme.onSurface
+            )
         }
-    )
+    }
 }
+
