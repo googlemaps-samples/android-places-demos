@@ -27,7 +27,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.FragmentContainerView
-import com.google.android.gms.maps.model.PointOfInterest
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.PlaceDetailsCompactFragment
 import com.google.android.libraries.places.widget.PlaceLoadListener
@@ -72,16 +71,40 @@ fun PlaceDetailsCompactView(
         }
 
     val context = LocalContext.current
-    // We need the FragmentManager to perform Fragment transactions (adding/removing the fragment).
-    // We cast the Context to AppCompatActivity assuming this Composable is hosted within one.
-    // In a production app, you might want a more robust way to provide the FragmentManager.
-    val fragmentManager = (context as? AppCompatActivity)?.supportFragmentManager
 
     // **Why generate a View ID?**
     // The FragmentManager needs a unique ID to identify the container where the fragment will be placed.
     // `View.generateViewId()` gives us a safe, unique integer that won't collide with other views.
     // We use `remember` so this ID persists across recompositions.
     val fragmentContainerId = remember { View.generateViewId() }
+
+    // We need the FragmentManager to perform Fragment transactions (adding/removing the fragment).
+    // We cast the Context to AppCompatActivity assuming this Composable is hosted within one.
+    // In a production app, you might want a more robust way to provide the FragmentManager.
+    val fragmentManager = remember(context) {
+        (context as? AppCompatActivity)?.supportFragmentManager
+            ?: throw IllegalStateException("Context must be a FragmentActivity")
+    }
+
+    val fragment = remember(fragmentManager, fragmentContainerId, orientation) {
+        fragmentManager.findFragmentById(fragmentContainerId) as? PlaceDetailsCompactFragment
+            ?: PlaceDetailsCompactFragment.newInstance(
+                PlaceDetailsCompactFragment.ALL_CONTENT,
+                orientation,
+            ).also { fragment ->
+                // **Listening for Load Events**
+                fragment.setPlaceLoadListener(object : PlaceLoadListener {
+                    override fun onSuccess(place: Place) {
+                        Log.d("PlaceDetails", "Loading details for: ${place.id} at ${place.location}")
+                    }
+
+                    override fun onFailure(e: Exception) {
+                        Log.d("PlaceDetailsView", "Place failed to load place: ${e.message}")
+                        onDismiss()
+                    }
+                })
+            }
+    }
 
     Box(modifier = modifier.fillMaxWidth()) {
         AndroidView(
@@ -92,55 +115,23 @@ fun PlaceDetailsCompactView(
                 // We create the container view that will hold our Fragment.
                 FragmentContainerView(context).apply {
                     id = fragmentContainerId
+                    // Ensure the fragment is added.
+                    // We use commit() (async) to allow the view to be attached before the transaction runs.
+                    if (fragmentManager.findFragmentById(fragmentContainerId) == null) {
+                        fragmentManager.beginTransaction()
+                            .add(fragmentContainerId, fragment)
+                            .commit()
+                    }
                 }
             },
             update = { view ->
                 // **The Update Block**
                 // This runs whenever the Composable recomposes (e.g., when `place` changes).
-                
-                if (fragmentManager == null) return@AndroidView
 
-                // Check if we've already added the fragment to this container.
-                var fragment =
-                    fragmentManager.findFragmentById(view.id) as? PlaceDetailsCompactFragment
-
-                if (fragment == null) {
-                    // **First Time Setup**
-                    // If the fragment doesn't exist yet, we create it and add it to the container.
-                    fragment = PlaceDetailsCompactFragment.newInstance(
-                        PlaceDetailsCompactFragment.ALL_CONTENT,
-                        orientation,
-                    )
-                    fragmentManager.beginTransaction()
-                        .replace(view.id, fragment)
-                        .commit()
-                }
-
-                // **Listening for Load Events**
-                // We attach a listener to know when the data has successfully loaded or failed.
-                // This allows us to react in the Compose layer (e.g., logging or dismissing on error).
-                fragment.setPlaceLoadListener(object : PlaceLoadListener {
-                    override fun onSuccess(place: Place) {
-                        // If we have a name, log it (just for debugging)
-                        if (place.displayName != null) {
-                             Log.d("PlaceDetails", "Loading details for: ${place.displayName}")
-                        }
-                        Log.d("PlaceDetailsView", "Place loaded: ${place.displayName}")
-                    }
-
-                    override fun onFailure(e: Exception) {
-                        Log.d("PlaceDetailsView", "Place failed to load place: ${e.message}")
-                        onDismiss()
-                    }
-                })
-
-                // **Why `view.post`?**
-                // This is a critical piece of glue code. The `loadWithPlaceId` method needs the Fragment's
-                // view hierarchy to be fully initialized and attached to the window.
-                // By posting this runnable to the view's message queue, we ensure that the load call
-                // happens *after* the current layout pass is complete and the view is ready.
-                // Without this, you might see crashes or undefined behavior.
+                // We post the update to ensure it runs after the fragment transaction has completed
+                // and the fragment's view hierarchy is fully initialized.
                 view.post {
+                    // Load the place data
                     if (place.id != null) {
                         fragment.loadWithPlaceId(place.id)
                     } else if (place.location != null) {
@@ -215,18 +206,18 @@ fun PlaceDetailsFullView(
                     fragmentManager.beginTransaction()
                         .replace(view.id, fragment)
                         .commit()
+
+                    fragment.setPlaceLoadListener(object : PlaceLoadListener {
+                        override fun onSuccess(place: Place) {
+                            Log.d("PlaceDetailsFullView", "Place loaded: $place")
+                        }
+
+                        override fun onFailure(e: Exception) {
+                            Log.d("PlaceDetailsFullView", "Place failed to load place: ${e.message}")
+                            onDismiss()
+                        }
+                    })
                 }
-
-                fragment.setPlaceLoadListener(object : PlaceLoadListener {
-                    override fun onSuccess(place: Place) {
-                        Log.d("PlaceDetailsFullView", "Place loaded: $place")
-                    }
-
-                    override fun onFailure(e: Exception) {
-                        Log.d("PlaceDetailsFullView", "Place failed to load place: ${e.message}")
-                        onDismiss()
-                    }
-                })
 
                 view.post {
                     if (place.id != null) {
