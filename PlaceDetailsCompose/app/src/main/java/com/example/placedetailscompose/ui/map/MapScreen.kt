@@ -56,6 +56,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.placedetailscompose.viewmodels.MapViewModel
@@ -107,7 +108,7 @@ fun MapScreen(
         ) {
             viewModel.onPermissionGranted()
         } else {
-            Toast.makeText(context, "Location permission denied", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context.getString(com.example.placedetailscompose.R.string.location_permission_denied), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -247,7 +248,7 @@ fun MapScreen(
             ) {
                 Icon(
                     imageVector = if (isControlsExpanded) Icons.Default.ChevronLeft else Icons.Default.Settings,
-                    contentDescription = if (isControlsExpanded) "Collapse Settings" else "Expand Settings"
+                    contentDescription = if (isControlsExpanded) stringResource(com.example.placedetailscompose.R.string.collapse_settings) else stringResource(com.example.placedetailscompose.R.string.expand_settings)
                 )
             }
 
@@ -269,7 +270,7 @@ fun MapScreen(
                         modifier = Modifier.padding(bottom = 8.dp)
                     ) {
                         Text(
-                            text = if (isFullView) "Full View" else "Compact View",
+                            text = if (isFullView) stringResource(com.example.placedetailscompose.R.string.full_view) else stringResource(com.example.placedetailscompose.R.string.compact_view),
                             style = MaterialTheme.typography.labelMedium,
                             modifier = Modifier.padding(end = 8.dp)
                         )
@@ -285,7 +286,7 @@ fun MapScreen(
                         modifier = Modifier.padding(bottom = 8.dp)
                     ) {
                         Text(
-                            text = if (isCoordinateMode) "Coords Mode" else "POI Mode",
+                            text = if (isCoordinateMode) stringResource(com.example.placedetailscompose.R.string.coords_mode) else stringResource(com.example.placedetailscompose.R.string.poi_mode),
                             style = MaterialTheme.typography.labelMedium,
                             modifier = Modifier.padding(end = 8.dp)
                         )
@@ -300,7 +301,7 @@ fun MapScreen(
                         onClick = { showContentSelectionDialog = true },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Select Fields")
+                        Text(stringResource(com.example.placedetailscompose.R.string.select_fields))
                     }
                 }
             }
@@ -338,7 +339,7 @@ fun MapScreen(
         if (showContentSelectionDialog) {
             if (isFullView) {
                 PlaceContentSelectionDialog(
-                    title = "Select Full View Fields",
+                    title = stringResource(com.example.placedetailscompose.R.string.select_full_view_fields),
                     allContent = com.google.android.libraries.places.widget.PlaceDetailsFragment.Content.values().toList(),
                     selectedContent = selectedFullContent,
                     onSelectionChanged = { viewModel.updateFullContent(it) },
@@ -347,7 +348,7 @@ fun MapScreen(
                 )
             } else {
                 PlaceContentSelectionDialog(
-                    title = "Select Compact View Fields",
+                    title = stringResource(com.example.placedetailscompose.R.string.select_compact_view_fields),
                     allContent = com.google.android.libraries.places.widget.PlaceDetailsCompactFragment.Content.values().toList(),
                     selectedContent = selectedCompactContent,
                     onSelectionChanged = { viewModel.updateCompactContent(it) },

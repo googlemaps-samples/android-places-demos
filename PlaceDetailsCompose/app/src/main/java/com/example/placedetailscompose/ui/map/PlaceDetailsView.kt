@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.FragmentContainerView
+import androidx.compose.ui.res.stringResource
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.PlaceDetailsCompactFragment
 import com.google.android.libraries.places.widget.PlaceLoadListener
@@ -154,7 +155,7 @@ fun PlaceDetailsCompactView(
         ) {
             Icon(
                 imageVector = Icons.Default.Close,
-                contentDescription = "Close",
+                contentDescription = stringResource(com.example.placedetailscompose.R.string.close),
                 tint = MaterialTheme.colorScheme.onSurface
             )
         }
@@ -250,7 +251,7 @@ fun PlaceDetailsFullView(
             ) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Close",
+                    contentDescription = stringResource(com.example.placedetailscompose.R.string.close),
                     tint = MaterialTheme.colorScheme.onSurface
                 )
             }

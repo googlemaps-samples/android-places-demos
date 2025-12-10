@@ -62,10 +62,10 @@ class PlaceDetailsComposeApplication : Application() {
             if (apiKey == null || apiKey.isBlank() || apiKey == "DEFAULT_API_KEY") {
                 Toast.makeText(
                     this,
-                    "API Key was not set in secrets.properties",
+                    getString(R.string.error_api_key_missing),
                     Toast.LENGTH_LONG
                 ).show()
-                throw RuntimeException("API Key was not set in secrets.properties")
+                throw RuntimeException(getString(R.string.error_api_key_missing))
             }
         } catch (e: PackageManager.NameNotFoundException) {
             Log.e(TAG, "Package name not found.", e)
@@ -88,7 +88,7 @@ class PlaceDetailsComposeApplication : Application() {
             getString(R.string.map_id)
         } else {
             Log.w(TAG, "Map ID is not set. See README for instructions.")
-            Toast.makeText(this, "Map ID is not set. Some features may not work. See README for instructions.", Toast.LENGTH_LONG)
+            Toast.makeText(this, getString(R.string.error_map_id_missing), Toast.LENGTH_LONG)
                 .show()
             null
         }

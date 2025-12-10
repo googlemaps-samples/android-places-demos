@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun <T> PlaceContentSelectionDialog(
@@ -77,7 +78,7 @@ fun <T> PlaceContentSelectionDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismissRequest) {
-                Text("Done")
+                Text(stringResource(com.example.placedetailscompose.R.string.done))
             }
         }
     )
