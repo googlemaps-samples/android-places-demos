@@ -172,6 +172,11 @@ fun MapScreen(
         }
     }
 
+    // **Content Selection State**
+    val selectedCompactContent by viewModel.selectedCompactContent.collectAsState()
+    val selectedFullContent by viewModel.selectedFullContent.collectAsState()
+    var showContentSelectionDialog by rememberSaveable { mutableStateOf(false) }
+
     if (cameraPositionState.isMoving) {
         viewModel.onMapDragged()
     }
@@ -276,7 +281,8 @@ fun MapScreen(
 
                     // **Coordinate Mode Toggle**
                     Row(
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(bottom = 8.dp)
                     ) {
                         Text(
                             text = if (isCoordinateMode) "Coords Mode" else "POI Mode",
@@ -287,6 +293,14 @@ fun MapScreen(
                             checked = isCoordinateMode,
                             onCheckedChange = { viewModel.onToggleCoordinateMode(it) }
                         )
+                    }
+
+                    // **Select Fields Button**
+                    androidx.compose.material3.Button(
+                        onClick = { showContentSelectionDialog = true },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Select Fields")
                     }
                 }
             }
@@ -303,6 +317,7 @@ fun MapScreen(
                 PlaceDetailsFullView(
                     place = place,
                     onDismiss = { viewModel.onDismissPlace() },
+                    content = selectedFullContent,
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
@@ -312,6 +327,7 @@ fun MapScreen(
                 PlaceDetailsCompactView(
                     place = place,
                     onDismiss = { viewModel.onDismissPlace() },
+                    content = selectedCompactContent,
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
@@ -319,6 +335,26 @@ fun MapScreen(
             }
         }
 
-
+        if (showContentSelectionDialog) {
+            if (isFullView) {
+                PlaceContentSelectionDialog(
+                    title = "Select Full View Fields",
+                    allContent = com.google.android.libraries.places.widget.PlaceDetailsFragment.Content.values().toList(),
+                    selectedContent = selectedFullContent,
+                    onSelectionChanged = { viewModel.updateFullContent(it) },
+                    onDismissRequest = { showContentSelectionDialog = false },
+                    nameProvider = { it.name }
+                )
+            } else {
+                PlaceContentSelectionDialog(
+                    title = "Select Compact View Fields",
+                    allContent = com.google.android.libraries.places.widget.PlaceDetailsCompactFragment.Content.values().toList(),
+                    selectedContent = selectedCompactContent,
+                    onSelectionChanged = { viewModel.updateCompactContent(it) },
+                    onDismissRequest = { showContentSelectionDialog = false },
+                    nameProvider = { it.name }
+                )
+            }
+        }
     }
 }

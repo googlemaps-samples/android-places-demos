@@ -134,6 +134,21 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
         _hasAnimatedToPlace.value = false
     }
 
+    // **Content Selection State**
+    private val _selectedCompactContent = MutableStateFlow(com.google.android.libraries.places.widget.PlaceDetailsCompactFragment.ALL_CONTENT)
+    val selectedCompactContent: StateFlow<List<com.google.android.libraries.places.widget.PlaceDetailsCompactFragment.Content>> = _selectedCompactContent.asStateFlow()
+
+    private val _selectedFullContent = MutableStateFlow(com.google.android.libraries.places.widget.PlaceDetailsFragment.STANDARD_CONTENT)
+    val selectedFullContent: StateFlow<List<com.google.android.libraries.places.widget.PlaceDetailsFragment.Content>> = _selectedFullContent.asStateFlow()
+
+    fun updateCompactContent(content: List<com.google.android.libraries.places.widget.PlaceDetailsCompactFragment.Content>) {
+        _selectedCompactContent.value = content
+    }
+
+    fun updateFullContent(content: List<com.google.android.libraries.places.widget.PlaceDetailsFragment.Content>) {
+        _selectedFullContent.value = content
+    }
+
     fun onDismissPlace() {
         _selectedPlace.value = null
         _hasAnimatedToPlace.value = false

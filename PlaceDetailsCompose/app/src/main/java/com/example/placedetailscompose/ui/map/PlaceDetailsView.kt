@@ -60,6 +60,7 @@ fun PlaceDetailsCompactView(
     place: Place,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
+    content: List<PlaceDetailsCompactFragment.Content> = PlaceDetailsCompactFragment.ALL_CONTENT,
 ) {
     // We need to know the device orientation to tell the Fragment how to lay itself out.
     // Although Compose handles layout differently, the underlying Fragment still relies on this signal.
@@ -86,10 +87,10 @@ fun PlaceDetailsCompactView(
             ?: throw IllegalStateException("Context must be a FragmentActivity")
     }
 
-    val fragment = remember(fragmentManager, fragmentContainerId, orientation) {
+    val fragment = remember(fragmentManager, fragmentContainerId, orientation, content) {
         fragmentManager.findFragmentById(fragmentContainerId) as? PlaceDetailsCompactFragment
             ?: PlaceDetailsCompactFragment.newInstance(
-                PlaceDetailsCompactFragment.ALL_CONTENT,
+                content,
                 orientation,
             ).also { fragment ->
                 // **Listening for Load Events**
@@ -133,7 +134,7 @@ fun PlaceDetailsCompactView(
                 view.post {
                     // Load the place data
                     if (place.id != null) {
-                        fragment.loadWithPlaceId(place.id)
+                        fragment.loadWithPlaceId(place.id!!)
                     } else if (place.location != null) {
                          fragment.loadWithCoordinates(place.location!!)
                     } else {
@@ -171,6 +172,7 @@ fun PlaceDetailsFullView(
     place: Place,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
+    content: List<com.google.android.libraries.places.widget.PlaceDetailsFragment.Content> = com.google.android.libraries.places.widget.PlaceDetailsFragment.STANDARD_CONTENT,
 ) {
     val orientation =
         if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -180,70 +182,78 @@ fun PlaceDetailsFullView(
         }
 
     val context = LocalContext.current
-    val fragmentManager = (context as? AppCompatActivity)?.supportFragmentManager
+    val fragmentManager = remember(context) {
+        (context as? AppCompatActivity)?.supportFragmentManager
+            ?: throw IllegalStateException("Context must be a FragmentActivity")
+    }
 
     val fragmentContainerId = remember { View.generateViewId() }
 
-    Box(modifier = modifier.fillMaxWidth()) {
-        AndroidView(
-            modifier = Modifier.fillMaxSize(),
-            factory = { context ->
-                FragmentContainerView(context).apply {
-                    id = fragmentContainerId
-                }
-            },
-            update = { view ->
-                if (fragmentManager == null) return@AndroidView
+    val fragment = remember(fragmentManager, fragmentContainerId, orientation, content) {
+        fragmentManager.findFragmentById(fragmentContainerId) as? com.google.android.libraries.places.widget.PlaceDetailsFragment
+            ?: com.google.android.libraries.places.widget.PlaceDetailsFragment.newInstance(
+                content,
+                orientation,
+            ).also { fragment ->
+                fragment.setPlaceLoadListener(object : PlaceLoadListener {
+                    override fun onSuccess(place: Place) {
+                        Log.d("PlaceDetailsFullView", "Place loaded: $place")
+                    }
 
-                var fragment =
-                    fragmentManager.findFragmentById(view.id) as? com.google.android.libraries.places.widget.PlaceDetailsFragment
+                    override fun onFailure(e: Exception) {
+                        Log.d("PlaceDetailsFullView", "Place failed to load place: ${e.message}")
+                        onDismiss()
+                    }
+                })
+            }
+    }
 
-                if (fragment == null) {
-                    fragment = com.google.android.libraries.places.widget.PlaceDetailsFragment.newInstance(
-                        com.google.android.libraries.places.widget.PlaceDetailsFragment.STANDARD_CONTENT,
-                        orientation,
-                    )
-                    fragmentManager.beginTransaction()
-                        .replace(view.id, fragment)
-                        .commit()
-
-                    fragment.setPlaceLoadListener(object : PlaceLoadListener {
-                        override fun onSuccess(place: Place) {
-                            Log.d("PlaceDetailsFullView", "Place loaded: $place")
+    Box(modifier = modifier.fillMaxSize()) {
+        // Container for the bottom sheet content
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+        ) {
+            AndroidView(
+                modifier = Modifier.fillMaxWidth(),
+                factory = { context ->
+                    FragmentContainerView(context).apply {
+                        id = fragmentContainerId
+                        if (fragmentManager.findFragmentById(fragmentContainerId) == null) {
+                            fragmentManager.beginTransaction()
+                                .add(fragmentContainerId, fragment)
+                                .commit()
                         }
-
-                        override fun onFailure(e: Exception) {
-                            Log.d("PlaceDetailsFullView", "Place failed to load place: ${e.message}")
-                            onDismiss()
+                    }
+                },
+                update = { view ->
+                    view.post {
+                        if (place.id != null) {
+                            fragment.loadWithPlaceId(place.id!!)
+                        } else if (place.location != null) {
+                            fragment.loadWithCoordinates(place.location!!)
+                        } else {
+                             Log.e("PlaceDetailsFullView", "Place has no ID and no location: $place")
                         }
-                    })
-                }
-
-                view.post {
-                    if (place.id != null) {
-                        fragment.loadWithPlaceId(place.id)
-                    } else if (place.location != null) {
-                        fragment.loadWithCoordinates(place.location!!)
-                    } else {
-                         Log.e("PlaceDetailsFullView", "Place has no ID and no location: $place")
                     }
                 }
-            }
-        )
-
-        // Close Button
-        IconButton(
-            onClick = onDismiss,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(16.dp)
-                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f), shape = CircleShape)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = "Close",
-                tint = MaterialTheme.colorScheme.onSurface
             )
+
+            // Close Button
+            IconButton(
+                onClick = onDismiss,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp)
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f), shape = CircleShape)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Close",
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+            }
         }
     }
 }
