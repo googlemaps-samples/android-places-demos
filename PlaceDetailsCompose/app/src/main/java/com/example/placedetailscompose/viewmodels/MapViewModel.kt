@@ -68,7 +68,7 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
         _permissionGranted.value = true
     }
 
-    private val _selectedPlace = MutableStateFlow<PointOfInterest?>(null)
+    private val _selectedPlace = MutableStateFlow<com.google.android.libraries.places.api.model.Place?>(null)
     val selectedPlace = _selectedPlace.asStateFlow()
 
     // **User Tracking State**
@@ -76,6 +76,11 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     // It starts as `true` (following) but can be disabled by user interaction (dragging).
     private val _isMapFollowingUser = MutableStateFlow(true)
     val isMapFollowingUser: StateFlow<Boolean> = _isMapFollowingUser.asStateFlow()
+
+    // **Coordinate Mode State**
+    // This state determines whether clicking the map triggers Place Details for the clicked coordinates.
+    private val _isCoordinateMode = MutableStateFlow(false)
+    val isCoordinateMode: StateFlow<Boolean> = _isCoordinateMode.asStateFlow()
 
     private val _hasAnimatedToPlace = MutableStateFlow(false)
     val hasAnimatedToPlace: StateFlow<Boolean> = _hasAnimatedToPlace.asStateFlow()
@@ -101,7 +106,47 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun onPoiClicked(poi: PointOfInterest) {
-        _selectedPlace.value = poi
+        // When a POI is clicked, we create a Place object with the ID and LatLng.
+        // This allows us to load details using the Place ID.
+        val place = com.google.android.libraries.places.api.model.Place.builder()
+            .setId(poi.placeId)
+            .setLocation(poi.latLng)
+            .setDisplayName(poi.name)
+            .build()
+        _selectedPlace.value = place
+    }
+
+    fun onMapClicked(latLng: LatLng) {
+        if (_isCoordinateMode.value) {
+            // In Coordinate Mode, we create a Place object with just the LatLng.
+            // The Place Details UI will load details for this location.
+            val place = com.google.android.libraries.places.api.model.Place.builder()
+                .setLocation(latLng)
+                .build()
+            _selectedPlace.value = place
+        }
+    }
+
+    fun onToggleCoordinateMode(enabled: Boolean) {
+        _isCoordinateMode.value = enabled
+        // Clear selection when switching modes to avoid confusion
+        _selectedPlace.value = null
+        _hasAnimatedToPlace.value = false
+    }
+
+    // **Content Selection State**
+    private val _selectedCompactContent = MutableStateFlow(com.google.android.libraries.places.widget.PlaceDetailsCompactFragment.ALL_CONTENT)
+    val selectedCompactContent: StateFlow<List<com.google.android.libraries.places.widget.PlaceDetailsCompactFragment.Content>> = _selectedCompactContent.asStateFlow()
+
+    private val _selectedFullContent = MutableStateFlow(com.google.android.libraries.places.widget.PlaceDetailsFragment.STANDARD_CONTENT)
+    val selectedFullContent: StateFlow<List<com.google.android.libraries.places.widget.PlaceDetailsFragment.Content>> = _selectedFullContent.asStateFlow()
+
+    fun updateCompactContent(content: List<com.google.android.libraries.places.widget.PlaceDetailsCompactFragment.Content>) {
+        _selectedCompactContent.value = content
+    }
+
+    fun updateFullContent(content: List<com.google.android.libraries.places.widget.PlaceDetailsFragment.Content>) {
+        _selectedFullContent.value = content
     }
 
     fun onDismissPlace() {
