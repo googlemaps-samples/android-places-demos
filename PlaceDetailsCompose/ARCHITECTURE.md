@@ -30,9 +30,6 @@ The `MapViewModel` uses `StateFlow` to expose reactive state to the UI.
 -   **`flatMapLatest`**: Used for location updates to automatically switch between "no location" and "location updates" based on permission state.
 -   **`combine` / `map`**: derived state is computed reactively.
 
-### 3. "Literate" Codebase
-The code is designed to be self-documenting for learning purposes. Key decisions (like *why* `AndroidView` is used or *why* `flatMapLatest` is chosen) are explained in block comments directly in the source.
-
 ## Common Integration Challenges
 
 When integrating the Places UI Kit (View-based) into a Jetpack Compose app, there are a few specific implementation details to be aware of:

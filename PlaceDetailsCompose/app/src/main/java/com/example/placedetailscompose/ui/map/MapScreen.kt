@@ -19,7 +19,14 @@ import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.ui.draw.scale
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,15 +36,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MyLocation
-import androidx.compose.material.icons.outlined.MyLocation
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ChevronLeft
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandHorizontally
-import androidx.compose.animation.shrinkHorizontally
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -55,10 +55,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.placedetailscompose.R
 import com.example.placedetailscompose.viewmodels.MapViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -108,7 +109,7 @@ fun MapScreen(
         ) {
             viewModel.onPermissionGranted()
         } else {
-            Toast.makeText(context, context.getString(com.example.placedetailscompose.R.string.location_permission_denied), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context.getString(R.string.location_permission_denied), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -258,50 +259,66 @@ fun MapScreen(
                 enter = expandHorizontally(expandFrom = Alignment.Start) + fadeIn(),
                 exit = shrinkHorizontally(shrinkTowards = Alignment.Start) + fadeOut()
             ) {
-                Column(
+                // **Controls Card**
+                androidx.compose.material3.ElevatedCard(
                     modifier = Modifier
-                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f), RoundedCornerShape(8.dp))
-                        .padding(8.dp),
-                    horizontalAlignment = Alignment.End // Align switches to the end
+                        .padding(8.dp)
+                        .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(12.dp)) // Optional if Card default isn't enough, but Card handles this
                 ) {
-                    // **View Mode Toggle**
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(bottom = 8.dp)
+                    Column(
+                        modifier = Modifier
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
-                            text = if (isFullView) stringResource(com.example.placedetailscompose.R.string.full_view) else stringResource(com.example.placedetailscompose.R.string.compact_view),
-                            style = MaterialTheme.typography.labelMedium,
-                            modifier = Modifier.padding(end = 8.dp)
-                        )
-                        Switch(
-                            checked = isFullView,
-                            onCheckedChange = { isFullView = it }
-                        )
-                    }
+                        // **Toggles Row**
+                        Row(
+                            modifier = Modifier.padding(bottom = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(24.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            // **View Mode Toggle**
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(end = 16.dp)
+                            ) {
+                                Text(
+                                    text = if (isFullView) stringResource(R.string.full_view) else stringResource(R.string.compact_view),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    modifier = Modifier.padding(bottom = 4.dp)
+                                )
+                                Switch(
+                                    checked = isFullView,
+                                    onCheckedChange = { isFullView = it },
+                                    modifier = Modifier.scale(0.8f) // Make switches slightly smaller
+                                )
+                            }
 
-                    // **Coordinate Mode Toggle**
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    ) {
-                        Text(
-                            text = if (isCoordinateMode) stringResource(com.example.placedetailscompose.R.string.coords_mode) else stringResource(com.example.placedetailscompose.R.string.poi_mode),
-                            style = MaterialTheme.typography.labelMedium,
-                            modifier = Modifier.padding(end = 8.dp)
-                        )
-                        Switch(
-                            checked = isCoordinateMode,
-                            onCheckedChange = { viewModel.onToggleCoordinateMode(it) }
-                        )
-                    }
+                            // **Coordinate Mode Toggle**
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = if (isCoordinateMode) stringResource(R.string.coords_mode) else stringResource(R.string.poi_mode),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    modifier = Modifier.padding(bottom = 4.dp)
+                                )
+                                Switch(
+                                    checked = isCoordinateMode,
+                                    onCheckedChange = { viewModel.onToggleCoordinateMode(it) },
+                                    modifier = Modifier.scale(0.8f)
+                                )
+                            }
+                        }
+                        
+                        androidx.compose.material3.HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
 
-                    // **Select Fields Button**
-                    androidx.compose.material3.Button(
-                        onClick = { showContentSelectionDialog = true },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(stringResource(com.example.placedetailscompose.R.string.select_fields))
+                        // **Select Fields Button**
+                        androidx.compose.material3.FilledTonalButton(
+                            onClick = { showContentSelectionDialog = true },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(stringResource(R.string.select_fields))
+                        }
                     }
                 }
             }
