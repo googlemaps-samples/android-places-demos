@@ -31,7 +31,6 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.placesdemo.databinding.AutocompleteAddressActivityBinding
 import com.google.android.gms.location.LocationServices
@@ -51,7 +50,7 @@ import androidx.core.view.isGone
 /**
  *  Activity for using Place Autocomplete to assist filling out an address form.
  */
-class AutocompleteAddressActivity : AppCompatActivity(R.layout.autocomplete_address_activity),
+class AutocompleteAddressActivity : BaseActivity(),
     OnMapReadyCallback {
     private lateinit var mapPanel: View
 
@@ -87,7 +86,7 @@ class AutocompleteAddressActivity : AppCompatActivity(R.layout.autocomplete_addr
                 // The user canceled the operation.
                 Log.i(TAG, "User canceled autocomplete")
             }
-        } as ActivityResultCallback<ActivityResult>)
+        })
     // [END maps_solutions_android_autocomplete_define]
 
     // [START maps_solutions_android_autocomplete_intent]
@@ -96,7 +95,7 @@ class AutocompleteAddressActivity : AppCompatActivity(R.layout.autocomplete_addr
         // return after the user has made a selection.
         val fields = listOf(
             Place.Field.ADDRESS_COMPONENTS,
-            Place.Field.LAT_LNG, Place.Field.VIEWPORT
+            Place.Field.LOCATION, Place.Field.VIEWPORT
         )
 
         // Build the autocomplete intent with field, country, and type filters applied
@@ -112,8 +111,13 @@ class AutocompleteAddressActivity : AppCompatActivity(R.layout.autocomplete_addr
         super.onCreate(savedInstanceState)
 
         binding = AutocompleteAddressActivityBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+        setContentView(binding.root)
+
+        setSupportActionBar(binding.topBar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.topBar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
 
         // Attach an Autocomplete intent to the Address 1 EditText field
         binding.autocompleteAddress1.setOnClickListener(startAutocompleteIntentListener)
@@ -175,7 +179,7 @@ class AutocompleteAddressActivity : AppCompatActivity(R.layout.autocomplete_addr
                 }
                 deviceLocation = LatLng(location.latitude, location.longitude)
                 // [START_EXCLUDE]
-                Log.d(TAG, "device location = " + deviceLocation.toString())
+                Log.d(TAG, "device location = $deviceLocation")
                 Log.d(TAG, "entered location = $enteredLocation")
 
                 // [START maps_solutions_android_location_distance]
@@ -223,7 +227,7 @@ class AutocompleteAddressActivity : AppCompatActivity(R.layout.autocomplete_addr
 
     // [START maps_solutions_android_autocomplete_map_add]
     private fun showMap(place: Place) {
-        coordinates = place.latLng as LatLng
+        coordinates = place.location as LatLng
 
         // It isn't possible to set a fragment's id programmatically so we set a tag instead and
         // search for it using that.

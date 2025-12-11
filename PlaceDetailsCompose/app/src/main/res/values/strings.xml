@@ -1,0 +1,33 @@
+<!--
+     Copyright 2025 Google LLC
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          https://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law_or_agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources>
+    <string name="app_name">Place Details Compose</string>
+    <string name="map_id">YOUR_MAP_ID</string>
+    <string name="location_permission_denied">Location permission denied</string>
+    <string name="full_view">Full View</string>
+    <string name="compact_view">Compact View</string>
+    <string name="coords_mode">Coords Mode</string>
+    <string name="poi_mode">POI Mode</string>
+    <string name="select_fields">Select Fields</string>
+    <string name="select_full_view_fields">Select Full View Fields</string>
+    <string name="select_compact_view_fields">Select Compact View Fields</string>
+    <string name="collapse_settings">Collapse Settings</string>
+    <string name="expand_settings">Expand Settings</string>
+    <string name="close">Close</string>
+    <string name="done">Done</string>
+    <string name="error_api_key_missing">API Key was not set in secrets.properties</string>
+    <string name="error_map_id_missing">Map ID is not set. Some features may not work. See README for instructions.</string>
+</resources>

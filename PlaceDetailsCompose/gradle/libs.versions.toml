@@ -1,0 +1,99 @@
+# This file defines the versions and library dependencies used in the project.
+# By centralizing this information, we ensure consistency across all modules
+# and make it easier to manage updates. For more details on version catalogs, see:
+# https://docs.gradle.org/current/userguide/version_catalog_basics.html
+
+[versions]
+# --- Core Android & Kotlin ---
+# These are the fundamental versions for building the Android app.
+agp = "8.13.1"
+kotlin = "2.2.21"
+coreKtx = "1.17.0"
+fragmentKtx = "1.8.9"
+material = "1.13.0"
+lifecycleViewModelCompose = "2.10.0"
+
+# --- Jetpack Compose ---
+# Versions for Jetpack Compose, Android's modern UI toolkit.
+# The Compose BOM (Bill of Materials) manages the versions of different Compose libraries
+# to ensure they are compatible with each other.
+composeBom = "2025.12.00"
+activityCompose = "1.12.1"
+ui = "1.10.0"
+uiTooling = "1.10.0"
+uiViewbinding = "1.10.0"
+materialIconsExtended = "1.7.8"
+
+# --- Google Services (Maps, Places, Location) ---
+# Versions for Google Play Services libraries, which are essential for this sample.
+googleMaps = "19.2.0"
+places = "5.1.1"
+playServicesLocation = "21.3.0" # Required for the FusedLocationProviderClient to get the device's location.
+mapsCompose = "6.12.2"
+mapsUtilsKtx = "5.2.1"
+
+# --- Testing ---
+# Versions for testing libraries.
+junit = "4.13.2"
+junitVersion = "1.3.0"
+espressoCore = "3.7.0"
+testRules = "1.7.0"
+testRunner = "1.7.0"
+
+# --- Gradle Plugins ---
+# Versions for Gradle plugins used in the build process.
+mapsSecretsGradlePlugin = "2.0.1"
+
+
+[libraries]
+# --- Core Android & Kotlin ---
+# These are the foundational libraries for building a modern Android application with Kotlin.
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleViewModelCompose" }
+androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-compose-material-icons-core = { module = "androidx.compose.material:material-icons-core", version.ref = "materialIconsExtended" }
+
+# --- Jetpack Compose ---
+# The Compose BOM (Bill of Materials) simplifies dependency management by coordinating the versions of various Compose libraries.
+# By using platform(), we don't need to specify versions for individual Compose artifacts.
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "uiTooling" }
+androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "ui" }
+androidx-ui-viewbinding = { group = "androidx.compose.ui", name = "ui-viewbinding", version.ref = "uiViewbinding" }
+androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIconsExtended" }
+
+# --- Google Services (Maps, Places, Location) ---
+# These are the key libraries for this sample app, providing map, place details, and location functionalities.
+google-maps-services = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "googleMaps"}
+places = { module = "com.google.android.libraries.places:places", version.ref = "places" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+maps-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "mapsCompose" }
+maps-compose-widgets = { group = "com.google.maps.android", name = "maps-compose-widgets", version.ref = "mapsCompose" }
+maps-utils-ktx = { group = "com.google.maps.android", name = "maps-utils-ktx", version.ref = "mapsUtilsKtx" }
+
+# --- Testing ---
+# Libraries for running unit tests (on the JVM) and instrumented tests (on an Android device/emulator).
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "testRules" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "testRunner" }
+
+# --- Compose Testing ---
+# Libraries specifically for testing Jetpack Compose UIs.
+androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
+androidx-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+
+
+[plugins]
+# --- Core Gradle Plugins ---
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
+# --- Utility Gradle Plugins ---
+# The secrets plugin is used to securely handle the Places API key, preventing it from being checked into source control.
+secrets-gradle-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "mapsSecretsGradlePlugin" }

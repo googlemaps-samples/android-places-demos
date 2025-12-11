@@ -15,7 +15,6 @@
  */
 package com.example.placesdemo
 
-import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -25,22 +24,21 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.placesdemo.databinding.PlaceDetailsAndPhotosActivityBinding
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.PhotoMetadata
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.net.FetchPhotoRequest
-import com.google.android.libraries.places.api.net.FetchPhotoResponse
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FetchPlaceResponse
+import com.google.android.libraries.places.api.net.FetchResolvedPhotoUriRequest
+import com.google.android.libraries.places.api.net.FetchResolvedPhotoUriResponse
 import com.google.android.libraries.places.api.net.PlacesClient
 
 /**
  * Activity to demonstrate [PlacesClient.fetchPlace].
  */
-class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
+class PlaceDetailsAndPhotosActivity : BaseActivity() {
     private lateinit var placesClient: PlacesClient
     private lateinit var fieldSelector: FieldSelector
 
@@ -54,10 +52,17 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
         binding = PlaceDetailsAndPhotosActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setSupportActionBar(binding.topBar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.topBar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient(this)
-        if (savedInstanceState != null && savedInstanceState.containsKey(FETCHED_PHOTO_KEY)) {
-            photo = savedInstanceState.getParcelable(FETCHED_PHOTO_KEY)
+        // Restore photo from saved instance state if it exists
+        savedInstanceState?.getParcelable<PhotoMetadata>(FETCHED_PHOTO_KEY)?.let { savedPhoto ->
+            photo = savedPhoto
         }
 
         binding.fetchPhotoCheckbox.setOnCheckedChangeListener { _, isChecked: Boolean ->
@@ -143,7 +148,7 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
     private fun attemptFetchIcon(place: Place) {
         binding.icon.setImageBitmap(null)
         place.iconBackgroundColor?.let { binding.icon.setBackgroundColor(it) }
-        val url = place.iconUrl
+        val url = place.iconMaskUrl
         Glide.with(this).load(url).into(binding.icon)
     }
 
@@ -161,7 +166,7 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
         if (!TextUtils.isEmpty(customPhotoReference)) {
             localPhotoMetadata = PhotoMetadata.builder(customPhotoReference).build()
         }
-        val photoRequestBuilder = FetchPhotoRequest.builder(localPhotoMetadata!!)
+        val photoRequestBuilder = FetchResolvedPhotoUriRequest.builder(localPhotoMetadata!!)
         val maxWidth = readIntFromTextView(binding.photoMaxWidth)
         if (maxWidth != null) {
             photoRequestBuilder.maxWidth = maxWidth
@@ -170,11 +175,18 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
         if (maxHeight != null) {
             photoRequestBuilder.maxHeight = maxHeight
         }
-        val photoTask = placesClient.fetchPhoto(photoRequestBuilder.build())
-        photoTask.addOnSuccessListener { response: FetchPhotoResponse ->
-            val bitmap = response.bitmap
-            binding.photo.setImageBitmap(bitmap)
-            StringUtil.prepend(binding.photoMetadata, StringUtil.stringify(bitmap))
+        val photoTask = placesClient.fetchResolvedPhotoUri(photoRequestBuilder.build())
+        photoTask.addOnSuccessListener { response: FetchResolvedPhotoUriResponse ->
+            val uri = response.uri
+            if (uri != null) {
+                Glide.with(binding.photo.context)
+                    .load(uri)
+                    .into(binding.photo)
+
+                StringUtil.prepend(binding.photoMetadata, StringUtil.stringify(uri))
+            } else {
+                StringUtil.prepend(binding.photoMetadata, "No photo available")
+            }
         }
         photoTask.addOnFailureListener { exception: Exception ->
             exception.printStackTrace()
@@ -187,7 +199,7 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
     // Helper methods below //
     //////////////////////////
     private fun dismissKeyboard(focusedEditText: EditText) {
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(focusedEditText.windowToken, 0)
     }
 
@@ -206,7 +218,7 @@ class PlaceDetailsAndPhotosActivity : AppCompatActivity() {
             binding.response.setText(R.string.custom_photo_reference_but_not_fetch_photo)
             return false
         }
-        if (isFetchIconChecked && !placeFields.contains(Place.Field.ICON_URL)) {
+        if (isFetchIconChecked && !placeFields.contains(Place.Field.ICON_MASK_URL)) {
             binding.response.setText(R.string.fetch_icon_missing_fields_warning)
             return false
         }

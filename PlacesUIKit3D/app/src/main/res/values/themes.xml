@@ -1,0 +1,62 @@
+<!--
+ Copyright 2025 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<resources>
+    <style name="Base.Theme.PlacesUIKit3D" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+    </style>
+    <style name="Theme.PlacesUIKit3D" parent="Base.Theme.PlacesUIKit3D" />
+
+    <!--
+    A custom text appearance using our monospaced font.
+    -->
+    <style name="app_text_appearence_mono" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:fontFamily">@font/custom_font</item>
+        <item name="android:textColor">@color/synthwave_on_surface_variant</item>
+    </style>
+
+    <style name="app_text_appearence_mono_label" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:fontFamily">@font/custom_font</item>
+        <item name="android:textColor">@color/synthwave_on_surface</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
+    <!--
+    A custom "Synthwave" theme for the PlaceDetailsCompactFragment.
+    This theme overrides multiple attributes to create a unique, retro-futuristic look.
+    -->
+    <style name="CustomizedPlaceDetailsTheme" parent="PlacesMaterialTheme">
+        <!-- Core Colors -->
+        <item name="placesColorSurface">@color/synthwave_surface</item>
+        <item name="placesColorPrimary">@color/synthwave_primary</item>
+        <item name="placesColorOnSurface">@color/synthwave_on_surface</item>
+        <item name="placesColorOnSurfaceVariant">@color/synthwave_on_surface_variant</item>
+        <item name="placesColorOutlineDecorative">@color/synthwave_outline</item>
+
+        <!-- Status Colors -->
+        <item name="placesColorPositive">@color/synthwave_positive</item>
+        <item name="placesColorNegative">@color/synthwave_negative</item>
+
+        <!-- Shape -->
+        <item name="placesCornerRadius">8dp</item>
+
+        <!-- Typography -->
+        <item name="placesTextAppearanceBodySmall">@style/app_text_appearence_mono</item>
+        <item name="placesTextAppearanceBodyMedium">@style/app_text_appearence_mono</item>
+    </style>
+
+</resources>

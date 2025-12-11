@@ -16,4 +16,35 @@
 
 <resources>
     <string name="app_name">Snippets App</string>
+    <string name="place_is_open">Place Is Open</string>
+    <string name="is_open_by_object">%1$s is open: %2$s</string>
+    <string name="is_open_by_id">Is open by ID: %1$s</string>
+    <string name="start_autocomplete_intent">Start Autocomplete Intent</string>
+    <string name="current_place_likelihood">Place \'%1$s\' has likelihood: %2$f\nAddress: %3$s</string>
+    <string name="place_not_found">Place not found: %1$s</string>
+    <string name="place_selection">Place: %1$s, %2$s\n%3$s</string>
+    <string name="place_location">%1$.5f, %2$.5f</string>
+    <string name="an_error_occurred">An error occurred: %1$s</string>
+    <string name="user_canceled_autocomplete">User canceled autocomplete</string>
+    <string name="place_found">Place found: %1$s</string>
+    <string name="current_place_title">Current Place</string>
+    <string name="place_autocomplete_title">Place Autocomplete</string>
+    <string name="place_details_title">Place Details</string>
+    <string name="place_photos_title">Place Photos</string>
+    <string name="places_icon_title">Places Icon</string>
+    <string name="main_activity_title">Snippets</string>
+    <string name="current_place_description">Demonstrates how to find the user\'s current place.</string>
+    <string name="place_autocomplete_description">Demonstrates both the autocomplete fragment and intent.</string>
+    <string name="place_details_description">Demonstrates how to get the details of a place.</string>
+    <string name="place_photos_description">Demonstrates how to get photos of a place.</string>
+    <string name="places_icon_description">Demonstrates how to get the icon of a place.</string>
+    <string name="place_is_open_description">Demonstrates how to check if a place is open.</string>
+    <string name="permission_denied">Location permission denied. This feature is unavailable.</string>
+    <string name="enter_a_query">Enter a query</string>
+    <string name="get_programmatic_predictions">Get Programmatic Predictions</string>
+    <string name="is_open_by_place_object">Is Open by Place Object</string>
+    <string name="is_open_by_place_id">Is Open by Place ID</string>
+    <string name="place_photo">place photo</string>
+    <string name="is_open">Open</string>
+    <string name="is_closed">Closed</string>
 </resources>

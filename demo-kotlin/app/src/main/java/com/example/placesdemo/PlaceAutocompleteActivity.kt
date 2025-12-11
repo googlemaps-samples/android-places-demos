@@ -25,7 +25,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import com.example.placesdemo.databinding.PlaceAutocompleteActivityBinding
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.model.LatLng
@@ -38,9 +37,9 @@ import com.google.android.libraries.places.api.model.RectangularBounds
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.libraries.places.api.net.PlacesClient
-import com.google.android.libraries.places.widget.Autocomplete
-import com.google.android.libraries.places.widget.AutocompleteActivity
+import com.google.android.libraries.places.widget.PlaceAutocompleteActivity
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
+import com.google.android.libraries.places.widget.PlaceAutocomplete
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 
@@ -48,7 +47,7 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
  * Activity to demonstrate Place Autocomplete (activity widget intent, fragment widget, and
  * [PlacesClient.findAutocompletePredictions]).
  */
-class PlaceAutocompleteActivity : AppCompatActivity() {
+class PlaceAutocompleteActivity : BaseActivity() {
 
     private lateinit var placesClient: PlacesClient
     private lateinit var fieldSelector: FieldSelector
@@ -60,6 +59,12 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
 
         binding = PlaceAutocompleteActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setSupportActionBar(binding.topBar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.topBar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient(this)
@@ -132,28 +137,27 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
     private var autocompleteLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         result ->
         when (result.resultCode) {
-            AutocompleteActivity.RESULT_OK -> {
+            RESULT_OK -> {
                 val data: Intent? = result.data
                 if (data != null) {
-                    val place = Autocomplete.getPlaceFromIntent(data)
+                    val place = PlaceAutocomplete.getPredictionFromIntent(data)
                     binding.response.text =
-                        StringUtil.stringifyAutocompleteWidget(place, isDisplayRawResultsChecked)
+                        StringUtil.stringifyAutocompletePrediction(place, isDisplayRawResultsChecked)
                 }
             }
-            AutocompleteActivity.RESULT_ERROR -> {
-                val status = Autocomplete.getStatusFromIntent(intent)
-                binding.response.text = status.statusMessage
+            PlaceAutocompleteActivity.RESULT_ERROR -> {
+                val status = PlaceAutocomplete.getResultStatusFromIntent(intent)
+                binding.response.text = status?.statusMessage
             }
-            AutocompleteActivity.RESULT_CANCELED -> {
+            RESULT_CANCELED -> {
                 // The user canceled the operation.
             }
         }
     }
 
     private fun startAutocompleteActivity() {
-        val autocompleteIntent = Autocomplete.IntentBuilder(mode, placeFields)
+        val autocompleteIntent = PlaceAutocomplete.IntentBuilder()
             .setInitialQuery(query)
-            .setHint(hint)
             .setCountries(countries)
             .setLocationBias(locationBias)
             .setLocationRestriction(locationRestriction)
@@ -264,6 +268,7 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
         else emptyList()
     }
 
+    // This Enum is deprecated, but there is no replacement. See https://developers.google.com/maps/documentation/places/android-sdk/reference/com/google/android/libraries/places/widget/model/AutocompleteActivityMode
     private val mode: AutocompleteActivityMode
         get() {
             val isOverlayMode =

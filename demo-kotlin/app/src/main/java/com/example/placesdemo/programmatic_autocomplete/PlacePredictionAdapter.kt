@@ -51,9 +51,11 @@ class PlacePredictionAdapter : RecyclerView.Adapter<PlacePredictionViewHolder>()
     }
 
     fun setPredictions(predictions: List<AutocompletePrediction>?) {
-        this.predictions.clear()
-        this.predictions.addAll(predictions!!)
-        notifyDataSetChanged()
+        if (predictions != null) {
+            this.predictions.clear()
+            this.predictions.addAll(predictions)
+            notifyDataSetChanged()
+        }
     }
 
     class PlacePredictionViewHolder(itemView: View) : ViewHolder(itemView) {
@@ -64,9 +66,5 @@ class PlacePredictionAdapter : RecyclerView.Adapter<PlacePredictionViewHolder>()
             title.text = prediction.getPrimaryText(null)
             address.text = prediction.getSecondaryText(null)
         }
-    }
-
-    interface OnPlaceClickListener {
-        fun onPlaceClicked(place: AutocompletePrediction)
     }
 }

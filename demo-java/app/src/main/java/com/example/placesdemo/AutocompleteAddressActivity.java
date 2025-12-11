@@ -52,17 +52,17 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AddressComponent;
 import com.google.android.libraries.places.api.model.AddressComponents;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.model.PlaceTypes;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.google.maps.android.SphericalUtil.computeDistanceBetween;
+import androidx.activity.EdgeToEdge;
 
 /**
  * Activity for using Place Autocomplete to assist filling out an address form.
@@ -118,6 +118,8 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Enable edge-to-edge display. This must be called before calling super.onCreate().
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
 
         binding = AutocompleteAddressActivityBinding.inflate(getLayoutInflater());
@@ -151,14 +153,12 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
         // Set the fields to specify which types of place data to
         // return after the user has made a selection.
         List<Place.Field> fields = Arrays.asList(Place.Field.ADDRESS_COMPONENTS,
-                Place.Field.LAT_LNG, Place.Field.VIEWPORT);
+                Place.Field.LOCATION, Place.Field.VIEWPORT);
 
         // Build the autocomplete intent with field, country, and type filters applied
         Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
-                .setCountries(Arrays.asList("US"))
-                .setTypesFilter(new ArrayList<String>() {{
-                    add(TypeFilter.ADDRESS.toString().toLowerCase());
-                }})
+                .setCountries(List.of("US"))
+                .setTypesFilter(List.of("establishment"))
                 .build(this);
         startAutocomplete.launch(intent);
     }
@@ -248,7 +248,7 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
 
     // [START maps_solutions_android_autocomplete_map_add]
     private void showMap(Place place) {
-        coordinates = place.getLatLng();
+        coordinates = place.getLocation();
 
         // It isn't possible to set a fragment's id programmatically so we set a tag instead and
         // search for it using that.

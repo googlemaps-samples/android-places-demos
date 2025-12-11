@@ -15,7 +15,6 @@
 package com.example.placesdemo.model
 
 import java.io.Serializable
-import java.util.*
 
 class GeocodingResult : Serializable {
     /**
@@ -77,9 +76,9 @@ class GeocodingResult : Serializable {
         sb.append(" placeId=").append(placeId)
         sb.append(" ").append(geometry)
         sb.append(", formattedAddress=").append(formattedAddress)
-        sb.append(", types=").append(Arrays.toString(types))
-        if (postcodeLocalities != null && postcodeLocalities!!.size > 0) {
-            sb.append(", postcodeLocalities=").append(Arrays.toString(postcodeLocalities))
+        sb.append(", types=").append(types.contentToString())
+        if (postcodeLocalities != null && postcodeLocalities!!.isNotEmpty()) {
+            sb.append(", postcodeLocalities=").append(postcodeLocalities.contentToString())
         }
         sb.append("]")
         return sb.toString()

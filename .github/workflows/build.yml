@@ -15,7 +15,7 @@
 name: Build demos
 
 # Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
+# events but only for the main branch
 on:
   push:
     branches: [ main ]
@@ -27,91 +27,106 @@ on:
     - cron: '0 0 * * 1'
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build-demo-java:
-    runs-on: ubuntu-22.04 
+    runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: set up JDK 17
-      uses: actions/setup-java@v4.2.1
-      with:
-        java-version: '17'
-        distribution: 'adopt'
+      - name: set up JDK 17
+        uses: actions/setup-java@v4.2.1
+        with:
+          java-version: '17'
+          distribution: 'adopt'
 
-    - name: Install NDK
-      run: |
-        sudo ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --install "ndk;20.0.5594570"
+      - name: Install NDK
+        run: |
+          sudo ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --install "ndk;20.0.5594570"
 
-    - name: Build and check
-      run: cd demo-java && ./gradlew assembleDebug lint
+      - name: Build and check
+        run: cd demo-java && ./gradlew assembleDebug lint
 
-    - name: Upload build reports
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: demo-java-build-reports
-        path: demo-java/app/build/reports
+      - name: Upload build reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: demo-java-build-reports
+          path: demo-java/app/build/reports
 
   build-demo-kotlin:
-    runs-on: ubuntu-22.04 
+    runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: set up JDK 17
-      uses: actions/setup-java@v4.2.1
-      with:
-        java-version: '17'
-        distribution: 'adopt'
+      - name: set up JDK 17
+        uses: actions/setup-java@v4.2.1
+        with:
+          java-version: '17'
+          distribution: 'adopt'
 
-    - name: Install NDK
-      run: |
-        sudo ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --install "ndk;20.0.5594570"
+      - name: Install NDK
+        run: |
+          sudo ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --install "ndk;20.0.5594570"
 
-    - name: Build and check
-      run: cd demo-kotlin && ./gradlew assembleDebug lint
+      - name: Build and check
+        run: cd demo-kotlin && ./gradlew assembleDebug lint
 
-    - name: Upload build reports
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: demo-kotlin-build-reports
-        path: demo-kotlin/app/build/reports
+      - name: Upload build reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: demo-kotlin-build-reports
+          path: demo-kotlin/app/build/reports
 
   build-snippets:
-    runs-on: ubuntu-22.04 
+    runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: set up JDK 17
-      uses: actions/setup-java@v4.2.1
-      with:
-        java-version: '17'
-        distribution: 'adopt'
+      - name: set up JDK 17
+        uses: actions/setup-java@v4.2.1
+        with:
+          java-version: '17'
+          distribution: 'adopt'
 
-    - name: Install NDK
-      run: |
-        sudo ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --install "ndk;20.0.5594570"
+      - name: Install NDK
+        run: |
+          sudo ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --install "ndk;20.0.5594570"
 
-    - name: Build and check
-      run: cd snippets && ./gradlew assembleDebug lint
+      - name: Build and check
+        run: cd snippets && ./gradlew assembleDebug lint
 
-    - name: Upload build reports
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: snippets-build-reports
-        path: snippets/app/build/reports
+      - name: Upload build reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: snippets-build-reports
+          path: snippets/app/build/reports
 
-  test: # used as required status check
-    runs-on: ubuntu-22.04 
+  build-place-details-uikit:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: set up JDK 17
+        uses: actions/setup-java@v4.2.1
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      - name: Build and test PlaceDetailsUIKit
+        run: cd PlaceDetailsUIKit && ./gradlew assembleDebug lint test
+
+  test:
+    runs-on: ubuntu-22.04
     needs:
       - build-demo-java
       - build-demo-kotlin
       - build-snippets
+      - build-place-details-uikit
     steps:
       - run: echo "Fail if all other steps are not successful"

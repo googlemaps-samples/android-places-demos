@@ -1,3 +1,19 @@
+/*
+ * Copyright 2025 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.placesdemo;
 
 import android.annotation.SuppressLint;
@@ -37,6 +53,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import androidx.activity.EdgeToEdge;
+
 /**
  * Activity to demonstrate {@link PlacesClient#isOpen(IsOpenRequest)}.
  */
@@ -52,6 +70,8 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        // Enable edge-to-edge display. This must be called before calling super.onCreate().
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
 
         binding = PlaceIsOpenActivityBinding.inflate(getLayoutInflater());
@@ -210,11 +230,11 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
             return fieldSelector.getSelectedFields();
         } else {
             return new ArrayList<>(Arrays.asList(
-                    Field.ADDRESS,
+                    Field.FORMATTED_ADDRESS,
                     Field.BUSINESS_STATUS,
                     Field.CURRENT_OPENING_HOURS,
                     Field.ID,
-                    Field.NAME,
+                    Field.DISPLAY_NAME,
                     Field.OPENING_HOURS,
                     Field.UTC_OFFSET
             ));

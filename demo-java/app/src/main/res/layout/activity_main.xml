@@ -15,56 +15,68 @@
  limitations under the License.
 -->
 
-<LinearLayout
+<!--
+  The ScrollView is used to ensure that all content is visible on smaller devices.
+  android:fitsSystemWindows="true" is required to be set on the root view so that the
+  system insets are applied to the content, preventing it from being obscured by the system bars.
+-->
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/spacing_large"
-    android:orientation="vertical"
+    android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-  <Button
-      android:id="@+id/autocomplete_button"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_margin="@dimen/spacing_small"
-      android:text="@string/autocomplete_button"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_large">
 
-  <Button
-      android:id="@+id/autocomplete_address_button"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_margin="@dimen/spacing_small"
-      android:text="@string/autocomplete_address_button"/>
-  
-  <Button
-      android:id="@+id/programmatic_autocomplete_button"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_margin="@dimen/spacing_small"
-      android:text="@string/programmatic_autocomplete_geocoding_button"/>
+        <Button
+            android:id="@+id/autocomplete_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_small"
+            android:text="@string/autocomplete_button"/>
 
-  <Button
-      android:id="@+id/current_place_button"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_margin="@dimen/spacing_small"
-      android:text="@string/current_place_button"/>
-  
-  <Button
-      android:id="@+id/place_and_photo_button"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_margin="@dimen/spacing_small"
-      android:text="@string/place_and_photo_button"/>
+        <Button
+            android:id="@+id/autocomplete_address_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_small"
+            android:text="@string/autocomplete_address_button"/>
 
-  <Button
-      android:id="@+id/is_open_button"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_margin="@dimen/spacing_small"
-      android:text="@string/main_isOpenButtonText"/>
+        <Button
+            android:id="@+id/programmatic_autocomplete_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_small"
+            android:text="@string/programmatic_autocomplete_geocoding_button"/>
 
-</LinearLayout>
+        <Button
+            android:id="@+id/current_place_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_small"
+            android:text="@string/current_place_button"/>
+
+        <Button
+            android:id="@+id/place_and_photo_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_small"
+            android:text="@string/place_and_photo_button"/>
+
+        <Button
+            android:id="@+id/is_open_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_small"
+            android:text="@string/main_isOpenButtonText"/>
+
+    </LinearLayout>
+
+</ScrollView>
 

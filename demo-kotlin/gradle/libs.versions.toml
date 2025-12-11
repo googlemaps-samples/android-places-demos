@@ -1,21 +1,22 @@
 [versions]
-androidGradlePlugin = "8.8.0"
-appcompat = "1.7.0"
-coreKtx = "1.15.0"
-glide = "4.16.0"
-kotlin = "2.1.0"
+androidGradlePlugin = "8.13.0"
+appcompat = "1.7.1"
+coreKtx = "1.17.0"
+glide = "5.0.5"
+kotlin = "2.2.20"
 mapsSecretsGradlePlugin = "2.0.1"
-mapsUtilsKtx = "5.1.1"
-material = "1.12.0"
+mapsUtilsKtx = "5.2.0"
+material = "1.13.0"
 multidex = "2.0.1"
-places = "4.1.0"
-viewbinding = "8.8.0"
+places = "5.0.0"
+viewbinding = "8.13.0"
 volley = "1.2.1"
-kotlinParcelize = "1.9.24"
+kotlinParcelize = "2.2.20"
 
 [libraries]
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 maps-utils-ktx = { module = "com.google.maps.android:maps-utils-ktx", version.ref = "mapsUtilsKtx" }
 material = { module = "com.google.android.material:material", version.ref = "material" }

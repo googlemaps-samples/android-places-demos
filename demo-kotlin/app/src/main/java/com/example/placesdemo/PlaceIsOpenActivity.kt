@@ -18,14 +18,12 @@ package com.example.placesdemo
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
-import androidx.appcompat.app.AppCompatActivity
 import com.example.placesdemo.StringUtil.stringify
 import com.example.placesdemo.databinding.PlaceIsOpenActivityBinding
 import com.google.android.gms.tasks.Task
@@ -38,12 +36,14 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-import java.util.TimeZone.*
+import java.util.TimeZone.getAvailableIDs
+import java.util.TimeZone.getDefault
+import java.util.TimeZone.getTimeZone
 
 /**
  * Activity to demonstrate [PlacesClient.isOpen].
  */
-class PlaceIsOpenActivity : AppCompatActivity() {
+class PlaceIsOpenActivity : BaseActivity() {
     private val defaultTimeZone = getDefault()
     private val defaultTimeZoneID: String = defaultTimeZone.id
 
@@ -58,6 +58,12 @@ class PlaceIsOpenActivity : AppCompatActivity() {
 
         binding = PlaceIsOpenActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setSupportActionBar(binding.topBar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.topBar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient( /* context = */this)
@@ -173,7 +179,7 @@ class PlaceIsOpenActivity : AppCompatActivity() {
     //////////////////////////
     private fun dismissKeyboard(focusedEditText: EditText) {
         val imm: InputMethodManager =
-            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(focusedEditText.windowToken, 0)
     }
 
@@ -189,11 +195,11 @@ class PlaceIsOpenActivity : AppCompatActivity() {
             fieldSelector.selectedFields
         } else {
             listOf(
-                Place.Field.ADDRESS,
+                Place.Field.FORMATTED_ADDRESS,
                 Place.Field.BUSINESS_STATUS,
                 Place.Field.CURRENT_OPENING_HOURS,
                 Place.Field.ID,
-                Place.Field.NAME,
+                Place.Field.DISPLAY_NAME,
                 Place.Field.OPENING_HOURS,
                 Place.Field.UTC_OFFSET
             )

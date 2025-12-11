@@ -26,10 +26,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.placesdemo.programmatic_autocomplete.ProgrammaticAutocompleteToolbarActivity;
 import com.google.android.libraries.places.api.Places;
 
+import androidx.activity.EdgeToEdge;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        // Enable edge-to-edge display. This must be called before calling super.onCreate().
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 

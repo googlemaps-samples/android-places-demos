@@ -23,23 +23,27 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresPermission
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.placesdemo.databinding.CurrentPlaceActivityBinding
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.CircularBounds
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
-import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.libraries.places.api.net.SearchNearbyRequest
+import com.google.android.libraries.places.api.net.SearchNearbyResponse
 
 /**
  * Activity to demonstrate [PlacesClient.findCurrentPlace].
  */
-class CurrentPlaceActivity : AppCompatActivity() {
+class CurrentPlaceActivity : BaseActivity() {
     private lateinit var placesClient: PlacesClient
     private lateinit var fieldSelector: FieldSelector
 
     private lateinit var binding: CurrentPlaceActivityBinding
+
+    val boulderCenter = LatLng(40.01499, -105.27055)
+    val radiusMeters = 5000.0
 
     @SuppressLint("MissingPermission")
     val requestPermissionLauncher =
@@ -66,6 +70,11 @@ class CurrentPlaceActivity : AppCompatActivity() {
 
         binding = CurrentPlaceActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSupportActionBar(binding.topBar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.topBar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
         placesClient = Places.createClient(this)
@@ -81,7 +90,7 @@ class CurrentPlaceActivity : AppCompatActivity() {
             Place.Field.EDITORIAL_SUMMARY,
             Place.Field.INTERNATIONAL_PHONE_NUMBER,
             Place.Field.OPENING_HOURS,
-            Place.Field.PHONE_NUMBER,
+            Place.Field.NATIONAL_PHONE_NUMBER,
             Place.Field.RESERVABLE,
             Place.Field.SECONDARY_OPENING_HOURS,
             Place.Field.SERVES_BEER,
@@ -94,7 +103,7 @@ class CurrentPlaceActivity : AppCompatActivity() {
             Place.Field.TAKEOUT,
             Place.Field.UTC_OFFSET,
             Place.Field.WEBSITE_URI,
-            Place.Field.WHEELCHAIR_ACCESSIBLE_ENTRANCE,
+            Place.Field.ACCESSIBILITY_OPTIONS,
         )
         fieldSelector = FieldSelector(
             binding.useCustomFields,
@@ -141,9 +150,9 @@ class CurrentPlaceActivity : AppCompatActivity() {
     @RequiresPermission(allOf = [permission.ACCESS_FINE_LOCATION, permission.ACCESS_WIFI_STATE])
     private fun findCurrentPlaceWithPermissions() {
         setLoading(true)
-        val currentPlaceRequest = FindCurrentPlaceRequest.newInstance(placeFields)
-        val currentPlaceTask = placesClient.findCurrentPlace(currentPlaceRequest)
-        currentPlaceTask.addOnSuccessListener { response: FindCurrentPlaceResponse? ->
+        val currentPlaceRequest = SearchNearbyRequest.newInstance(CircularBounds.newInstance(boulderCenter, radiusMeters), placeFields)
+        val currentPlaceTask = placesClient.searchNearby(currentPlaceRequest)
+        currentPlaceTask.addOnSuccessListener { response: SearchNearbyResponse? ->
             response?.let {
                 binding.response.text = StringUtil.stringify(it, isDisplayRawResultsChecked)
             }
