@@ -22,7 +22,6 @@ lifecycle = "2.9.4"
 fragmentKtx = "1.8.9"
 material = "1.13.0"
 constraintlayout = "2.2.1"
-lifecycle = "2.9.1"
 
 # --- Jetpack Compose ---
 # Versions for Jetpack Compose, Android's modern UI toolkit.
