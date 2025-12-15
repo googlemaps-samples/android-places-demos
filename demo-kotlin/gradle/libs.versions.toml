@@ -9,7 +9,7 @@ mapsUtilsKtx = "5.2.0"
 material = "1.13.0"
 multidex = "2.0.1"
 places = "5.0.0"
-viewbinding = "8.13.0"
+viewbinding = "8.13.2"
 volley = "1.2.1"
 kotlinParcelize = "2.2.20"
 
