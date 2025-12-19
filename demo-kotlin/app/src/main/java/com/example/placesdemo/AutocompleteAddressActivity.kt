@@ -60,7 +60,6 @@ class AutocompleteAddressActivity : BaseActivity(),
     private var marker: Marker? = null
     private var checkProximity = false
     private lateinit var binding: AutocompleteAddressActivityBinding
-    private var deviceLocation: LatLng? = null
     private val acceptedProximity = 150.0
     private var startAutocompleteIntentListener = View.OnClickListener { view: View ->
         view.setOnClickListener(null)
@@ -177,16 +176,16 @@ class AutocompleteAddressActivity : BaseActivity(),
                 if (location == null) {
                     return@addOnSuccessListener
                 }
-                deviceLocation = LatLng(location.latitude, location.longitude)
+                val currentLocation = LatLng(location.latitude, location.longitude)
                 // [START_EXCLUDE]
-                Log.d(TAG, "device location = $deviceLocation")
+                Log.d(TAG, "device location = $currentLocation")
                 Log.d(TAG, "entered location = $enteredLocation")
 
                 // [START maps_solutions_android_location_distance]
                 // Use the computeDistanceBetween function in the Maps SDK for Android Utility Library
                 // to use spherical geometry to compute the distance between two Lat/Lng points.
                 val distanceInMeters: Double =
-                    computeDistanceBetween(deviceLocation, enteredLocation)
+                    computeDistanceBetween(currentLocation, enteredLocation)
                 if (distanceInMeters <= acceptedProximity) {
                     Log.d(TAG, "location matched")
                     // TODO: Display UI based on the locations matching
