@@ -4,7 +4,7 @@ sdk-min = "24"
 sdk-target = "36"
 
 activity = "1.11.0"
-androidGradlePlugin = "8.13.0"
+androidGradlePlugin = "9.0.0"
 androidMapsUtils = "3.19.0"
 appcompat = "1.7.1"
 constraintlayout = "2.2.1"
