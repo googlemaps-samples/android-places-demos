@@ -14,7 +14,7 @@ kotlin = "2.2.20"
 mapsSecretsGradlePlugin = "2.0.1"
 material = "1.13.0"
 multidex = "2.0.1"
-navigationFragment = "2.9.5"
+navigationFragment = "2.9.7"
 viewbinding = "8.13.0"
 volley = "1.2.1"
 
