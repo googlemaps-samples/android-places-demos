@@ -3,7 +3,7 @@ sdk-compile = "36"
 sdk-min = "24"
 sdk-target = "36"
 
-activity = "1.11.0"
+activity = "1.12.3"
 androidGradlePlugin = "8.13.0"
 androidMapsUtils = "3.19.0"
 appcompat = "1.7.1"
