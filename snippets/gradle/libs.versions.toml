@@ -3,7 +3,7 @@ compileSdk = "36"
 minSdk = "24"
 targetSdk = "36"
 
-activity = "1.11.0"
+activity = "1.12.3"
 androidGradlePlugin = "8.13.0"
 appcompat = "1.7.1"
 constraintlayout = "2.2.1"
