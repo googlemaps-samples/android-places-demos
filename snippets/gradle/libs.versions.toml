@@ -4,7 +4,7 @@ minSdk = "24"
 targetSdk = "36"
 
 activity = "1.11.0"
-androidGradlePlugin = "8.13.0"
+androidGradlePlugin = "9.0.1"
 appcompat = "1.7.1"
 constraintlayout = "2.2.1"
 coreKtx = "1.17.0"
