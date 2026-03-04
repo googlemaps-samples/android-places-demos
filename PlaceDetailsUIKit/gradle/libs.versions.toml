@@ -33,8 +33,8 @@ ui = "1.9.2"
 
 # --- Google Services (Maps, Places, Location) ---
 # Versions for Google Play Services libraries, which are essential for this sample.
-googleMaps = "19.2.0"
-places = "5.0.0"
+googleMaps = "20.0.0"
+places = "5.1.1"
 playServicesLocation = "21.3.0" # Required for the FusedLocationProviderClient to get the device's location.
 
 # --- Testing ---

@@ -67,7 +67,7 @@ dependencies {
 
     // Places and Maps SDKs
     // [START maps_android_places_upgrade_snippet]
-    implementation("com.google.android.libraries.places:places:5.0.0")
+    implementation("com.google.android.libraries.places:places:5.1.1")
     // [END maps_android_places_upgrade_snippet]
 }
 // [END maps_android_places_install_snippet]

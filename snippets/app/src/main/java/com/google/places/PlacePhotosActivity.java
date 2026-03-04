@@ -26,10 +26,11 @@ import androidx.core.view.WindowCompat;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.net.FetchPhotoRequest;
+import com.google.android.libraries.places.api.net.FetchResolvedPhotoUriRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.places.data.PlaceIdProvider;
+import com.bumptech.glide.Glide;
 import com.google.places.databinding.ActivityPlacePhotosBinding;
 import com.google.places.kotlin.MainApplication;
 import java.util.Collections;
@@ -96,16 +97,18 @@ public class PlacePhotosActivity extends AppCompatActivity {
             final String attributions = photoMetadata.getAttributions();
             binding.placePhotosAttributions.setText(attributions);
 
-            // Create a FetchPhotoRequest.
-            final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
+            // Create a FetchResolvedPhotoUriRequest.
+            final FetchResolvedPhotoUriRequest photoRequest = FetchResolvedPhotoUriRequest.builder(photoMetadata)
                 .setMaxWidth(500) // Optional.
                 .setMaxHeight(300) // Optional.
                 .build();
-            placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
-                Bitmap bitmap = fetchPhotoResponse.getBitmap();
-                binding.placePhotosResult.setImageBitmap(bitmap);
+            placesClient.fetchResolvedPhotoUri(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
+                Glide.with(this)
+                        .load(fetchPhotoResponse.getUri())
+                        .into(binding.placePhotosResult);
             }).addOnFailureListener((exception) -> {
-                if (exception instanceof ApiException apiException) {
+                if (exception instanceof ApiException) {
+                    ApiException apiException = (ApiException) exception;
                     Log.e(TAG, "Place not found: " + exception.getMessage());
                     final int statusCode = apiException.getStatusCode();
                     // TODO: Handle error with given status code.

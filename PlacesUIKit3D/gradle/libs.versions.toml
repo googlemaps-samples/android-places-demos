@@ -24,7 +24,7 @@ fragmentCompose = "1.8.9"
 # --- Google Services (Maps, Places, Location) ---
 # Versions for Google Play Services libraries, which are essential for this sample.
 playServicesMaps3d = "0.0.2"
-places = "5.0.0"
+places = "5.1.1"
 mapsUtilsKtx = "5.2.0"
 
 # --- Dependency Injection ---
