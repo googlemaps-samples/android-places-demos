@@ -14,7 +14,9 @@
 package com.example.placesuikit3d
 
 import androidx.lifecycle.ViewModel
+import com.google.android.gms.maps3d.model.latLngAltitude
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 /**
@@ -24,6 +26,57 @@ import kotlinx.coroutines.flow.asStateFlow
  * ensuring the selected place isn't lost.
  */
 class MainViewModel : ViewModel() {
+
+    /**
+     * The list of landmarks to display in the list.
+     */
+    val landmarks: List<Landmark> = listOf(
+        Landmark(
+            id = "ChIJwd_EEkfsa4cRqy6eShKXFXY",
+            name = "Chautauqua Park",
+            location = latLngAltitude {
+                latitude = 39.9989
+                longitude = -105.2828
+                altitude = 1750.0
+            }
+        ),
+        Landmark(
+            id = "ChIJiTEGLibsa4cRepH7ZMFEcJ8",
+            name = "Pearl Street Mall",
+            location = latLngAltitude {
+                latitude = 40.0177
+                longitude = -105.2819
+                altitude = 1620.0
+            }
+        ),
+        Landmark(
+            id = "ChIJwR6cajTsa4cR2TH0qKTVKAM",
+            name = "University of Colorado Boulder",
+            location = latLngAltitude {
+                latitude = 40.0076
+                longitude = -105.2659
+                altitude = 1650.0
+            }
+        ),
+        Landmark(
+            id = "ChIJAfFnzszva4cR04sAt0lSm1g",
+            name = "Boulder Reservoir",
+            location = latLngAltitude {
+                latitude = 40.0780
+                longitude = -105.2220
+                altitude = 1580.0
+            }
+        ),
+        Landmark(
+            id = "ChIJfXOTtWbsa4cRmW07qJRB6_8",
+            name = "The Flatirons",
+            location = latLngAltitude {
+                latitude = 39.9880
+                longitude = -105.2930
+                altitude = 2100.0
+            }
+        )
+    )
 
     /**
      * Sets the selected place ID.
@@ -47,5 +100,13 @@ class MainViewModel : ViewModel() {
      * The unique identifier of the place to display in the Place Details view.
      * This is a StateFlow that can be observed for changes.
      */
-    val placeId = _placeId.asStateFlow()
+    val placeId: StateFlow<String?> = _placeId.asStateFlow()
+
+    private val _selectedLandmark = MutableStateFlow<Landmark?>(null)
+    val selectedLandmark: StateFlow<Landmark?> = _selectedLandmark.asStateFlow()
+
+    fun selectLandmark(landmark: Landmark) {
+        _selectedLandmark.value = landmark
+        setSelectedPlaceId(landmark.id)
+    }
 }

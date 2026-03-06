@@ -1,0 +1,99 @@
+// Copyright 2026 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package com.example.placesuikit3d
+
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Place
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+
+/**
+ * A composable that displays a list of landmarks.
+ *
+ * @param landmarks The list of landmarks to display.
+ * @param onLandmarkClick Callback invoked when a landmark is clicked.
+ * @param modifier The modifier to apply to the list.
+ */
+@Composable
+fun LandmarkList(
+    landmarks: List<Landmark>,
+    onLandmarkClick: (Landmark) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = "Locations",
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.padding(16.dp)
+        )
+        LazyColumn(modifier = Modifier.weight(1f)) {
+            items(landmarks) { landmark ->
+                LandmarkItem(
+                    landmark = landmark,
+                    onClick = { onLandmarkClick(landmark) }
+                )
+                HorizontalDivider()
+            }
+        }
+    }
+}
+
+/**
+ * A composable that displays a single landmark item.
+ */
+@Composable
+private fun LandmarkItem(
+    landmark: Landmark,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = Icons.Default.Place,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(end = 16.dp)
+        )
+        Column {
+            Text(
+                text = landmark.name,
+                style = MaterialTheme.typography.titleMedium
+            )
+            Text(
+                text = "Boulder, CO",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
