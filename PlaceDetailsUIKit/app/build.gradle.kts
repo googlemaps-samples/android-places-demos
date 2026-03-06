@@ -75,6 +75,10 @@ android {
     kotlin {
         // Configures Kotlin-specific compiler options.
         compilerOptions {
+            freeCompilerArgs.addAll(
+                "-opt-in=kotlin.RequiresOptIn",
+                "-Xannotation-default-target=param-property"
+            )
             // Sets the target JVM version for the compiled Kotlin code.
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }

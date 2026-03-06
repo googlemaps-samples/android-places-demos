@@ -81,6 +81,12 @@ android {
 
     kotlin {
         jvmToolchain(17)
+        compilerOptions {
+            freeCompilerArgs.addAll(
+                "-opt-in=kotlin.RequiresOptIn",
+                "-Xannotation-default-target=param-property"
+            )
+        }
     }
 
     buildFeatures {

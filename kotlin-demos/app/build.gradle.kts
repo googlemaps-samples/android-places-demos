@@ -55,7 +55,10 @@ android {
 
     kotlin {
         compilerOptions {
-            freeCompilerArgs.addAll("-Xopt-in=kotlin.RequiresOptIn")
+            freeCompilerArgs.addAll(
+                "-opt-in=kotlin.RequiresOptIn",
+                "-Xannotation-default-target=param-property"
+            )
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
     }
