@@ -20,12 +20,12 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.common.api.ApiException
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.net.FetchPhotoRequest
-import com.google.android.libraries.places.api.net.FetchPhotoResponse
+import com.google.android.libraries.places.api.net.FetchResolvedPhotoUriRequest
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.places.data.PlaceIdProvider
+import com.bumptech.glide.Glide
 import com.google.places.databinding.ActivityPlacePhotosBinding
 
 class PlacePhotosActivity : AppCompatActivity() {
@@ -82,20 +82,22 @@ class PlacePhotosActivity : AppCompatActivity() {
 
                 binding.placePhotosAttributions.text = attributions
 
-                // Create a FetchPhotoRequest.
-                val photoRequest = FetchPhotoRequest.builder(photoMetadata)
+                // Create a FetchResolvedPhotoUriRequest.
+                val photoRequest = FetchResolvedPhotoUriRequest.builder(photoMetadata)
                     .setMaxWidth(500) // Optional.
                     .setMaxHeight(300) // Optional.
                     .build()
-                placesClient.fetchPhoto(photoRequest)
-                    .addOnSuccessListener { fetchPhotoResponse: FetchPhotoResponse ->
-                        val bitmap = fetchPhotoResponse.bitmap
-                        binding.placePhotosResult.setImageBitmap(bitmap)
+                placesClient.fetchResolvedPhotoUri(photoRequest)
+                    .addOnSuccessListener { fetchPhotoResponse ->
+                        val photoUri = fetchPhotoResponse.uri
+                        Glide.with(this)
+                            .load(photoUri)
+                            .into(binding.placePhotosResult)
                     }.addOnFailureListener { exception: Exception ->
                         if (exception is ApiException) {
                             Log.e(TAG, "Place not found: " + exception.message)
                             val statusCode = exception.statusCode
-                            TODO("Handle error with given status code.")
+                            // TODO: Handle error with given status code.
                         }
                     }
             }

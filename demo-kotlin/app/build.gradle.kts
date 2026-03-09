@@ -46,6 +46,15 @@ android {
         viewBinding = true
         buildConfig = true
     }
+
+    kotlin {
+        compilerOptions {
+            freeCompilerArgs.addAll(
+                "-opt-in=kotlin.RequiresOptIn",
+                "-Xannotation-default-target=param-property"
+            )
+        }
+    }
 }
 
 dependencies {

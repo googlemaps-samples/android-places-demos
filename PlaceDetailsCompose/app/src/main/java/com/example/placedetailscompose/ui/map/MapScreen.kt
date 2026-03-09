@@ -100,6 +100,7 @@ fun MapScreen(
         position = CameraPosition.fromLatLngZoom(viewModel.sydney, 13f)
     }
 
+    val permissionDeniedString = stringResource(R.string.location_permission_denied)
     // Permission launcher (same as before)
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
@@ -109,7 +110,7 @@ fun MapScreen(
         ) {
             viewModel.onPermissionGranted()
         } else {
-            Toast.makeText(context, context.getString(R.string.location_permission_denied), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, permissionDeniedString, Toast.LENGTH_SHORT).show()
         }
     }
 

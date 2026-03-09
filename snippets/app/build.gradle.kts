@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,15 @@ android {
         viewBinding = true
         buildConfig = true
     }
+
+    kotlin {
+        compilerOptions {
+            freeCompilerArgs.addAll(
+                "-opt-in=kotlin.RequiresOptIn",
+                "-Xannotation-default-target=param-property"
+            )
+        }
+    }
 }
 
 // [START maps_android_places_install_snippet]
@@ -67,7 +76,7 @@ dependencies {
 
     // Places and Maps SDKs
     // [START maps_android_places_upgrade_snippet]
-    implementation("com.google.android.libraries.places:places:5.0.0")
+    implementation("com.google.android.libraries.places:places:5.1.1")
     // [END maps_android_places_upgrade_snippet]
 }
 // [END maps_android_places_install_snippet]
