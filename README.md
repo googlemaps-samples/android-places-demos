@@ -4,15 +4,16 @@ Google Places SDK for Android Demos
 ![Apache-2.0](https://img.shields.io/badge/license-Apache-blue)
 [![Discord](https://img.shields.io/discord/676948200904589322)](https://discord.gg/hYsWbmk)
 
-This repo contains the following apps that demonstrate use of the [Google Places SDK for Android](https://developers.google.com/places/android-sdk/):
+This repo contains several standalone applications that demonstrate use of the [Google Places SDK for Android](https://developers.google.com/places/android-sdk/):
 
-1. [demo-kotlin](demo-kotlin) Kotlin demo app for the Places SDK.
-2. [demo-java](demo-java) Java demo app for the Places SDK.
-3. [PlaceDetailsCompose](PlaceDetailsCompose) Compose demo app for the Places SDK.
-4. [PlaceDetailsUIKit](PlaceDetailsUIKit) UIKit demo app for the Places SDK.
-5. [PlacesUIKit3D](PlacesUIKit3D) 3D demo app for the Places SDK.
+1. **[demo-java](demo-java):** Basic Java application demonstrating core Places SDK capabilities including Place Autocomplete (Intent and Programmatic), Place Details, and Current Place. 
+2. **[demo-kotlin](demo-kotlin):** The Kotlin equivalent of the standard Java demo, showing idiomatic usage of the base SDK.
+3. **[kotlin-demos](kotlin-demos):** Demonstrates the use of the `android-places-ktx` library, highlighting Kotlin Coroutines support and modernized API responses for the Places SDK.
+4. **[PlaceDetailsCompose](PlaceDetailsCompose):** Shows how to build modern, interactive Place Details UI screens leveraging Jetpack Compose and the New Places API.
+5. **[PlaceDetailsUIKit](PlaceDetailsUIKit):** Shows how to build immersive Place Details UI screens using modern Android Views (UIKit) and the New Places API.
+6. **[PlacesUIKit3D](PlacesUIKit3D):** Blends the Places API with the Photorealistic 3D Maps SDK, providing an immersive location-viewing experience with dynamic camera fly-alongs.
 
-Additionally, the [snippets](snippets) app contains code snippets used for documentation found in https://developers.google.com/places/android-sdk
+Additionally, the **[snippets](snippets)** app contains code snippets used across the official [Google Places SDK developer documentation](https://developers.google.com/places/android-sdk).
 
 Getting Started
 ---------------
@@ -25,11 +26,51 @@ In Android Studio, use "Open an existing Android Studio project", and select the
 
 Alternatively use the `./gradlew assembleDebug` command from the root directory to build all projects simultaneously.
 
-The demos also require that you add your own API key:
-1. [Get an API Key](https://developers.google.com/places/android-sdk/get-api-key).
-2. Open the `local.properties` file in the root directory.
-3. Add a single line to `local.properties` that looks like `PLACES_API_KEY=YOUR_API_KEY`, where `YOUR_API_KEY` is the API key you obtained in the first step. You can also take a look at `local.defaults.properties` as an example.
+The demos require that you provide your own API keys. The project enforces the presence of required keys before the build can even start to prevent runtime crashes.
+
+1. [Get an API Key](https://developers.google.com/places/android-sdk/get-api-key) with the **Places API (New)** and **Maps SDK for Android** enabled.
+2. In the root directory, create a `secrets.properties` file (this is git-ignored to prevent accidental commits).
+3. Add your keys. See `local.defaults.properties` for the complete list of required and secondary optional keys. At minimum, you must add the required keys:
+   ```properties
+   PLACES_API_KEY=AIza...
+   MAPS_API_KEY=AIza...
+   ```
+   **Optional Keys:**
+   There are also optional keys required for specific demos to function completely:
+   *   `MAPS3D_API_KEY`: Required only for the `PlacesUIKit3D` demo to load the Photorealistic 3D Maps tiles.
+   *   `MAP_ID`: Required only for the `PlaceDetailsCompose` demo to demonstrate cloud-based map styling.
+   ```properties
+   MAPS3D_API_KEY=AIza...
+   MAP_ID=...
+   ```
 4. Sync the Android Studio project, build, and run any of the application modules.
+
+### Running Demos via Command Line
+
+Each runnable project includes a convenient `installAndLaunch` task. Instead of using Android Studio, you can natively build, install, and execute any demo directly on your connected device or emulator with a single command:
+
+```bash
+# Launch the standard Java Demo
+./gradlew :demo-java:installAndLaunch
+
+# Launch the Kotlin Demo
+./gradlew :demo-kotlin:installAndLaunch
+
+# Launch the Kotlin Coroutines (KTX) Demo
+./gradlew :kotlin-demos:installAndLaunch
+
+# Launch the Jetpack Compose Demo
+./gradlew :PlaceDetailsCompose:installAndLaunch
+
+# Launch the UIKit Demo
+./gradlew :PlaceDetailsUIKit:installAndLaunch
+
+# Launch the Photorealistic 3D Maps Demo
+./gradlew :PlacesUIKit3D:installAndLaunch
+
+# Launch the Documentation Snippets app
+./gradlew :snippets:installAndLaunch
+```
 
 ## Terms of Service
 

@@ -15,22 +15,19 @@
  */
 
 plugins {
-    alias(libs.plugins.android.application)
+    id("places-demo.android.application")
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android.plugin)
-    alias(libs.plugins.secrets.gradle.plugin)
+    id("places-demo.secrets")
 }
 
 android {
     namespace = "com.google.places.android.ktx.demo"
-    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.google.maps.android.ktx.demo"
-        minSdk = 24
-        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
         multiDexEnabled = true
@@ -48,20 +45,18 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
     kotlin {
         compilerOptions {
             freeCompilerArgs.addAll(
                 "-opt-in=kotlin.RequiresOptIn",
                 "-Xannotation-default-target=param-property"
             )
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
     }
+}
+
+demoApp {
+    mainActivity.set(".DemoActivity")
 }
 
 dependencies {
@@ -98,7 +93,4 @@ dependencies {
     implementation(libs.places)
 }
 
-secrets {
-    propertiesFileName = "secrets.properties"
-    defaultPropertiesFileName = "local.defaults.properties"
-}
+
