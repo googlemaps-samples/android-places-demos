@@ -21,12 +21,12 @@ plugins {
 
 android {
     namespace = "com.example.placesdemo"
-    compileSdk = libs.versions.sdk.compile.get().toInt()
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.placesdemo"
-        minSdk = libs.versions.sdk.min.get().toInt()
-        targetSdk = libs.versions.sdk.target.get().toInt()
+        minSdk = 24
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
