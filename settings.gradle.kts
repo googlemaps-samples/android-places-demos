@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -35,5 +36,12 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Place Details UI Kit"
-include(":app")
+rootProject.name = "Android Places Demos"
+
+include(":PlaceDetailsCompose")
+include(":PlaceDetailsUIKit")
+include(":PlacesUIKit3D")
+include(":demo-java")
+include(":demo-kotlin")
+include(":kotlin-demos")
+include(":snippets")

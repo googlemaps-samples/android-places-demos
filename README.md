@@ -21,15 +21,15 @@ These demos use the Gradle build system.
 
 First download the demos by cloning this repository or downloading an archived snapshot. (See the options on the right hand side.)
 
-In Android Studio, use the "Open an existing Android Studio project", and select one of the demo directories (`demo-kotlin` or `demo-java`).
+In Android Studio, use "Open an existing Android Studio project", and select the root directory (`android-places-demos`). This will load all the demo modules at once.
 
-Alternatively use the `./gradlew build` command to build the project directly.
+Alternatively use the `./gradlew assembleDebug` command from the root directory to build all projects simultaneously.
 
 The demos also require that you add your own API key:
 1. [Get an API Key](https://developers.google.com/places/android-sdk/get-api-key).
-2. Open the `local.properties` file in either demo project
+2. Open the `local.properties` file in the root directory.
 3. Add a single line to `local.properties` that looks like `PLACES_API_KEY=YOUR_API_KEY`, where `YOUR_API_KEY` is the API key you obtained in the first step. You can also take a look at `local.defaults.properties` as an example.
-4. Build and run.
+4. Sync the Android Studio project, build, and run any of the application modules.
 
 ## Terms of Service
 
