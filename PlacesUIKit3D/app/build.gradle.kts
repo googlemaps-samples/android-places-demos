@@ -169,3 +169,10 @@ secrets {
     // This file should be added to .gitignore to prevent it from being committed to version control.
     propertiesFileName = "secrets.properties"
 }
+
+tasks.register<Exec>("installAndLaunch") {
+    description = "Installs the debug APK and launches the main activity."
+    group = "application"
+    dependsOn("installDebug")
+    commandLine("adb", "shell", "am", "start", "-n", "com.example.placesuikit3d/com.example.placesuikit3d.MainActivity")
+}
