@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-pluginManagement {
+dependencyResolutionManagement {
     repositories {
         google {
             content {
@@ -24,25 +24,21 @@ pluginManagement {
             }
         }
         mavenCentral()
+    }
+    versionCatalogs {
+        create("libs") {
+            from(files("../gradle/libs.versions.toml"))
+        }
+    }
+}
+
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
         gradlePluginPortal()
     }
 }
 
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-includeBuild("build-logic")
-rootProject.name = "Android Places Demos"
-
-include(":PlaceDetailsCompose")
-include(":PlaceDetailsUIKit")
-include(":PlacesUIKit3D")
-include(":demo-java")
-include(":demo-kotlin")
-include(":kotlin-demos")
-include(":snippets")
+rootProject.name = "build-logic"
+include(":convention")
