@@ -31,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.PlaceDetailsCompactFragment
 import com.google.android.libraries.places.widget.PlaceLoadListener
+import com.google.android.libraries.places.widget.PlaceDetailsFragment
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -165,7 +166,7 @@ fun PlaceDetailsCompactView(
 /**
  * This composable displays the **Full** version of the Place Details UI.
  *
- * It follows the same pattern as [PlaceDetailsCompactView], but wraps the [com.google.android.libraries.places.widget.PlaceDetailsFragment]
+ * It follows the same pattern as [PlaceDetailsCompactView], but wraps the [PlaceDetailsFragment]
  * instead. This fragment takes up more screen space and shows more detailed information.
  */
 @Composable
@@ -173,7 +174,7 @@ fun PlaceDetailsFullView(
     place: Place,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    content: List<com.google.android.libraries.places.widget.PlaceDetailsFragment.Content> = com.google.android.libraries.places.widget.PlaceDetailsFragment.STANDARD_CONTENT,
+    content: List<PlaceDetailsFragment.Content> = PlaceDetailsFragment.STANDARD_CONTENT,
 ) {
     val orientation =
         if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -191,8 +192,8 @@ fun PlaceDetailsFullView(
     val fragmentContainerId = remember { View.generateViewId() }
 
     val fragment = remember(fragmentManager, fragmentContainerId, orientation, content) {
-        fragmentManager.findFragmentById(fragmentContainerId) as? com.google.android.libraries.places.widget.PlaceDetailsFragment
-            ?: com.google.android.libraries.places.widget.PlaceDetailsFragment.newInstance(
+        fragmentManager.findFragmentById(fragmentContainerId) as? PlaceDetailsFragment
+            ?: PlaceDetailsFragment.newInstance(
                 content,
                 orientation,
             ).also { fragment ->
