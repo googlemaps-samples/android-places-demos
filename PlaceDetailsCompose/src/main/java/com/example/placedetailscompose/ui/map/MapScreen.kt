@@ -48,6 +48,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -72,6 +73,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.ktx.utils.sphericalDistance
 import com.google.maps.android.ktx.utils.withSphericalOffset
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -89,8 +91,6 @@ fun MapScreen(
     val hasAnimatedToPlace by viewModel.hasAnimatedToPlace.collectAsState()
     
     // **View Mode State**
-    // This state controls whether we show the Compact or Full version of the Place Details.
-    // We use `saveable` so this preference persists across configuration changes (like rotation).
     var isFullView by rememberSaveable { mutableStateOf(false) }
 
     // **Coordinate Mode State**
@@ -101,7 +101,6 @@ fun MapScreen(
     }
 
     val permissionDeniedString = stringResource(R.string.location_permission_denied)
-    // Permission launcher (same as before)
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
@@ -136,25 +135,17 @@ fun MapScreen(
 
     LaunchedEffect(selectedPlace) {
         selectedPlace?.let { place ->
-            // Create a CameraPosition with the target zoom level that is shifted slightly south.
-            // We use the place's LatLng.
             val latLng = place.location
             if (latLng != null) {
                 val focalPoint = latLng.withSphericalOffset(300.0, 180.0)
-
                 val placeCameraPosition = CameraPosition.builder()
                     .target(focalPoint)
                     .zoom(15f)
                     .build()
-
                 if (hasAnimatedToPlace) {
-                    cameraPositionState.move(
-                        CameraUpdateFactory.newCameraPosition(placeCameraPosition)
-                    )
+                    cameraPositionState.move(CameraUpdateFactory.newCameraPosition(placeCameraPosition))
                 } else {
-                    cameraPositionState.animate(
-                        CameraUpdateFactory.newCameraPosition(placeCameraPosition), 1000
-                    )
+                    cameraPositionState.animate(CameraUpdateFactory.newCameraPosition(placeCameraPosition), 1000)
                     viewModel.onAnimateToPlaceFinish()
                 }
             }
@@ -166,24 +157,31 @@ fun MapScreen(
             if (isMapFollowingUser) {
                 val currentPosition = cameraPositionState.position.target
                 val distance = currentPosition.sphericalDistance(location)
-                if (distance > 100) { // Only animate if moved more than 100 meters
-                    cameraPositionState.animate(
-                        CameraUpdateFactory.newLatLngZoom(location, 15f)
-                    )
+                if (distance > 100) {
+                    cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(location, 15f))
                 }
             }
         }
     }
 
-    // **Content Selection State**
     val selectedCompactContent by viewModel.selectedCompactContent.collectAsState()
     val selectedFullContent by viewModel.selectedFullContent.collectAsState()
     var showContentSelectionDialog by rememberSaveable { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+
+    var showSettingsButton by remember { mutableStateOf(true) }
+    LaunchedEffect(showSettingsButton) {
+        if (showSettingsButton) {
+            delay(5000)
+            showSettingsButton = false
+        }
+    }
 
     if (cameraPositionState.isMoving) {
+        // Reset the timer whenever the user is dragging the map.
+        showSettingsButton = true
         viewModel.onMapDragged()
     }
-    val coroutineScope = rememberCoroutineScope()
 
     Box(modifier = Modifier.fillMaxSize()) {
         GoogleMap(
@@ -198,28 +196,27 @@ fun MapScreen(
                 zoomControlsEnabled = false
             ),
             onMapLoaded = {
-                // Map loaded
+                showSettingsButton = true
             },
             onPOIClick = { poi ->
+                showSettingsButton = true
                 if (!isCoordinateMode) {
                     coroutineScope.launch {
                         val cameraPosition = CameraPosition.builder()
                             .target(poi.latLng)
                             .zoom(15f)
                             .build()
-                        cameraPositionState.animate(
-                            CameraUpdateFactory.newCameraPosition(cameraPosition), 2000
-                        )
+                        cameraPositionState.animate(CameraUpdateFactory.newCameraPosition(cameraPosition), 2000)
                     }
                     viewModel.onPoiClicked(poi)
                 }
             },
             onMapClick = { latLng ->
+                showSettingsButton = true
                 viewModel.onMapClicked(latLng)
             },
             mapColorScheme = ComposeMapColorScheme.FOLLOW_SYSTEM
         ) {
-            // Map content (markers, etc.)
             selectedPlace?.location?.let {
                 Circle(
                     center = it,
@@ -231,107 +228,98 @@ fun MapScreen(
             }
         }
 
-        // **Controls Overlay**
-        // We use a collapsible panel to save screen real estate.
         var isControlsExpanded by rememberSaveable { mutableStateOf(false) }
 
-        Column(
-            modifier = Modifier
-                .padding(top = 48.dp, start = 16.dp)
-                .align(Alignment.TopStart),
-            horizontalAlignment = Alignment.Start
+        AnimatedVisibility(
+            visible = showSettingsButton,
+            enter = fadeIn(),
+            exit = fadeOut()
         ) {
-            // Toggle Button
-            FloatingActionButton(
-                onClick = { isControlsExpanded = !isControlsExpanded },
-                modifier = Modifier.padding(bottom = 8.dp),
-                containerColor = MaterialTheme.colorScheme.surface,
-                contentColor = MaterialTheme.colorScheme.onSurface
+            Column(
+                modifier = Modifier
+                    .padding(top = 48.dp, start = 16.dp)
+                    .align(Alignment.TopStart),
+                horizontalAlignment = Alignment.Start
             ) {
-                Icon(
-                    imageVector = if (isControlsExpanded) Icons.Default.ChevronLeft else Icons.Default.Settings,
-                    contentDescription = if (isControlsExpanded) stringResource(com.example.placedetailscompose.R.string.collapse_settings) else stringResource(com.example.placedetailscompose.R.string.expand_settings)
-                )
-            }
-
-            // Expanded Controls
-            AnimatedVisibility(
-                visible = isControlsExpanded,
-                enter = expandHorizontally(expandFrom = Alignment.Start) + fadeIn(),
-                exit = shrinkHorizontally(shrinkTowards = Alignment.Start) + fadeOut()
-            ) {
-                // **Controls Card**
-                androidx.compose.material3.ElevatedCard(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(12.dp)) // Optional if Card default isn't enough, but Card handles this
+                FloatingActionButton(
+                    onClick = {
+                        isControlsExpanded = !isControlsExpanded
+                        // Keep the button visible while the controls are expanded
+                        showSettingsButton = true
+                    },
+                    modifier = Modifier.padding(bottom = 8.dp),
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface
                 ) {
-                    Column(
+                    Icon(
+                        imageVector = if (isControlsExpanded) Icons.Default.ChevronLeft else Icons.Default.Settings,
+                        contentDescription = if (isControlsExpanded) stringResource(R.string.collapse_settings) else stringResource(R.string.expand_settings)
+                    )
+                }
+
+                AnimatedVisibility(
+                    visible = isControlsExpanded,
+                    enter = expandHorizontally(expandFrom = Alignment.Start) + fadeIn(),
+                    exit = shrinkHorizontally(shrinkTowards = Alignment.Start) + fadeOut()
+                ) {
+                    androidx.compose.material3.ElevatedCard(
                         modifier = Modifier
-                            .padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                            .padding(8.dp)
+                            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(12.dp))
                     ) {
-                        // **Toggles Row**
-                        Row(
-                            modifier = Modifier.padding(bottom = 8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(24.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            // **View Mode Toggle**
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.padding(end = 16.dp)
+                            Row(
+                                modifier = Modifier.padding(bottom = 8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(
-                                    text = if (isFullView) stringResource(R.string.full_view) else stringResource(R.string.compact_view),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    modifier = Modifier.padding(bottom = 4.dp)
-                                )
-                                Switch(
-                                    checked = isFullView,
-                                    onCheckedChange = { isFullView = it },
-                                    modifier = Modifier.scale(0.8f) // Make switches slightly smaller
-                                )
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    modifier = Modifier.padding(end = 16.dp)
+                                ) {
+                                    Text(
+                                        text = if (isFullView) stringResource(R.string.full_view) else stringResource(R.string.compact_view),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        modifier = Modifier.padding(bottom = 4.dp)
+                                    )
+                                    Switch(
+                                        checked = isFullView,
+                                        onCheckedChange = { isFullView = it },
+                                        modifier = Modifier.scale(0.8f)
+                                    )
+                                }
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        text = if (isCoordinateMode) stringResource(R.string.coords_mode) else stringResource(R.string.poi_mode),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        modifier = Modifier.padding(bottom = 4.dp)
+                                    )
+                                    Switch(
+                                        checked = isCoordinateMode,
+                                        onCheckedChange = { viewModel.onToggleCoordinateMode(it) },
+                                        modifier = Modifier.scale(0.8f)
+                                    )
+                                }
                             }
-
-                            // **Coordinate Mode Toggle**
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally
+                            androidx.compose.material3.HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+                            androidx.compose.material3.FilledTonalButton(
+                                onClick = { showContentSelectionDialog = true },
+                                modifier = Modifier.fillMaxWidth()
                             ) {
-                                Text(
-                                    text = if (isCoordinateMode) stringResource(R.string.coords_mode) else stringResource(R.string.poi_mode),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    modifier = Modifier.padding(bottom = 4.dp)
-                                )
-                                Switch(
-                                    checked = isCoordinateMode,
-                                    onCheckedChange = { viewModel.onToggleCoordinateMode(it) },
-                                    modifier = Modifier.scale(0.8f)
-                                )
+                                Text(stringResource(R.string.select_fields))
                             }
-                        }
-                        
-                        androidx.compose.material3.HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
-
-                        // **Select Fields Button**
-                        androidx.compose.material3.FilledTonalButton(
-                            onClick = { showContentSelectionDialog = true },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text(stringResource(R.string.select_fields))
                         }
                     }
                 }
             }
         }
 
-        // **Place Details Sheet**
-        // We conditionally render the Place Details view only when a place is selected.
         selectedPlace?.let { place ->
-            // **Conditional Rendering**
-            // Based on the `isFullView` state, we choose which Composable to display.
-            // This demonstrates how easily you can swap between different UI representations
-            // of the same data in Compose.
             if (isFullView) {
                 PlaceDetailsFullView(
                     place = place,
@@ -340,7 +328,7 @@ fun MapScreen(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
-                        .fillMaxHeight(0.9f) // Take up most of the screen
+                        .fillMaxHeight(0.9f)
                 )
             } else {
                 PlaceDetailsCompactView(
@@ -357,7 +345,7 @@ fun MapScreen(
         if (showContentSelectionDialog) {
             if (isFullView) {
                 PlaceContentSelectionDialog(
-                    title = stringResource(com.example.placedetailscompose.R.string.select_full_view_fields),
+                    title = stringResource(R.string.select_full_view_fields),
                     allContent = com.google.android.libraries.places.widget.PlaceDetailsFragment.Content.values().toList(),
                     selectedContent = selectedFullContent,
                     onSelectionChanged = { viewModel.updateFullContent(it) },
@@ -366,7 +354,7 @@ fun MapScreen(
                 )
             } else {
                 PlaceContentSelectionDialog(
-                    title = stringResource(com.example.placedetailscompose.R.string.select_compact_view_fields),
+                    title = stringResource(R.string.select_compact_view_fields),
                     allContent = com.google.android.libraries.places.widget.PlaceDetailsCompactFragment.Content.values().toList(),
                     selectedContent = selectedCompactContent,
                     onSelectionChanged = { viewModel.updateCompactContent(it) },

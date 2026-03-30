@@ -14,21 +14,31 @@
 
 package com.example.placedetailscompose
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -68,6 +78,44 @@ class MainActivity : AppCompatActivity() {
             val window = this.window
             val insetsController = WindowCompat.getInsetsController(window, window.decorView)
 
+            // Educational Note: We are handling permissions directly within the Compose scope
+            // here to keep this Place Details sample self-contained and easy to follow.
+            // In a production app, you might prefer to hoist this logic to a ViewModel
+            // or a dedicated permission handler class.
+
+            // Check if we already have the permission.
+            // Using ContextCompat.checkSelfPermission ensures we respect the state if the 
+            // user granted it previously via system settings.
+            var hasPermission by remember {
+                mutableStateOf(
+                    ContextCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED
+                )
+            }
+
+            // The standard, modern Compose way to register for Activity Results (like Permissions)
+            // within a Composable scope.
+            val launcher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.RequestPermission(),
+                onResult = { granted ->
+                    if (granted) {
+                        hasPermission = true
+                    } else {
+                        Toast.makeText(this, "Location permission is required to use this app.", Toast.LENGTH_LONG).show()
+                    }
+                }
+            )
+
+            // Trigger the permission request when this Composable first enters the composition.
+            // The 'Unit' key ensures this side-effect only runs once on mount.
+            LaunchedEffect(Unit) {
+                if (!hasPermission) {
+                    launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                }
+            }
+
             SideEffect {
                 insetsController.hide(WindowInsetsCompat.Type.systemBars())
                 insetsController.systemBarsBehavior =
@@ -82,14 +130,25 @@ class MainActivity : AppCompatActivity() {
             }
 
             PlaceDetailsComposeTheme {
-                if (initializationState == InitializationState.SUCCESS) {
-                    MapScreen()
+                if (hasPermission) {
+                    if (initializationState == InitializationState.SUCCESS) {
+                        MapScreen()
+                    } else {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
                 } else {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator()
+                        Button(onClick = { launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION) }) {
+                            Text("Grant Location Permission")
+                        }
                     }
                 }
             }
