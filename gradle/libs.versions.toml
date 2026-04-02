@@ -1,6 +1,6 @@
 [versions]
 agp = "8.13.2"
-kotlin = "2.1.10"
+kotlin = "2.3.10"
 coreKtx = "1.17.0"
 appcompat = "1.7.1"
 activity = "1.12.4"
@@ -15,10 +15,10 @@ materialIconsExtended = "1.7.8"
 googleMaps = "20.0.0"
 places = "5.1.1"
 playServicesLocation = "21.3.0"
-mapsCompose = "6.12.2"
-mapsUtilsKtx = "5.2.1"
-androidMapsUtils = "4.1.0"
-playServicesMaps3d = "0.0.2"
+mapsCompose = "8.2.2"
+mapsUtilsKtx = "6.0.1"
+androidMapsUtils = "4.1.1"
+playServicesMaps3d = "0.2.0"
 volley = "1.2.1"
 glide = "5.0.5"
 navigationFragment = "2.9.5"
@@ -31,13 +31,14 @@ junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
 testRules = "1.7.0"
-ksp = "2.1.10-1.0.29"
-kotlinParcelize = "2.1.10"
+ksp = "2.3.6"
+kotlinParcelize = "2.3.10"
 mapsSecretsGradlePlugin = "2.0.1"
 
 [libraries]
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-metadata-jvm = { group = "org.jetbrains.kotlin", name = "kotlin-metadata-jvm", version.ref = "kotlin" }
 secrets-gradlePlugin = { group = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", name = "secrets-gradle-plugin", version.ref = "mapsSecretsGradlePlugin" }
 
 # Core Android & Kotlin

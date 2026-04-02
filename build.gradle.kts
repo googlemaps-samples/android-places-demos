@@ -25,3 +25,11 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.kotlin.kapt) apply false
 }
+
+allprojects {
+    configurations.all {
+        resolutionStrategy {
+            force("org.jetbrains.kotlin:kotlin-metadata-jvm:2.3.10")
+        }
+    }
+}
