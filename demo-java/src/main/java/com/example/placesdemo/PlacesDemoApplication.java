@@ -33,6 +33,6 @@ public class PlacesDemoApplication extends Application {
             return;
         }
 
-        Places.initialize(getApplicationContext(), apiKey);
+        Places.initializeWithNewPlacesApiEnabled(getApplicationContext(), apiKey);
     }
 }
