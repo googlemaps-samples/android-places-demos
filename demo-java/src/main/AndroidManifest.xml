@@ -67,6 +67,9 @@
             android:name=".programmatic_autocomplete.ProgrammaticAutocompleteToolbarActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".PlaceActionsAndAdvancedDetailsActivity"
+            android:exported="true" />
 
     </application>
 </manifest>

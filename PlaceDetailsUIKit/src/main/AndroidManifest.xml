@@ -59,6 +59,11 @@
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
             android:exported="true"/>
 
+        <activity
+            android:name=".advanced.AdvancedConfigurablePlaceDetailsActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
+            android:exported="true"/>
+
     </application>
 
 </manifest>

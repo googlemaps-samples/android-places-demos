@@ -35,6 +35,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.placedetailsuikit.compact.ConfigurablePlaceDetailsActivity
 import com.example.placedetailsuikit.full.FullConfigurablePlaceDetailsActivity
+import com.example.placedetailsuikit.advanced.AdvancedConfigurablePlaceDetailsActivity
 import com.example.placedetailsuikit.ui.theme.PlaceDetailsUIKitTheme
 
 class LauncherActivity : ComponentActivity() {
@@ -79,6 +80,11 @@ fun LauncherScreen() {
                 context.startActivity(Intent(context, FullConfigurablePlaceDetailsActivity::class.java))
             }) {
                 Text("Full Place Details")
+            }
+            Button(onClick = {
+                context.startActivity(Intent(context, AdvancedConfigurablePlaceDetailsActivity::class.java))
+            }) {
+                Text("Advanced Place Details (5.3.0)")
             }
         }
     }

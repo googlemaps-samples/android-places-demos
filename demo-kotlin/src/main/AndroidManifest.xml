@@ -68,6 +68,9 @@
             android:name=".programmatic_autocomplete.ProgrammaticAutocompleteGeocodingActivity"
             android:exported="true"
             />
+        <activity
+            android:name=".PlaceActionsAndAdvancedDetailsActivity"
+            android:exported="true" />
 
     </application>
 </manifest>

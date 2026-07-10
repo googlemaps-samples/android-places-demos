@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
- Copyright 2025 Google LLC
+ Copyright 2026 Google LLC
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,13 +14,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".PlaceActionsAndAdvancedDetailsActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/top_bar"
@@ -30,7 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="@string/app_name"
+        app:title="Places 5.3.0 Actions &amp; Advanced Details"
         app:titleTextColor="?attr/colorOnPrimary" />
 
     <ScrollView
@@ -47,54 +46,36 @@
             android:orientation="vertical"
             android:padding="@dimen/spacing_large">
 
-            <Button
-                android:id="@+id/autocomplete_button"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_small"
-                android:text="@string/autocomplete_button" />
+                android:text="Demonstrates 5.3.0 features: AddressDescriptor, ContainingPlace, PriceRange, SearchMediaOptions, SearchReviewsOptions, and custom PlaceActions."
+                android:textSize="14sp"
+                android:layout_marginBottom="@dimen/spacing_small" />
+
+            <EditText
+                android:id="@+id/input_place_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Place ID"
+                android:text="ChIJN1t_tDeuEmsRUsoyG83frY4"
+                android:inputType="text" />
 
             <Button
-                android:id="@+id/autocomplete_address_button"
+                android:id="@+id/fetch_advanced_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_small"
-                android:text="@string/autocomplete_address_button" />
+                android:layout_marginTop="@dimen/spacing_small"
+                android:text="Fetch Advanced Details &amp; Configure Actions" />
 
-            <Button
-                android:id="@+id/programmatic_autocomplete_button"
+            <TextView
+                android:id="@+id/response_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_small"
-                android:text="@string/programmatic_autocomplete_geocoding" />
-
-            <Button
-                android:id="@+id/current_place_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_small"
-                android:text="@string/current_place_button" />
-
-            <Button
-                android:id="@+id/place_and_photo_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_small"
-                android:text="@string/place_and_photo_button" />
-
-            <Button
-                android:id="@+id/is_open_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_small"
-                android:text="@string/main_isOpenButtonText" />
-
-            <Button
-                android:id="@+id/place_actions_advanced_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_small"
-                android:text="@string/place_actions_advanced_button" />
+                android:layout_marginTop="@dimen/spacing_small"
+                android:textIsSelectable="true"
+                android:fontFamily="monospace"
+                android:textSize="13sp" />
 
         </LinearLayout>
     </ScrollView>

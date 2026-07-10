@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         setLaunchActivityClickListener(R.id.place_and_photo_button, PlaceDetailsAndPhotosActivity.class);
         setLaunchActivityClickListener(R.id.is_open_button, PlaceIsOpenActivity.class);
         setLaunchActivityClickListener(R.id.current_place_button, CurrentPlaceActivity.class);
+        setLaunchActivityClickListener(R.id.place_actions_advanced_button, PlaceActionsAndAdvancedDetailsActivity.class);
     }
 
     private void setLaunchActivityClickListener(
