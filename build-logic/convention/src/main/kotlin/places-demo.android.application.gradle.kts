@@ -26,11 +26,11 @@ val demoApp = extensions.create<DemoAppExtension>("demoApp")
 demoApp.mainActivity.convention(".MainActivity")
 
 android {
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 37
     }
 
     java {
