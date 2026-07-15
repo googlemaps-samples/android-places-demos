@@ -30,7 +30,7 @@ This sample demonstrates how to integrate the Places SDK for Android's `PlaceDet
     Open the `PlacesUIKit3D` directory in Android Studio.
 
 3.  **Add your API Key:**
-    -   Create a file named `secrets.properties` in the root directory of the `PlacesUIKit3D` project (`/Users/dkhawk/AndroidStudioProjects/github-maps-code/android-places-demos/PlacesUIKit3D`).
+    -   Create a file named `secrets.properties` in the root directory of the `PlacesUIKit3D` project (e.g. `PlacesUIKit3D/secrets.properties`).
     -   Add your Google Maps API key to the `secrets.properties` file, making sure that the Maps SDK for Android and the Places API are enabled for the key.
         ```
         MAPS3D_API_KEY="YOUR_API_KEY"
