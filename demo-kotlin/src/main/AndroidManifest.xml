@@ -70,6 +70,7 @@
             />
         <activity
             android:name=".PlaceActionsAndAdvancedDetailsActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
             android:exported="true" />
 
     </application>
