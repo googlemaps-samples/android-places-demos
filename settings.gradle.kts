@@ -39,6 +39,7 @@ dependencyResolutionManagement {
 includeBuild("build-logic")
 rootProject.name = "Android Places Demos"
 
+include(":app")
 include(":PlaceDetailsCompose")
 include(":PlaceDetailsUIKit")
 include(":PlacesUIKit3D")
