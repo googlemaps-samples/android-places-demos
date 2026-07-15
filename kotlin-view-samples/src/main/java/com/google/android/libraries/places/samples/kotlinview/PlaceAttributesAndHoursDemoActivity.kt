@@ -46,7 +46,12 @@ class PlaceAttributesAndHoursDemoActivity : AppCompatActivity() {
 
         binding.toolbar.inflateMenu(R.menu.menu_demo_info)
         binding.toolbar.setOnMenuItemClickListener { item ->
-            if (item.itemId == R.id.action_info) {
+            if (item.itemId == R.id.action_reset_defaults) {
+                getSharedPreferences("demo_prefs", MODE_PRIVATE).edit().clear().apply()
+                resetInputsToDefault()
+                Toast.makeText(this, "Reset to factory defaults", Toast.LENGTH_SHORT).show()
+                true
+            } else if (item.itemId == R.id.action_info) {
                 com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                     .setTitle("ℹ️ Demo Instructions & Info")
                     .setMessage("Main Point: Demonstrates isOpen(), ContainingPlace, PriceRange, OpeningHours, and AccessibilityOptions.\n\nHow to Use: Tap Check Open Status to evaluate real-time business operating hours and view location hierarchy.")
@@ -169,5 +174,9 @@ class PlaceAttributesAndHoursDemoActivity : AppCompatActivity() {
             .addOnFailureListener { e ->
                 binding.attributesTextView.text = "Failed to fetch attributes: ${e.message}"
             }
+    }
+
+    private fun resetInputsToDefault() {
+        getSharedPreferences("demo_prefs", MODE_PRIVATE).edit().clear().apply()
     }
 }

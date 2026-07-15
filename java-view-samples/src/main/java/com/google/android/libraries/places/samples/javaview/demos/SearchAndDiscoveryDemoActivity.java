@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.widget.Toast;
 import android.widget.ArrayAdapter;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -207,7 +208,12 @@ public class SearchAndDiscoveryDemoActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
-        if (item.getItemId() == R.id.action_info) {
+        if (item.getItemId() == R.id.action_reset_defaults) {
+            getSharedPreferences("demo_prefs", MODE_PRIVATE).edit().clear().apply();
+            resetInputsToDefault();
+            Toast.makeText(this, "Reset to factory defaults", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (item.getItemId() == R.id.action_info) {
             new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                 .setTitle("ℹ️ Demo Instructions & Info")
                 .setMessage("Main Point: Demonstrates searchByText, searchNearby, findCurrentPlace, and Autocomplete predictions.\n\nHow to Use: Tap category chips or search input to execute live queries. Current Place automatically requests location permission or uses preset fallbacks.")
@@ -218,4 +224,8 @@ public class SearchAndDiscoveryDemoActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    private void resetInputsToDefault() {
+        getSharedPreferences("demo_prefs", MODE_PRIVATE).edit().clear().apply();
+    }
 }

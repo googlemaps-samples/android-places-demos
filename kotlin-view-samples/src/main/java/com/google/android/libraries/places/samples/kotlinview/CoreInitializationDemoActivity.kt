@@ -41,7 +41,12 @@ class CoreInitializationDemoActivity : AppCompatActivity() {
 
         binding.toolbar.inflateMenu(R.menu.menu_demo_info)
         binding.toolbar.setOnMenuItemClickListener { item ->
-            if (item.itemId == R.id.action_info) {
+            if (item.itemId == R.id.action_reset_defaults) {
+                getSharedPreferences("demo_prefs", MODE_PRIVATE).edit().clear().apply()
+                resetInputsToDefault()
+                Toast.makeText(this, "Reset to factory defaults", Toast.LENGTH_SHORT).show()
+                true
+            } else if (item.itemId == R.id.action_info) {
                 com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                     .setTitle("ℹ️ Demo Instructions & Info")
                     .setMessage("Main Point: Demonstrates Places SDK 5.3.0 initialization state (Places.isInitialized()), custom App Check token provider, and lifecycle management.\n\nHow to Use: Tap Check Status to verify API readiness, or test Initialize/Deinitialize toggles.")
@@ -93,5 +98,9 @@ class CoreInitializationDemoActivity : AppCompatActivity() {
             .append("New Places API Enabled: Yes (initializeWithNewPlacesApiEnabled)\n")
 
         binding.statusText.text = status.toString()
+    }
+
+    private fun resetInputsToDefault() {
+        getSharedPreferences("demo_prefs", MODE_PRIVATE).edit().clear().apply()
     }
 }

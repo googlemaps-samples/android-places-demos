@@ -35,6 +35,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -181,6 +184,23 @@ fun MainTopAppBar(
                         contentDescription = "Back"
                     )
                 }
+            }
+        },
+        actions = {
+            val context = LocalContext.current
+            IconButton(onClick = {
+                Toast.makeText(context, "Reset to factory defaults", Toast.LENGTH_SHORT).show()
+            }) {
+                Icon(
+                    imageVector = androidx.compose.material.icons.Icons.Default.Refresh,
+                    contentDescription = "Reset to Factory Defaults"
+                )
+            }
+            IconButton(onClick = { showInfoDialog = true }) {
+                Icon(
+                    imageVector = androidx.compose.material.icons.Icons.Default.Info,
+                    contentDescription = "Demo Instructions & Info"
+                )
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(

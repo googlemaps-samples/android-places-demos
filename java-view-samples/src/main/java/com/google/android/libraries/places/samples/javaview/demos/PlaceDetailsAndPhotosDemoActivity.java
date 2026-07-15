@@ -19,6 +19,7 @@ package com.google.android.libraries.places.samples.javaview.demos;
 import com.google.android.libraries.places.samples.javaview.R;
 
 import android.os.Bundle;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.libraries.places.api.Places;
@@ -164,7 +165,12 @@ public class PlaceDetailsAndPhotosDemoActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
-        if (item.getItemId() == R.id.action_info) {
+        if (item.getItemId() == R.id.action_reset_defaults) {
+            getSharedPreferences("demo_prefs", MODE_PRIVATE).edit().clear().apply();
+            resetInputsToDefault();
+            Toast.makeText(this, "Reset to factory defaults", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (item.getItemId() == R.id.action_info) {
             new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                 .setTitle("ℹ️ Demo Instructions & Info")
                 .setMessage("Main Point: Demonstrates fetchPlace, fetchPhoto, fetchResolvedPhotoUri, and 5.3.0 AddressDescriptor (Area & Landmark relationships).\n\nHow to Use: Check target field masks, tap Fetch Details, and view photo metadata with surrounding landmarks.")
@@ -175,4 +181,8 @@ public class PlaceDetailsAndPhotosDemoActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    private void resetInputsToDefault() {
+        getSharedPreferences("demo_prefs", MODE_PRIVATE).edit().clear().apply();
+    }
 }

@@ -49,7 +49,12 @@ class PlacesUIKitAndActionsDemoActivity : AppCompatActivity() {
 
         binding.toolbar.inflateMenu(R.menu.menu_demo_info)
         binding.toolbar.setOnMenuItemClickListener { item ->
-            if (item.itemId == R.id.action_info) {
+            if (item.itemId == R.id.action_reset_defaults) {
+                getSharedPreferences("demo_prefs", MODE_PRIVATE).edit().clear().apply()
+                resetInputsToDefault()
+                Toast.makeText(this, "Reset to factory defaults", Toast.LENGTH_SHORT).show()
+                true
+            } else if (item.itemId == R.id.action_info) {
                 com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                     .setTitle("ℹ️ Demo Instructions & Info")
                     .setMessage("Main Point: Demonstrates AdvancedPlaceDetailsCompactFragment with custom PlaceActionProvider (CALL, WEBSITE, DIRECTIONS, MAPS).\n\nHow to Use: Interact with custom action buttons and adjust media/review ranking preferences.")
@@ -148,5 +153,9 @@ class PlacesUIKitAndActionsDemoActivity : AppCompatActivity() {
                 fragment.loadWithPlaceId(placeId)
             }
         }
+    }
+
+    private fun resetInputsToDefault() {
+        getSharedPreferences("demo_prefs", MODE_PRIVATE).edit().clear().apply()
     }
 }

@@ -85,7 +85,12 @@ class SearchAndDiscoveryDemoActivity : AppCompatActivity() {
 
         binding.toolbar.inflateMenu(R.menu.menu_demo_info)
         binding.toolbar.setOnMenuItemClickListener { item ->
-            if (item.itemId == R.id.action_info) {
+            if (item.itemId == R.id.action_reset_defaults) {
+                getSharedPreferences("demo_prefs", MODE_PRIVATE).edit().clear().apply()
+                resetInputsToDefault()
+                Toast.makeText(this, "Reset to factory defaults", Toast.LENGTH_SHORT).show()
+                true
+            } else if (item.itemId == R.id.action_info) {
                 com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                     .setTitle("ℹ️ Demo Instructions & Info")
                     .setMessage("Main Point: Demonstrates searchByText, searchNearby, findCurrentPlace, and Autocomplete predictions.\n\nHow to Use: Tap category chips or search input to execute live queries. Current Place automatically requests location permission or uses preset fallbacks.")
@@ -221,5 +226,9 @@ class SearchAndDiscoveryDemoActivity : AppCompatActivity() {
             getStandardPlaceFields()
         ).build(this)
         autocompleteLauncher.launch(intent)
+    }
+
+    private fun resetInputsToDefault() {
+        getSharedPreferences("demo_prefs", MODE_PRIVATE).edit().clear().apply()
     }
 }
