@@ -146,6 +146,31 @@ fun MainTopAppBar(
     showBackButton: Boolean,
     onBackClicked: () -> Unit
 ) {
+    var showInfoDialog by remember { mutableStateOf(false) }
+
+    if (showInfoDialog) {
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = { showInfoDialog = false },
+            title = { Text(text = "ℹ️ " + title + " Info & Instructions") },
+            text = {
+                Text(
+                    text = when {
+                        title.contains("Initialization") -> "Main Point: Demonstrates Places SDK 5.3.0 initialization state (Places.isInitialized()), custom App Check token provider, and lifecycle management.\n\nHow to Use: Tap Check Status to verify API readiness, or test Initialize/Deinitialize toggles."
+                        title.contains("Search") -> "Main Point: Demonstrates searchByText, searchNearby, findCurrentPlace, and Autocomplete predictions.\n\nHow to Use: Tap category chips or search input to execute live queries. Current Place automatically requests location permission or uses preset fallbacks."
+                        title.contains("Details") -> "Main Point: Demonstrates fetchPlace, fetchPhoto, fetchResolvedPhotoUri, and 5.3.0 AddressDescriptor (Area & Landmark relationships).\n\nHow to Use: Check target field masks, tap Fetch Details, and view photo metadata with surrounding landmarks."
+                        title.contains("Attributes") -> "Main Point: Demonstrates isOpen(), ContainingPlace, PriceRange, OpeningHours, and AccessibilityOptions.\n\nHow to Use: Tap Check Open Status to evaluate real-time business operating hours and view location hierarchy."
+                        title.contains("UI Kit") -> "Main Point: Demonstrates AdvancedPlaceDetailsCompactFragment with custom PlaceActionProvider (CALL, WEBSITE, DIRECTIONS, MAPS).\n\nHow to Use: Interact with custom action buttons and adjust media/review ranking preferences."
+                        else -> "Welcome to the Places SDK 5.3.0 Sample Catalog! Select any item from the menu to launch an interactive demonstration."
+                    }
+                )
+            },
+            confirmButton = {
+                androidx.compose.material3.TextButton(onClick = { showInfoDialog = false }) {
+                    Text("Got It")
+                }
+            }
+        )
+    }
     TopAppBar(
         title = { Text(text = title, style = MaterialTheme.typography.titleLarge) },
         navigationIcon = {

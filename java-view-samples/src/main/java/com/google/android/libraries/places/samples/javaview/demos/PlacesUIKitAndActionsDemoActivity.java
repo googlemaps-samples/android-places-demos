@@ -48,6 +48,7 @@ public class PlacesUIKitAndActionsDemoActivity extends AppCompatActivity {
         binding = ActivityPlacesUikitAndActionsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+                
         binding.btnLoadFragment.setOnClickListener(v -> loadUIKitFragment());
         binding.customActionsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> loadUIKitFragment());
 
@@ -112,4 +113,24 @@ public class PlacesUIKitAndActionsDemoActivity extends AppCompatActivity {
             }
         };
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_demo_info, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        if (item.getItemId() == R.id.action_info) {
+            new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle("ℹ️ Demo Instructions & Info")
+                .setMessage("Main Point: Demonstrates AdvancedPlaceDetailsCompactFragment with custom PlaceActionProvider (CALL, WEBSITE, DIRECTIONS, MAPS).\n\nHow to Use: Interact with custom action buttons and adjust media/review ranking preferences.")
+                .setPositiveButton("Got It", null)
+                .show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

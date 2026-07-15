@@ -16,6 +16,8 @@
 
 package com.google.android.libraries.places.samples.javaview.demos;
 
+import com.google.android.libraries.places.samples.javaview.R;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -72,6 +74,7 @@ public class SearchAndDiscoveryDemoActivity extends AppCompatActivity {
         binding = ActivitySearchAndDiscoveryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+                
         placesClient = Places.createClient(this);
 
         ArrayAdapter<LocationHelper.PresetLocation> locationAdapter = new ArrayAdapter<>(
@@ -195,4 +198,24 @@ public class SearchAndDiscoveryDemoActivity extends AppCompatActivity {
         String newLog = existing.isEmpty() ? message : existing + "\n" + message;
         binding.logText.setText(newLog);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_demo_info, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        if (item.getItemId() == R.id.action_info) {
+            new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle("ℹ️ Demo Instructions & Info")
+                .setMessage("Main Point: Demonstrates searchByText, searchNearby, findCurrentPlace, and Autocomplete predictions.\n\nHow to Use: Tap category chips or search input to execute live queries. Current Place automatically requests location permission or uses preset fallbacks.")
+                .setPositiveButton("Got It", null)
+                .show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
