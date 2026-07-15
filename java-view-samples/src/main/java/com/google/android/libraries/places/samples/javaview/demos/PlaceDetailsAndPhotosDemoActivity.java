@@ -16,6 +16,8 @@
 
 package com.google.android.libraries.places.samples.javaview.demos;
 
+import com.google.android.libraries.places.samples.javaview.R;
+
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
@@ -64,6 +66,7 @@ public class PlaceDetailsAndPhotosDemoActivity extends AppCompatActivity {
         binding = ActivityPlaceDetailsAndPhotosBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+                
         placesClient = Places.createClient(this);
 
         binding.btnFetchPlace.setOnClickListener(v -> fetchPlaceDetails());
@@ -152,4 +155,24 @@ public class PlaceDetailsAndPhotosDemoActivity extends AppCompatActivity {
             })
             .addOnFailureListener(e -> binding.detailsText.setText("FetchResolvedPhotoUri Error: " + e.getMessage()));
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_demo_info, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        if (item.getItemId() == R.id.action_info) {
+            new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle("ℹ️ Demo Instructions & Info")
+                .setMessage("Main Point: Demonstrates fetchPlace, fetchPhoto, fetchResolvedPhotoUri, and 5.3.0 AddressDescriptor (Area & Landmark relationships).\n\nHow to Use: Check target field masks, tap Fetch Details, and view photo metadata with surrounding landmarks.")
+                .setPositiveButton("Got It", null)
+                .show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

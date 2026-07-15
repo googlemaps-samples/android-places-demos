@@ -83,6 +83,20 @@ class SearchAndDiscoveryDemoActivity : AppCompatActivity() {
         binding = ActivitySearchAndDiscoveryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.toolbar.inflateMenu(R.menu.menu_demo_info)
+        binding.toolbar.setOnMenuItemClickListener { item ->
+            if (item.itemId == R.id.action_info) {
+                com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                    .setTitle("ℹ️ Demo Instructions & Info")
+                    .setMessage("Main Point: Demonstrates searchByText, searchNearby, findCurrentPlace, and Autocomplete predictions.\n\nHow to Use: Tap category chips or search input to execute live queries. Current Place automatically requests location permission or uses preset fallbacks.")
+                    .setPositiveButton("Got It", null)
+                    .show()
+                true
+            } else {
+                false
+            }
+        }
+
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.toolbar.setNavigationOnClickListener { finish() }

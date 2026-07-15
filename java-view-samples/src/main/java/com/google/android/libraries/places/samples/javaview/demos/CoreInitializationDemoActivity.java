@@ -16,6 +16,8 @@
 
 package com.google.android.libraries.places.samples.javaview.demos;
 
+import com.google.android.libraries.places.samples.javaview.R;
+
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.libraries.places.api.Places;
@@ -39,6 +41,7 @@ public class CoreInitializationDemoActivity extends AppCompatActivity {
         binding = ActivityCoreInitializationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+                
         updateStatus();
 
         binding.reinitButton.setOnClickListener(v -> {
@@ -81,4 +84,24 @@ public class CoreInitializationDemoActivity extends AppCompatActivity {
         String newLog = existing.isEmpty() ? message : existing + "\n" + message;
         binding.logText.setText(newLog);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_demo_info, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        if (item.getItemId() == R.id.action_info) {
+            new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle("ℹ️ Demo Instructions & Info")
+                .setMessage("Main Point: Demonstrates Places SDK 5.3.0 initialization state (Places.isInitialized()), custom App Check token provider, and lifecycle management.\n\nHow to Use: Tap Check Status to verify API readiness, or test Initialize/Deinitialize toggles.")
+                .setPositiveButton("Got It", null)
+                .show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

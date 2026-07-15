@@ -48,6 +48,20 @@ class PlaceDetailsAndPhotosDemoActivity : AppCompatActivity() {
         binding = ActivityPlaceDetailsAndPhotosBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.toolbar.inflateMenu(R.menu.menu_demo_info)
+        binding.toolbar.setOnMenuItemClickListener { item ->
+            if (item.itemId == R.id.action_info) {
+                com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                    .setTitle("ℹ️ Demo Instructions & Info")
+                    .setMessage("Main Point: Demonstrates fetchPlace, fetchPhoto, fetchResolvedPhotoUri, and 5.3.0 AddressDescriptor (Area & Landmark relationships).\n\nHow to Use: Check target field masks, tap Fetch Details, and view photo metadata with surrounding landmarks.")
+                    .setPositiveButton("Got It", null)
+                    .show()
+                true
+            } else {
+                false
+            }
+        }
+
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.toolbar.setNavigationOnClickListener { finish() }

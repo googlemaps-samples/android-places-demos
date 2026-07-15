@@ -16,6 +16,8 @@
 
 package com.google.android.libraries.places.samples.javaview.demos;
 
+import com.google.android.libraries.places.samples.javaview.R;
+
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.libraries.places.api.Places;
@@ -61,6 +63,7 @@ public class PlaceAttributesAndHoursDemoActivity extends AppCompatActivity {
         binding = ActivityPlaceAttributesAndHoursBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+                
         placesClient = Places.createClient(this);
 
         binding.btnInspectAttributes.setOnClickListener(v -> inspectAttributes());
@@ -116,4 +119,24 @@ public class PlaceAttributesAndHoursDemoActivity extends AppCompatActivity {
             })
             .addOnFailureListener(e -> binding.attributesOutputText.setText("FetchPlace Error: " + e.getMessage()));
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_demo_info, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        if (item.getItemId() == R.id.action_info) {
+            new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle("ℹ️ Demo Instructions & Info")
+                .setMessage("Main Point: Demonstrates isOpen(), ContainingPlace, PriceRange, OpeningHours, and AccessibilityOptions.\n\nHow to Use: Tap Check Open Status to evaluate real-time business operating hours and view location hierarchy.")
+                .setPositiveButton("Got It", null)
+                .show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

@@ -44,6 +44,20 @@ class PlaceAttributesAndHoursDemoActivity : AppCompatActivity() {
         binding = ActivityPlaceAttributesAndHoursBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.toolbar.inflateMenu(R.menu.menu_demo_info)
+        binding.toolbar.setOnMenuItemClickListener { item ->
+            if (item.itemId == R.id.action_info) {
+                com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                    .setTitle("ℹ️ Demo Instructions & Info")
+                    .setMessage("Main Point: Demonstrates isOpen(), ContainingPlace, PriceRange, OpeningHours, and AccessibilityOptions.\n\nHow to Use: Tap Check Open Status to evaluate real-time business operating hours and view location hierarchy.")
+                    .setPositiveButton("Got It", null)
+                    .show()
+                true
+            } else {
+                false
+            }
+        }
+
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.toolbar.setNavigationOnClickListener { finish() }

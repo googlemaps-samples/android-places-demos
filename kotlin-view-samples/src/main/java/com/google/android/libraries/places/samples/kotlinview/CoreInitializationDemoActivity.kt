@@ -39,6 +39,20 @@ class CoreInitializationDemoActivity : AppCompatActivity() {
         binding = ActivityCoreInitializationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.toolbar.inflateMenu(R.menu.menu_demo_info)
+        binding.toolbar.setOnMenuItemClickListener { item ->
+            if (item.itemId == R.id.action_info) {
+                com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                    .setTitle("ℹ️ Demo Instructions & Info")
+                    .setMessage("Main Point: Demonstrates Places SDK 5.3.0 initialization state (Places.isInitialized()), custom App Check token provider, and lifecycle management.\n\nHow to Use: Tap Check Status to verify API readiness, or test Initialize/Deinitialize toggles.")
+                    .setPositiveButton("Got It", null)
+                    .show()
+                true
+            } else {
+                false
+            }
+        }
+
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.toolbar.setNavigationOnClickListener { finish() }
