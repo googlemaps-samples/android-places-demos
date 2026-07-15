@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Copyright 2026 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Material3.DayNight.NoActionBar">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".demos.CoreInitializationDemoActivity"
+            android:exported="true"
+            android:label="@string/demo_core_init_title" />
+
+        <activity
+            android:name=".demos.SearchAndDiscoveryDemoActivity"
+            android:exported="true"
+            android:label="@string/demo_search_discovery_title" />
+
+        <activity
+            android:name=".demos.PlaceDetailsAndPhotosDemoActivity"
+            android:exported="true"
+            android:label="@string/demo_details_photos_title" />
+
+        <activity
+            android:name=".demos.PlaceAttributesAndHoursDemoActivity"
+            android:exported="true"
+            android:label="@string/demo_attributes_hours_title" />
+
+        <activity
+            android:name=".demos.PlacesUIKitAndActionsDemoActivity"
+            android:exported="true"
+            android:label="@string/demo_uikit_actions_title" />
+
+    </application>
+</manifest>

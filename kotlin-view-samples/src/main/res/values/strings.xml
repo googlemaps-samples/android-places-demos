@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Places SDK Kotlin Views</string>
+    <string name="search_hint">Search demos (e.g. search, photos, hours)...</string>
+</resources>

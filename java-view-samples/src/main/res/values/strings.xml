@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Copyright 2026 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<resources>
+    <string name="app_name">Places SDK Java Demos</string>
+    <string name="search_hint">Search demos…</string>
+
+    <!-- Category Titles -->
+    <string name="category_core_init">Core &amp; Initialization</string>
+    <string name="category_search_discovery">Search &amp; Discovery</string>
+    <string name="category_details_photos">Place Details &amp; Photos</string>
+    <string name="category_attributes_hours">Attributes &amp; Hours</string>
+    <string name="category_uikit_actions">UI Kit &amp; Actions</string>
+
+    <!-- Category Descriptions -->
+    <string name="category_core_init_desc">SDK setup, App Check token provider, and initialization status</string>
+    <string name="category_search_discovery_desc">SearchByText, SearchNearby, FindCurrentPlace, and Autocomplete</string>
+    <string name="category_details_photos_desc">FetchPlace, FetchPhoto, FetchResolvedPhotoUri, and AddressDescriptor</string>
+    <string name="category_attributes_hours_desc">IsOpen, ContainingPlace, PriceLevel, EV options, and OpeningHours</string>
+    <string name="category_uikit_actions_desc">AdvancedPlaceDetailsFragment, CompactFragment, and PlaceActionProvider</string>
+
+    <!-- Demo Titles & Descriptions -->
+    <string name="demo_core_init_title">Core Initialization &amp; App Check</string>
+    <string name="demo_core_init_desc">Verify Places SDK status, App Check token generation, and re-initialization.</string>
+
+    <string name="demo_search_discovery_title">Search &amp; Discovery</string>
+    <string name="demo_search_discovery_desc">Execute SearchByText, SearchNearby, FindCurrentPlace, and Autocomplete overlays.</string>
+
+    <string name="demo_details_photos_title">Place Details &amp; Photo Resolution</string>
+    <string name="demo_details_photos_desc">Retrieve detailed Place attributes, bitmap photos, resolved URIs, and AddressDescriptor.</string>
+
+    <string name="demo_attributes_hours_title">Place Attributes &amp; Opening Hours</string>
+    <string name="demo_attributes_hours_desc">Inspect IsOpen status, EV charging attributes, primary type, containing place, and price range.</string>
+
+    <string name="demo_uikit_actions_title">Places UI Kit &amp; Action Providers</string>
+    <string name="demo_uikit_actions_desc">Embed AdvancedPlaceDetailsFragment, CompactFragment, and custom PlaceActionProvider controls.</string>
+</resources>
