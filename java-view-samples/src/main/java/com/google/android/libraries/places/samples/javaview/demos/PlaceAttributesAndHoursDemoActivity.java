@@ -19,6 +19,7 @@ package com.google.android.libraries.places.samples.javaview.demos;
 import com.google.android.libraries.places.samples.javaview.R;
 
 import android.os.Bundle;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -128,7 +129,12 @@ public class PlaceAttributesAndHoursDemoActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
-        if (item.getItemId() == R.id.action_info) {
+        if (item.getItemId() == R.id.action_reset_defaults) {
+            getSharedPreferences("demo_prefs", MODE_PRIVATE).edit().clear().apply();
+            resetInputsToDefault();
+            Toast.makeText(this, "Reset to factory defaults", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (item.getItemId() == R.id.action_info) {
             new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                 .setTitle("ℹ️ Demo Instructions & Info")
                 .setMessage("Main Point: Demonstrates isOpen(), ContainingPlace, PriceRange, OpeningHours, and AccessibilityOptions.\n\nHow to Use: Tap Check Open Status to evaluate real-time business operating hours and view location hierarchy.")
@@ -139,4 +145,8 @@ public class PlaceAttributesAndHoursDemoActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    private void resetInputsToDefault() {
+        getSharedPreferences("demo_prefs", MODE_PRIVATE).edit().clear().apply();
+    }
 }

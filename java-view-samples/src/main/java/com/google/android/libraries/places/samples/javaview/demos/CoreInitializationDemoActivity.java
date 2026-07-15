@@ -19,6 +19,7 @@ package com.google.android.libraries.places.samples.javaview.demos;
 import com.google.android.libraries.places.samples.javaview.R;
 
 import android.os.Bundle;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.samples.javaview.core.Demo;
@@ -93,7 +94,12 @@ public class CoreInitializationDemoActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
-        if (item.getItemId() == R.id.action_info) {
+        if (item.getItemId() == R.id.action_reset_defaults) {
+            getSharedPreferences("demo_prefs", MODE_PRIVATE).edit().clear().apply();
+            resetInputsToDefault();
+            Toast.makeText(this, "Reset to factory defaults", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (item.getItemId() == R.id.action_info) {
             new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                 .setTitle("ℹ️ Demo Instructions & Info")
                 .setMessage("Main Point: Demonstrates Places SDK 5.3.0 initialization state (Places.isInitialized()), custom App Check token provider, and lifecycle management.\n\nHow to Use: Tap Check Status to verify API readiness, or test Initialize/Deinitialize toggles.")
@@ -104,4 +110,8 @@ public class CoreInitializationDemoActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    private void resetInputsToDefault() {
+        getSharedPreferences("demo_prefs", MODE_PRIVATE).edit().clear().apply();
+    }
 }

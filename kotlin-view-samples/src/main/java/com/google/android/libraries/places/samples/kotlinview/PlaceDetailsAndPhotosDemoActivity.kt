@@ -50,7 +50,12 @@ class PlaceDetailsAndPhotosDemoActivity : AppCompatActivity() {
 
         binding.toolbar.inflateMenu(R.menu.menu_demo_info)
         binding.toolbar.setOnMenuItemClickListener { item ->
-            if (item.itemId == R.id.action_info) {
+            if (item.itemId == R.id.action_reset_defaults) {
+                getSharedPreferences("demo_prefs", MODE_PRIVATE).edit().clear().apply()
+                resetInputsToDefault()
+                Toast.makeText(this, "Reset to factory defaults", Toast.LENGTH_SHORT).show()
+                true
+            } else if (item.itemId == R.id.action_info) {
                 com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                     .setTitle("ℹ️ Demo Instructions & Info")
                     .setMessage("Main Point: Demonstrates fetchPlace, fetchPhoto, fetchResolvedPhotoUri, and 5.3.0 AddressDescriptor (Area & Landmark relationships).\n\nHow to Use: Check target field masks, tap Fetch Details, and view photo metadata with surrounding landmarks.")
@@ -182,5 +187,9 @@ class PlaceDetailsAndPhotosDemoActivity : AppCompatActivity() {
             .addOnFailureListener { e ->
                 binding.detailsTextView.text = "Failed to fetch resolved photo URI: ${e.message}"
             }
+    }
+
+    private fun resetInputsToDefault() {
+        getSharedPreferences("demo_prefs", MODE_PRIVATE).edit().clear().apply()
     }
 }
