@@ -62,6 +62,6 @@ dependencies {
 
     // Google Places
     implementation(libs.places)
-    implementation(libs.maps.utils.ktx)
+    implementation(libs.android.maps.utils)
 }
 
