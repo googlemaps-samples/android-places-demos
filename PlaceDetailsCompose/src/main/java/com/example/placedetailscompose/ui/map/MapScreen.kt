@@ -71,8 +71,8 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.google.maps.android.ktx.utils.sphericalDistance
-import com.google.maps.android.ktx.utils.withSphericalOffset
+import com.google.maps.android.sphericalDistance
+import com.google.maps.android.withSphericalOffset
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
