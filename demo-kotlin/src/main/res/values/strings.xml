@@ -53,6 +53,9 @@
   <!-- Button for launching is open test activity. -->
   <string name="main_isOpenButtonText" translatable="false">Place is Open?</string>
 
+  <!-- Button for launching 5.3.0 actions and advanced details test activity. -->
+  <string name="place_actions_advanced_button" translatable="false">Places 5.3.0 Actions &amp; Advanced Details</string>
+
 
   <!-- AUTOCOMPLETE -->
 

@@ -42,6 +42,7 @@ class MainActivity : BaseActivity() {
         setLaunchActivityClickListener(binding.currentPlaceButton, CurrentPlaceActivity::class.java)
         setLaunchActivityClickListener(binding.placeAndPhotoButton, PlaceDetailsAndPhotosActivity::class.java)
         setLaunchActivityClickListener(binding.isOpenButton, PlaceIsOpenActivity::class.java)
+        setLaunchActivityClickListener(binding.placeActionsAdvancedButton, PlaceActionsAndAdvancedDetailsActivity::class.java)
     }
 
     private fun setLaunchActivityClickListener(button: Button, activityClassToLaunch: Class<out Activity>) {

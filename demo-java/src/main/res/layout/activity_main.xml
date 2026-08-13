@@ -76,6 +76,13 @@
             android:layout_margin="@dimen/spacing_small"
             android:text="@string/main_isOpenButtonText"/>
 
+        <Button
+            android:id="@+id/place_actions_advanced_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_small"
+            android:text="@string/place_actions_advanced_button"/>
+
     </LinearLayout>
 
 </ScrollView>
