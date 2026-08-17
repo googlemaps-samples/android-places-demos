@@ -39,8 +39,8 @@ android {
         applicationId = "com.example.placedetailsuikit"
         // `minSdk` is the minimum API level required to run the app. Devices below this level cannot install it.
         minSdk = 27
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = libs.versions.versionCode.get().toInt()
+        versionName = libs.versions.versionName.get()
 
         // Specifies the instrumentation runner for running Android tests.
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

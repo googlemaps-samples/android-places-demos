@@ -25,8 +25,8 @@ android {
 
     defaultConfig {
         applicationId = "com.google.places"
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = libs.versions.versionCode.get().toInt()
+        versionName = libs.versions.versionName.get()
 
         multiDexEnabled = true
     }
