@@ -55,5 +55,8 @@ dependencies {
     implementation(libs.places)
     implementation(libs.play.services.maps)
     implementation(libs.android.maps.utils)
+
+    // --- Attribution library ---
+    implementation(project(":library"))
 }
 

@@ -110,6 +110,9 @@ dependencies {
     implementation(libs.maps.utils.ktx)
     implementation(libs.material) // For Material Design components (used in XML layouts).
 
+    // --- Attribution library ---
+    implementation(project(":library"))
+
     // --- Jetpack Compose ---
     // These libraries are for building UIs with Jetpack Compose.
     implementation(libs.androidx.material3) // The latest Material Design components for Compose.
