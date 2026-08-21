@@ -40,7 +40,7 @@ mapsSecretsGradlePlugin = "2.0.1"
 robolectric = "4.16.1"
 mockk = "1.14.11"
 
-compileSdk = "36"
+compileSdk = "37"
 minSdk = "24"
 
 #Tracker lib
