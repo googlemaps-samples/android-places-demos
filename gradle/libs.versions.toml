@@ -41,7 +41,7 @@ kotlinParcelize = "2.3.10"
 mapsSecretsGradlePlugin = "2.0.1"
 mockk = "1.14.11"
 
-compileSdk = "36"
+compileSdk = "37"
 minSdk = "24"
 
 #Tracker lib
