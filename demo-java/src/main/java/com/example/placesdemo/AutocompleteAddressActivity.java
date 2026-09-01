@@ -158,7 +158,8 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
         // Build the autocomplete intent with field, country, and type filters applied
         Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
                 .setCountries(List.of("US"))
-                .setTypesFilter(List.of("establishment"))
+                // IMPORTANT: the widget uses the legacy api
+                .setTypesFilter(List.of(PlaceTypes.ADDRESS))
                 .build(this);
         startAutocomplete.launch(intent);
     }
