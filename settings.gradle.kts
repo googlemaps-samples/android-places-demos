@@ -39,10 +39,14 @@ dependencyResolutionManagement {
 includeBuild("build-logic")
 rootProject.name = "Android Places Demos"
 
+include(":app")
 include(":PlaceDetailsCompose")
 include(":PlaceDetailsUIKit")
 include(":PlacesUIKit3D")
 include(":demo-java")
 include(":demo-kotlin")
+include(":java-view-samples")
+include(":kotlin-view-samples")
 include(":kotlin-demos")
 include(":snippets")
+include(":kotlin-compose-samples")
