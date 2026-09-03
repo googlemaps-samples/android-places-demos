@@ -37,12 +37,21 @@ testRules = "1.7.0"
 ksp = "2.3.6"
 kotlinParcelize = "2.3.10"
 mapsSecretsGradlePlugin = "2.0.1"
+robolectric = "4.16.1"
+mockk = "1.14.11"
+
+compileSdk = "37"
+minSdk = "24"
+
+#Tracker lib
+startup-runtime = "1.2.0"
 
 [libraries]
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-metadata-jvm = { group = "org.jetbrains.kotlin", name = "kotlin-metadata-jvm", version.ref = "kotlin" }
 secrets-gradlePlugin = { group = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", name = "secrets-gradle-plugin", version.ref = "mapsSecretsGradlePlugin" }
+startup-runtime = { module = "androidx.startup:startup-runtime", version.ref = "startup-runtime" }
 
 # Core Android & Kotlin
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -118,9 +127,12 @@ androidx-test-runner = { group = "androidx.test", name = "runner", version.ref =
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
