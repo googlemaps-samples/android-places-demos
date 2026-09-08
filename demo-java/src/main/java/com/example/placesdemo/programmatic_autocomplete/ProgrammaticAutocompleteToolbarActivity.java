@@ -177,7 +177,7 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
                 .setLocationBias(bias)
                 .setQuery(query)
                 .setCountries(List.of("US"))
-                .setTypesFilter(List.of(PlaceTypes.ESTABLISHMENT))
+                .setTypesFilter(List.of(PlaceTypes.STREET_ADDRESS))
                 .build();
 
         // Perform autocomplete predictions request

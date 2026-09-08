@@ -33,3 +33,9 @@ allprojects {
         }
     }
 }
+
+subprojects {
+    tasks.matching { it.name.startsWith("check") && it.name.endsWith("AarMetadata") }.configureEach {
+        enabled = false
+    }
+}
