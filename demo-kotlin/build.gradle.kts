@@ -63,5 +63,8 @@ dependencies {
     // Google Places
     implementation(libs.places)
     implementation(libs.maps.utils.ktx)
+
+    // --- Attribution library ---
+    implementation(project(":library"))
 }
 

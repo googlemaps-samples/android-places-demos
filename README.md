@@ -72,6 +72,24 @@ Each runnable project includes a convenient `installAndLaunch` task. Instead of 
 ./gradlew :snippets:installAndLaunch
 ```
 
+## Internal usage attribution ID
+
+This library calls the `addInternalUsageAttributionId` method, which helps Google understand which libraries and samples are helpful to developers and is optional. Instructions for opting out of the identifier are provided below.
+
+If you wish to disable this, you can do so by removing the initializer in your `AndroidManifest.xml` using the `tools:node="remove"` attribute:
+
+```xml
+<provider
+    android:name="androidx.startup.InitializationProvider"
+    android:authorities="${applicationId}.androidx-startup"
+    android:exported="false"
+    tools:node="merge">
+    <meta-data
+        android:name="com.example.library.utils.attribution.AttributionIdInitializer"
+        tools:node="remove" />
+</provider>
+```
+
 ## Terms of Service
 
 This sample uses Google Maps Platform services. Use of Google Maps Platform services through this sample is subject to the Google Maps Platform [Terms of Service].

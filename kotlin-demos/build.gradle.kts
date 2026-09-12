@@ -91,6 +91,9 @@ dependencies {
     implementation(libs.coil.compose)
 
     implementation(libs.places)
+
+    // --- Attribution library ---
+    implementation(project(":library"))
 }
 
 
