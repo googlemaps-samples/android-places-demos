@@ -56,15 +56,11 @@ android {
 }
 
 dependencies {
-  implementation(libs.appcompat)
-  implementation(libs.core.ktx)
-  implementation(libs.material)
   implementation(libs.startup.runtime)
   implementation(libs.play.services.maps)
   testImplementation(libs.junit)
   testImplementation(libs.robolectric)
   testImplementation(libs.mockk)
-  testImplementation(libs.androidx.espresso.core)
 }
 
 
