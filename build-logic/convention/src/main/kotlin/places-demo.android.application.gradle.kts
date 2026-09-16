@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import org.gradle.api.artifacts.VersionCatalogsExtension
+
 plugins {
     id("com.android.application")
 }
@@ -25,12 +27,17 @@ interface DemoAppExtension {
 val demoApp = extensions.create<DemoAppExtension>("demoApp")
 demoApp.mainActivity.convention(".MainActivity")
 
+val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+val defaultCompileSdk = libs.findVersion("compileSdk").map { it.requiredVersion.toInt() }.orElse(37)
+val defaultMinSdk = libs.findVersion("minSdk").map { it.requiredVersion.toInt() }.orElse(24)
+val defaultTargetSdk = libs.findVersion("targetSdk").map { it.requiredVersion.toInt() }.orElse(defaultCompileSdk)
+
 android {
-    compileSdk = 37
+    compileSdk = defaultCompileSdk
 
     defaultConfig {
-        minSdk = 24
-        targetSdk = 37
+        minSdk = defaultMinSdk
+        targetSdk = defaultTargetSdk
     }
 
     java {
