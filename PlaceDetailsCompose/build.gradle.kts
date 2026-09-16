@@ -107,7 +107,7 @@ dependencies {
     implementation(libs.play.services.location) // Needed for the FusedLocationProviderClient to get the device's location.
     implementation(libs.maps.compose)
     implementation(libs.maps.compose.widgets)
-    implementation(libs.maps.utils.ktx)
+    implementation(libs.android.maps.utils)
     implementation(libs.material) // For Material Design components (used in XML layouts).
 
     // --- Jetpack Compose ---
