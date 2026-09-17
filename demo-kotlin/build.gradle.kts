@@ -39,12 +39,20 @@ android {
     }
 
     kotlin {
+        jvmToolchain(21)
         compilerOptions {
             freeCompilerArgs.addAll(
                 "-opt-in=kotlin.RequiresOptIn",
                 "-Xannotation-default-target=param-property",
                 "-Xskip-metadata-version-check"
             )
+        }
+    }
+    useLibrary("org.apache.http.legacy")
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
         }
     }
 }
@@ -63,5 +71,12 @@ dependencies {
     // Google Places
     implementation(libs.places)
     implementation(libs.maps.utils.ktx)
+
+    // Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.androidx.junit)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.google.truth)
+    testImplementation(libs.robolectric)
 }
 
