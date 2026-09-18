@@ -16,6 +16,7 @@
 
 plugins {
     id("places-demo.android.application")
+    alias(libs.plugins.kotlin.android)
     id("places-demo.secrets")
     alias(libs.plugins.kotlin.compose)
 }

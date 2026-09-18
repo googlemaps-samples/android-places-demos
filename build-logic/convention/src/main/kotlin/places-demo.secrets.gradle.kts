@@ -83,6 +83,14 @@ afterEvaluate {
     }
     val isUnitTestOnly = requestedTasks.all { it.contains("test", ignoreCase = true) || it.contains("lint", ignoreCase = true) }
 
+    val isCI = System.getenv("CI")?.equals("true", ignoreCase = true) == true ||
+               !System.getenv("GITHUB_ACTIONS").isNullOrBlank()
+
+    if (isCI) {
+        println("Info: CI environment detected. Bypassing strict API key enforcement; using default/placeholder properties.")
+        return@afterEvaluate
+    }
+
     if (isBuildOrInstallTarget && !isUnitTestOnly) {
         if (!secretsFile.exists()) {
             throw GradleException("FAILED BUILD: 'secrets.properties' file is missing! Building and installing the app requires valid API keys in secrets.properties or /usr/local/google/home/dkhawk/secrets.txt.")
