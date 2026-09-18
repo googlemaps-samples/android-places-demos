@@ -4,16 +4,57 @@ Google Places SDK for Android Demos
 ![Apache-2.0](https://img.shields.io/badge/license-Apache-blue)
 [![Discord](https://img.shields.io/discord/676948200904589322)](https://discord.gg/hYsWbmk)
 
-This repo contains several standalone applications that demonstrate use of the [Google Places SDK for Android](https://developers.google.com/places/android-sdk/):
+This repository contains several standalone applications that demonstrate the features and capabilities of the [Google Places SDK for Android](https://developers.google.com/places/android-sdk/).
 
-1. **[demo-java](demo-java):** Basic Java application demonstrating core Places SDK capabilities including Place Autocomplete (Intent and Programmatic), Place Details, and Current Place. 
-2. **[demo-kotlin](demo-kotlin):** The Kotlin equivalent of the standard Java demo, showing idiomatic usage of the base SDK.
-3. **[kotlin-demos](kotlin-demos):** Demonstrates the use of the `android-places-ktx` library, highlighting Kotlin Coroutines support and modernized API responses for the Places SDK.
-4. **[PlaceDetailsCompose](PlaceDetailsCompose):** Shows how to build modern, interactive Place Details UI screens leveraging Jetpack Compose and the New Places API.
-5. **[PlaceDetailsUIKit](PlaceDetailsUIKit):** Shows how to build immersive Place Details UI screens using modern Android Views (UIKit) and the New Places API.
-6. **[PlacesUIKit3D](PlacesUIKit3D):** Blends the Places API with the Photorealistic 3D Maps SDK, providing an immersive location-viewing experience with dynamic camera fly-alongs.
+### 📸 Hero Sample Carousel
 
-Additionally, the **[snippets](snippets)** app contains code snippets used across the official [Google Places SDK developer documentation](https://developers.google.com/places/android-sdk).
+| Core Initialization | Search & Discovery | Place Details & Photos | Place Attributes & Hours | UI Kit & Actions | Place Details Compose | Place Details UIKit | Places UI Kit 3D |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| <a href="kotlin-compose-samples"><img src="docs/screenshots/core-init-thumb.png" width="121" alt="Core Initialization"/></a> | <a href="kotlin-compose-samples"><img src="docs/screenshots/search-discovery-thumb.png" width="121" alt="Search & Discovery"/></a> | <a href="kotlin-compose-samples"><img src="docs/screenshots/place-details-thumb.png" width="121" alt="Place Details"/></a> | <a href="kotlin-compose-samples"><img src="docs/screenshots/place-attributes-thumb.png" width="121" alt="Place Attributes"/></a> | <a href="kotlin-compose-samples"><img src="docs/screenshots/uikit-actions-thumb.png" width="121" alt="UI Kit & Actions"/></a> | <a href="PlaceDetailsCompose"><img src="docs/screenshots/placedetails-compose-thumb.png" width="121" alt="Place Details Compose"/></a> | <a href="PlaceDetailsUIKit"><img src="docs/screenshots/placedetails-uikit-thumb.png" width="121" alt="Place Details UIKit"/></a> | <a href="PlacesUIKit3D"><img src="docs/screenshots/places-3d-thumb.png" width="121" alt="Places UI Kit 3D"/></a> |
+| [Core Init](kotlin-compose-samples) | [Search & Discovery](kotlin-compose-samples) | [Place Details](kotlin-compose-samples) | [Place Attributes](kotlin-compose-samples) | [UI Kit Actions](kotlin-compose-samples) | [Compose Demo](PlaceDetailsCompose) | [UIKit Demo](PlaceDetailsUIKit) | [3D Map Demo](PlacesUIKit3D) |
+
+---
+
+## 🗺️ Sample Catalog
+
+### 1. 🌟 Redesigned Core Sample Suites (Places SDK v5.3.0+)
+Standardized sample suites built across three modern Android UI architectures demonstrating end-to-end features of the Places SDK:
+
+| Architecture | Language | Module Path | Documentation |
+| :--- | :--- | :--- | :--- |
+| **Android Views (XML Layouts)** | Java | [`:java-view-samples`](java-view-samples) | [README](java-view-samples/README.md) |
+| **Android Views + ViewBinding** | Kotlin | [`:kotlin-view-samples`](kotlin-view-samples) | [README](kotlin-view-samples/README.md) |
+| **Jetpack Compose + Material3** | Kotlin | [`:kotlin-compose-samples`](kotlin-compose-samples) | [README](kotlin-compose-samples/README.md) |
+
+#### Core Feature Demonstrations Across All Suites:
+- 🔑 **Core Initialization & App Check (`CoreInitializationDemo*`)**: Demonstrates Places SDK setup, API key verification, Firebase App Check integration, and session token state lifecycle.
+- 🔍 **Search & Discovery (`SearchAndDiscoveryDemo*`)**: Demonstrates Place Autocomplete (Intent & Programmatic), Search Along Route, Autocomplete predictions, and Nearby Search queries.
+- 🖼️ **Place Details & Photos (`PlaceDetailsAndPhotosDemo*`)**: Demonstrates fetching Place Details, loading photo metadata, async bitmap rendering, and review lists.
+- 🕒 **Place Attributes & Hours (`PlaceAttributesAndHoursDemo*`)**: Demonstrates retrieving place field masks, price tiers, accessibility flags, and structured opening hours.
+- 🎨 **Places UI Kit & Actions (`PlacesUIKitAndActionsDemo*`)**: Demonstrates embedding `PlaceDetailsCompactFragment` and `PlaceDetailsFragment` with custom Synthwave themes and action callbacks.
+
+---
+
+### 2. 🚀 Specialized UI Kit & Photorealistic 3D Demos
+
+| Sample Module | Architecture | Key Features | Module Path | Documentation |
+| :--- | :--- | :--- | :--- | :--- |
+| **PlaceDetailsCompose** | Jetpack Compose + `AndroidView` | Integrates `PlaceDetailsCompactFragment` and `PlaceDetailsFragment` into Compose via `AndroidView` wrappers. Includes live view mode switching. | [`:PlaceDetailsCompose`](PlaceDetailsCompose) | [README](PlaceDetailsCompose/README.md) |
+| **PlaceDetailsUIKit** | Android Views + Compose Dialog | Simple and configurable implementations of `PlaceDetailsCompactFragment`. Features interactive runtime field selection dialog. | [`:PlaceDetailsUIKit`](PlaceDetailsUIKit) | [README](PlaceDetailsUIKit/README.md) |
+| **PlacesUIKit3D** | Photorealistic 3D Maps + UI Kit | Combines Places SDK `PlaceDetailsCompactFragment` with Photorealistic 3D Maps SDK for interactive 3D location flyovers. | [`:PlacesUIKit3D`](PlacesUIKit3D) | [README](PlacesUIKit3D/README.md) |
+
+---
+
+### 3. 📦 Base Demos & Developer Utility Suites
+
+| Sample Module | Language / Framework | Purpose | Module Path |
+| :--- | :--- | :--- | :--- |
+| **demo-java** | Java | Base SDK Capabilities (Place Autocomplete, Place Details, Current Place) | [`:demo-java`](demo-java) |
+| **demo-kotlin** | Kotlin | Idiomatic base Kotlin implementation of core SDK APIs | [`:demo-kotlin`](demo-kotlin) |
+| **kotlin-demos** | Kotlin + Coroutines (KTX) | Uses `android-places-ktx` extension library for async coroutine flows | [`:kotlin-demos`](kotlin-demos) |
+| **snippets** | Kotlin / Java | Code snippets referenced in official Google Places SDK developer guides | [`:snippets`](snippets) |
+
+---
 
 Getting Started
 ---------------
@@ -50,6 +91,15 @@ The demos require that you provide your own API keys. The project enforces the p
 Each runnable project includes a convenient `installAndLaunch` task. Instead of using Android Studio, you can natively build, install, and execute any demo directly on your connected device or emulator with a single command:
 
 ```bash
+# Launch the redesigned Java Views Demo
+./gradlew :java-view-samples:installAndLaunch
+
+# Launch the redesigned Kotlin Views Demo
+./gradlew :kotlin-view-samples:installAndLaunch
+
+# Launch the redesigned Kotlin Compose Demo
+./gradlew :kotlin-compose-samples:installAndLaunch
+
 # Launch the standard Java Demo
 ./gradlew :demo-java:installAndLaunch
 
@@ -106,3 +156,4 @@ You can also discuss this sample on our [Discord server].
 [Terms of Service]: https://cloud.google.com/maps-platform/terms
 [Google Maps Platform EEA Terms of Service]: https://cloud.google.com/terms/maps-platform/eea
 [Learn more]: https://developers.google.com/maps/comms/eea/faq
+
