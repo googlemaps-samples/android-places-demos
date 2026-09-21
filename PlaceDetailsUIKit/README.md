@@ -128,8 +128,8 @@ user-configurable.
 
 ### **Customization**
 
-The custom "Synthwave" theme is defined in [`themes.xml`](app/src/main/res/values/themes.xml) and
-[`colors.xml`](app/src/main/res/values/colors.xml). By overriding attributes like placesColorSurface,
+The custom "Synthwave" theme is defined in [`themes.xml`](src/main/res/values/themes.xml) and
+[`colors.xml`](src/main/res/values/colors.xml). By overriding attributes like placesColorSurface,
 placesColorPrimary, and placesTextAppearanceBodyMedium, you can completely change the look and feel
 of the widget to match your app's branding.
 
