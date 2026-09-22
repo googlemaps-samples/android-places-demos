@@ -146,7 +146,8 @@ class PlaceAutocompleteActivity : BaseActivity() {
                 }
             }
             PlaceAutocompleteActivity.RESULT_ERROR -> {
-                val status = PlaceAutocomplete.getResultStatusFromIntent(intent)
+                val data: Intent? = result.data
+                val status = data?.let { PlaceAutocomplete.getResultStatusFromIntent(it) }
                 binding.response.text = status?.statusMessage
             }
             RESULT_CANCELED -> {
