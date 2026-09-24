@@ -28,16 +28,16 @@ val demoApp = extensions.create<DemoAppExtension>("demoApp")
 demoApp.mainActivity.convention(".MainActivity")
 
 val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
-val compileSdkVersion = libs.findVersion("compileSdk").get().requiredVersion.toInt()
-val minSdkVersion = libs.findVersion("minSdk").get().requiredVersion.toInt()
-val targetSdkVersion = libs.findVersion("targetSdk").map { it.requiredVersion.toInt() }.orElse(compileSdkVersion)
+val demoCompileSdk = libs.findVersion("compileSdk").get().requiredVersion.toInt()
+val demoMinSdk = libs.findVersion("minSdk").get().requiredVersion.toInt()
+val demoTargetSdk = libs.findVersion("targetSdk").map { it.requiredVersion.toInt() }.orElse(demoCompileSdk)
 
 android {
-    compileSdk = compileSdkVersion
+    compileSdk = demoCompileSdk
 
     defaultConfig {
-        minSdk = minSdkVersion
-        targetSdk = targetSdkVersion
+        minSdk = demoMinSdk
+        targetSdk = demoTargetSdk
     }
 
     java {
