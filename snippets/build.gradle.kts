@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.viewbinding)
     implementation(libs.multidex)
+    implementation(project(":library"))
     // [END_EXCLUDE]
 
     // Places and Maps SDKs

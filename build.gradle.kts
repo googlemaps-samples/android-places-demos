@@ -24,6 +24,7 @@ plugins {
     alias(libs.plugins.hilt.android) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.kotlin.kapt) apply false
+    alias(libs.plugins.android.library) apply false
 }
 
 allprojects {
@@ -35,7 +36,10 @@ allprojects {
 }
 
 subprojects {
-    tasks.matching { it.name.startsWith("check") && it.name.endsWith("AarMetadata") }.configureEach {
-        enabled = false
+    plugins.withId("com.android.application") {
+        tasks.matching { it.name.startsWith("check") && it.name.endsWith("AarMetadata") }
+            .configureEach {
+                enabled = false
+            }
     }
 }

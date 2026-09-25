@@ -126,6 +126,9 @@ dependencies {
     ksp(libs.hilt.android.compiler)
     implementation(libs.hilt.android)
 
+    // --- Attribution library ---
+    implementation(project(":library"))
+
     // --- Miscellaneous ---
     implementation(libs.kotlinx.datetime)
 

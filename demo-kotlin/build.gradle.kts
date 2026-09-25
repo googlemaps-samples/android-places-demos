@@ -78,5 +78,8 @@ dependencies {
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.google.truth)
     testImplementation(libs.robolectric)
+
+    // --- Attribution library ---
+    implementation(project(":library"))
 }
 
