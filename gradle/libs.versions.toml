@@ -2,6 +2,9 @@
 # Project Configuration
 versionCode = "1"
 versionName = "3.2.0" # {x-release-please-version}
+compileSdk = "37"
+minSdk = "24"
+targetSdk = "37"
 agp = "8.13.2"
 kotlin = "2.3.10"
 coreKtx = "1.17.0"
