@@ -36,6 +36,10 @@ allprojects {
 }
 
 subprojects {
+  // Only application modules skip the AAR metadata check. Library modules must keep
+  // it enabled: their bundle<Variant>Aar task consumes check<Variant>AarMetadata's
+  // output directory as a required input, so disabling it fails the build on a clean
+  // checkout with "aarMetadataCheck ... which doesn't exist".
     plugins.withId("com.android.application") {
         tasks.matching { it.name.startsWith("check") && it.name.endsWith("AarMetadata") }
             .configureEach {
