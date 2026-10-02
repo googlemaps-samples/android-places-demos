@@ -1,10 +1,16 @@
-Google Places SDK for Android Demos
-====================================
-![GitHub contributors](https://img.shields.io/github/contributors/googlemaps/android-places-demos)
-![Apache-2.0](https://img.shields.io/badge/license-Apache-blue)
-[![Discord](https://img.shields.io/discord/676948200904589322)](https://discord.gg/hYsWbmk)
+[![Build](https://github.com/googlemaps-samples/android-places-demos/actions/workflows/build.yml/badge.svg)](https://github.com/googlemaps-samples/android-places-demos/actions/workflows/build.yml)
+![GitHub contributors](https://img.shields.io/github/contributors/googlemaps-samples/android-places-demos?color=green)
+[![GitHub License](https://img.shields.io/github/license/googlemaps-samples/android-places-demos?color=blue)][license]
+[![StackOverflow](https://img.shields.io/stackexchange/stackoverflow/t/google-places-api?color=orange&label=google-places-api&logo=stackoverflow)](https://stackoverflow.com/questions/tagged/google-places-api)
+[![Discord](https://img.shields.io/discord/676948200904589322?color=6A7EC2&logo=discord&logoColor=ffffff)][Discord server]
 
-This repo contains several standalone applications that demonstrate use of the [Google Places SDK for Android](https://developers.google.com/places/android-sdk/):
+# Google Places SDK for Android sample applications
+
+## Description
+
+This repo contains sample apps demonstrating use of the [Google Places SDK for Android][places-sdk].
+
+## Samples in this repo
 
 1. **[demo-java](demo-java):** Basic Java application demonstrating core Places SDK capabilities including Place Autocomplete (Intent and Programmatic), Place Details, and Current Place. 
 2. **[demo-kotlin](demo-kotlin):** The Kotlin equivalent of the standard Java demo, showing idiomatic usage of the base SDK.
@@ -13,22 +19,34 @@ This repo contains several standalone applications that demonstrate use of the [
 5. **[PlaceDetailsUIKit](PlaceDetailsUIKit):** Shows how to build immersive Place Details UI screens using modern Android Views (UIKit) and the New Places API.
 6. **[PlacesUIKit3D](PlacesUIKit3D):** Blends the Places API with the Photorealistic 3D Maps SDK, providing an immersive location-viewing experience with dynamic camera fly-alongs.
 
-Additionally, the **[snippets](snippets)** app contains code snippets used across the official [Google Places SDK developer documentation](https://developers.google.com/places/android-sdk).
+Additionally, the **[snippets](snippets)** app contains code snippets used across the official [Google Places SDK developer documentation][places-sdk].
 
-Getting Started
----------------
+## Requirements
+
+To run the samples, you will need:
+
+- To [sign up with Google Maps Platform]
+- A Google Maps Platform [project] with the **Places API (New)** and **Maps SDK for Android** enabled
+- An [API key] associated with the project above ... follow the [API key instructions] if you're new to the process
+- Java 17+ or Kotlin
+- Android API level 24+ (35+ recommended)
+- Gradle
+
+## Running the sample(s)
 
 These demos use the Gradle build system.
 
-First download the demos by cloning this repository or downloading an archived snapshot. (See the options on the right hand side.)
+First download the demos by cloning this repository or downloading an archived snapshot.
 
 In Android Studio, use "Open an existing Android Studio project", and select the root directory (`android-places-demos`). This will load all the demo modules at once.
 
 Alternatively use the `./gradlew assembleDebug` command from the root directory to build all projects simultaneously.
 
-The demos require that you provide your own API keys. The project enforces the presence of required keys before the build can even start to prevent runtime crashes.
+### Adding your API key
 
-1. [Get an API Key](https://developers.google.com/places/android-sdk/get-api-key) with the **Places API (New)** and **Maps SDK for Android** enabled.
+The demos require that you provide your own API keys. The project enforces the presence of required keys before the build can start to prevent runtime crashes.
+
+1. [Get an API Key][API key] with the **Places API (New)** and **Maps SDK for Android** enabled.
 2. In the root directory, create a `secrets.properties` file (this is git-ignored to prevent accidental commits).
 3. Add your keys. See `local.defaults.properties` for the complete list of required and secondary optional keys. At minimum, you must add the required keys:
    ```properties
@@ -37,8 +55,8 @@ The demos require that you provide your own API keys. The project enforces the p
    ```
    **Optional Keys:**
    There are also optional keys required for specific demos to function completely:
-   *   `MAPS3D_API_KEY`: Required only for the `PlacesUIKit3D` demo to load the Photorealistic 3D Maps tiles.
-   *   `MAP_ID`: Required only for the `PlaceDetailsCompose` demo to demonstrate cloud-based map styling.
+   * `MAPS3D_API_KEY`: Required only for the `PlacesUIKit3D` demo to load the Photorealistic 3D Maps tiles.
+   * `MAP_ID`: Required only for the `PlaceDetailsCompose` demo to demonstrate cloud-based map styling.
    ```properties
    MAPS3D_API_KEY=AIza...
    MAP_ID=...
@@ -72,23 +90,9 @@ Each runnable project includes a convenient `installAndLaunch` task. Instead of 
 ./gradlew :snippets:installAndLaunch
 ```
 
-## Internal usage attribution ID
+## Contributing
 
-This library calls the `addInternalUsageAttributionId` method, which helps Google understand which libraries and samples are helpful to developers and is optional. Instructions for opting out of the identifier are provided below.
-
-If you wish to disable this, you can do so by removing the initializer in your `AndroidManifest.xml` using the `tools:node="remove"` attribute:
-
-```xml
-<provider
-    android:name="androidx.startup.InitializationProvider"
-    android:authorities="${applicationId}.androidx-startup"
-    android:exported="false"
-    tools:node="merge">
-    <meta-data
-        android:name="com.example.library.utils.attribution.AttributionIdInitializer"
-        tools:node="remove" />
-</provider>
-```
+Contributions are welcome and encouraged! If you'd like to contribute, send us a [pull request] and refer to our [code of conduct] and [contributing guide].
 
 ## Terms of Service
 
@@ -96,16 +100,17 @@ This sample uses Google Maps Platform services. Use of Google Maps Platform serv
 
 If your billing address is in the European Economic Area, effective on 8 July 2025, the [Google Maps Platform EEA Terms of Service](https://cloud.google.com/terms/maps-platform/eea) will apply to your use of the Services. Functionality varies by region. [Learn more](https://developers.google.com/maps/comms/eea/faq).
 
-This sample is not a Google Maps Platform Core Service. Therefore, the Google Maps Platform Terms of Service (e.g. Technical Support Services, Service Level Agreements, and Deprecation Policy) do not apply to the code in this sample.
+This sample is not a Google Maps Platform Core Service. Therefore, the Google Maps Platform Terms of Service, e.g., [Technical Support Services Guidelines], Service Level Agreement ["SLA"][SLA], and [Deprecation Policy], do not apply to the code in this sample.
 
 ## Support
 
-This sample is offered via an open source [license]. It is not governed by the Google Maps Platform Support [Technical Support Services Guidelines], the [SLA], or the [Deprecation Policy]. However, any Google Maps Platform services used by the sample remain subject to the Google Maps Platform Terms of Service.
+This sample is offered via an open source [license]. It is not governed by the Google Maps Platform Support Technical Support Services Guidelines, the SLA, or the Deprecation Policy. However, any Google Maps Platform services used by the sample remain subject to the Google Maps Platform Terms of Service.
 
 If you find a bug, or have a feature request, please [file an issue] on GitHub. If you would like to get answers to technical questions from other Google Maps Platform developers, ask through one of our [developer community channels]. If you'd like to contribute, please check the [contributing guide].
 
 You can also discuss this sample on our [Discord server].
 
+[places-sdk]: https://developers.google.com/places/android-sdk
 [API key]: https://developers.google.com/maps/documentation/android-sdk/get-api-key
 [API key instructions]: https://developers.google.com/maps/documentation/android-sdk/config#step_3_add_your_api_key_to_the_project
 
@@ -116,8 +121,8 @@ You can also discuss this sample on our [Discord server].
 [Discord server]: https://discord.gg/hYsWbmk
 [file an issue]: https://github.com/googlemaps-samples/android-places-demos/issues/new/choose
 [license]: LICENSE
-[pull request]: https://github.com/googlemaps-samples/android-places-demos/compare
 [project]: https://developers.google.com/maps/documentation/android-sdk/cloud-setup#enabling-apis
+[pull request]: https://github.com/googlemaps-samples/android-places-demos/compare
 [Sign up with Google Maps Platform]: https://console.cloud.google.com/google/maps-apis/start
 [SLA]: https://cloud.google.com/maps-platform/terms/sla
 [Technical Support Services Guidelines]: https://cloud.google.com/maps-platform/terms/tssg
