@@ -34,6 +34,20 @@ android {
         viewBinding = true
         buildConfig = true
     }
+
+    useLibrary("org.apache.http.legacy")
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(21))
+        }
+    }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -55,6 +69,13 @@ dependencies {
     implementation(libs.places)
     implementation(libs.play.services.maps)
     implementation(libs.android.maps.utils)
+
+    // Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.androidx.junit)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.google.truth)
+    testImplementation(libs.robolectric)
 
     // --- Attribution library ---
     implementation(project(":library"))
