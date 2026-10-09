@@ -36,5 +36,10 @@ enum class Demo(
         R.string.places_photo_demo_title,
         R.string.places_photo_demo_description,
         PlacesPhotoDemoActivity::class.java
+    ),
+    PLACES_TEXT_AND_NEARBY_SEARCH_DEMO(
+        R.string.places_text_and_nearby_search_demo_title,
+        R.string.places_text_and_nearby_search_demo_description,
+        PlacesTextAndNearbySearchDemoActivity::class.java
     )
 }

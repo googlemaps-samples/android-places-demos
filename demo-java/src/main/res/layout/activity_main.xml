@@ -83,6 +83,13 @@
             android:layout_margin="@dimen/spacing_small"
             android:text="@string/place_actions_advanced_button"/>
 
+        <Button
+            android:id="@+id/text_and_nearby_search_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_small"
+            android:text="@string/text_and_nearby_search_button"/>
+
     </LinearLayout>
 
 </ScrollView>
