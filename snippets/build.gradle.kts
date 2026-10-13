@@ -68,6 +68,8 @@ dependencies {
     implementation(libs.viewbinding)
     implementation(libs.multidex)
     implementation(project(":library"))
+    implementation(project(":common-ui"))
+    implementation(project(":reviewer"))
     // [END_EXCLUDE]
 
     // Places and Maps SDKs

@@ -49,6 +49,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
+import com.example.common_ui.catalog.Complexity
+import com.example.common_ui.catalog.Framework
+import com.example.common_ui.catalog.Sample
 import com.example.placedetailsuikit.BuildConfig
 import com.example.placedetailsuikit.R
 import com.example.placedetailsuikit.databinding.ActivityFullConfigurableMapBinding
@@ -80,6 +83,23 @@ private const val TAG = "FullConfigurablePlaceDetailsActivity"
  * - Use of a [FullContentSelectionViewModel] to manage UI state.
  * - Reactive UI updates using Kotlin Flows.
  */
+@Sample(
+    id = "com.example.placedetailsuikit.full.FullConfigurablePlaceDetailsActivity",
+    title = "Configurable Full Place Details UI Kit",
+    description = "Full-screen PlaceDetailsFragment with runtime content section configuration.",
+    category = "Places UI Kit & 3D",
+    complexity = Complexity.ADVANCED,
+    tags = ["#uikit", "#fullscreen", "#configurable", "#placedetails"],
+    apiCalls = [
+        "PlaceDetailsFragment.newInstance(selectedContent, orientation, theme)",
+        "PlaceDetailsFragment.Content.entries",
+        "PlaceDetailsFragment.loadWithPlaceId(placeId)",
+    ],
+    purpose = "Demonstrates the full-screen PlaceDetailsFragment from the Places UI Kit with dynamic content selection.",
+    successCriteria = "• Tapping any POI on the map opens the full PlaceDetailsFragment.\n• Tapping 'Configure' allows enabling/disabling full-card content sections on the fly.",
+    failureIndicators = "• Full PlaceDetailsFragment fails to load or dismiss button does not close the card.",
+    framework = Framework.KOTLIN_VIEWS,
+)
 class FullConfigurablePlaceDetailsActivity :
     AppCompatActivity(),
     OnMapReadyCallback,

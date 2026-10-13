@@ -44,15 +44,23 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".AutocompleteDemoActivity" />
+        <activity
+            android:name=".AutocompleteDemoActivity"
+            android:exported="true" />
 
         <activity
             android:name=".PlacesSearchDemoActivity"
+            android:exported="true"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
-    <activity
-        android:name=".PlacesPhotoDemoActivity"
-        android:exported="false"
-        android:label="@string/places_photo_demo_title"
-        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+        <activity
+            android:name=".PlacesPhotoDemoActivity"
+            android:exported="true"
+            android:label="@string/places_photo_demo_title"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+        <activity
+            android:name=".PlacesTextAndNearbySearchDemoActivity"
+            android:exported="true"
+            android:label="@string/places_text_and_nearby_search_demo_title"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
 </application>
 </manifest>

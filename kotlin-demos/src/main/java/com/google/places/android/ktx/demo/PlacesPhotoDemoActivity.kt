@@ -61,6 +61,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.example.common_ui.catalog.Complexity
+import com.example.common_ui.catalog.Framework
+import com.example.common_ui.catalog.Sample
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.places.android.ktx.demo.ui.DemoTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -77,6 +80,22 @@ import dagger.hilt.android.AndroidEntryPoint
  * The UI is built using Jetpack Compose and follows a standard MVI-lite pattern with a ViewModel
  * exposing state via [StateFlow].
  */
+@Sample(
+    id = "com.example.placesdemo.PlaceDetailsAndPhotosActivity",
+    title = "Place Details, Photos & Icons",
+    description = "Fetching Place Details by Place ID, resolving photo URIs via FetchResolvedPhotoUriRequest, and rendering Place icons.",
+    category = "Place Details & Photos",
+    complexity = Complexity.SIMPLE,
+    tags = ["#placedetails", "#photos", "#icons", "#fetchplace", "#uri"],
+    apiCalls = [
+        "PlacesClient.awaitFetchPlace(placeId, placeFields)",
+        "PlacesClient.awaitFetchResolvedPhotoUri(photoMetadata, maxWidth, maxHeight)",
+    ],
+    purpose = "Demonstrates fetching Place Details and resolving high-resolution place photos in Jetpack Compose using Places KTX coroutines and Coil.",
+    successCriteria = "• Searching for a place and selecting a result fetches Place Details and renders the resolved Place photo.",
+    failureIndicators = "• Photo fails to resolve or image remains blank.",
+    framework = Framework.KOTLIN_COMPOSE,
+)
 @AndroidEntryPoint
 class PlacesPhotoDemoActivity : ComponentActivity() {
 

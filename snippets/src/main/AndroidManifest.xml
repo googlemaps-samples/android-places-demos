@@ -50,6 +50,14 @@
             android:exported="true"
             android:label="@string/main_activity_title" />
         <activity
+            android:name=".GetStartedActivity"
+            android:exported="true"
+            android:label="Get Started (Java)" />
+        <activity
+            android:name=".kotlin.GetStartedActivity"
+            android:exported="true"
+            android:label="Get Started (Kotlin)" />
+        <activity
             android:name=".PlaceIsOpenActivity"
             android:exported="true"
             android:label="@string/place_is_open" />

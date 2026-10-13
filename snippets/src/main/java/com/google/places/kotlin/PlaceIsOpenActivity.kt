@@ -19,6 +19,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import com.example.common_ui.catalog.Complexity
+import com.example.common_ui.catalog.Framework
+import com.example.common_ui.catalog.Sample
 import com.google.android.gms.tasks.Task
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
@@ -31,6 +34,23 @@ import com.google.places.data.PlaceIdProvider
 import com.google.places.databinding.ActivityPlaceIsOpenBinding
 import java.util.Calendar
 
+@Sample(
+    id = "com.google.places.kotlin.PlaceIsOpenActivity",
+    title = "Snippet: Place Is Open",
+    description = "DevSite documentation snippet for checking if a place is open via IsOpenRequest.",
+    category = "Documentation Snippets",
+    complexity = Complexity.SNIPPET,
+    tags = ["#snippet", "#isopen", "#openinghours"],
+    apiCalls = [
+        "IsOpenRequest.newInstance(place, utcTimeMillis)",
+        "IsOpenRequest.newInstance(placeId, utcTimeMillis)",
+        "PlacesClient.isOpen(request)",
+    ],
+    purpose = "Canonical DevSite code snippet demonstrating how to check whether a place is currently open or open at a specific timestamp.",
+    successCriteria = "• Activity launches cleanly and demonstrates the IsOpenRequest snippet.",
+    failureIndicators = "• Crash on launch.",
+    framework = Framework.KOTLIN_VIEWS,
+)
 class PlaceIsOpenActivity : AppCompatActivity() {
     private lateinit var placesClient: PlacesClient
     private lateinit var binding: ActivityPlaceIsOpenBinding

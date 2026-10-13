@@ -30,6 +30,7 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RoutingSummary;
 import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
+import com.google.android.libraries.places.api.net.SearchByTextResponse;
 import com.google.android.libraries.places.api.net.SearchNearbyResponse;
 import java.util.Arrays;
 import java.util.List;
@@ -113,11 +114,34 @@ public final class StringUtil {
         return builder.toString();
     }
 
-    static String stringify(SearchNearbyResponse response, boolean raw) {
-        StringBuilder builder = new StringBuilder();
-        List<Place> places = response.getPlaces();
+    /**
+     * Formats a {@link SearchByTextResponse} into a human-readable or raw diagnostic string.
+     *
+     * <p>In formatted mode, each returned {@link Place} is summarized with its display name, ID,
+     * formatted address, and rating. If routing summaries were requested and returned alongside the
+     * places, they are appended at the end.
+     */
+    static String stringify(SearchByTextResponse response, boolean raw) {
+        return stringifyPlacesSearchResult(
+                "Text Search Results:", response.getPlaces(), response.getRoutingSummaries(), raw);
+    }
 
-        builder.append(places.size()).append(" Nearby Places Results:");
+    /** Formats a {@link SearchNearbyResponse} into a human-readable or raw diagnostic string. */
+    static String stringify(SearchNearbyResponse response, boolean raw) {
+        return stringifyPlacesSearchResult(
+                "Nearby Search Results:",
+                response.getPlaces(),
+                response.getRoutingSummaries(),
+                raw);
+    }
+
+    private static String stringifyPlacesSearchResult(
+            String headerLabel,
+            List<Place> places,
+            @Nullable List<RoutingSummary> routingSummaries,
+            boolean raw) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(places.size()).append(" ").append(headerLabel);
 
         if (raw) {
             builder.append(RESULT_SEPARATOR);
@@ -129,13 +153,20 @@ public final class StringUtil {
                                 place.getDisplayName() != null
                                         ? place.getDisplayName()
                                         : "Unnamed Place")
-                        .append(" (")
+                        .append(" [")
                         .append(place.getId() != null ? place.getId() : "no_id")
-                        .append(")");
+                        .append("]");
+                if (place.getFormattedAddress() != null) {
+                    builder.append(FIELD_SEPARATOR)
+                            .append("Address: ")
+                            .append(place.getFormattedAddress());
+                }
+                if (place.getRating() != null) {
+                    builder.append(FIELD_SEPARATOR).append("Rating: ").append(place.getRating());
+                }
             }
         }
 
-        List<RoutingSummary> routingSummaries = response.getRoutingSummaries();
         if (routingSummaries != null && !routingSummaries.isEmpty()) {
             builder.append(RESULT_SEPARATOR)
                     .append(routingSummaries.size())
@@ -145,7 +176,7 @@ public final class StringUtil {
                 appendListToStringBuilder(builder, routingSummaries);
             } else {
                 for (RoutingSummary summary : routingSummaries) {
-                    builder.append(RESULT_SEPARATOR).append(summary.toString());
+                    builder.append(RESULT_SEPARATOR).append(summary);
                 }
             }
         }

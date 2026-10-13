@@ -104,8 +104,10 @@ dependencies {
     implementation(libs.places) // The SDK for the Places UI Kit (PlaceDetails fragments).
     implementation(libs.play.services.location) // Needed for the FusedLocationProviderClient to get the device's location.
 
-    // --- Attribution library ---
+    // --- Attribution library & Unified Catalog ---
     implementation(project(":library"))
+    implementation(project(":common-ui"))
+    implementation(project(":reviewer"))
 
     // --- Jetpack Compose ---
     // These libraries are for building UIs with Jetpack Compose.

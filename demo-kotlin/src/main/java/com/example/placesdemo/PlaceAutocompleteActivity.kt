@@ -27,6 +27,9 @@ import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
+import com.example.common_ui.catalog.Complexity
+import com.example.common_ui.catalog.Framework
+import com.example.common_ui.catalog.Sample
 import com.example.placesdemo.databinding.PlaceAutocompleteActivityBinding
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.model.LatLng
@@ -47,6 +50,26 @@ import com.google.android.libraries.places.widget.PlaceAutocompleteActivity
  * Activity to demonstrate Place Autocomplete ([PlaceAutocomplete], [BasicPlaceAutocomplete], and
  * [PlacesClient.findAutocompletePredictions]).
  */
+@Sample(
+    id = "com.example.placesdemo.PlaceAutocompleteActivity",
+    title = "Place Autocomplete",
+    description = "Full-featured PlaceAutocomplete & BasicPlaceAutocomplete intents plus programmatic predictions.",
+    category = "Place Autocomplete",
+    complexity = Complexity.SIMPLE,
+    tags = ["#autocomplete", "#predictions", "#sessiontoken", "#locationbias", "#places"],
+    apiCalls = [
+        "PlaceAutocomplete.IntentBuilder().build(context)",
+        "PlaceAutocomplete.getPredictionFromIntent(intent)",
+        "BasicPlaceAutocomplete.IntentBuilder().build(context)",
+        "BasicPlaceAutocomplete.getPlaceFromIntent(intent)",
+        "FindAutocompletePredictionsRequest.builder()",
+        "PlacesClient.findAutocompletePredictions(request)",
+    ],
+    purpose = "Demonstrates launching the full-screen/overlay PlaceAutocomplete and BasicPlaceAutocomplete widgets via IntentBuilder, as well as fetching programmatic autocomplete predictions with location bias, restriction, country, and type filters.",
+    successCriteria = "• Tapping 'Place Autocomplete Activity' or 'Basic Autocomplete Activity' opens the Places Autocomplete UI.\n• Selecting a prediction returns the prediction or Place details and displays them in the response panel.\n• Tapping 'Fetch Autocomplete Predictions' executes a programmatic prediction query.",
+    failureIndicators = "• Autocomplete intent immediately closes with RESULT_ERROR or DEVELOPER_ERROR.\n• Programmatic prediction request fails or returns empty results for valid queries.",
+    framework = Framework.KOTLIN_VIEWS,
+)
 class PlaceAutocompleteActivity : BaseActivity() {
 
     private lateinit var placesClient: PlacesClient
