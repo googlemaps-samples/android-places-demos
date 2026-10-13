@@ -64,6 +64,9 @@ import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.commit
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import com.example.common_ui.catalog.Complexity
+import com.example.common_ui.catalog.Framework
+import com.example.common_ui.catalog.Sample
 import com.example.placesuikit3d.ui.theme.PlacesUIKit3DTheme
 import com.example.placesuikit3d.utils.feet
 import com.example.placesuikit3d.utils.toValidCamera
@@ -89,6 +92,25 @@ import kotlinx.coroutines.launch
  * This activity demonstrates how to integrate the Places UI Kit with a 3D map view using Jetpack Compose.
  * It handles map initialization, landmark selection, and displaying place details.
  */
+@Sample(
+    id = "com.example.placesuikit3d.MainActivity",
+    title = "Places UI Kit on 3D Maps",
+    description = "Immersive 3D Map (Map3DView) integrated with PlaceDetailsCompactFragment and camera fly-to animations.",
+    category = "Places UI Kit & 3D",
+    complexity = Complexity.ADVANCED,
+    tags = ["#maps3d", "#uikit", "#3d", "#camera", "#compose"],
+    apiCalls = [
+        "Map3DView(modifier, onMap3DViewReady)",
+        "GoogleMap3D.setMap3DClickListener(listener)",
+        "GoogleMap3D.flyCameraTo(FlyToOptions)",
+        "PlaceDetailsCompactFragment.newInstance(ALL_CONTENT, orientation)",
+        "PlaceDetailsCompactFragment.loadWithPlaceId(placeId)",
+    ],
+    purpose = "Demonstrates combining the Google Maps 3D SDK (Map3DView and GoogleMap3D camera fly-to animations) with the Places UI Kit PlaceDetailsCompactFragment in a Jetpack Compose application.",
+    successCriteria = "• 3D terrain and buildings render around the initial landmark.\n• Tapping a 3D place marker/POI flies the 3D camera to the location and opens the PlaceDetailsCompactFragment card.",
+    failureIndicators = "• 3D map remains blank or tapping a POI does not open the Place Details card.",
+    framework = Framework.KOTLIN_COMPOSE,
+)
 class MainActivity :
     AppCompatActivity(),
     OnMap3DViewReadyCallback {
@@ -355,11 +377,10 @@ class MainActivity :
         }
     }
 
-    private fun isLocationPermissionGranted(): Boolean =
-        ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
-            PackageManager.PERMISSION_GRANTED ||
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
-            PackageManager.PERMISSION_GRANTED
+    private fun isLocationPermissionGranted(): Boolean = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
+        PackageManager.PERMISSION_GRANTED ||
+        ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
+        PackageManager.PERMISSION_GRANTED
 
     private fun requestLocationPermissions() {
         requestPermissionLauncher.launch(

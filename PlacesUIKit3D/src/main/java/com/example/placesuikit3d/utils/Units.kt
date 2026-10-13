@@ -141,8 +141,7 @@ object ImperialUnitsConverter : UnitsConverter() {
         ValueWithUnitsTemplate(meters.toMiles, R.string.in_miles)
     }
 
-    override fun toElevationUnits(meters: Meters): ValueWithUnitsTemplate =
-        ValueWithUnitsTemplate(meters.toFeet, R.string.in_feet)
+    override fun toElevationUnits(meters: Meters): ValueWithUnitsTemplate = ValueWithUnitsTemplate(meters.toFeet, R.string.in_feet)
 }
 
 /** Class to render measurements in metric units. */
@@ -153,8 +152,7 @@ object MetricUnitsConverter : UnitsConverter() {
         ValueWithUnitsTemplate(meters.toKilometers, R.string.in_kilometers)
     }
 
-    override fun toElevationUnits(meters: Meters): ValueWithUnitsTemplate =
-        ValueWithUnitsTemplate(meters.toMeters, R.string.in_meters)
+    override fun toElevationUnits(meters: Meters): ValueWithUnitsTemplate = ValueWithUnitsTemplate(meters.toMeters, R.string.in_meters)
 }
 
 /** A composition local that provides a [UnitsConverter] instance. */

@@ -49,6 +49,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
+import com.example.common_ui.catalog.Complexity
+import com.example.common_ui.catalog.Framework
+import com.example.common_ui.catalog.Sample
 import com.example.placedetailsuikit.BuildConfig
 import com.example.placedetailsuikit.R
 import com.example.placedetailsuikit.databinding.ActivityConfigurableMapBinding
@@ -82,6 +85,23 @@ private const val TAG = "ConfigurablePlaceDetailsActivity"
  * - Reactive UI updates using Kotlin Flows (`StateFlow` and `collectLatest`).
  * - Persistence of both selected place and content configuration across orientation changes.
  */
+@Sample(
+    id = "com.example.placedetailsuikit.compact.ConfigurablePlaceDetailsActivity",
+    title = "Configurable Compact Place Details UI Kit",
+    description = "Dynamically toggling visible content sections in PlaceDetailsCompactFragment at runtime.",
+    category = "Places UI Kit & 3D",
+    complexity = Complexity.ADVANCED,
+    tags = ["#uikit", "#compact", "#configurable", "#viewmodel", "#flow"],
+    apiCalls = [
+        "PlaceDetailsCompactFragment.newInstance(selectedContent, orientation, theme)",
+        "PlaceDetailsCompactFragment.Content.entries",
+        "PlaceDetailsCompactFragment.loadWithPlaceId(placeId)",
+    ],
+    purpose = "Demonstrates runtime customization of the content sections displayed inside PlaceDetailsCompactFragment.",
+    successCriteria = "• Tapping 'Configure' opens the content section selector.\n• Toggling content sections immediately reloads the compact Place Details widget to reflect the selected fields.",
+    failureIndicators = "• Toggling content items does not update the displayed Place Details card.",
+    framework = Framework.KOTLIN_VIEWS,
+)
 class ConfigurablePlaceDetailsActivity :
     AppCompatActivity(),
     OnMapReadyCallback,

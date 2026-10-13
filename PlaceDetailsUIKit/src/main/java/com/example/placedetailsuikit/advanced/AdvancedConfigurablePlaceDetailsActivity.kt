@@ -29,6 +29,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
+import com.example.common_ui.catalog.Complexity
+import com.example.common_ui.catalog.Framework
+import com.example.common_ui.catalog.Sample
 import com.example.placedetailsuikit.BuildConfig
 import com.example.placedetailsuikit.R
 import com.example.placedetailsuikit.databinding.ActivityAdvancedConfigurableMapBinding
@@ -61,6 +64,23 @@ class AdvancedMainViewModel : ViewModel() {
  * Shows configuring custom action buttons via `PlaceActionProvider` (`PlaceAction.CALL`, `OPEN_WEBSITE`,
  * `OPEN_DIRECTIONS`, `OPEN_IN_MAPS`) and applying `SearchMediaOptions`.
  */
+@Sample(
+    id = "com.example.placedetailsuikit.advanced.AdvancedConfigurablePlaceDetailsActivity",
+    title = "Advanced Place Details UI Kit (Actions & Media)",
+    description = "Places UI Kit AdvancedPlaceDetailsCompactFragment with custom PlaceActionProvider buttons and SearchMediaOptions.",
+    category = "Places UI Kit & 3D",
+    complexity = Complexity.ADVANCED,
+    tags = ["#uikit", "#advanced", "#placeactions", "#media", "#compose"],
+    apiCalls = [
+        "AdvancedPlaceDetailsCompactFragment.newInstance(ALL_CONTENT, orientation, theme)",
+        "AdvancedPlaceDetailsCompactFragment.setPlaceActionProvider(provider)",
+        "AdvancedPlaceDetailsCompactFragment.applySearchMediaOptions(options)",
+    ],
+    purpose = "Demonstrates the AdvancedPlaceDetailsCompactFragment with custom PlaceAction buttons (Call, Website, Directions, Open in Maps) and filtered media/review options.",
+    successCriteria = "• Tapping a POI on the map loads the Advanced Place Details card with custom action buttons and media options.",
+    failureIndicators = "• Advanced Place Details card fails to load or action buttons are missing.",
+    framework = Framework.KOTLIN_VIEWS,
+)
 class AdvancedConfigurablePlaceDetailsActivity :
     AppCompatActivity(),
     OnMapReadyCallback,
@@ -136,11 +156,10 @@ class AdvancedConfigurablePlaceDetailsActivity :
         }
     }
 
-    private fun isLocationPermissionGranted(): Boolean =
-        ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
-            PackageManager.PERMISSION_GRANTED ||
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
-            PackageManager.PERMISSION_GRANTED
+    private fun isLocationPermissionGranted(): Boolean = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
+        PackageManager.PERMISSION_GRANTED ||
+        ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
+        PackageManager.PERMISSION_GRANTED
 
     private fun requestLocationPermissions() {
         requestPermissionLauncher.launch(

@@ -19,9 +19,30 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.common_ui.catalog.Complexity
+import com.example.common_ui.catalog.Framework
+import com.example.common_ui.catalog.Sample
 import com.google.android.libraries.places.api.model.Place
 import com.google.places.databinding.ActivityPlacesIconBinding
 
+@Sample(
+    id = "com.google.places.kotlin.PlacesIconActivity",
+    title = "Snippet: Place Icon & Background Color",
+    description = "DevSite documentation snippet for rendering a Place's thematic icon mask and background color.",
+    category = "Documentation Snippets",
+    complexity = Complexity.SNIPPET,
+    tags = ["#snippet", "#icons", "#placedetails"],
+    apiCalls = [
+        "Place.Field.ICON_MASK_URL",
+        "Place.Field.ICON_BACKGROUND_COLOR",
+        "Place.iconMaskUrl",
+        "Place.iconBackgroundColor",
+    ],
+    purpose = "Canonical DevSite code snippet demonstrating how to fetch and render a Place's icon mask URL and background color.",
+    successCriteria = "• Activity launches cleanly and demonstrates the Place icon snippet.",
+    failureIndicators = "• Crash on launch.",
+    framework = Framework.KOTLIN_VIEWS,
+)
 class PlacesIconActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPlacesIconBinding
 

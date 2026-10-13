@@ -25,8 +25,10 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.model.RoutingSummary
 import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
+import com.google.android.libraries.places.api.net.SearchByTextResponse
 import com.google.android.libraries.places.api.net.SearchNearbyResponse
 
 /**
@@ -81,12 +83,31 @@ object StringUtil {
         )
     }
 
-    fun stringify(response: SearchNearbyResponse, raw: Boolean): String {
+    fun stringify(response: SearchByTextResponse, raw: Boolean): String = stringifyPlacesSearchResult(
+        headerLabel = "Text Search Results:",
+        places = response.places,
+        routingSummaries = response.routingSummaries,
+        raw = raw,
+    )
+
+    fun stringify(response: SearchNearbyResponse, raw: Boolean): String = stringifyPlacesSearchResult(
+        headerLabel = "Nearby Places Results:",
+        places = response.places,
+        routingSummaries = response.routingSummaries,
+        raw = raw,
+    )
+
+    private fun stringifyPlacesSearchResult(
+        headerLabel: String,
+        places: List<Place>,
+        routingSummaries: List<RoutingSummary>?,
+        raw: Boolean,
+    ): String {
         val builder = StringBuilder()
-        val places = response.places
         builder
             .append(places.size)
-            .append(" Nearby Places Results:")
+            .append(" ")
+            .append(headerLabel)
 
         if (raw) {
             builder.append(RESULT_SEPARATOR)
@@ -99,11 +120,15 @@ object StringUtil {
                     .append(" (")
                     .append(place.id ?: "no_id")
                     .append(")")
+                place.formattedAddress?.let {
+                    builder.append(" - ").append(it)
+                }
+                place.rating?.let {
+                    builder.append(" [Rating: ").append(it).append("]")
+                }
             }
         }
 
-        // Optionally include routing summaries if present
-        val routingSummaries = response.routingSummaries
         if (!routingSummaries.isNullOrEmpty()) {
             builder.append(RESULT_SEPARATOR)
                 .append(routingSummaries.size)
@@ -151,8 +176,7 @@ object StringUtil {
         return builder.toString()
     }
 
-    fun stringify(place: Place): String =
-        "${place.displayName?.plus(" (") ?: ""}${place.formattedAddress?.plus(")") ?: ""}"
+    fun stringify(place: Place): String = "${place.displayName?.plus(" (") ?: ""}${place.formattedAddress?.plus(")") ?: ""}"
 
     fun stringify(place: AutocompletePrediction?): String {
         val primary = place?.getPrimaryText(StyleSpan(Typeface.BOLD)).toString()
