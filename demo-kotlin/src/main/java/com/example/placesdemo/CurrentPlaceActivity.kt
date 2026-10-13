@@ -24,6 +24,9 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresPermission
 import androidx.core.content.ContextCompat
+import com.example.common_ui.catalog.Complexity
+import com.example.common_ui.catalog.Framework
+import com.example.common_ui.catalog.Sample
 import com.example.placesdemo.databinding.CurrentPlaceActivityBinding
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
@@ -36,6 +39,23 @@ import com.google.android.libraries.places.api.net.SearchNearbyResponse
 /**
  * Activity to demonstrate [PlacesClient.searchNearby].
  */
+@Sample(
+    id = "com.example.placesdemo.CurrentPlaceActivity",
+    title = "Nearby Search (SearchNearbyRequest)",
+    description = "Searching for nearby places within a circular geographic bound using PlacesClient.searchNearby.",
+    category = "Nearby Search",
+    complexity = Complexity.SIMPLE,
+    tags = ["#nearby", "#searchnearby", "#circularbounds", "#location"],
+    apiCalls = [
+        "CircularBounds.newInstance(centerLatLng, radiusMeters)",
+        "SearchNearbyRequest.newInstance(locationRestriction, placeFields)",
+        "PlacesClient.searchNearby(request)",
+    ],
+    purpose = "Demonstrates querying nearby places within a CircularBounds region using SearchNearbyRequest and customizable Place.Field selections.",
+    successCriteria = "• Tapping 'Find Current / Nearby Place' requests location permission (if needed) and executes PlacesClient.searchNearby, listing returned places in the response view.",
+    failureIndicators = "• Permission prompt fails or searchNearby returns an unhandled error.",
+    framework = Framework.KOTLIN_VIEWS,
+)
 class CurrentPlaceActivity : BaseActivity() {
     private lateinit var placesClient: PlacesClient
     private lateinit var fieldSelector: FieldSelector

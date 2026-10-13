@@ -127,8 +127,10 @@ dependencies {
     ksp(libs.hilt.android.compiler)
     implementation(libs.hilt.android)
 
-    // --- Attribution library ---
+    // --- Attribution library & Unified Catalog ---
     implementation(project(":library"))
+    implementation(project(":common-ui"))
+    implementation(project(":reviewer"))
 
     // --- Miscellaneous ---
     implementation(libs.kotlinx.datetime)

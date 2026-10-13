@@ -20,6 +20,9 @@ import android.view.MenuItem;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
+import com.example.common_ui.catalog.Complexity;
+import com.example.common_ui.catalog.Framework;
+import com.example.common_ui.catalog.Sample;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
@@ -31,6 +34,23 @@ import com.google.places.kotlin.MainApplication;
 import java.util.Arrays;
 import java.util.List;
 
+@Sample(
+        id = "com.google.places.kotlin.PlaceDetailsActivity",
+        title = "Snippet: Place Details",
+        description =
+                "DevSite documentation snippet for fetching Place Details with FetchPlaceRequest.",
+        category = "Documentation Snippets",
+        complexity = Complexity.SNIPPET,
+        tags = {"#snippet", "#placedetails", "#fetchplace"},
+        apiCalls = {
+            "FetchPlaceRequest.newInstance(placeId, placeFields)",
+            "PlacesClient.fetchPlace(request)"
+        },
+        purpose =
+                "Canonical DevSite code snippet demonstrating how to request Place Details by Place ID.",
+        successCriteria = "• Activity launches and executes the FetchPlaceRequest snippet flow.",
+        failureIndicators = "• Crash on launch.",
+        framework = Framework.JAVA_VIEWS)
 public class PlaceDetailsActivity extends AppCompatActivity {
 
     private static final String TAG = PlaceDetailsActivity.class.getSimpleName();
