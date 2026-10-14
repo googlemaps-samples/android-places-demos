@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//   http://www.apache.org/licenses/LICENSE-2.0
+//    http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
 // limitations under the License.
 
 package com.example.placesuikit3d.utils
-
 
 import android.content.res.Resources
 import androidx.annotation.StringRes
@@ -136,32 +135,26 @@ fun getUnitsConverter(countryCode: String?): UnitsConverter {
 
 /** Class to render measurements in imperial units. */
 object ImperialUnitsConverter : UnitsConverter() {
-    override fun toDistanceUnits(meters: Meters): ValueWithUnitsTemplate {
-        return if (meters < 0.25.miles) {
-            ValueWithUnitsTemplate(meters.toFeet, R.string.in_feet)
-        } else {
-            ValueWithUnitsTemplate(meters.toMiles, R.string.in_miles)
-        }
+    override fun toDistanceUnits(meters: Meters): ValueWithUnitsTemplate = if (meters < 0.25.miles) {
+        ValueWithUnitsTemplate(meters.toFeet, R.string.in_feet)
+    } else {
+        ValueWithUnitsTemplate(meters.toMiles, R.string.in_miles)
     }
 
-    override fun toElevationUnits(meters: Meters): ValueWithUnitsTemplate {
-        return ValueWithUnitsTemplate(meters.toFeet, R.string.in_feet)
-    }
+    override fun toElevationUnits(meters: Meters): ValueWithUnitsTemplate =
+        ValueWithUnitsTemplate(meters.toFeet, R.string.in_feet)
 }
 
 /** Class to render measurements in metric units. */
 object MetricUnitsConverter : UnitsConverter() {
-    override fun toDistanceUnits(meters: Meters): ValueWithUnitsTemplate {
-        return if (meters < 1000.meters) {
-            ValueWithUnitsTemplate(meters.toMeters, R.string.in_meters)
-        } else {
-            ValueWithUnitsTemplate(meters.toKilometers, R.string.in_kilometers)
-        }
+    override fun toDistanceUnits(meters: Meters): ValueWithUnitsTemplate = if (meters < 1000.meters) {
+        ValueWithUnitsTemplate(meters.toMeters, R.string.in_meters)
+    } else {
+        ValueWithUnitsTemplate(meters.toKilometers, R.string.in_kilometers)
     }
 
-    override fun toElevationUnits(meters: Meters): ValueWithUnitsTemplate {
-        return ValueWithUnitsTemplate(meters.toMeters, R.string.in_meters)
-    }
+    override fun toElevationUnits(meters: Meters): ValueWithUnitsTemplate =
+        ValueWithUnitsTemplate(meters.toMeters, R.string.in_meters)
 }
 
 /** A composition local that provides a [UnitsConverter] instance. */
@@ -169,13 +162,9 @@ val LocalUnitsConverter = compositionLocalOf<UnitsConverter> { MetricUnitsConver
 
 /** Creates a string to show the distance formatted with units */
 @Composable
-fun Meters.toDistanceString(): String {
-    return LocalUnitsConverter.current.toDistanceString(this)
-}
+fun Meters.toDistanceString(): String = LocalUnitsConverter.current.toDistanceString(this)
 
 @Composable
-fun Meters.toElevationString(): String {
-    return LocalUnitsConverter.current.toElevationString(this)
-}
+fun Meters.toElevationString(): String = LocalUnitsConverter.current.toElevationString(this)
 
 operator fun Meters.plus(value: Number) = Meters(this.value + value.toDouble())

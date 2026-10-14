@@ -18,31 +18,31 @@ import android.content.res.Configuration
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.fragment.app.FragmentContainerView
-import androidx.compose.ui.res.stringResource
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.widget.PlaceDetailsCompactFragment
-import com.google.android.libraries.places.widget.PlaceLoadListener
-import com.google.android.libraries.places.widget.PlaceDetailsFragment
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.background
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.fragment.app.FragmentContainerView
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.PlaceDetailsCompactFragment
+import com.google.android.libraries.places.widget.PlaceDetailsFragment
+import com.google.android.libraries.places.widget.PlaceLoadListener
 import com.google.android.libraries.places.widget.model.Orientation
 
 /**
@@ -138,12 +138,12 @@ fun PlaceDetailsCompactView(
                     if (place.id != null) {
                         fragment.loadWithPlaceId(place.id!!)
                     } else if (place.location != null) {
-                         fragment.loadWithCoordinates(place.location!!)
+                        fragment.loadWithCoordinates(place.location!!)
                     } else {
                         Log.e("PlaceDetailsView", "Place has no ID and no location: $place")
                     }
                 }
-            }
+            },
         )
 
         // Close Button
@@ -152,12 +152,12 @@ fun PlaceDetailsCompactView(
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(16.dp)
-                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f), shape = CircleShape)
+                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f), shape = CircleShape),
         ) {
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = stringResource(com.example.placedetailscompose.R.string.close),
-                tint = MaterialTheme.colorScheme.onSurface
+                tint = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
@@ -215,7 +215,7 @@ fun PlaceDetailsFullView(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.BottomCenter)
+                .align(Alignment.BottomCenter),
         ) {
             AndroidView(
                 modifier = Modifier.fillMaxWidth(),
@@ -236,10 +236,10 @@ fun PlaceDetailsFullView(
                         } else if (place.location != null) {
                             fragment.loadWithCoordinates(place.location!!)
                         } else {
-                             Log.e("PlaceDetailsFullView", "Place has no ID and no location: $place")
+                            Log.e("PlaceDetailsFullView", "Place has no ID and no location: $place")
                         }
                     }
-                }
+                },
             )
 
             // Close Button
@@ -248,15 +248,14 @@ fun PlaceDetailsFullView(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(16.dp)
-                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f), shape = CircleShape)
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f), shape = CircleShape),
             ) {
                 Icon(
                     imageVector = Icons.Default.Close,
                     contentDescription = stringResource(com.example.placedetailscompose.R.string.close),
-                    tint = MaterialTheme.colorScheme.onSurface
+                    tint = MaterialTheme.colorScheme.onSurface,
                 )
             }
         }
     }
 }
-

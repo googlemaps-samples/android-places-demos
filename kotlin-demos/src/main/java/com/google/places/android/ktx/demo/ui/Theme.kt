@@ -30,7 +30,7 @@ private val DarkColorScheme = darkColorScheme(
     onSecondary = OnSecondary,
     onTertiary = OnTertiary,
     onBackground = OnBackground,
-    onSurface = OnSurface
+    onSurface = OnSurface,
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -43,19 +43,16 @@ private val LightColorScheme = lightColorScheme(
     onSecondary = OnSecondaryLight,
     onTertiary = OnTertiaryLight,
     onBackground = OnBackgroundLight,
-    onSurface = OnSurfaceLight
+    onSurface = OnSurfaceLight,
 )
 
 @Composable
-fun DemoTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
-) {
+fun DemoTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content
+        content = content,
     )
 }

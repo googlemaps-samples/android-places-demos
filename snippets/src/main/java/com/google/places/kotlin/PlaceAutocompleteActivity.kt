@@ -77,7 +77,7 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
         // Initialize the AutocompleteSupportFragment.
         val autocompleteFragment =
             supportFragmentManager.findFragmentById(R.id.autocomplete_fragment)
-                    as AutocompleteSupportFragment
+                as AutocompleteSupportFragment
 
         // Specify the types of place data to return.
         autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.DISPLAY_NAME))
@@ -89,7 +89,7 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
                     R.string.place_selection,
                     place.displayName,
                     place.id,
-                    place.formattedAddress
+                    place.formattedAddress,
                 )
                 Log.i(TAG, "Place: ${place.displayName}, ${place.id}")
             }
@@ -103,7 +103,7 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
 
         val bounds = RectangularBounds.newInstance(
             LatLng(-33.880490, 151.184363),
-            LatLng(-33.858754, 151.229596)
+            LatLng(-33.858754, 151.229596),
         )
 
         // Clear the previous restriction or bias
@@ -127,7 +127,6 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
         // [START maps_places_autocomplete_type_filter_multiple]
         autocompleteFragment.setTypesFilter(listOf("landmark", "restaurant", "store"))
         // [END maps_places_autocomplete_type_filter_multiple]
-
 
         // [START maps_places_autocomplete_country_filter]
         autocompleteFragment.setCountries("AU", "NZ")
@@ -164,9 +163,11 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
                         R.string.place_selection,
                         place.displayName,
                         place.id,
-                        place.formattedAddress)
+                        place.formattedAddress,
+                    )
                     Log.i(
-                        TAG, "Place: ${place.displayName}, ${place.id}"
+                        TAG,
+                        "Place: ${place.displayName}, ${place.id}",
                     )
                 }
             } else if (result.resultCode == RESULT_CANCELED) {
@@ -186,14 +187,14 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
         // Create a RectangularBounds object.
         val bounds = RectangularBounds.newInstance(
             LatLng(-33.880490, 151.184363),
-            LatLng(-33.858754, 151.229596)
+            LatLng(-33.858754, 151.229596),
         )
         // Use the builder to create a FindAutocompletePredictionsRequest.
         val request =
             FindAutocompletePredictionsRequest.builder()
                 // Call either setLocationBias() OR setLocationRestriction().
                 .setLocationBias(bounds)
-                //.setLocationRestriction(bounds)
+                // .setLocationRestriction(bounds)
                 .setOrigin(LatLng(-33.8749937, 151.2041382))
                 .setCountries("AU", "NZ")
                 .setTypesFilter(listOf(PlaceTypes.ESTABLISHMENT))

@@ -23,8 +23,4 @@ import com.google.android.gms.maps3d.model.LatLngAltitude
  * @property name The human-readable name of the landmark.
  * @property location The coordinates on the 3D map where the camera should point.
  */
-data class Landmark(
-    val id: String,
-    val name: String,
-    val location: LatLngAltitude
-)
+data class Landmark(val id: String, val name: String, val location: LatLngAltitude)

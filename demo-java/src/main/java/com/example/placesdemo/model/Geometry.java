@@ -15,42 +15,42 @@
 package com.example.placesdemo.model;
 
 import androidx.annotation.NonNull;
-
 import com.google.android.gms.maps.model.LatLng;
-
 import java.io.Serializable;
 
 /** The geometry of a Geocoding result. */
 public class Geometry implements Serializable {
 
-  private static final long serialVersionUID = 1L;
-  /**
-   * The bounding box which can fully contain the returned result (optionally returned). Note that
-   * these bounds may not match the recommended viewport. (For example, San Francisco includes the
-   * Farallon islands, which are technically part of the city, but probably should not be returned
-   * in the viewport.)
-   */
-  public Bounds bounds;
+    private static final long serialVersionUID = 1L;
 
-  /**
-   * The geocoded latitude/longitude value. For normal address lookups, this field is typically the
-   * most important.
-   */
-  public LatLng location;
+    /**
+     * The bounding box which can fully contain the returned result (optionally returned). Note that
+     * these bounds may not match the recommended viewport. (For example, San Francisco includes the
+     * Farallon islands, which are technically part of the city, but probably should not be returned
+     * in the viewport.)
+     */
+    public Bounds bounds;
 
-  /** The level of certainty of this geocoding result. */
-  public LocationType locationType;
+    /**
+     * The geocoded latitude/longitude value. For normal address lookups, this field is typically
+     * the most important.
+     */
+    public LatLng location;
 
-  /**
-   * The recommended viewport for displaying the returned result. Generally the viewport is used to
-   * frame a result when displaying it to a user.
-   */
-  public Bounds viewport;
+    /** The level of certainty of this geocoding result. */
+    public LocationType locationType;
 
-  @NonNull
-  @Override
-  public String toString() {
-    return String.format(
-        "[Geometry: %s (%s) bounds=%s, viewport=%s]", location, locationType, bounds, viewport);
-  }
+    /**
+     * The recommended viewport for displaying the returned result. Generally the viewport is used
+     * to frame a result when displaying it to a user.
+     */
+    public Bounds viewport;
+
+    @NonNull
+    @Override
+    public String toString() {
+        return String.format(
+                "[Geometry: %s (%s) bounds=%s, viewport=%s]",
+                location, locationType, bounds, viewport);
+    }
 }

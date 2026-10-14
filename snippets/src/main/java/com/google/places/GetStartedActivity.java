@@ -16,10 +16,8 @@ package com.google.places;
 
 import android.os.Bundle;
 import android.widget.Toast;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
@@ -32,7 +30,8 @@ public class GetStartedActivity extends AppCompatActivity {
 
         final String apiKey = BuildConfig.PLACES_API_KEY;
         if (apiKey.equals("DEFAULT_API_KEY")) {
-            Toast.makeText(this, "PLACES_API_KEY has not been configured", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "PLACES_API_KEY has not been configured", Toast.LENGTH_SHORT)
+                    .show();
             finish();
             return;
         }

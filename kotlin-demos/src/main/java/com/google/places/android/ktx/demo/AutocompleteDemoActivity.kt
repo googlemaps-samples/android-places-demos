@@ -22,11 +22,31 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -37,8 +57,8 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.api.net.kotlin.awaitFetchPlace
 import com.google.android.libraries.places.widget.PlaceAutocomplete
 import com.google.android.libraries.places.widget.PlaceAutocompleteActivity
-import kotlinx.coroutines.launch
 import com.google.places.android.ktx.demo.ui.DemoTheme
+import kotlinx.coroutines.launch
 
 class AutocompleteDemoActivity : ComponentActivity() {
 
@@ -62,7 +82,7 @@ class AutocompleteDemoActivity : ComponentActivity() {
 
         val startAutocomplete =
             rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.StartActivityForResult()
+                contract = ActivityResultContracts.StartActivityForResult(),
             ) { result ->
                 if (result.resultCode == RESULT_OK) {
                     val intent = result.data
@@ -94,7 +114,7 @@ class AutocompleteDemoActivity : ComponentActivity() {
                         Toast.makeText(
                             this,
                             "Autocomplete error: ${status?.statusMessage}",
-                            Toast.LENGTH_SHORT
+                            Toast.LENGTH_SHORT,
                         ).show()
                     }
                 }
@@ -108,12 +128,12 @@ class AutocompleteDemoActivity : ComponentActivity() {
                         IconButton(onClick = onBackPressed) {
                             Icon(
                                 Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back"
+                                contentDescription = "Back",
                             )
                         }
-                    }
+                    },
                 )
-            }
+            },
         ) { padding ->
             Column(
                 modifier = Modifier
@@ -121,17 +141,17 @@ class AutocompleteDemoActivity : ComponentActivity() {
                     .padding(padding)
                     .padding(24.dp),
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                    )
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    ),
                 ) {
                     Column(
                         modifier = Modifier.padding(24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Text(
                             text = placeDetails ?: "No place selected yet",
@@ -141,21 +161,22 @@ class AutocompleteDemoActivity : ComponentActivity() {
                                 isFetching -> MaterialTheme.colorScheme.secondary
                                 placeDetails != null -> MaterialTheme.colorScheme.primary
                                 else -> MaterialTheme.colorScheme.onSurfaceVariant
-                            }
+                            },
                         )
 
                         Spacer(modifier = Modifier.height(32.dp))
 
                         Button(
                             onClick = {
-                                val fields = listOf(Place.Field.ID, Place.Field.DISPLAY_NAME, Place.Field.FORMATTED_ADDRESS)
+                                val fields =
+                                    listOf(Place.Field.ID, Place.Field.DISPLAY_NAME, Place.Field.FORMATTED_ADDRESS)
                                 val intent = PlaceAutocomplete.createIntent(this@AutocompleteDemoActivity) {
                                     // Specify any builder parameters here (e.g. setCountries, setLocationBias, etc.)
                                 }
                                 startAutocomplete.launch(intent)
                             },
                             modifier = Modifier.fillMaxWidth(),
-                            shape = MaterialTheme.shapes.medium
+                            shape = MaterialTheme.shapes.medium,
                         ) {
                             Text("Start Autocomplete")
                         }

@@ -50,7 +50,7 @@ class LocationRepository(context: Context) {
             fusedLocationClient.requestLocationUpdates(
                 locationRequest,
                 locationCallback,
-                Looper.getMainLooper()
+                Looper.getMainLooper(),
             )
         } catch (e: SecurityException) {
             // Permissions were likely denied.

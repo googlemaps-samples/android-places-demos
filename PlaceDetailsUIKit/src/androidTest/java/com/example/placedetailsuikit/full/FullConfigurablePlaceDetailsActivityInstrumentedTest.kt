@@ -56,7 +56,7 @@ class FullConfigurablePlaceDetailsActivityInstrumentedTest {
     @get:Rule
     val grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(
         Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION
+        Manifest.permission.ACCESS_COARSE_LOCATION,
     )
 
     /**
@@ -125,7 +125,7 @@ class FullConfigurablePlaceDetailsActivityInstrumentedTest {
             val poi = PointOfInterest(
                 LatLng(-33.865072, 151.1961474),
                 "ChIJP3Sa8ziYEmsRUKgyFmh9AQM",
-                "Google Sydney"
+                "Google Sydney",
             )
             activity.onPoiClick(poi)
         }

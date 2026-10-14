@@ -80,7 +80,9 @@ private const val TAG = "FullConfigurablePlaceDetailsActivity"
  * - Use of a [FullContentSelectionViewModel] to manage UI state.
  * - Reactive UI updates using Kotlin Flows.
  */
-class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback,
+class FullConfigurablePlaceDetailsActivity :
+    AppCompatActivity(),
+    OnMapReadyCallback,
     GoogleMap.OnPoiClickListener {
 
     private lateinit var binding: ActivityFullConfigurableMapBinding
@@ -96,7 +98,9 @@ class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCall
 
         requestPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-                if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true || permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
+                if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                    permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+                ) {
                     Log.d(TAG, "Location permission granted by user.")
                     fetchLastLocation()
                 } else {
@@ -104,7 +108,7 @@ class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCall
                     Toast.makeText(
                         this,
                         "Location permission denied. Showing default location.",
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_LONG,
                     ).show()
                     moveToSydney()
                 }
@@ -124,7 +128,7 @@ class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCall
             Toast.makeText(
                 this,
                 "Add your own API_KEY in local.properties",
-                Toast.LENGTH_LONG
+                Toast.LENGTH_LONG,
             ).show()
             finish()
             return
@@ -179,24 +183,22 @@ class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCall
         }
     }
 
-    private fun isLocationPermissionGranted(): Boolean {
-        return ActivityCompat.checkSelfPermission(
+    private fun isLocationPermissionGranted(): Boolean = ActivityCompat.checkSelfPermission(
+        this,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+    ) == PackageManager.PERMISSION_GRANTED ||
+        ActivityCompat.checkSelfPermission(
             this,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
-    }
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+        ) == PackageManager.PERMISSION_GRANTED
 
     private fun requestLocationPermissions() {
         Log.d(TAG, "Requesting location permissions.")
         requestPermissionLauncher.launch(
             arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+            ),
         )
     }
 
@@ -205,7 +207,7 @@ class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCall
         Toast.makeText(
             this,
             "Could not retrieve current location. Showing default location.",
-            Toast.LENGTH_LONG
+            Toast.LENGTH_LONG,
         ).show()
         moveToSydney()
     }
@@ -287,7 +289,7 @@ class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCall
                     Toast.makeText(
                         this@FullConfigurablePlaceDetailsActivity,
                         "Failed to load place details.",
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_SHORT,
                     ).show()
                 }
             })
@@ -357,7 +359,7 @@ class FullConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCall
 fun PlaceContentSelectionDialogContent(
     selectedContent: List<PlaceDetailsFullItem>,
     unselectedContent: List<PlaceDetailsFullItem>,
-    onItemClick: (PlaceDetailsFullItem) -> Unit
+    onItemClick: (PlaceDetailsFullItem) -> Unit,
 ) {
     LazyColumn {
         stickyHeader {
@@ -367,7 +369,7 @@ fun PlaceContentSelectionDialogContent(
         items(selectedContent, key = { it.content.name }) { content ->
             ContentItem(
                 item = content,
-                onItemClick = onItemClick
+                onItemClick = onItemClick,
             )
         }
 
@@ -378,7 +380,7 @@ fun PlaceContentSelectionDialogContent(
         items(unselectedContent, key = { it.content.name }) { content ->
             ContentItem(
                 item = content,
-                onItemClick = onItemClick
+                onItemClick = onItemClick,
             )
         }
     }
@@ -397,7 +399,7 @@ fun SectionHeader(title: String) {
             .padding(16.dp),
         style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.onTertiaryContainer,
-        textAlign = TextAlign.Center
+        textAlign = TextAlign.Center,
     )
 }
 
@@ -405,17 +407,14 @@ fun SectionHeader(title: String) {
  * A Composable that renders a single clickable item in the content selection list.
  */
 @Composable
-fun ContentItem(
-    item: PlaceDetailsFullItem,
-    onItemClick: (PlaceDetailsFullItem) -> Unit
-) {
+fun ContentItem(item: PlaceDetailsFullItem, onItemClick: (PlaceDetailsFullItem) -> Unit) {
     Text(
         text = item.displayName,
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onItemClick(item) }
             .padding(16.dp),
-        style = MaterialTheme.typography.bodyLarge
+        style = MaterialTheme.typography.bodyLarge,
     )
 }
 
@@ -429,7 +428,7 @@ fun DialogContentPreview_BothSections() {
         PlaceContentSelectionDialogContent(
             selectedContent = PlaceDetailsFullItem.standardContent,
             unselectedContent = PlaceDetailsFullItem.standardNonContent,
-            onItemClick = {}
+            onItemClick = {},
         )
     }
 }
@@ -441,7 +440,7 @@ fun DialogContentPreview_OnlySelected() {
         PlaceContentSelectionDialogContent(
             selectedContent = PlaceDetailsFragment.Content.entries.toPlaceDetailsFullItems(),
             unselectedContent = emptyList(),
-            onItemClick = {}
+            onItemClick = {},
         )
     }
 }
@@ -453,7 +452,7 @@ fun DialogContentPreview_OnlyUnselected() {
         PlaceContentSelectionDialogContent(
             selectedContent = emptyList(),
             unselectedContent = PlaceDetailsFragment.Content.entries.toPlaceDetailsFullItems(),
-            onItemClick = {}
+            onItemClick = {},
         )
     }
 }
@@ -465,7 +464,7 @@ fun DialogContentPreview_Empty() {
         PlaceContentSelectionDialogContent(
             selectedContent = emptyList(),
             unselectedContent = emptyList(),
-            onItemClick = {}
+            onItemClick = {},
         )
     }
 }

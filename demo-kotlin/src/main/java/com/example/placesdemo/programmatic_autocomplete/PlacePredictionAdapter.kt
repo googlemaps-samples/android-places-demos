@@ -34,8 +34,7 @@ class PlacePredictionAdapter : RecyclerView.Adapter<PlacePredictionViewHolder>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlacePredictionViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return PlacePredictionViewHolder(
-            inflater.inflate(R.layout.place_prediction_item, parent, false))
+        return PlacePredictionViewHolder(inflater.inflate(R.layout.place_prediction_item, parent, false))
     }
 
     override fun onBindViewHolder(holder: PlacePredictionViewHolder, position: Int) {
@@ -46,9 +45,7 @@ class PlacePredictionAdapter : RecyclerView.Adapter<PlacePredictionViewHolder>()
         }
     }
 
-    override fun getItemCount(): Int {
-        return predictions.size
-    }
+    override fun getItemCount(): Int = predictions.size
 
     fun setPredictions(predictions: List<AutocompletePrediction>?) {
         if (predictions != null) {

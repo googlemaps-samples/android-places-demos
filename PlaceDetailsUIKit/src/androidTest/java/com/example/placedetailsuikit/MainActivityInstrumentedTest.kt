@@ -47,7 +47,7 @@ class MainActivityInstrumentedTest {
     @get:Rule
     val grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(
         Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION
+        Manifest.permission.ACCESS_COARSE_LOCATION,
     )
 
     /**
@@ -75,7 +75,7 @@ class MainActivityInstrumentedTest {
             val poi = PointOfInterest(
                 LatLng(-33.865072, 151.1961474),
                 "ChIJP3Sa8ziYEmsRUKgyFmh9AQM",
-                "Google Sydney"
+                "Google Sydney",
             )
             activity.onPoiClick(poi)
         }
@@ -89,10 +89,9 @@ class MainActivityInstrumentedTest {
         onView(
             allOf(
                 withId(R.id.loading_indicator_main),
-                withParent(withId(R.id.place_details_wrapper))
-            )
+                withParent(withId(R.id.place_details_wrapper)),
+            ),
         ).check(matches(isDisplayed()))
-
 
         // The Place Details fragment loads data asynchronously. For a simple sample,
         // a short sleep is a straightforward way to wait for the UI to update.
@@ -103,8 +102,8 @@ class MainActivityInstrumentedTest {
         onView(
             allOf(
                 withId(R.id.loading_indicator_main),
-                withParent(withId(R.id.place_details_wrapper))
-            )
+                withParent(withId(R.id.place_details_wrapper)),
+            ),
         ).check(matches(not(isDisplayed())))
 
         onView(withId(R.id.place_details_container)).check(matches(isDisplayed()))
@@ -129,7 +128,7 @@ class MainActivityInstrumentedTest {
             val poi = PointOfInterest(
                 LatLng(-33.865072, 151.1961474),
                 "ChIJP3Sa8ziYEmsRUKgyFmh9AQM",
-                "Google Sydney"
+                "Google Sydney",
             )
             activity.onPoiClick(poi)
         }

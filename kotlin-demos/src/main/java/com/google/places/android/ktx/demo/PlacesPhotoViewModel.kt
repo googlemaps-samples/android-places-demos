@@ -18,8 +18,11 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
+import com.google.android.libraries.places.api.model.CircularBounds
+import com.google.android.libraries.places.api.model.PhotoMetadata
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.api.net.kotlin.awaitFetchPlace
@@ -27,6 +30,7 @@ import com.google.android.libraries.places.api.net.kotlin.awaitFetchResolvedPhot
 import com.google.android.libraries.places.api.net.kotlin.awaitFindAutocompletePredictions
 import com.google.android.libraries.places.api.net.kotlin.awaitSearchNearby
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,10 +41,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.libraries.places.api.model.CircularBounds
-import com.google.android.libraries.places.api.model.PhotoMetadata
-import kotlinx.coroutines.CancellationException
 import javax.inject.Inject
 
 /**
@@ -55,11 +55,7 @@ data class PhotoDemoEventError(val exception: Exception) : PhotoDemoEvent
 /**
  * State for the photo resolution and display phase.
  */
-data class PhotoState(
-    val uri: Uri? = null,
-    val isLoading: Boolean = false,
-    val error: String? = null
-)
+data class PhotoState(val uri: Uri? = null, val isLoading: Boolean = false, val error: String? = null)
 
 /**
  * ViewModel for the Places Photo Demo.
@@ -73,13 +69,11 @@ data class PhotoState(
  */
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 @HiltViewModel
-class PlacesPhotoViewModel @Inject constructor(
-    private val placesClient: PlacesClient
-) : ViewModel() {
+class PlacesPhotoViewModel @Inject constructor(private val placesClient: PlacesClient) : ViewModel() {
 
     // Internal state for the search query, used to drive the searchResults flow.
     private val _searchQuery = MutableStateFlow("")
-    
+
     // An autocomplete session token used to group multiple requests into a single billing session.
     private var sessionToken: AutocompleteSessionToken? = null
 
@@ -120,7 +114,7 @@ class PlacesPhotoViewModel @Inject constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = PhotoDemoEventIdle
+            initialValue = PhotoDemoEventIdle,
         )
 
     /**
@@ -150,7 +144,7 @@ class PlacesPhotoViewModel @Inject constructor(
                 // We request only the PHOTO_METADATAS field to minimize data usage.
                 val placeResponse = placesClient.awaitFetchPlace(
                     prediction.placeId,
-                    listOf(Place.Field.PHOTO_METADATAS)
+                    listOf(Place.Field.PHOTO_METADATAS),
                 ) {
                     sessionToken = currentToken
                 }
@@ -179,7 +173,7 @@ class PlacesPhotoViewModel @Inject constructor(
     }
 
     /**
-     * Demonstrates the use of [com.google.android.libraries.places.api.net.kotlin.awaitSearchNearby] 
+     * Demonstrates the use of [com.google.android.libraries.places.api.net.kotlin.awaitSearchNearby]
      * as a replacement for the removed [PlacesClient.findCurrentPlace] API.
      *
      * This implementation uses a fixed location (Googleplex) for demonstration purposes.
@@ -189,25 +183,25 @@ class PlacesPhotoViewModel @Inject constructor(
         viewModelScope.launch {
             _searchQuery.value = "" // Clear textual search when doing nearby search
             _photoState.value = PhotoState(isLoading = true)
-            
+
             try {
                 // Define a location restriction (e.g., 500m around Googleplex)
                 val googleplex = LatLng(37.4220656, -122.0840897)
                 val locationRestriction = CircularBounds.newInstance(googleplex, 500.0)
-                
+
                 // Call the Places KTX suspending extension for SearchNearby.
                 // We request only the ID and PHOTO_METADATAS fields.
                 val response = placesClient.awaitSearchNearby(
                     locationRestriction,
-                    listOf(Place.Field.ID, Place.Field.PHOTO_METADATAS)
+                    listOf(Place.Field.ID, Place.Field.PHOTO_METADATAS),
                 ) {
                     // Optional: filter by types or adjust other parameters
                     maxResultCount = 10
                 }
 
                 // For the demo, we take the first place found that has a photo.
-                val placeWithPhoto: Place? = response.places.firstOrNull { place: Place -> 
-                    (place.photoMetadatas?.size ?: 0) > 0 
+                val placeWithPhoto: Place? = response.places.firstOrNull { place: Place ->
+                    (place.photoMetadatas?.size ?: 0) > 0
                 }
                 val metadata: PhotoMetadata? = placeWithPhoto?.photoMetadatas?.firstOrNull()
 
@@ -219,8 +213,11 @@ class PlacesPhotoViewModel @Inject constructor(
                 // Resolve the photo URI
                 val photoResponse = placesClient.awaitFetchResolvedPhotoUri(metadata)
                 _photoState.value = PhotoState(uri = photoResponse.uri)
-                
-                Log.d("PlacesPhotoViewModel", "Successfully found nearby place and fetched photo URI: ${photoResponse.uri}")
+
+                Log.d(
+                    "PlacesPhotoViewModel",
+                    "Successfully found nearby place and fetched photo URI: ${photoResponse.uri}",
+                )
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
                 Log.e("PlacesPhotoViewModel", "Error searching nearby", e)

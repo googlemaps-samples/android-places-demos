@@ -14,6 +14,8 @@
 
 package com.google.places;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,7 +23,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -31,26 +32,20 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
-import com.google.android.libraries.places.api.model.LocationRestriction;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.PlaceLikelihood;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.libraries.places.api.net.SearchNearbyRequest;
 import com.google.places.databinding.ActivityCurrentPlaceBinding;
 import com.google.places.databinding.ListItemPlaceBinding;
 import com.google.places.kotlin.MainApplication;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class CurrentPlaceActivity extends AppCompatActivity {
 
@@ -59,13 +54,15 @@ public class CurrentPlaceActivity extends AppCompatActivity {
     private PlacesAdapter adapter;
 
     private final ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    findCurrentPlace();
-                } else {
-                    // Handle permission denied
-                }
-            });
+            registerForActivityResult(
+                    new ActivityResultContracts.RequestPermission(),
+                    isGranted -> {
+                        if (isGranted) {
+                            findCurrentPlace();
+                        } else {
+                            // Handle permission denied
+                        }
+                    });
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,26 +100,35 @@ public class CurrentPlaceActivity extends AppCompatActivity {
 
         // [START maps_places_current_place]
         // Use fields to define the data types to return.
-        List<Place.Field> placeFields = Arrays.asList(Place.Field.DISPLAY_NAME, Place.Field.FORMATTED_ADDRESS, Place.Field.LOCATION);
+        List<Place.Field> placeFields =
+                Arrays.asList(
+                        Place.Field.DISPLAY_NAME,
+                        Place.Field.FORMATTED_ADDRESS,
+                        Place.Field.LOCATION);
 
         // Use the builder to create a FindCurrentPlaceRequest.
         FindCurrentPlaceRequest request = FindCurrentPlaceRequest.newInstance(placeFields);
 
-        // Call findCurrentPlace and handle the response (first check that the user has granted permission).
-        if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        // Call findCurrentPlace and handle the response (first check that the user has granted
+        // permission).
+        if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
             Task<FindCurrentPlaceResponse> placeResponse = placesClient.findCurrentPlace(request);
-            placeResponse.addOnCompleteListener(task -> {
-                binding.progressBar.setVisibility(View.GONE);
-                if (task.isSuccessful()) {
-                    FindCurrentPlaceResponse response = task.getResult();
-                    adapter.setPlaceLikelihoods(response.getPlaceLikelihoods());
-                } else {
-                    Exception exception = task.getException();
-                    if (exception instanceof ApiException apiException) {
-                        Log.e("CurrentPlace", "Place not found: " + apiException.getStatusCode());
-                    }
-                }
-            });
+            placeResponse.addOnCompleteListener(
+                    task -> {
+                        binding.progressBar.setVisibility(View.GONE);
+                        if (task.isSuccessful()) {
+                            FindCurrentPlaceResponse response = task.getResult();
+                            adapter.setPlaceLikelihoods(response.getPlaceLikelihoods());
+                        } else {
+                            Exception exception = task.getException();
+                            if (exception instanceof ApiException apiException) {
+                                Log.e(
+                                        "CurrentPlace",
+                                        "Place not found: " + apiException.getStatusCode());
+                            }
+                        }
+                    });
         } else {
             // [START_EXCLUDE silent]
             binding.progressBar.setVisibility(View.GONE);
@@ -146,7 +152,9 @@ public class CurrentPlaceActivity extends AppCompatActivity {
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            ListItemPlaceBinding binding = ListItemPlaceBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+            ListItemPlaceBinding binding =
+                    ListItemPlaceBinding.inflate(
+                            LayoutInflater.from(parent.getContext()), parent, false);
             return new ViewHolder(binding);
         }
 
@@ -178,7 +186,11 @@ public class CurrentPlaceActivity extends AppCompatActivity {
                 Place place = placeLikelihood.getPlace();
                 binding.placeName.setText(place.getDisplayName());
                 binding.placeAddress.setText(place.getFormattedAddress());
-                binding.placeLikelihood.setText(String.format(Locale.getDefault(), "Likelihood: %.2f", placeLikelihood.getLikelihood()));
+                binding.placeLikelihood.setText(
+                        String.format(
+                                Locale.getDefault(),
+                                "Likelihood: %.2f",
+                                placeLikelihood.getLikelihood()));
             }
         }
     }

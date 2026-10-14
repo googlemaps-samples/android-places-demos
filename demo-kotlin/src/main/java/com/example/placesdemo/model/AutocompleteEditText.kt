@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//   http://www.apache.org/licenses/LICENSE-2.0
+//    http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,13 +22,15 @@ import androidx.appcompat.widget.AppCompatEditText
 class AutocompleteEditText : AppCompatEditText {
     constructor(context: Context?) : super(context!!)
     constructor(context: Context?, attrs: AttributeSet?) : super(
-        context!!, attrs
+        context!!,
+        attrs,
     )
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         super.onTouchEvent(event)
         when (event.action) {
             MotionEvent.ACTION_DOWN -> return true
+
             MotionEvent.ACTION_UP -> {
                 performClick()
                 return true

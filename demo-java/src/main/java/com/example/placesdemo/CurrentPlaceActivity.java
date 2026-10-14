@@ -16,6 +16,23 @@
 
 package com.example.placesdemo;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.ACCESS_WIFI_STATE;
+
+import android.Manifest.permission;
+import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresPermission;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import com.example.placesdemo.databinding.CurrentPlaceActivityBinding;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
@@ -24,32 +41,9 @@ import com.google.android.libraries.places.api.model.PlaceLikelihood;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
-
-import android.Manifest.permission;
-import android.annotation.SuppressLint;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-
 import java.util.List;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresPermission;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.Manifest.permission.ACCESS_WIFI_STATE;
-
-import androidx.activity.EdgeToEdge;
-
-/**
- * Activity to demonstrate {@link PlacesClient#findCurrentPlace(FindCurrentPlaceRequest)}.
- */
+/** Activity to demonstrate {@link PlacesClient#findCurrentPlace(FindCurrentPlaceRequest)}. */
 public class CurrentPlaceActivity extends AppCompatActivity {
 
     private static final String TAG = "CURRENT_PLACE";
@@ -65,15 +59,18 @@ public class CurrentPlaceActivity extends AppCompatActivity {
     // ActivityResultLauncher, as an instance variable.
     @SuppressLint("MissingPermission")
     private final ActivityResultLauncher<String[]> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), isGranted -> {
-                if (Boolean.TRUE.equals(isGranted.get(permission.ACCESS_FINE_LOCATION))
-                        && Boolean.TRUE.equals(isGranted.get(ACCESS_WIFI_STATE))) {
-                    findCurrentPlaceWithPermissions();
-                } else {
-                    // Fallback behavior if user denies permission
-                    Log.d(TAG, "User denied permission");
-                }
-            });
+            registerForActivityResult(
+                    new ActivityResultContracts.RequestMultiplePermissions(),
+                    isGranted -> {
+                        if (Boolean.TRUE.equals(isGranted.get(permission.ACCESS_FINE_LOCATION))
+                                && Boolean.TRUE.equals(isGranted.get(ACCESS_WIFI_STATE))) {
+                            findCurrentPlaceWithPermissions();
+                        } else {
+                            // Fallback behavior if user denies permission
+                            Log.d(TAG, "User denied permission");
+                        }
+                    });
+
     // [END maps_solutions_android_permission_request]
 
     // [START maps_solutions_android_location_permissions]
@@ -83,9 +80,11 @@ public class CurrentPlaceActivity extends AppCompatActivity {
                 == PackageManager.PERMISSION_GRANTED) {
             findCurrentPlaceWithPermissions();
         } else {
-            requestPermissionLauncher.launch(new String[]{permission.ACCESS_FINE_LOCATION, permission.ACCESS_WIFI_STATE});
+            requestPermissionLauncher.launch(
+                    new String[] {permission.ACCESS_FINE_LOCATION, permission.ACCESS_WIFI_STATE});
         }
     }
+
     // [END maps_solutions_android_location_permissions]
 
     @Override
@@ -101,33 +100,34 @@ public class CurrentPlaceActivity extends AppCompatActivity {
         placesClient = Places.createClient(this);
 
         // Set view objects
-        List<Field> placeFields = FieldSelector.allExcept(
-                Field.ADDRESS_COMPONENTS,
-                Field.CURBSIDE_PICKUP,
-                Field.CURRENT_OPENING_HOURS,
-                Field.DELIVERY,
-                Field.DINE_IN,
-                Field.EDITORIAL_SUMMARY,
-                Field.INTERNATIONAL_PHONE_NUMBER,
-                Field.OPENING_HOURS,
-                Field.RESERVABLE,
-                Field.SECONDARY_OPENING_HOURS,
-                Field.SERVES_BEER,
-                Field.SERVES_BREAKFAST,
-                Field.SERVES_BRUNCH,
-                Field.SERVES_DINNER,
-                Field.SERVES_LUNCH,
-                Field.SERVES_VEGETARIAN_FOOD,
-                Field.SERVES_WINE,
-                Field.TAKEOUT,
-                Field.UTC_OFFSET,
-                Field.WEBSITE_URI
-        );
-        fieldSelector = new FieldSelector(
-                binding.useCustomFields,
-                binding.customFieldsList,
-                placeFields,
-                savedInstanceState);
+        List<Field> placeFields =
+                FieldSelector.allExcept(
+                        Field.ADDRESS_COMPONENTS,
+                        Field.CURBSIDE_PICKUP,
+                        Field.CURRENT_OPENING_HOURS,
+                        Field.DELIVERY,
+                        Field.DINE_IN,
+                        Field.EDITORIAL_SUMMARY,
+                        Field.INTERNATIONAL_PHONE_NUMBER,
+                        Field.OPENING_HOURS,
+                        Field.RESERVABLE,
+                        Field.SECONDARY_OPENING_HOURS,
+                        Field.SERVES_BEER,
+                        Field.SERVES_BREAKFAST,
+                        Field.SERVES_BRUNCH,
+                        Field.SERVES_DINNER,
+                        Field.SERVES_LUNCH,
+                        Field.SERVES_VEGETARIAN_FOOD,
+                        Field.SERVES_WINE,
+                        Field.TAKEOUT,
+                        Field.UTC_OFFSET,
+                        Field.WEBSITE_URI);
+        fieldSelector =
+                new FieldSelector(
+                        binding.useCustomFields,
+                        binding.customFieldsList,
+                        placeFields,
+                        savedInstanceState);
         setLoading(false);
 
         // Set listeners for programmatic Find Current Place
@@ -142,8 +142,7 @@ public class CurrentPlaceActivity extends AppCompatActivity {
 
     /**
      * Fetches a list of {@link PlaceLikelihood} instances that represent the Places the user is
-     * most
-     * likely to be at currently.
+     * most likely to be at currently.
      */
     @RequiresPermission(allOf = {ACCESS_FINE_LOCATION, ACCESS_WIFI_STATE})
     private void findCurrentPlaceWithPermissions() {
@@ -156,7 +155,8 @@ public class CurrentPlaceActivity extends AppCompatActivity {
 
         currentPlaceTask.addOnSuccessListener(
                 (response) ->
-                        binding.response.setText(StringUtil.stringify(response, isDisplayRawResultsChecked())));
+                        binding.response.setText(
+                                StringUtil.stringify(response, isDisplayRawResultsChecked())));
 
         currentPlaceTask.addOnFailureListener(
                 (exception) -> {

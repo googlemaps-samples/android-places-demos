@@ -24,13 +24,13 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.widget.PlaceAutocompleteActivity as PlacesSdkAutocompleteActivity
 import com.google.common.truth.Truth.assertThat
-import java.lang.reflect.Field
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import java.lang.reflect.Field
+import com.google.android.libraries.places.widget.PlaceAutocompleteActivity as PlacesSdkAutocompleteActivity
 
 /**
  * Unit test verifying error handling for [PlaceAutocompleteActivity].
@@ -92,7 +92,7 @@ class PlaceAutocompleteActivityTest {
             registry.dispatchResult(
                 requestCode,
                 PlacesSdkAutocompleteActivity.RESULT_ERROR,
-                resultData
+                resultData,
             )
 
             // --- 6. Verify UI State ---

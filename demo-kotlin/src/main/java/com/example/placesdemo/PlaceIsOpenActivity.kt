@@ -66,12 +66,12 @@ class PlaceIsOpenActivity : BaseActivity() {
         }
 
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
-        placesClient = Places.createClient( /* context = */this)
+        placesClient = Places.createClient(this) // context
 
         fieldSelector = FieldSelector(
             binding.checkBoxUseCustomFields,
             binding.textViewCustomFieldsList,
-            savedInstanceState
+            savedInstanceState,
         )
 
         binding.buttonFetchPlace.setOnClickListener { fetchPlace() }
@@ -137,8 +137,7 @@ class PlaceIsOpenActivity : BaseActivity() {
             binding.textViewResponse.text =
                 "Is place open? ${response.isOpen}\nExtra place details: \n${stringify(place)}"
         }
-        placeTask.addOnFailureListener {
-                exception ->
+        placeTask.addOnFailureListener { exception ->
             exception.printStackTrace()
             binding.textViewResponse.text = exception.message
         }
@@ -174,9 +173,9 @@ class PlaceIsOpenActivity : BaseActivity() {
         placeTask.addOnCompleteListener { setLoading(false) }
     }
 
-    //////////////////////////
+    // ////////////////////////
     // Helper methods below //
-    //////////////////////////
+    // ////////////////////////
     private fun dismissKeyboard(focusedEditText: EditText) {
         val imm: InputMethodManager =
             getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -201,7 +200,7 @@ class PlaceIsOpenActivity : BaseActivity() {
                 Place.Field.ID,
                 Place.Field.DISPLAY_NAME,
                 Place.Field.OPENING_HOURS,
-                Place.Field.UTC_OFFSET
+                Place.Field.UTC_OFFSET,
             )
         }
 
@@ -224,12 +223,7 @@ class PlaceIsOpenActivity : BaseActivity() {
         binding.spinnerTimeZones.setSelection(adapter.getPosition(defaultTimeZoneID))
         binding.spinnerTimeZones.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     val timeZone: String = parent!!.getItemAtPosition(position).toString()
                     isOpenCalendar.timeZone = getTimeZone(timeZone)
                     updateIsOpenDate()
@@ -255,7 +249,7 @@ class PlaceIsOpenActivity : BaseActivity() {
                 listener,
                 isOpenCalendar.get(Calendar.YEAR),
                 isOpenCalendar.get(Calendar.MONTH),
-                isOpenCalendar.get(Calendar.DAY_OF_MONTH)
+                isOpenCalendar.get(Calendar.DAY_OF_MONTH),
             )
                 .show()
         }
@@ -279,7 +273,7 @@ class PlaceIsOpenActivity : BaseActivity() {
                 listener,
                 isOpenCalendar.get(Calendar.HOUR_OF_DAY),
                 isOpenCalendar.get(Calendar.MINUTE),
-                true
+                true,
             )
                 .show()
         }
@@ -291,7 +285,7 @@ class PlaceIsOpenActivity : BaseActivity() {
         val formattedMinutes: String =
             String.format(Locale.getDefault(), "%02d", isOpenCalendar.get(Calendar.MINUTE))
         binding.editTextIsOpenTime.setText(
-            String.format(Locale.getDefault(), "%s:%s", formattedHour, formattedMinutes)
+            String.format(Locale.getDefault(), "%s:%s", formattedHour, formattedMinutes),
         )
     }
 

@@ -20,16 +20,39 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -65,7 +88,7 @@ class PlacesPhotoDemoActivity : ComponentActivity() {
             DemoTheme {
                 PlacesPhotoScreen(
                     viewModel = viewModel,
-                    onBackPressed = { finish() }
+                    onBackPressed = { finish() },
                 )
             }
         }
@@ -83,15 +106,12 @@ class PlacesPhotoDemoActivity : ComponentActivity() {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlacesPhotoScreen(
-    viewModel: PlacesPhotoViewModel,
-    onBackPressed: () -> Unit
-) {
+fun PlacesPhotoScreen(viewModel: PlacesPhotoViewModel, onBackPressed: () -> Unit) {
     // Collect the search results and photo state from the ViewModel.
     // Using collectAsStateWithLifecycle ensures that collection stops when the app is in the background.
     val searchEvent by viewModel.searchResults.collectAsStateWithLifecycle()
     val photoState by viewModel.photoState.collectAsStateWithLifecycle()
-    
+
     // searchQuery is local UI state used only for the text field input.
     var searchQuery by rememberSaveable { mutableStateOf("") }
 
@@ -103,17 +123,17 @@ fun PlacesPhotoScreen(
                     IconButton(onClick = onBackPressed) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = "Back",
                         )
                     }
-                }
+                },
             )
-        }
+        },
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(padding),
         ) {
             // Search Input: Real-time search with a debounce applied in the ViewModel.
             TextField(
@@ -128,19 +148,19 @@ fun PlacesPhotoScreen(
                 placeholder = { Text("Search for a place with photos...") },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                 trailingIcon = {
-                    IconButton(onClick = { 
+                    IconButton(onClick = {
                         searchQuery = ""
-                        viewModel.searchNearby() 
+                        viewModel.searchNearby()
                     }) {
                         Icon(
                             imageVector = Icons.Default.MyLocation,
                             contentDescription = "Search Nearby",
-                            tint = MaterialTheme.colorScheme.primary
+                            tint = MaterialTheme.colorScheme.primary,
                         )
                     }
                 },
                 shape = MaterialTheme.shapes.medium,
-                singleLine = true
+                singleLine = true,
             )
 
             // Content Area: Switch between search results and the photo display based on state.
@@ -149,17 +169,17 @@ fun PlacesPhotoScreen(
                     // When a photo is being fetched or displayed, show the PhotoDisplay.
                     PhotoDisplay(
                         state = photoState,
-                        onBackPressed = { viewModel.onSearchQueryChanged(searchQuery) }
+                        onBackPressed = { viewModel.onSearchQueryChanged(searchQuery) },
                     )
                 } else {
                     // Otherwise, show the interactive list of autocomplete predictions.
                     SearchResultsList(
                         event = searchEvent,
-                        onSearchNearbyClick = { 
+                        onSearchNearbyClick = {
                             searchQuery = ""
-                            viewModel.searchNearby() 
+                            viewModel.searchNearby()
                         },
-                        onPredictionClick = { viewModel.onPredictionClicked(it) }
+                        onPredictionClick = { viewModel.onPredictionClicked(it) },
                     )
                 }
             }
@@ -180,34 +200,34 @@ fun SearchNearbyHero(onSearchNearbyClick: () -> Unit) {
             .fillMaxSize()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
-            )
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ),
         ) {
             Column(Modifier.padding(24.dp)) {
                 Text(
                     "Need Nearby Places?",
                     style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
                     "The legacy 'findCurrentPlace' API has been removed. " +
-                    "Use 'searchNearby' with explicit location bounds instead.",
+                        "Use 'searchNearby' with explicit location bounds instead.",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
-                
+
                 Spacer(Modifier.height(24.dp))
-                
+
                 Button(
                     onClick = onSearchNearbyClick,
                     modifier = Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(16.dp)
+                    contentPadding = PaddingValues(16.dp),
                 ) {
                     Icon(Icons.Default.MyLocation, contentDescription = null)
                     Spacer(Modifier.width(8.dp))
@@ -215,13 +235,13 @@ fun SearchNearbyHero(onSearchNearbyClick: () -> Unit) {
                 }
             }
         }
-        
+
         Spacer(Modifier.height(32.dp))
-        
+
         Text(
             "Or search for a specific place above",
             style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -236,36 +256,42 @@ fun SearchNearbyHero(onSearchNearbyClick: () -> Unit) {
 fun SearchResultsList(
     event: PhotoDemoEvent,
     onSearchNearbyClick: () -> Unit,
-    onPredictionClick: (AutocompletePrediction) -> Unit
+    onPredictionClick: (AutocompletePrediction) -> Unit,
 ) {
     when (event) {
         is PhotoDemoEventIdle -> {
             SearchNearbyHero(onSearchNearbyClick)
         }
+
         is PhotoDemoEventLoading -> {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
         }
+
         is PhotoDemoEventResults -> {
             LazyColumn(
                 contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 items(event.predictions) { prediction ->
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { onPredictionClick(prediction) }
+                            .clickable { onPredictionClick(prediction) },
                     ) {
                         Column(Modifier.padding(16.dp)) {
                             Text(prediction.getPrimaryText(null).toString(), fontWeight = FontWeight.Bold)
-                            Text(prediction.getSecondaryText(null).toString(), style = MaterialTheme.typography.bodySmall)
+                            Text(
+                                prediction.getSecondaryText(null).toString(),
+                                style = MaterialTheme.typography.bodySmall,
+                            )
                         }
                     }
                 }
             }
         }
+
         is PhotoDemoEventError -> {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text("Error: ${event.exception.message}", color = MaterialTheme.colorScheme.error)
@@ -284,16 +310,13 @@ fun SearchResultsList(
  * @param onBackPressed Callback to return to search results.
  */
 @Composable
-fun PhotoDisplay(
-    state: PhotoState,
-    onBackPressed: () -> Unit
-) {
+fun PhotoDisplay(state: PhotoState, onBackPressed: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         if (state.isLoading) {
             CircularProgressIndicator()
@@ -311,11 +334,11 @@ fun PhotoDisplay(
                 text = state.uri.toString(),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(8.dp),
             )
-            
+
             Spacer(Modifier.height(16.dp))
-            
+
             // This is the core of the demo: Using Coil's AsyncImage with the fetched URI.
             // Coil handles the network fetching and caching of the actual image data from the URI.
             AsyncImage(
@@ -325,7 +348,7 @@ fun PhotoDisplay(
                     .fillMaxWidth()
                     .height(300.dp)
                     .background(Color.LightGray, MaterialTheme.shapes.medium),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
             )
 
             Button(onClick = onBackPressed, Modifier.padding(top = 24.dp)) {

@@ -61,7 +61,10 @@ class AdvancedMainViewModel : ViewModel() {
  * Shows configuring custom action buttons via `PlaceActionProvider` (`PlaceAction.CALL`, `OPEN_WEBSITE`,
  * `OPEN_DIRECTIONS`, `OPEN_IN_MAPS`) and applying `SearchMediaOptions`.
  */
-class AdvancedConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickListener {
+class AdvancedConfigurablePlaceDetailsActivity :
+    AppCompatActivity(),
+    OnMapReadyCallback,
+    GoogleMap.OnPoiClickListener {
 
     private lateinit var binding: ActivityAdvancedConfigurableMapBinding
     private var googleMap: GoogleMap? = null
@@ -76,7 +79,9 @@ class AdvancedConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReady
 
         requestPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-                if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true || permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
+                if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                    permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+                ) {
                     fetchLastLocation()
                 } else {
                     handleLocationError()
@@ -109,8 +114,9 @@ class AdvancedConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReady
         binding.configureButton.setOnClickListener {
             Toast.makeText(
                 this,
-                "Places 5.3.0: Using AdvancedPlaceDetailsCompactFragment with custom PlaceActionProvider & SearchMediaOptions!",
-                Toast.LENGTH_LONG
+                "Places 5.3.0: Using AdvancedPlaceDetailsCompactFragment with custom " +
+                    "PlaceActionProvider & SearchMediaOptions!",
+                Toast.LENGTH_LONG,
             ).show()
         }
 
@@ -130,17 +136,18 @@ class AdvancedConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReady
         }
     }
 
-    private fun isLocationPermissionGranted(): Boolean {
-        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-    }
+    private fun isLocationPermissionGranted(): Boolean =
+        ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
+            PackageManager.PERMISSION_GRANTED ||
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
+            PackageManager.PERMISSION_GRANTED
 
     private fun requestLocationPermissions() {
         requestPermissionLauncher.launch(
             arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+            ),
         )
     }
 
@@ -206,22 +213,22 @@ class AdvancedConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReady
 
                 override fun onFailure(e: Exception) {
                     dismissPlaceDetails()
-                    Toast.makeText(this@AdvancedConfigurablePlaceDetailsActivity, "Failed to load advanced place details.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@AdvancedConfigurablePlaceDetailsActivity,
+                        "Failed to load advanced place details.",
+                        Toast.LENGTH_SHORT,
+                    ).show()
                 }
             })
             setPlaceActionProvider(object : PlaceActionProvider {
-                override fun getMainPlaceActions(place: Place): List<PlaceAction> {
-                    return listOf(
-                        PlaceAction.CALL,
-                        PlaceAction.OPEN_WEBSITE,
-                        PlaceAction.OPEN_DIRECTIONS,
-                        PlaceAction.OPEN_IN_MAPS
-                    )
-                }
+                override fun getMainPlaceActions(place: Place): List<PlaceAction> = listOf(
+                    PlaceAction.CALL,
+                    PlaceAction.OPEN_WEBSITE,
+                    PlaceAction.OPEN_DIRECTIONS,
+                    PlaceAction.OPEN_IN_MAPS,
+                )
 
-                override fun getCornerPlaceActions(place: Place): List<CornerPlaceAction> {
-                    return emptyList()
-                }
+                override fun getCornerPlaceActions(place: Place): List<CornerPlaceAction> = emptyList()
 
                 override fun addPlaceActionsChangedListener(listener: PlaceActionProvider.OnChangedListener) {}
                 override fun removePlaceActionsChangedListener(listener: PlaceActionProvider.OnChangedListener) {}
@@ -230,7 +237,7 @@ class AdvancedConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReady
                 SearchMediaOptions.builder()
                     .setQuery("menu")
                     .setRankPreference(SearchMediaOptions.RankPreference.MOST_RELEVANT)
-                    .build()
+                    .build(),
             )
         }
 

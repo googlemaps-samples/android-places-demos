@@ -82,7 +82,9 @@ private const val TAG = "ConfigurablePlaceDetailsActivity"
  * - Reactive UI updates using Kotlin Flows (`StateFlow` and `collectLatest`).
  * - Persistence of both selected place and content configuration across orientation changes.
  */
-class ConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback,
+class ConfigurablePlaceDetailsActivity :
+    AppCompatActivity(),
+    OnMapReadyCallback,
     GoogleMap.OnPoiClickListener {
 
     private lateinit var binding: ActivityConfigurableMapBinding
@@ -99,7 +101,9 @@ class ConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback
 
         requestPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-                if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true || permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
+                if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                    permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+                ) {
                     Log.d(TAG, "Location permission granted by user.")
                     fetchLastLocation()
                 } else {
@@ -107,7 +111,7 @@ class ConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback
                     Toast.makeText(
                         this,
                         "Location permission denied. Showing default location.",
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_LONG,
                     ).show()
                     moveToSydney()
                 }
@@ -127,7 +131,7 @@ class ConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback
             Toast.makeText(
                 this,
                 "Add your own API_KEY in local.properties",
-                Toast.LENGTH_LONG
+                Toast.LENGTH_LONG,
             ).show()
             finish()
             return
@@ -186,24 +190,22 @@ class ConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback
         }
     }
 
-    private fun isLocationPermissionGranted(): Boolean {
-        return ActivityCompat.checkSelfPermission(
+    private fun isLocationPermissionGranted(): Boolean = ActivityCompat.checkSelfPermission(
+        this,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+    ) == PackageManager.PERMISSION_GRANTED ||
+        ActivityCompat.checkSelfPermission(
             this,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
-    }
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+        ) == PackageManager.PERMISSION_GRANTED
 
     private fun requestLocationPermissions() {
         Log.d(TAG, "Requesting location permissions.")
         requestPermissionLauncher.launch(
             arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+            ),
         )
     }
 
@@ -212,7 +214,7 @@ class ConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback
         Toast.makeText(
             this,
             "Could not retrieve current location. Showing default location.",
-            Toast.LENGTH_LONG
+            Toast.LENGTH_LONG,
         ).show()
         moveToSydney()
     }
@@ -295,7 +297,7 @@ class ConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback
                     Toast.makeText(
                         this@ConfigurablePlaceDetailsActivity,
                         "Failed to load place details.",
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_SHORT,
                     ).show()
                 }
             })
@@ -375,7 +377,7 @@ class ConfigurablePlaceDetailsActivity : AppCompatActivity(), OnMapReadyCallback
 fun PlaceContentSelectionDialogContent(
     selectedContent: List<PlaceDetailsCompactItem>,
     unselectedContent: List<PlaceDetailsCompactItem>,
-    onItemClick: (PlaceDetailsCompactItem) -> Unit
+    onItemClick: (PlaceDetailsCompactItem) -> Unit,
 ) {
     LazyColumn {
         stickyHeader {
@@ -385,7 +387,7 @@ fun PlaceContentSelectionDialogContent(
         items(selectedContent, key = { it.content.name }) { content ->
             ContentItem(
                 item = content,
-                onItemClick = onItemClick
+                onItemClick = onItemClick,
             )
         }
 
@@ -396,7 +398,7 @@ fun PlaceContentSelectionDialogContent(
         items(unselectedContent, key = { it.content.name }) { content ->
             ContentItem(
                 item = content,
-                onItemClick = onItemClick
+                onItemClick = onItemClick,
             )
         }
     }
@@ -417,7 +419,7 @@ fun SectionHeader(title: String) {
             .padding(16.dp),
         style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.onTertiaryContainer,
-        textAlign = TextAlign.Center
+        textAlign = TextAlign.Center,
     )
 }
 
@@ -428,17 +430,14 @@ fun SectionHeader(title: String) {
  * @param onItemClick A callback function invoked when this item is clicked.
  */
 @Composable
-fun ContentItem(
-    item: PlaceDetailsCompactItem,
-    onItemClick: (PlaceDetailsCompactItem) -> Unit
-) {
+fun ContentItem(item: PlaceDetailsCompactItem, onItemClick: (PlaceDetailsCompactItem) -> Unit) {
     Text(
         text = item.displayName,
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onItemClick(item) }
             .padding(16.dp),
-        style = MaterialTheme.typography.bodyLarge
+        style = MaterialTheme.typography.bodyLarge,
     )
 }
 
@@ -454,7 +453,7 @@ fun DialogContentPreview_BothSections() {
         PlaceContentSelectionDialogContent(
             selectedContent = standardContent.toPlaceDetailsCompactItems(),
             unselectedContent = standardNonContent.toPlaceDetailsCompactItems(),
-            onItemClick = {}
+            onItemClick = {},
         )
     }
 }
@@ -466,7 +465,7 @@ fun DialogContentPreview_OnlySelected() {
         PlaceContentSelectionDialogContent(
             selectedContent = Content.entries.toPlaceDetailsCompactItems(),
             unselectedContent = emptyList(),
-            onItemClick = {}
+            onItemClick = {},
         )
     }
 }
@@ -478,7 +477,7 @@ fun DialogContentPreview_OnlyUnselected() {
         PlaceContentSelectionDialogContent(
             selectedContent = emptyList(),
             unselectedContent = Content.entries.toPlaceDetailsCompactItems(),
-            onItemClick = {}
+            onItemClick = {},
         )
     }
 }
@@ -490,7 +489,7 @@ fun DialogContentPreview_Empty() {
         PlaceContentSelectionDialogContent(
             selectedContent = emptyList(),
             unselectedContent = emptyList(),
-            onItemClick = {}
+            onItemClick = {},
         )
     }
 }

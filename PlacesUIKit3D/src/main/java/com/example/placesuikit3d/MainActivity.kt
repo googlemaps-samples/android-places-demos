@@ -26,8 +26,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -53,18 +51,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.app.ActivityCompat
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.commit
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import com.example.placesuikit3d.ui.theme.PlacesUIKit3DTheme
 import com.example.placesuikit3d.utils.feet
 import com.example.placesuikit3d.utils.toValidCamera
@@ -81,6 +80,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.PlaceDetailsCompactFragment
 import com.google.android.libraries.places.widget.PlaceLoadListener
 import com.google.android.libraries.places.widget.model.Orientation
+import kotlinx.coroutines.launch
 
 /**
  * The main activity for the 3D map demo.
@@ -88,7 +88,9 @@ import com.google.android.libraries.places.widget.model.Orientation
  * This activity demonstrates how to integrate the Places UI Kit with a 3D map view using Jetpack Compose.
  * It handles map initialization, landmark selection, and displaying place details.
  */
-class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
+class MainActivity :
+    AppCompatActivity(),
+    OnMap3DViewReadyCallback {
     private val TAG = this::class.java.simpleName
     private var googleMap3D: GoogleMap3D? = null
 
@@ -101,10 +103,16 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
 
         requestPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-                if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true || permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
+                if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                    permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+                ) {
                     fetchLastLocation()
                 } else {
-                    Toast.makeText(this, "Location permission denied. Showing default location.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        "Location permission denied. Showing default location.",
+                        Toast.LENGTH_SHORT,
+                    ).show()
                     moveToDefaultLocation()
                 }
             }
@@ -128,8 +136,8 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
         val scope = rememberCoroutineScope()
         val scaffoldState = rememberBottomSheetScaffoldState(
             bottomSheetState = rememberStandardBottomSheetState(
-                initialValue = SheetValue.PartiallyExpanded
-            )
+                initialValue = SheetValue.PartiallyExpanded,
+            ),
         )
 
         Box(modifier = Modifier.fillMaxSize()) {
@@ -148,9 +156,9 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .fillMaxHeight(0.6f)
+                            .fillMaxHeight(0.6f),
                     )
-                }
+                },
             ) { _ ->
                 // Map occupies full screen, ignoring scaffold padding
                 Box(modifier = Modifier.fillMaxSize()) {
@@ -160,7 +168,7 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
                         onClick = { fetchLastLocation() },
                         modifier = Modifier
                             .align(Alignment.TopEnd)
-                            .padding(top = 48.dp, end = 16.dp)
+                            .padding(top = 48.dp, end = 16.dp),
                     ) {
                         Icon(Icons.Default.MyLocation, contentDescription = "My Location")
                     }
@@ -175,7 +183,7 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         // Anchor above the bottom sheet peek height (120dp + 16dp margin)
-                        .padding(bottom = 136.dp, start = 16.dp, end = 16.dp)
+                        .padding(bottom = 136.dp, start = 16.dp, end = 16.dp),
                 )
             }
         }
@@ -185,7 +193,7 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
     fun MapViewContainer() {
         val context = LocalContext.current
         val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
-        
+
         val map3DView = remember {
             com.google.android.gms.maps3d.Map3DView(context).apply {
                 getMap3DViewAsync(this@MainActivity)
@@ -198,15 +206,19 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
                     Lifecycle.Event.ON_CREATE -> {
                         map3DView.onCreate(null)
                     }
+
                     Lifecycle.Event.ON_RESUME -> {
                         map3DView.onResume()
                     }
+
                     Lifecycle.Event.ON_PAUSE -> {
                         map3DView.onPause()
                     }
+
                     Lifecycle.Event.ON_DESTROY -> {
                         map3DView.onDestroy()
                     }
+
                     else -> {}
                 }
             }
@@ -218,23 +230,19 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
 
         AndroidView(
             factory = { map3DView },
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         )
     }
 
     @Composable
-    fun PlaceDetailsOverlay(
-        placeId: String,
-        onDismiss: () -> Unit,
-        modifier: Modifier = Modifier
-    ) {
+    fun PlaceDetailsOverlay(placeId: String, onDismiss: () -> Unit, modifier: Modifier = Modifier) {
         val containerId = remember { View.generateViewId() }
 
         Box(
             modifier = modifier
                 .fillMaxWidth()
                 .heightIn(max = 400.dp)
-                .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.medium)
+                .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.medium),
         ) {
             AndroidView(
                 factory = { ctx ->
@@ -248,7 +256,7 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
                         val newFragment = PlaceDetailsCompactFragment.newInstance(
                             PlaceDetailsCompactFragment.ALL_CONTENT,
                             Orientation.VERTICAL,
-                            R.style.CustomizedPlaceDetailsTheme
+                            R.style.CustomizedPlaceDetailsTheme,
                         ).apply {
                             setPlaceLoadListener(object : PlaceLoadListener {
                                 override fun onSuccess(place: Place) {
@@ -279,7 +287,7 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
                         }
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
 
             FloatingActionButton(
@@ -287,11 +295,11 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(8.dp),
-                containerColor = MaterialTheme.colorScheme.secondaryContainer
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
             ) {
                 Icon(
                     painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_close),
-                    contentDescription = "Dismiss"
+                    contentDescription = "Dismiss",
                 )
             }
         }
@@ -317,7 +325,7 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
                     tilt = 45.0
                 }.toValidCamera()
                 durationInMillis = 2000
-            }
+            },
         )
     }
 
@@ -340,13 +348,16 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
         }
     }
 
-    private fun isLocationPermissionGranted(): Boolean {
-        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-    }
+    private fun isLocationPermissionGranted(): Boolean =
+        ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
+            PackageManager.PERMISSION_GRANTED ||
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
+            PackageManager.PERMISSION_GRANTED
 
     private fun requestLocationPermissions() {
-        requestPermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
+        requestPermissionLauncher.launch(
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
+        )
     }
 
     @SuppressLint("MissingPermission")
@@ -367,7 +378,7 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
                                 tilt = 60.0
                             }.toValidCamera()
                             durationInMillis = 3000
-                        }
+                        },
                     )
                 } ?: moveToDefaultLocation()
             }.addOnFailureListener { moveToDefaultLocation() }
@@ -375,7 +386,12 @@ class MainActivity : AppCompatActivity(), OnMap3DViewReadyCallback {
     }
 
     private fun moveToDefaultLocation() {
-        googleMap3D?.flyCameraTo(flyToOptions { endCamera = initialCamera; durationInMillis = 3000 })
+        googleMap3D?.flyCameraTo(
+            flyToOptions {
+                endCamera = initialCamera
+                durationInMillis = 3000
+            },
+        )
     }
 
     override fun onError(error: Exception) {

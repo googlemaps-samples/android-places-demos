@@ -45,5 +45,5 @@ enum class LocationType {
      * Indicates an unknown location type returned by the server. The Java Client for Google Maps
      * Services should be updated to support the new value.
      */
-    UNKNOWN;
+    UNKNOWN,
 }

@@ -40,22 +40,18 @@ import androidx.compose.ui.unit.dp
  * @param modifier The modifier to apply to the list.
  */
 @Composable
-fun LandmarkList(
-    landmarks: List<Landmark>,
-    onLandmarkClick: (Landmark) -> Unit,
-    modifier: Modifier = Modifier
-) {
+fun LandmarkList(landmarks: List<Landmark>, onLandmarkClick: (Landmark) -> Unit, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
         Text(
             text = "Locations",
             style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
         )
         LazyColumn(modifier = Modifier.weight(1f)) {
             items(landmarks) { landmark ->
                 LandmarkItem(
                     landmark = landmark,
-                    onClick = { onLandmarkClick(landmark) }
+                    onClick = { onLandmarkClick(landmark) },
                 )
                 HorizontalDivider()
             }
@@ -67,32 +63,29 @@ fun LandmarkList(
  * A composable that displays a single landmark item.
  */
 @Composable
-private fun LandmarkItem(
-    landmark: Landmark,
-    onClick: () -> Unit
-) {
+private fun LandmarkItem(landmark: Landmark, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
             .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
             imageVector = Icons.Default.Place,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(end = 16.dp)
+            modifier = Modifier.padding(end = 16.dp),
         )
         Column {
             Text(
                 text = landmark.name,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
             )
             Text(
                 text = "Boulder, CO",
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }

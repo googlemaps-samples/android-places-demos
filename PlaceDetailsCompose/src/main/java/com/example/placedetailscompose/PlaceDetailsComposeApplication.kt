@@ -63,7 +63,7 @@ class PlaceDetailsComposeApplication : Application() {
                 Toast.makeText(
                     this,
                     getString(R.string.error_api_key_missing),
-                    Toast.LENGTH_LONG
+                    Toast.LENGTH_LONG,
                 ).show()
                 throw RuntimeException(getString(R.string.error_api_key_missing))
             }

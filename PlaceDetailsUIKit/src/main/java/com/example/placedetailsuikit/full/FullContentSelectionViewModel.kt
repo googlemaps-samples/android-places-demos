@@ -33,17 +33,14 @@ import kotlinx.coroutines.flow.update
  * @param displayName A formatted, human-readable string for the content type.
  * @param isSelected A boolean indicating whether the user has selected this content to be displayed.
  */
-data class PlaceDetailsFullItem(
-    val content: Content,
-    val displayName: String,
-    val isSelected: Boolean = false
-) {
+data class PlaceDetailsFullItem(val content: Content, val displayName: String, val isSelected: Boolean = false) {
     companion object {
         /**
          * The default list of content fields displayed by the [PlaceDetailsFragment].
          * We use this to set the initial state of the configuration dialog.
          */
-        val standardContent: List<PlaceDetailsFullItem> = PlaceDetailsFragment.STANDARD_CONTENT.toPlaceDetailsFullItems()
+        val standardContent: List<PlaceDetailsFullItem> =
+            PlaceDetailsFragment.STANDARD_CONTENT.toPlaceDetailsFullItems()
 
         /**
          * A list of all available content fields that are not included in the default set.
@@ -58,12 +55,11 @@ data class PlaceDetailsFullItem(
 /**
  * An extension function to convert a [Content] enum into a [PlaceDetailsFullItem].
  */
-private fun Content.toPlaceDetailsFullItem(): PlaceDetailsFullItem =
-    PlaceDetailsFullItem(
-        content = this,
-        displayName = this.getDisplayName(),
-        isSelected = PlaceDetailsFragment.STANDARD_CONTENT.contains(this)
-    )
+private fun Content.toPlaceDetailsFullItem(): PlaceDetailsFullItem = PlaceDetailsFullItem(
+    content = this,
+    displayName = this.getDisplayName(),
+    isSelected = PlaceDetailsFragment.STANDARD_CONTENT.contains(this),
+)
 
 /**
  * An extension function that formats a [Content] enum name into a user-friendly, readable string.
@@ -71,15 +67,13 @@ private fun Content.toPlaceDetailsFullItem(): PlaceDetailsFullItem =
  *
  * @return A capitalized, space-separated string representation of the enum name.
  */
-fun Content.getDisplayName(): String =
-    this.name.replace('_', ' ').lowercase().replaceFirstChar { it.uppercase() }
+fun Content.getDisplayName(): String = this.name.replace('_', ' ').lowercase().replaceFirstChar { it.uppercase() }
 
 /**
  * An extension function to convert a collection of [Content] enums into a list of
  * [PlaceDetailsFullItem]s, ready to be used by the UI.
  */
-fun Iterable<Content>.toPlaceDetailsFullItems(): List<PlaceDetailsFullItem> =
-    this.map { it.toPlaceDetailsFullItem() }
+fun Iterable<Content>.toPlaceDetailsFullItems(): List<PlaceDetailsFullItem> = this.map { it.toPlaceDetailsFullItem() }
 
 /**
  * A [ViewModel] for the [FullConfigurablePlaceDetailsActivity] that manages the
@@ -102,9 +96,9 @@ class FullContentSelectionViewModel : ViewModel() {
             PlaceDetailsFullItem(
                 content = it,
                 displayName = it.getDisplayName(),
-                isSelected = PlaceDetailsFragment.STANDARD_CONTENT.contains(it)
+                isSelected = PlaceDetailsFragment.STANDARD_CONTENT.contains(it),
             )
-        }
+        },
     )
 
     /**

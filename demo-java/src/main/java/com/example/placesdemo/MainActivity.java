@@ -18,15 +18,10 @@ package com.example.placesdemo;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
-
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.placesdemo.programmatic_autocomplete.ProgrammaticAutocompleteToolbarActivity;
-import com.google.android.libraries.places.api.Places;
-
-import androidx.activity.EdgeToEdge;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,13 +33,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         setLaunchActivityClickListener(R.id.autocomplete_button, PlaceAutocompleteActivity.class);
-        setLaunchActivityClickListener(R.id.autocomplete_address_button, AutocompleteAddressActivity.class);
-        setLaunchActivityClickListener(R.id.programmatic_autocomplete_button, ProgrammaticAutocompleteToolbarActivity.class
-        );
-        setLaunchActivityClickListener(R.id.place_and_photo_button, PlaceDetailsAndPhotosActivity.class);
+        setLaunchActivityClickListener(
+                R.id.autocomplete_address_button, AutocompleteAddressActivity.class);
+        setLaunchActivityClickListener(
+                R.id.programmatic_autocomplete_button,
+                ProgrammaticAutocompleteToolbarActivity.class);
+        setLaunchActivityClickListener(
+                R.id.place_and_photo_button, PlaceDetailsAndPhotosActivity.class);
         setLaunchActivityClickListener(R.id.is_open_button, PlaceIsOpenActivity.class);
         setLaunchActivityClickListener(R.id.current_place_button, CurrentPlaceActivity.class);
-        setLaunchActivityClickListener(R.id.place_actions_advanced_button, PlaceActionsAndAdvancedDetailsActivity.class);
+        setLaunchActivityClickListener(
+                R.id.place_actions_advanced_button, PlaceActionsAndAdvancedDetailsActivity.class);
     }
 
     private void setLaunchActivityClickListener(

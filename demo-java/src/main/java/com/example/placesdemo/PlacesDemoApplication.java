@@ -18,7 +18,6 @@ package com.example.placesdemo;
 
 import android.app.Application;
 import android.widget.Toast;
-
 import com.google.android.libraries.places.api.Places;
 
 public class PlacesDemoApplication extends Application {

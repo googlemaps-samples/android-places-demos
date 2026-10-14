@@ -28,6 +28,7 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.api.net.kotlin.awaitFetchPlace
 import com.google.android.libraries.places.api.net.kotlin.awaitFindAutocompletePredictions
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,14 +39,11 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.CancellationException
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 @HiltViewModel
-class PlacesSearchViewModel @Inject constructor(
-    private val placesClient: PlacesClient
-) : ViewModel() {
+class PlacesSearchViewModel @Inject constructor(private val placesClient: PlacesClient) : ViewModel() {
 
     private val _searchQuery = MutableStateFlow("")
     private var sessionToken: AutocompleteSessionToken? = null
@@ -66,7 +64,7 @@ class PlacesSearchViewModel @Inject constructor(
             try {
                 val bias: LocationBias = RectangularBounds.newInstance(
                     LatLng(37.7576948, -122.4727051), // SW lat, lng
-                    LatLng(37.808300, -122.391338) // NE lat, lng
+                    LatLng(37.808300, -122.391338), // NE lat, lng
                 )
 
                 // Using a session token to group autocomplete queries and place fetches for billing
@@ -92,7 +90,7 @@ class PlacesSearchViewModel @Inject constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = PlacesSearchEventIdle
+            initialValue = PlacesSearchEventIdle,
         )
 
     private val _transientError = MutableStateFlow<String?>(null)
@@ -113,8 +111,8 @@ class PlacesSearchViewModel @Inject constructor(
                         Place.Field.DISPLAY_NAME,
                         Place.Field.FORMATTED_ADDRESS,
                         Place.Field.LOCATION,
-                        Place.Field.BUSINESS_STATUS
-                    )
+                        Place.Field.BUSINESS_STATUS,
+                    ),
                 ) {
                     sessionToken = currentToken
                 }

@@ -48,18 +48,20 @@ class CurrentPlaceActivity : BaseActivity() {
     @SuppressLint("MissingPermission")
     val requestPermissionLauncher =
         registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()
+            ActivityResultContracts.RequestMultiplePermissions(),
         ) { permissions ->
             when {
-                permissions[permission.ACCESS_FINE_LOCATION] == true || permissions[permission.ACCESS_COARSE_LOCATION] == true -> {
+                permissions[permission.ACCESS_FINE_LOCATION] == true ||
+                    permissions[permission.ACCESS_COARSE_LOCATION] == true -> {
                     // Only approximate location access granted.
                     findCurrentPlaceWithPermissions()
                 }
+
                 else -> {
                     Toast.makeText(
                         this,
                         "Either ACCESS_COARSE_LOCATION or ACCESS_FINE_LOCATION permissions are required",
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_SHORT,
                     ).show()
                 }
             }
@@ -109,7 +111,7 @@ class CurrentPlaceActivity : BaseActivity() {
             binding.useCustomFields,
             binding.customFieldsList,
             savedInstanceState,
-            placeFields
+            placeFields,
         )
         setLoading(false)
 
@@ -137,20 +139,23 @@ class CurrentPlaceActivity : BaseActivity() {
             requestPermissionLauncher.launch(
                 arrayOf(
                     permission.ACCESS_FINE_LOCATION,
-                    permission.ACCESS_COARSE_LOCATION
-                )
+                    permission.ACCESS_COARSE_LOCATION,
+                ),
             )
         }
     }
 
     /**
-     * Fetches a list of [com.google.android.libraries.places.api.model.PlaceLikelihood] instances that represent the Places the user is
-     * most likely to be at currently.
+     * Fetches a list of [com.google.android.libraries.places.api.model.PlaceLikelihood] instances that
+     * represent the Places the user is most likely to be at currently.
      */
     @RequiresPermission(allOf = [permission.ACCESS_FINE_LOCATION, permission.ACCESS_WIFI_STATE])
     private fun findCurrentPlaceWithPermissions() {
         setLoading(true)
-        val currentPlaceRequest = SearchNearbyRequest.newInstance(CircularBounds.newInstance(boulderCenter, radiusMeters), placeFields)
+        val currentPlaceRequest = SearchNearbyRequest.newInstance(
+            CircularBounds.newInstance(boulderCenter, radiusMeters),
+            placeFields,
+        )
         val currentPlaceTask = placesClient.searchNearby(currentPlaceRequest)
         currentPlaceTask.addOnSuccessListener { response: SearchNearbyResponse? ->
             response?.let {
@@ -164,9 +169,9 @@ class CurrentPlaceActivity : BaseActivity() {
         currentPlaceTask.addOnCompleteListener { setLoading(false) }
     }
 
-    //////////////////////////
+    // ////////////////////////
     // Helper methods below //
-    //////////////////////////
+    // ////////////////////////
     private val placeFields: List<Place.Field>
         get() = if (binding.useCustomFields.isChecked) {
             fieldSelector.selectedFields
@@ -181,11 +186,10 @@ class CurrentPlaceActivity : BaseActivity() {
         binding.loading.visibility = if (loading) View.VISIBLE else View.INVISIBLE
     }
 
-    private fun hasOnePermissionGranted(vararg permissions: String): Boolean =
-        permissions.any {
-            ContextCompat.checkSelfPermission(
-                this,
-                it
-            ) == PackageManager.PERMISSION_GRANTED
-        }
+    private fun hasOnePermissionGranted(vararg permissions: String): Boolean = permissions.any {
+        ContextCompat.checkSelfPermission(
+            this,
+            it,
+        ) == PackageManager.PERMISSION_GRANTED
+    }
 }

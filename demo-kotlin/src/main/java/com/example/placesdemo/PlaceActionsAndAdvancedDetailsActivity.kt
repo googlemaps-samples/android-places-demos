@@ -74,7 +74,7 @@ class PlaceActionsAndAdvancedDetailsActivity : BaseActivity() {
             Place.Field.FORMATTED_ADDRESS,
             Place.Field.ADDRESS_DESCRIPTOR,
             Place.Field.CONTAINING_PLACES,
-            Place.Field.PRICE_RANGE
+            Place.Field.PRICE_RANGE,
         )
 
         val request = FetchPlaceRequest.builder(placeId, placeFields).build()
@@ -116,7 +116,10 @@ class PlaceActionsAndAdvancedDetailsActivity : BaseActivity() {
             // PriceRange check
             place.priceRange?.let { pr ->
                 sb.append("--- Price Range ---\n")
-                sb.append("Start: ${pr.startPrice?.units}.${pr.startPrice?.nanos}, End: ${pr.endPrice?.units}.${pr.endPrice?.nanos}\n\n")
+                sb.append(
+                    "Start: ${pr.startPrice?.units}.${pr.startPrice?.nanos}, " +
+                        "End: ${pr.endPrice?.units}.${pr.endPrice?.nanos}\n\n",
+                )
             } ?: sb.append("Price Range: None available for this place\n\n")
 
             // 2. Demonstrate 5.3.0 SearchMediaOptions & SearchReviewsOptions
@@ -132,22 +135,20 @@ class PlaceActionsAndAdvancedDetailsActivity : BaseActivity() {
 
             sb.append("--- 5.3.0 Search Options ---\n")
             sb.append("SearchMediaOptions: query='${mediaOptions.query}', rank=${mediaOptions.rankPreference}\n")
-            sb.append("SearchReviewsOptions: query='${reviewsOptions.query}', rank=${reviewsOptions.rankPreference}\n\n")
+            sb.append(
+                "SearchReviewsOptions: query='${reviewsOptions.query}', rank=${reviewsOptions.rankPreference}\n\n",
+            )
 
             // 3. Demonstrate 5.3.0 PlaceActionProvider and PlaceActions
             val actionProvider = object : PlaceActionProvider {
-                override fun getMainPlaceActions(place: Place): List<PlaceAction> {
-                    return listOf(
-                        PlaceAction.CALL,
-                        PlaceAction.OPEN_WEBSITE,
-                        PlaceAction.OPEN_DIRECTIONS,
-                        PlaceAction.OPEN_IN_MAPS
-                    )
-                }
+                override fun getMainPlaceActions(place: Place): List<PlaceAction> = listOf(
+                    PlaceAction.CALL,
+                    PlaceAction.OPEN_WEBSITE,
+                    PlaceAction.OPEN_DIRECTIONS,
+                    PlaceAction.OPEN_IN_MAPS,
+                )
 
-                override fun getCornerPlaceActions(place: Place): List<CornerPlaceAction> {
-                    return emptyList()
-                }
+                override fun getCornerPlaceActions(place: Place): List<CornerPlaceAction> = emptyList()
 
                 override fun addPlaceActionsChangedListener(listener: PlaceActionProvider.OnChangedListener) {}
                 override fun removePlaceActionsChangedListener(listener: PlaceActionProvider.OnChangedListener) {}

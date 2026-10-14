@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//   http://www.apache.org/licenses/LICENSE-2.0
+//    http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,44 +21,40 @@ import com.google.android.gms.maps3d.model.PolygonOptions
 import com.google.android.gms.maps3d.model.PolylineOptions
 
 sealed class MapObject {
-  internal abstract fun addToMap(controller: GoogleMap3D): ActiveMapObject?
-  abstract val id: String
+    internal abstract fun addToMap(controller: GoogleMap3D): ActiveMapObject?
+    abstract val id: String
 
-  data class Marker(val options: MarkerOptions) : MapObject() {
-    override fun addToMap(controller: GoogleMap3D): ActiveMapObject? {
-      return controller.addMarker(options)?.let { marker ->
-          ActiveMapObject.ActiveMarker(marker)
-      }
+    data class Marker(val options: MarkerOptions) : MapObject() {
+        override fun addToMap(controller: GoogleMap3D): ActiveMapObject? =
+            controller.addMarker(options)?.let { marker ->
+                ActiveMapObject.ActiveMarker(marker)
+            }
+
+        override val id: String
+            get() = options.id
     }
 
-    override val id: String
-      get() = options.id
-  }
+    data class Polyline(val options: PolylineOptions) : MapObject() {
+        override fun addToMap(controller: GoogleMap3D): ActiveMapObject =
+            ActiveMapObject.ActivePolyline(controller.addPolyline(options))
 
-  data class Polyline(val options: PolylineOptions) : MapObject() {
-    override fun addToMap(controller: GoogleMap3D): ActiveMapObject {
-      return ActiveMapObject.ActivePolyline(controller.addPolyline(options))
+        override val id: String
+            get() = options.id
     }
 
-    override val id: String
-      get() = options.id
-  }
+    data class Polygon(val options: PolygonOptions) : MapObject() {
+        override fun addToMap(controller: GoogleMap3D): ActiveMapObject =
+            ActiveMapObject.ActivePolygon(controller.addPolygon(options))
 
-  data class Polygon(val options: PolygonOptions) : MapObject() {
-    override fun addToMap(controller: GoogleMap3D): ActiveMapObject {
-      return ActiveMapObject.ActivePolygon(controller.addPolygon(options))
+        override val id: String
+            get() = options.id
     }
 
-    override val id: String
-      get() = options.id
-  }
+    data class Model(val options: ModelOptions) : MapObject() {
+        override fun addToMap(controller: GoogleMap3D): ActiveMapObject =
+            ActiveMapObject.ActiveModel(controller.addModel(options))
 
-  data class Model(val options: ModelOptions) : MapObject() {
-    override fun addToMap(controller: GoogleMap3D): ActiveMapObject {
-      return ActiveMapObject.ActiveModel(controller.addModel(options))
+        override val id: String
+            get() = options.id
     }
-
-    override val id: String
-      get() = options.id
-  }
 }

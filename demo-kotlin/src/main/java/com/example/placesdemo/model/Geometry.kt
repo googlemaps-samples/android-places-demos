@@ -42,10 +42,8 @@ class Geometry : Serializable {
      */
     var viewport: Bounds? = null
 
-    override fun toString(): String {
-        return String.format(
-            "[Geometry: %s (%s) bounds=%s, viewport=%s]", location, locationType, bounds, viewport)
-    }
+    override fun toString(): String =
+        String.format("[Geometry: %s (%s) bounds=%s, viewport=%s]", location, locationType, bounds, viewport)
 
     companion object {
         private const val serialVersionUID = 1L

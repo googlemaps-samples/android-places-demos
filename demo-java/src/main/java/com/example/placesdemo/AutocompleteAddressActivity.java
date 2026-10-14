@@ -16,6 +16,9 @@
 
 package com.example.placesdemo;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static com.google.maps.android.SphericalUtil.computeDistanceBetween;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -28,14 +31,13 @@ import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
-
+import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-
 import com.example.placesdemo.databinding.AutocompleteAddressActivityBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -56,17 +58,10 @@ import com.google.android.libraries.places.api.model.PlaceTypes;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
-
 import java.util.Arrays;
 import java.util.List;
 
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static com.google.maps.android.SphericalUtil.computeDistanceBetween;
-import androidx.activity.EdgeToEdge;
-
-/**
- * Activity for using Place Autocomplete to assist filling out an address form.
- */
+/** Activity for using Place Autocomplete to assist filling out an address form. */
 @SuppressWarnings("FieldCanBeLocal")
 public class AutocompleteAddressActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -84,30 +79,33 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
 
     private AutocompleteAddressActivityBinding binding;
 
-    View.OnClickListener startAutocompleteIntentListener = view -> {
-        view.setOnClickListener(null);
-        startAutocompleteIntent();
-    };
+    View.OnClickListener startAutocompleteIntentListener =
+            view -> {
+                view.setOnClickListener(null);
+                startAutocompleteIntent();
+            };
 
     // [START maps_solutions_android_autocomplete_define]
-    private final ActivityResultLauncher<Intent> startAutocomplete = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    Intent intent = result.getData();
-                    if (intent != null) {
-                        Place place = Autocomplete.getPlaceFromIntent(intent);
+    private final ActivityResultLauncher<Intent> startAutocomplete =
+            registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            Intent intent = result.getData();
+                            if (intent != null) {
+                                Place place = Autocomplete.getPlaceFromIntent(intent);
 
-                        // Write a method to read the address components from the Place
-                        // and populate the form with the address components
-                        Log.d(TAG, "Place: " + place.getAddressComponents());
-                        fillInAddress(place);
-                    }
-                } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
-                    // The user canceled the operation.
-                    Log.i(TAG, "User canceled autocomplete");
-                }
-            });
+                                // Write a method to read the address components from the Place
+                                // and populate the form with the address components
+                                Log.d(TAG, "Place: " + place.getAddressComponents());
+                                fillInAddress(place);
+                            }
+                        } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
+                            // The user canceled the operation.
+                            Log.i(TAG, "User canceled autocomplete");
+                        }
+                    });
+
     // [END maps_solutions_android_autocomplete_define]
 
     @Override
@@ -133,10 +131,12 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
 
         // Update checkProximity when user checks the checkbox
         CheckBox checkProximityBox = findViewById(R.id.checkbox_proximity);
-        checkProximityBox.setOnCheckedChangeListener((view, isChecked) -> {
-            // Set the boolean to match user preference for when the Submit button is clicked
-            checkProximity = isChecked;
-        });
+        checkProximityBox.setOnCheckedChangeListener(
+                (view, isChecked) -> {
+                    // Set the boolean to match user preference for when the Submit button is
+                    // clicked
+                    checkProximity = isChecked;
+                });
 
         // Submit and optionally check proximity
         Button saveButton = findViewById(R.id.autocomplete_save_button);
@@ -152,17 +152,20 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
 
         // Set the fields to specify which types of place data to
         // return after the user has made a selection.
-        List<Place.Field> fields = Arrays.asList(Place.Field.ADDRESS_COMPONENTS,
-                Place.Field.LOCATION, Place.Field.VIEWPORT);
+        List<Place.Field> fields =
+                Arrays.asList(
+                        Place.Field.ADDRESS_COMPONENTS, Place.Field.LOCATION, Place.Field.VIEWPORT);
 
         // Build the autocomplete intent with field, country, and type filters applied
-        Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
-                .setCountries(List.of("US"))
-                // IMPORTANT: the widget uses the legacy api
-                .setTypesFilter(List.of(PlaceTypes.ADDRESS))
-                .build(this);
+        Intent intent =
+                new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                        .setCountries(List.of("US"))
+                        // IMPORTANT: the widget uses the legacy api
+                        .setTypesFilter(List.of(PlaceTypes.ADDRESS))
+                        .build(this);
         startAutocomplete.launch(intent);
     }
+
     // [END maps_solutions_android_autocomplete_intent]
 
     // [START maps_solutions_android_autocomplete_map_ready]
@@ -172,8 +175,8 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
         try {
             // Customise the styling of the base map using a JSON object defined
             // in a string resource.
-            boolean success = map.setMapStyle(
-                    MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json));
+            boolean success =
+                    map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json));
 
             if (!success) {
                 Log.e(TAG, "Style parsing failed.");
@@ -184,6 +187,7 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 15f));
         marker = map.addMarker(new MarkerOptions().position(coordinates));
     }
+
     // [END maps_solutions_android_autocomplete_map_ready]
 
     private void fillInAddress(Place place) {
@@ -198,35 +202,40 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
             for (AddressComponent component : components.asList()) {
                 String type = component.getTypes().get(0);
                 switch (type) {
-                    case "street_number": {
-                        address1.insert(0, component.getName());
-                        break;
-                    }
+                    case "street_number":
+                        {
+                            address1.insert(0, component.getName());
+                            break;
+                        }
 
-                    case "route": {
-                        address1.append(" ");
-                        address1.append(component.getShortName());
-                        break;
-                    }
+                    case "route":
+                        {
+                            address1.append(" ");
+                            address1.append(component.getShortName());
+                            break;
+                        }
 
-                    case "postal_code": {
-                        postcode.insert(0, component.getName());
-                        break;
-                    }
+                    case "postal_code":
+                        {
+                            postcode.insert(0, component.getName());
+                            break;
+                        }
 
-                    case "postal_code_suffix": {
-                        postcode.append("-").append(component.getName());
-                        break;
-                    }
+                    case "postal_code_suffix":
+                        {
+                            postcode.append("-").append(component.getName());
+                            break;
+                        }
 
                     case "locality":
                         binding.autocompleteCity.setText(component.getName());
                         break;
 
-                    case "administrative_area_level_1": {
-                        binding.autocompleteState.setText(component.getShortName());
-                        break;
-                    }
+                    case "administrative_area_level_1":
+                        {
+                            binding.autocompleteState.setText(component.getShortName());
+                            break;
+                        }
 
                     case "country":
                         binding.autocompleteCountry.setText(component.getName());
@@ -253,8 +262,9 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
 
         // It isn't possible to set a fragment's id programmatically so we set a tag instead and
         // search for it using that.
-        mapFragment = (SupportMapFragment)
-                getSupportFragmentManager().findFragmentByTag(MAP_FRAGMENT_TAG);
+        mapFragment =
+                (SupportMapFragment)
+                        getSupportFragmentManager().findFragmentByTag(MAP_FRAGMENT_TAG);
 
         // We only create a fragment if it doesn't already exist.
         if (mapFragment == null) {
@@ -275,6 +285,7 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
             updateMap(coordinates);
         }
     }
+
     // [END maps_solutions_android_autocomplete_map_add]
 
     private void updateMap(LatLng latLng) {
@@ -290,11 +301,7 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
         if (checkProximity) {
             checkLocationPermissions();
         } else {
-            Toast.makeText(
-                            this,
-                            R.string.autocomplete_skipped_message,
-                            Toast.LENGTH_SHORT)
-                    .show();
+            Toast.makeText(this, R.string.autocomplete_skipped_message, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -316,17 +323,20 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
     // system permissions dialog. Save the return value, an instance of
     // ActivityResultLauncher, as an instance variable.
     private final ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    // Since ACCESS_FINE_LOCATION is the only permission in this sample,
-                    // run the location comparison task once permission is granted.
-                    // Otherwise, check which permission is granted.
-                    getAndCompareLocations();
-                } else {
-                    // Fallback behavior if user denies permission
-                    Log.d(TAG, "User denied permission");
-                }
-            });
+            registerForActivityResult(
+                    new ActivityResultContracts.RequestPermission(),
+                    isGranted -> {
+                        if (isGranted) {
+                            // Since ACCESS_FINE_LOCATION is the only permission in this sample,
+                            // run the location comparison task once permission is granted.
+                            // Otherwise, check which permission is granted.
+                            getAndCompareLocations();
+                        } else {
+                            // Fallback behavior if user denies permission
+                            Log.d(TAG, "User denied permission");
+                        }
+                    });
+
     // [END maps_solutions_android_permission_request]
 
     // [START maps_solutions_android_location_permissions]
@@ -335,10 +345,10 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
                 == PackageManager.PERMISSION_GRANTED) {
             getAndCompareLocations();
         } else {
-            requestPermissionLauncher.launch(
-                    ACCESS_FINE_LOCATION);
+            requestPermissionLauncher.launch(ACCESS_FINE_LOCATION);
         }
     }
+
     // [END maps_solutions_android_location_permissions]
 
     @SuppressLint("MissingPermission")
@@ -353,32 +363,39 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
         FusedLocationProviderClient fusedLocationClient =
                 LocationServices.getFusedLocationProviderClient(this);
 
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, location -> {
-                    // Got last known location. In some rare situations this can be null.
-                    if (location == null) {
-                        return;
-                    }
+        fusedLocationClient
+                .getLastLocation()
+                .addOnSuccessListener(
+                        this,
+                        location -> {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location == null) {
+                                return;
+                            }
 
-                    deviceLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                    // [START_EXCLUDE]
-                    Log.d(TAG, "device location = " + deviceLocation);
-                    Log.d(TAG, "entered location = " + enteredLocation.toString());
+                            deviceLocation =
+                                    new LatLng(location.getLatitude(), location.getLongitude());
+                            // [START_EXCLUDE]
+                            Log.d(TAG, "device location = " + deviceLocation);
+                            Log.d(TAG, "entered location = " + enteredLocation.toString());
 
-                    // [START maps_solutions_android_location_distance]
-                    // Use the computeDistanceBetween function in the Maps SDK for Android Utility Library
-                    // to use spherical geometry to compute the distance between two Lat/Lng points.
-                    double distanceInMeters = computeDistanceBetween(deviceLocation, enteredLocation);
-                    if (distanceInMeters <= acceptedProximity) {
-                        Log.d(TAG, "location matched");
-                        // TODO: Display UI based on the locations matching
-                    } else {
-                        Log.d(TAG, "location not matched");
-                        // TODO: Display UI based on the locations not matching
-                    }
-                    // [END maps_solutions_android_location_distance]
-                    // [END_EXCLUDE]
-                });
+                            // [START maps_solutions_android_location_distance]
+                            // Use the computeDistanceBetween function in the Maps SDK for Android
+                            // Utility Library
+                            // to use spherical geometry to compute the distance between two Lat/Lng
+                            // points.
+                            double distanceInMeters =
+                                    computeDistanceBetween(deviceLocation, enteredLocation);
+                            if (distanceInMeters <= acceptedProximity) {
+                                Log.d(TAG, "location matched");
+                                // TODO: Display UI based on the locations matching
+                            } else {
+                                Log.d(TAG, "location not matched");
+                                // TODO: Display UI based on the locations not matching
+                            }
+                            // [END maps_solutions_android_location_distance]
+                            // [END_EXCLUDE]
+                        });
     }
     // [END maps_solutions_android_location_get]
 }
