@@ -39,6 +39,8 @@ ksp = "2.3.12"
 kotlinParcelize = "2.3.20"
 mapsSecretsGradlePlugin = "2.0.1"
 mockk = "1.14.11"
+room = "2.8.5"
+kotlinxCoroutinesTest = "1.11.0"
 spotless = "8.10.3"
 
 compileSdk = "37"
@@ -119,8 +121,14 @@ viewbinding = { group = "com.android.databinding", name = "viewbinding", version
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
+# Room
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+
 # Testing
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }

@@ -32,6 +32,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
+import com.example.common_ui.catalog.Complexity
+import com.example.common_ui.catalog.Framework
+import com.example.common_ui.catalog.Sample
 import com.example.placedetailsuikit.databinding.ActivityMainBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -67,6 +70,24 @@ class MainViewModel : ViewModel() {
  * 3. Handling clicks on Points of Interest (POIs) to get a Place ID.
  * 4. Using the Place ID to load and display place details in a [PlaceDetailsCompactFragment].
  */
+// [START_EXCLUDE silent]
+// [END_EXCLUDE]
+@Sample(
+    id = "com.example.placedetailsuikit.MainActivity",
+    title = "Place Details UI Kit (Compact & Map Markers)",
+    description = "Interactive map with PlaceDetailsCompactFragment (Views) or AdvancedPlaceDetailsCompact + PlaceMarker (Compose).",
+    category = "Places UI Kit & 3D",
+    complexity = Complexity.SIMPLE,
+    tags = ["#uikit", "#compact", "#placemarker", "#compose", "#map"],
+    apiCalls = [
+        "PlaceDetailsCompactFragment.newInstance(ALL_CONTENT, orientation, theme)",
+        "PlaceDetailsCompactFragment.loadWithPlaceId(placeId)",
+    ],
+    purpose = "Demonstrates integrating the Places UI Kit compact place card with a Google Map. Tapping a map POI loads PlaceDetailsCompactFragment.",
+    successCriteria = "• Map loads and centers on user location or default city.\n• Tapping a POI opens the Place Details UI Kit compact card with photos, ratings, and details.",
+    failureIndicators = "• Map fails to render or tapping a POI does not load the Place Details UI Kit card.",
+    framework = Framework.KOTLIN_VIEWS,
+)
 class MainActivity :
     AppCompatActivity(),
     OnMapReadyCallback,

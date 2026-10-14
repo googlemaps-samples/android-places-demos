@@ -32,6 +32,9 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.common_ui.catalog.Complexity;
+import com.example.common_ui.catalog.Framework;
+import com.example.common_ui.catalog.Sample;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
@@ -48,6 +51,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Sample(
+        id = "com.google.places.kotlin.CurrentPlaceActivity",
+        title = "Snippet: Nearby Search (SearchNearby)",
+        description =
+                "DevSite documentation snippet for searching nearby places within CircularBounds.",
+        category = "Documentation Snippets",
+        complexity = Complexity.SNIPPET,
+        tags = {"#snippet", "#nearby", "#searchnearby"},
+        apiCalls = {
+            "CircularBounds.newInstance(center, radius)",
+            "SearchNearbyRequest.builder(locationRestriction, placeFields).build()",
+            "PlacesClient.searchNearby(request)"
+        },
+        purpose =
+                "Canonical DevSite code snippet demonstrating how to search for nearby places around a coordinate using SearchNearbyRequest.",
+        successCriteria =
+                "• Activity launches cleanly and demonstrates the SearchNearbyRequest snippet.",
+        failureIndicators = "• Crash on launch.",
+        framework = Framework.JAVA_VIEWS)
 public class CurrentPlaceActivity extends AppCompatActivity {
 
     private ActivityCurrentPlaceBinding binding;

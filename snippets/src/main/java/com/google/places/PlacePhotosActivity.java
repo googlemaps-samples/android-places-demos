@@ -21,6 +21,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 import com.bumptech.glide.Glide;
+import com.example.common_ui.catalog.Complexity;
+import com.example.common_ui.catalog.Framework;
+import com.example.common_ui.catalog.Sample;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
@@ -33,6 +36,24 @@ import com.google.places.kotlin.MainApplication;
 import java.util.Collections;
 import java.util.List;
 
+@Sample(
+        id = "com.google.places.kotlin.PlacePhotosActivity",
+        title = "Snippet: Place Photos",
+        description =
+                "DevSite documentation snippet for fetching Place Photos and resolving photo URIs.",
+        category = "Documentation Snippets",
+        complexity = Complexity.SNIPPET,
+        tags = {"#snippet", "#photos", "#fetchresolvedphotouri"},
+        apiCalls = {
+            "Place.Field.PHOTO_METADATAS",
+            "FetchResolvedPhotoUriRequest.builder(photoMetadata).setMaxWidth(500).setMaxHeight(300).build()",
+            "PlacesClient.fetchResolvedPhotoUri(photoRequest)"
+        },
+        purpose =
+                "Canonical DevSite code snippet demonstrating how to retrieve PhotoMetadata from a Place and resolve a photo URI via FetchResolvedPhotoUriRequest.",
+        successCriteria = "• Activity launches cleanly and executes the Place Photos snippet.",
+        failureIndicators = "• Crash on launch.",
+        framework = Framework.JAVA_VIEWS)
 public class PlacePhotosActivity extends AppCompatActivity {
     private static final String TAG = PlacePhotosActivity.class.getSimpleName();
 

@@ -110,8 +110,10 @@ dependencies {
     implementation(libs.android.maps.utils)
     implementation(libs.material) // For Material Design components (used in XML layouts).
 
-    // --- Attribution library ---
+    // --- Attribution library & Unified Catalog ---
     implementation(project(":library"))
+    implementation(project(":common-ui"))
+    implementation(project(":reviewer"))
 
     // --- Jetpack Compose ---
     // These libraries are for building UIs with Jetpack Compose.

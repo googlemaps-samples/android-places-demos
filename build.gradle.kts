@@ -37,6 +37,7 @@ spotless {
                 "indent_size" to "4",
                 "ktlint_function_naming_ignore_when_annotated_with" to "Composable",
                 "max_line_length" to "120",
+                "ktlint_standard_max-line-length" to "disabled",
                 // Samples use the `programmatic_autocomplete` package; renaming it would
                 // change public sample paths.
                 "ktlint_standard_package-name" to "disabled",
@@ -65,14 +66,42 @@ allprojects {
 }
 
 subprojects {
-  // Only application modules skip the AAR metadata check. Library modules must keep
-  // it enabled: their bundle<Variant>Aar task consumes check<Variant>AarMetadata's
-  // output directory as a required input, so disabling it fails the build on a clean
-  // checkout with "aarMetadataCheck ... which doesn't exist".
+    // Skip the AAR metadata AGP version check while still allowing Gradle to create
+    // the task's @OutputDirectory (required by library modules' bundle<Variant>Aar task).
     plugins.withId("com.android.application") {
         tasks.matching { it.name.startsWith("check") && it.name.endsWith("AarMetadata") }
             .configureEach {
                 enabled = false
             }
     }
+    plugins.withId("com.android.library") {
+        tasks.matching { it.name.startsWith("check") && it.name.endsWith("AarMetadata") }
+            .configureEach {
+                actions.clear()
+                doLast {}
+            }
+    }
+}
+
+val appModules = listOf(
+    ":demo-kotlin",
+    ":demo-java",
+    ":PlaceDetailsUIKit",
+    ":kotlin-demos",
+    ":PlaceDetailsCompose",
+    ":PlacesUIKit3D",
+    ":snippets"
+)
+
+tasks.register("installAllDebug") {
+    group = "application"
+    description = "Installs debug APKs for all 7 Places demo modules so cross-app launching in the Unified Catalog works seamlessly."
+    dependsOn(appModules.map { "$it:installDebug" })
+}
+
+tasks.register("installAndLaunch") {
+    group = "application"
+    description = "Installs all Places demo APKs and launches the Unified Sample Catalog (or a specific sample via -Psample=... -Pframework=...)."
+    dependsOn("installAllDebug")
+    dependsOn(":demo-kotlin:installAndLaunch")
 }

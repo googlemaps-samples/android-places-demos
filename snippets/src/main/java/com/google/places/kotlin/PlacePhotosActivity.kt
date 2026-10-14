@@ -19,6 +19,9 @@ import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.common_ui.catalog.Complexity
+import com.example.common_ui.catalog.Framework
+import com.example.common_ui.catalog.Sample
 import com.google.android.gms.common.api.ApiException
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
@@ -28,6 +31,23 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.places.data.PlaceIdProvider
 import com.google.places.databinding.ActivityPlacePhotosBinding
 
+@Sample(
+    id = "com.google.places.kotlin.PlacePhotosActivity",
+    title = "Snippet: Place Photos",
+    description = "DevSite documentation snippet for fetching Place Photos and resolving photo URIs.",
+    category = "Documentation Snippets",
+    complexity = Complexity.SNIPPET,
+    tags = ["#snippet", "#photos", "#fetchresolvedphotouri"],
+    apiCalls = [
+        "Place.Field.PHOTO_METADATAS",
+        "FetchResolvedPhotoUriRequest.builder(photoMetadata).setMaxWidth(500).setMaxHeight(300).build()",
+        "PlacesClient.fetchResolvedPhotoUri(photoRequest)",
+    ],
+    purpose = "Canonical DevSite code snippet demonstrating how to retrieve PhotoMetadata from a Place and resolve a photo URI via FetchResolvedPhotoUriRequest.",
+    successCriteria = "• Activity launches cleanly and executes the Place Photos snippet.",
+    failureIndicators = "• Crash on launch.",
+    framework = Framework.KOTLIN_VIEWS,
+)
 class PlacePhotosActivity : AppCompatActivity() {
 
     private lateinit var placesClient: PlacesClient

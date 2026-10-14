@@ -23,7 +23,7 @@ android {
     namespace = "com.example.placesdemo"
 
     defaultConfig {
-        applicationId = "com.example.placesdemo"
+        applicationId = "com.example.placesdemo.java"
         versionCode = libs.versions.versionCode.get().toInt()
         versionName = libs.versions.versionName.get()
 
@@ -33,6 +33,20 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+    }
+
+    useLibrary("org.apache.http.legacy")
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(21))
+        }
+    }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
     }
 }
 
@@ -57,7 +71,16 @@ dependencies {
     implementation(libs.play.services.location)
     implementation(libs.android.maps.utils)
 
-    // --- Attribution library ---
+    // Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.androidx.junit)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.google.truth)
+    testImplementation(libs.robolectric)
+
+    // --- Attribution library & Unified Catalog ---
     implementation(project(":library"))
+    implementation(project(":common-ui"))
+    implementation(project(":reviewer"))
 }
 
