@@ -46,6 +46,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -228,24 +229,27 @@ fun MapScreen(viewModel: MapViewModel = viewModel()) {
                 val placeId = place.id
                 val location = place.location
                 if (placeId != null) {
-                    val markerState = rememberPlaceMarkerState(
-                        reference = PlaceReference.PlaceId(placeId),
-                        icon = MarkerIcon.Type,
-                        text = MarkerText.Rating,
-                    )
-                    val markerLocation = markerState.location ?: location
-                    if (markerLocation != null) {
-                        MarkerComposable(
-                            keys = arrayOf(
-                                markerState.isLoaded,
-                                markerState.error != null,
-                                markerState.place ?: "",
-                            ),
-                            state = remember(markerLocation) { MarkerState(position = markerLocation) },
-                            anchor = Offset(0.5f, 1.0f),
-                            title = markerState.contentDescription,
-                        ) {
-                            PlaceMarker(state = markerState)
+                    key(placeId) {
+                        val markerState = rememberPlaceMarkerState(
+                            reference = PlaceReference.PlaceId(placeId),
+                            icon = MarkerIcon.Type,
+                            text = MarkerText.Rating,
+                        )
+                        val markerLocation = markerState.location ?: location
+                        if (markerLocation != null) {
+                            MarkerComposable(
+                                keys = arrayOf(
+                                    placeId,
+                                    markerState.isLoaded,
+                                    markerState.error != null,
+                                    markerState.place ?: "",
+                                ),
+                                state = remember(markerLocation) { MarkerState(position = markerLocation) },
+                                anchor = Offset(0.5f, 1.0f),
+                                title = markerState.contentDescription,
+                            ) {
+                                PlaceMarker(state = markerState)
+                            }
                         }
                     }
                 } else if (location != null) {

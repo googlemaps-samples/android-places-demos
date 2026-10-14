@@ -278,7 +278,7 @@ import com.google.android.libraries.places.widget.PlaceAutocomplete
 @Composable
 fun AutocompleteSearchButton() {
     val context = LocalContext.current
-    val intent = PlaceAutocomplete.createIntent(context)
+    val intent = PlaceAutocomplete.IntentBuilder().build(context)
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -323,8 +323,8 @@ Places SDK `6.0.0` permanently removed the deprecated Legacy Places API classes,
 | `Place.Field.ADDRESS` / `place.address` | `Place.Field.FORMATTED_ADDRESS` / `place.formattedAddress` |
 | `Place.Field.LAT_LNG` / `place.latLng` | `Place.Field.LOCATION` / `place.location` |
 | `Place.Field.PHONE_NUMBER` / `place.phoneNumber` | `Place.Field.INTERNATIONAL_PHONE_NUMBER` / `place.internationalPhoneNumber` (or `NATIONAL_PHONE_NUMBER`) |
-| `Place.Field.TYPES` / `place.types` | `Place.Field.TYPES` (`place.placeTypes: List<String>`) or `Place.Field.PRIMARY_TYPE` (`place.primaryType`) |
-| `Place.Field.PRICE_LEVEL` | `Place.Field.PRICE_LEVEL` or `Place.Field.PRICE_RANGE` (`place.priceRange`) |
+| `place.types` (`Place.Field.TYPES` constant unchanged) | `place.placeTypes: List<String>` (with `Place.Field.TYPES`) or `place.primaryType` (with `Place.Field.PRIMARY_TYPE`) |
+| `Place.Field.PRICE_LEVEL` (single value only) | `Place.Field.PRICE_LEVEL` (`place.priceLevel`) remains; use `Place.Field.PRICE_RANGE` (`place.priceRange`) for min/max price ranges |
 
 ### Key Migration Snippets
 
