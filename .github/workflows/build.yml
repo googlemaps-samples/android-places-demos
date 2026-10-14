@@ -48,6 +48,9 @@ jobs:
         run: |
           echo "MAPS3D_API_KEY=YOUR_API_KEY" >> local.defaults.properties
 
+      - name: Check code formatting
+        run: ./gradlew spotlessCheck
+
       - name: Build and verify all modules
         run: ./gradlew assembleDebug lint --continue
 

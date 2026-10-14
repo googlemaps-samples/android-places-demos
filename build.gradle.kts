@@ -25,6 +25,35 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.kotlin.kapt) apply false
     alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.spotless)
+}
+
+spotless {
+    kotlin {
+        target("**/*.kt")
+        targetExclude("**/build/**")
+        ktlint().editorConfigOverride(
+            mapOf(
+                "indent_size" to "4",
+                "ktlint_function_naming_ignore_when_annotated_with" to "Composable",
+                "max_line_length" to "120",
+                // Samples use the `programmatic_autocomplete` package; renaming it would
+                // change public sample paths.
+                "ktlint_standard_package-name" to "disabled",
+                // Samples use instance-level `TAG` properties for logging.
+                "ktlint_standard_property-naming" to "disabled",
+                // Samples use `_state` private flows without a matching public property.
+                "ktlint_standard_backing-property-naming" to "disabled",
+            ),
+        )
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    java {
+        target("**/*.java")
+        targetExclude("**/build/**")
+        googleJavaFormat().aosp()
+    }
 }
 
 allprojects {
