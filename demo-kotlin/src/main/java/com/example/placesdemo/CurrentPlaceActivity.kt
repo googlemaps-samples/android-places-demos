@@ -34,7 +34,7 @@ import com.google.android.libraries.places.api.net.SearchNearbyRequest
 import com.google.android.libraries.places.api.net.SearchNearbyResponse
 
 /**
- * Activity to demonstrate [PlacesClient.findCurrentPlace].
+ * Activity to demonstrate [PlacesClient.searchNearby].
  */
 class CurrentPlaceActivity : BaseActivity() {
     private lateinit var placesClient: PlacesClient
@@ -146,8 +146,7 @@ class CurrentPlaceActivity : BaseActivity() {
     }
 
     /**
-     * Fetches a list of [com.google.android.libraries.places.api.model.PlaceLikelihood] instances that
-     * represent the Places the user is most likely to be at currently.
+     * Fetches a list of nearby [Place] instances around the search area.
      */
     @RequiresPermission(allOf = [permission.ACCESS_FINE_LOCATION, permission.ACCESS_WIFI_STATE])
     private fun findCurrentPlaceWithPermissions() {

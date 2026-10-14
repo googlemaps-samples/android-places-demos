@@ -28,13 +28,13 @@ import androidx.core.view.WindowCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.model.CircularBounds
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.model.PlaceLikelihood
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.libraries.places.api.net.SearchNearbyRequest
 import com.google.places.databinding.ActivityCurrentPlaceBinding
 import com.google.places.databinding.ListItemPlaceBinding
-import java.util.Locale
 
 class CurrentPlaceActivity : AppCompatActivity() {
 
@@ -87,15 +87,21 @@ class CurrentPlaceActivity : AppCompatActivity() {
         // [START maps_places_current_place]
         // Use fields to define the data types to return.
         val placeFields = listOf(Place.Field.DISPLAY_NAME, Place.Field.FORMATTED_ADDRESS, Place.Field.LOCATION)
-        val request = FindCurrentPlaceRequest.newInstance(placeFields)
 
-        // Call findCurrentPlace and handle the response (first check that the user has granted permission).
+        // Define the search area around the current location (500m radius).
+        val currentLocation = LatLng(37.4220, -122.0841)
+        val circle = CircularBounds.newInstance(currentLocation, 500.0)
+        val request = SearchNearbyRequest.builder(circle, placeFields)
+            .setMaxResultCount(20)
+            .build()
+
+        // Call searchNearby and handle the response (first check that the user has granted permission).
         if (ContextCompat.checkSelfPermission(this, permission.ACCESS_FINE_LOCATION) ==
             PackageManager.PERMISSION_GRANTED
         ) {
-            placesClient.findCurrentPlace(request).addOnSuccessListener { response ->
+            placesClient.searchNearby(request).addOnSuccessListener { response ->
                 binding.progressBar.visibility = View.GONE
-                adapter.setPlaceLikelihoods(response.placeLikelihoods)
+                adapter.setPlaces(response.places)
             }.addOnFailureListener { exception ->
                 binding.progressBar.visibility = View.GONE
                 if (exception is ApiException) {
@@ -120,7 +126,7 @@ class CurrentPlaceActivity : AppCompatActivity() {
     // Adapter for the RecyclerView
     private class PlacesAdapter : RecyclerView.Adapter<PlacesAdapter.ViewHolder>() {
 
-        private var placeLikelihoods: List<PlaceLikelihood> = emptyList()
+        private var places: List<Place> = emptyList()
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val binding = ListItemPlaceBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -128,24 +134,22 @@ class CurrentPlaceActivity : AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            val placeLikelihood = placeLikelihoods[position]
-            holder.bind(placeLikelihood)
+            val place = places[position]
+            holder.bind(place)
         }
 
-        override fun getItemCount(): Int = placeLikelihoods.size
+        override fun getItemCount(): Int = places.size
 
-        fun setPlaceLikelihoods(placeLikelihoods: List<PlaceLikelihood>) {
-            this.placeLikelihoods = placeLikelihoods
+        fun setPlaces(places: List<Place>) {
+            this.places = places
             notifyDataSetChanged()
         }
 
         class ViewHolder(private val binding: ListItemPlaceBinding) : RecyclerView.ViewHolder(binding.root) {
-            fun bind(placeLikelihood: PlaceLikelihood) {
-                val place = placeLikelihood.place
+            fun bind(place: Place) {
                 binding.placeName.text = place.displayName
                 binding.placeAddress.text = place.formattedAddress
-                binding.placeLikelihood.text =
-                    String.format(Locale.getDefault(), "Likelihood: %.2f", placeLikelihood.likelihood)
+                binding.placeLikelihood.visibility = View.GONE
             }
         }
     }

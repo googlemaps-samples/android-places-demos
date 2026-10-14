@@ -46,6 +46,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -54,6 +55,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -64,14 +66,20 @@ import com.example.placedetailscompose.R
 import com.example.placedetailscompose.viewmodels.MapViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.libraries.places.widget.PlaceDetailsCompactFragment
-import com.google.android.libraries.places.widget.PlaceDetailsFragment
+import com.google.android.libraries.places.compose.AdvancedPlaceDetailsCompactContent
+import com.google.android.libraries.places.compose.PlaceMarker
+import com.google.android.libraries.places.compose.PlaceReference
+import com.google.android.libraries.places.compose.marker.MarkerIcon
+import com.google.android.libraries.places.compose.marker.MarkerText
+import com.google.android.libraries.places.compose.rememberPlaceMarkerState
 import com.google.maps.android.compose.Circle
 import com.google.maps.android.compose.ComposeMapColorScheme
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.MarkerComposable
+import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.sphericalDistance
 import com.google.maps.android.withSphericalOffset
@@ -217,14 +225,42 @@ fun MapScreen(viewModel: MapViewModel = viewModel()) {
             },
             mapColorScheme = ComposeMapColorScheme.FOLLOW_SYSTEM,
         ) {
-            selectedPlace?.location?.let {
-                Circle(
-                    center = it,
-                    radius = 75.0,
-                    fillColor = Color(0x880088FF),
-                    strokeWidth = 2f,
-                    strokeColor = Color(0xAA000000),
-                )
+            selectedPlace?.let { place ->
+                val placeId = place.id
+                val location = place.location
+                if (placeId != null) {
+                    key(placeId) {
+                        val markerState = rememberPlaceMarkerState(
+                            reference = PlaceReference.PlaceId(placeId),
+                            icon = MarkerIcon.Type,
+                            text = MarkerText.Rating,
+                        )
+                        val markerLocation = markerState.location ?: location
+                        if (markerLocation != null) {
+                            MarkerComposable(
+                                keys = arrayOf(
+                                    placeId,
+                                    markerState.isLoaded,
+                                    markerState.error != null,
+                                    markerState.place ?: "",
+                                ),
+                                state = remember(markerLocation) { MarkerState(position = markerLocation) },
+                                anchor = Offset(0.5f, 1.0f),
+                                title = markerState.contentDescription,
+                            ) {
+                                PlaceMarker(state = markerState)
+                            }
+                        }
+                    }
+                } else if (location != null) {
+                    Circle(
+                        center = location,
+                        radius = 75.0,
+                        fillColor = Color(0x880088FF),
+                        strokeWidth = 2f,
+                        strokeColor = Color(0xAA000000),
+                    )
+                }
             }
         }
 
@@ -253,9 +289,10 @@ fun MapScreen(viewModel: MapViewModel = viewModel()) {
                 ) {
                     Icon(
                         imageVector = if (isControlsExpanded) Icons.Default.ChevronLeft else Icons.Default.Settings,
-                        contentDescription =
-                        if (isControlsExpanded) {
-                            stringResource(R.string.collapse_settings)
+                        contentDescription = if (isControlsExpanded) {
+                            stringResource(
+                                R.string.collapse_settings,
+                            )
                         } else {
                             stringResource(R.string.expand_settings)
                         },
@@ -286,9 +323,10 @@ fun MapScreen(viewModel: MapViewModel = viewModel()) {
                                     modifier = Modifier.padding(end = 16.dp),
                                 ) {
                                     Text(
-                                        text =
-                                        if (isFullView) {
-                                            stringResource(R.string.full_view)
+                                        text = if (isFullView) {
+                                            stringResource(
+                                                R.string.full_view,
+                                            )
                                         } else {
                                             stringResource(R.string.compact_view)
                                         },
@@ -305,9 +343,10 @@ fun MapScreen(viewModel: MapViewModel = viewModel()) {
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                 ) {
                                     Text(
-                                        text =
-                                        if (isCoordinateMode) {
-                                            stringResource(R.string.coords_mode)
+                                        text = if (isCoordinateMode) {
+                                            stringResource(
+                                                R.string.coords_mode,
+                                            )
                                         } else {
                                             stringResource(R.string.poi_mode)
                                         },
@@ -349,7 +388,7 @@ fun MapScreen(viewModel: MapViewModel = viewModel()) {
                 PlaceDetailsCompactView(
                     place = place,
                     onDismiss = { viewModel.onDismissPlace() },
-                    content = selectedCompactContent,
+                    content = selectedCompactContent.toSet(),
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth(),
@@ -361,7 +400,9 @@ fun MapScreen(viewModel: MapViewModel = viewModel()) {
             if (isFullView) {
                 PlaceContentSelectionDialog(
                     title = stringResource(R.string.select_full_view_fields),
-                    allContent = PlaceDetailsFragment.Content.values().toList(),
+                    allContent = com.google.android.libraries.places.widget.PlaceDetailsFragment.Content
+                        .values()
+                        .toList(),
                     selectedContent = selectedFullContent,
                     onSelectionChanged = { viewModel.updateFullContent(it) },
                     onDismissRequest = { showContentSelectionDialog = false },
@@ -370,7 +411,7 @@ fun MapScreen(viewModel: MapViewModel = viewModel()) {
             } else {
                 PlaceContentSelectionDialog(
                     title = stringResource(R.string.select_compact_view_fields),
-                    allContent = PlaceDetailsCompactFragment.Content.values().toList(),
+                    allContent = AdvancedPlaceDetailsCompactContent.entries,
                     selectedContent = selectedCompactContent,
                     onSelectionChanged = { viewModel.updateCompactContent(it) },
                     onDismissRequest = { showContentSelectionDialog = false },

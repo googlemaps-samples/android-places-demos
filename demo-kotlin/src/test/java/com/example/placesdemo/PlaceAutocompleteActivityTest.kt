@@ -18,7 +18,7 @@ package com.example.placesdemo
 
 import android.content.Intent
 import android.widget.TextView
-import androidx.activity.result.ActivityResultRegistry
+import androidx.activity.result.ActivityResult
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -29,7 +29,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
-import java.lang.reflect.Field
 import com.google.android.libraries.places.widget.PlaceAutocompleteActivity as PlacesSdkAutocompleteActivity
 
 /**
@@ -46,9 +45,10 @@ import com.google.android.libraries.places.widget.PlaceAutocompleteActivity as P
  * (which resolved to `this.intent`, the Activity's launch intent) rather than `result.data`.
  * Consequently, the error status was never parsed and the error message remained empty.
  *
- * This test uses Robolectric to launch [PlaceAutocompleteActivity], simulates an error result
- * delivered from the Places Autocomplete widget, and verifies that the error message is
- * correctly extracted from `result.data` and displayed in the UI.
+ * This test uses Robolectric to launch [PlaceAutocompleteActivity], invokes the
+ * `@VisibleForTesting`-annotated result handlers with a simulated [ActivityResult], and
+ * verifies that the error message is extracted from `result.data` and displayed in the UI
+ * without relying on reflection.
  */
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [33])
@@ -58,99 +58,50 @@ class PlaceAutocompleteActivityTest {
     fun setUp() {
         // Places SDK requires initialization before any activity using it is launched.
         if (!Places.isInitialized()) {
-            Places.initialize(ApplicationProvider.getApplicationContext(), "fake_api_key")
+            Places.initializeWithNewPlacesApiEnabled(
+                ApplicationProvider.getApplicationContext(),
+                "fake_api_key",
+            )
         }
     }
 
     @Test
     fun autocompleteResultError_updatesResponseWithStatusMessage() {
-        // --- 1. Prepare Simulated Error Data ---
-        // Places SDK returns RESULT_ERROR with a Status object inside the result intent extras.
         val errorMessage = "API key is invalid or unauthorized"
         val errorStatus = Status(PlacesSdkAutocompleteActivity.RESULT_ERROR, errorMessage)
         val resultData = Intent().apply {
             putExtra("places/status", errorStatus)
         }
 
-        // --- 2. Launch Activity Under Test ---
-        val scenario = ActivityScenario.launch(PlaceAutocompleteActivity::class.java)
+        ActivityScenario.launch(PlaceAutocompleteActivity::class.java).use { scenario ->
+            scenario.onActivity { activity ->
+                activity.handleAutocompleteResult(
+                    ActivityResult(PlacesSdkAutocompleteActivity.RESULT_ERROR, resultData),
+                )
 
-        scenario.onActivity { activity ->
-            val registry = activity.activityResultRegistry
-
-            // --- 3. Locate Launcher in ActivityResultRegistry ---
-            // Find the request code and key assigned to the autocomplete launcher.
-            val (requestCode, key) = getAutocompleteRequestCodeAndKey(registry)
-
-            // --- 4. Mark Key as Launched ---
-            // ActivityResultRegistry requires the key to be in the launched list before it will dispatch
-            // the result to the registered callback.
-            markKeyAsLaunched(registry, key)
-
-            // --- 5. Dispatch Simulated Error Result ---
-            // This invokes the callback registered with registerForActivityResult in PlaceAutocompleteActivity.
-            registry.dispatchResult(
-                requestCode,
-                PlacesSdkAutocompleteActivity.RESULT_ERROR,
-                resultData,
-            )
-
-            // --- 6. Verify UI State ---
-            // PlaceAutocompleteActivity should extract statusMessage from result.data and display it.
-            val responseTextView = activity.findViewById<TextView>(R.id.response)
-            assertThat(responseTextView.text.toString()).isEqualTo(errorMessage)
-        }
-    }
-
-    /**
-     * Resolves the request code and key for the activity launcher registered by [PlaceAutocompleteActivity].
-     *
-     * ComponentActivity registers activity result contracts with keys formatted as `activity_rq#<index>`.
-     * This helper locates the request code corresponding to the autocomplete activity launcher in the registry.
-     */
-    @Suppress("UNCHECKED_CAST")
-    private fun getAutocompleteRequestCodeAndKey(registry: ActivityResultRegistry): Pair<Int, String> {
-        val rcToKeyField = findField(registry.javaClass, "mRcToKey", "rcToKey")
-        val rcToKey = rcToKeyField.get(registry) as Map<Int, String>
-        val entry = rcToKey.entries.firstOrNull { it.value.startsWith("activity_rq#") }
-            ?: error("No activity result launcher key found starting with 'activity_rq#'. Available: ${rcToKey.values}")
-        return entry.key to entry.value
-    }
-
-    /**
-     * Marks an activity result request key as "launched" in the [ActivityResultRegistry].
-     *
-     * When [ActivityResultRegistry.dispatchResult] is called, AndroidX verifies that the key
-     * is present in its internal `launchedKeys` tracking list before routing the result to the
-     * registered callback. In a unit test simulating a result without actually executing the
-     * foreign target activity, we mark the key as launched so the registry delivers the result.
-     */
-    @Suppress("UNCHECKED_CAST")
-    private fun markKeyAsLaunched(registry: ActivityResultRegistry, key: String) {
-        val field = findField(registry.javaClass, "mLaunchedKeys", "launchedKeys")
-        val launchedKeys = field.get(registry) as MutableList<String>
-        if (!launchedKeys.contains(key)) {
-            launchedKeys.add(key)
-        }
-    }
-
-    /**
-     * Traverses the class hierarchy of [targetClass] to find a declared field matching any of the given [names].
-     *
-     * AndroidX internal implementations often vary field names between versions (e.g., prefixing with 'm'
-     * or renaming across Kotlin/Java migrations). This helper allows robust reflection lookup across versions.
-     */
-    private fun findField(targetClass: Class<*>, vararg names: String): Field {
-        var current: Class<*>? = targetClass
-        while (current != null) {
-            for (field in current.declaredFields) {
-                if (names.any { it.equals(field.name, ignoreCase = true) }) {
-                    field.isAccessible = true
-                    return field
-                }
+                val responseTextView = activity.findViewById<TextView>(R.id.response)
+                assertThat(responseTextView.text.toString()).isEqualTo(errorMessage)
             }
-            current = current.superclass
         }
-        error("Could not find any field matching ${names.toList()} in class hierarchy of $targetClass")
+    }
+
+    @Test
+    fun basicAutocompleteResultError_updatesResponseWithStatusMessage() {
+        val errorMessage = "Quota exceeded for BasicPlaceAutocomplete"
+        val errorStatus = Status(PlacesSdkAutocompleteActivity.RESULT_ERROR, errorMessage)
+        val resultData = Intent().apply {
+            putExtra("places/status", errorStatus)
+        }
+
+        ActivityScenario.launch(PlaceAutocompleteActivity::class.java).use { scenario ->
+            scenario.onActivity { activity ->
+                activity.handleBasicAutocompleteResult(
+                    ActivityResult(PlacesSdkAutocompleteActivity.RESULT_ERROR, resultData),
+                )
+
+                val responseTextView = activity.findViewById<TextView>(R.id.response)
+                assertThat(responseTextView.text.toString()).isEqualTo(errorMessage)
+            }
+        }
     }
 }

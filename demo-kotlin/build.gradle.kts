@@ -70,6 +70,7 @@ dependencies {
 
     // Google Places
     implementation(libs.places)
+    implementation(libs.play.services.location)
     implementation(libs.android.maps.utils)
 
     // Testing

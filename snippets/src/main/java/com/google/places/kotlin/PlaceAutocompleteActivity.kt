@@ -22,21 +22,18 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
-import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.PlaceTypes
 import com.google.android.libraries.places.api.model.RectangularBounds
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.libraries.places.api.net.PlacesClient
-import com.google.android.libraries.places.widget.Autocomplete
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.google.android.libraries.places.widget.BasicPlaceAutocomplete
+import com.google.android.libraries.places.widget.PlaceAutocomplete
 import com.google.places.R
 import com.google.places.databinding.ActivityPlaceAutocompleteBinding
+import com.google.android.libraries.places.widget.PlaceAutocompleteActivity as PlacesSdkAutocompleteActivity
 
 class PlaceAutocompleteActivity : AppCompatActivity() {
     private lateinit var placesClient: PlacesClient
@@ -54,10 +51,6 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
 
         placesClient = (application as MainApplication).getPlacesClient()
 
-        binding.useRestrictionSwitch.setOnCheckedChangeListener { _, _ ->
-            initAutocompleteSupportFragment()
-        }
-        initAutocompleteSupportFragment()
         binding.autocompleteIntentButton.setOnClickListener { startAutocompleteIntent() }
         binding.programmaticAutocompleteButton.setOnClickListener {
             programmaticPlacePredictions(binding.autocompleteQuery.text.toString())
@@ -72,33 +65,13 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun initAutocompleteSupportFragment() {
+    @Suppress("unused")
+    private fun configureAutocompleteIntentBuilder() {
         // [START maps_places_autocomplete_support_fragment]
-        // Initialize the AutocompleteSupportFragment.
-        val autocompleteFragment =
-            supportFragmentManager.findFragmentById(R.id.autocomplete_fragment)
-                as AutocompleteSupportFragment
-
-        // Specify the types of place data to return.
-        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.DISPLAY_NAME))
-
-        // Set up a PlaceSelectionListener to handle the response.
-        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-            override fun onPlaceSelected(place: Place) {
-                binding.autocompleteResult.text = getString(
-                    R.string.place_selection,
-                    place.displayName,
-                    place.id,
-                    place.formattedAddress,
-                )
-                Log.i(TAG, "Place: ${place.displayName}, ${place.id}")
-            }
-
-            override fun onError(status: Status) {
-                binding.autocompleteResult.text = getString(R.string.an_error_occurred, status)
-                Log.i(TAG, "An error occurred: $status")
-            }
-        })
+        // Build a BasicPlaceAutocomplete intent to allow the user to select a place.
+        val basicAutocompleteIntent = BasicPlaceAutocomplete.createIntent(this) {
+            setCountries(listOf("AU", "NZ"))
+        }
         // [END maps_places_autocomplete_support_fragment]
 
         val bounds = RectangularBounds.newInstance(
@@ -106,30 +79,28 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
             LatLng(-33.858754, 151.229596),
         )
 
-        // Clear the previous restriction or bias
-        autocompleteFragment.setLocationRestriction(null)
-        autocompleteFragment.setLocationBias(null)
+        val intentBuilder = PlaceAutocomplete.IntentBuilder()
 
         if (binding.useRestrictionSwitch.isChecked) {
             // [START maps_places_autocomplete_location_restriction]
-            autocompleteFragment.setLocationRestriction(bounds)
+            intentBuilder.setLocationRestriction(bounds)
             // [END maps_places_autocomplete_location_restriction]
         } else {
             // [START maps_places_autocomplete_location_bias]
-            autocompleteFragment.setLocationBias(bounds)
+            intentBuilder.setLocationBias(bounds)
             // [END maps_places_autocomplete_location_bias]
         }
 
         // [START maps_places_autocomplete_type_filter]
-        autocompleteFragment.setTypesFilter(listOf(PlaceTypes.ADDRESS))
+        intentBuilder.setTypesFilter(listOf(PlaceTypes.ADDRESS))
         // [END maps_places_autocomplete_type_filter]
 
         // [START maps_places_autocomplete_type_filter_multiple]
-        autocompleteFragment.setTypesFilter(listOf("landmark", "restaurant", "store"))
+        intentBuilder.setTypesFilter(listOf("landmark", "restaurant", "store"))
         // [END maps_places_autocomplete_type_filter_multiple]
 
         // [START maps_places_autocomplete_country_filter]
-        autocompleteFragment.setCountries("AU", "NZ")
+        intentBuilder.setCountries(listOf("AU", "NZ"))
         // [END maps_places_autocomplete_country_filter]
     }
 
@@ -138,14 +109,10 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
     // [START_EXCLUDE silent]
     private fun startAutocompleteIntent() {
         // [END_EXCLUDE]
-        // Set the fields to specify which types of place data to
-        // return after the user has made a selection.
-        val fields = listOf(Place.Field.ID, Place.Field.DISPLAY_NAME, Place.Field.FORMATTED_ADDRESS)
-
         // [START maps_places_intent_type_filter]
-        val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
-            .setTypesFilter(listOf(PlaceTypes.ESTABLISHMENT))
-            .build(this)
+        val intent = PlaceAutocomplete.createIntent(this) {
+            setTypesFilter(listOf(PlaceTypes.ESTABLISHMENT))
+        }
         // [END maps_places_intent_type_filter]
 
         startAutocomplete.launch(intent)
@@ -158,22 +125,30 @@ class PlaceAutocompleteActivity : AppCompatActivity() {
             if (result.resultCode == RESULT_OK) {
                 val intent = result.data
                 if (intent != null) {
-                    val place = Autocomplete.getPlaceFromIntent(intent)
-                    binding.autocompleteResult.text = getString(
-                        R.string.place_selection,
-                        place.displayName,
-                        place.id,
-                        place.formattedAddress,
-                    )
-                    Log.i(
-                        TAG,
-                        "Place: ${place.displayName}, ${place.id}",
-                    )
+                    val prediction = PlaceAutocomplete.getPredictionFromIntent(intent)
+                    if (prediction != null) {
+                        binding.autocompleteResult.text = getString(
+                            R.string.place_selection,
+                            prediction.getPrimaryText(null),
+                            prediction.placeId,
+                            prediction.getSecondaryText(null),
+                        )
+                        Log.i(
+                            TAG,
+                            "Place: ${prediction.getPrimaryText(null)}, ${prediction.placeId}",
+                        )
+                    }
                 }
             } else if (result.resultCode == RESULT_CANCELED) {
                 // The user canceled the operation.
                 binding.autocompleteResult.setText(R.string.user_canceled_autocomplete)
                 Log.i(TAG, "User canceled autocomplete")
+            } else if (result.resultCode == PlacesSdkAutocompleteActivity.RESULT_ERROR) {
+                val intent = result.data
+                if (intent != null) {
+                    val status = PlaceAutocomplete.getResultStatusFromIntent(intent)
+                    Log.e(TAG, "An error occurred: ${status?.statusMessage}")
+                }
             }
         }
     // [END maps_places_on_activity_result]

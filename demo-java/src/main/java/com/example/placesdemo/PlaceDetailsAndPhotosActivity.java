@@ -17,8 +17,8 @@
 package com.example.placesdemo;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -40,10 +40,10 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.Place.Field;
-import com.google.android.libraries.places.api.net.FetchPhotoRequest;
-import com.google.android.libraries.places.api.net.FetchPhotoResponse;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceResponse;
+import com.google.android.libraries.places.api.net.FetchResolvedPhotoUriRequest;
+import com.google.android.libraries.places.api.net.FetchResolvedPhotoUriResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import java.util.List;
 
@@ -159,7 +159,7 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
     }
 
     /**
-     * Fetches a Bitmap using the Places API and displays it.
+     * Fetches a resolved photo URI using the Places API and displays the image via Glide.
      *
      * @param photoMetadata from a {@link Place} instance.
      */
@@ -174,7 +174,8 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
             photoMetadata = PhotoMetadata.builder(customPhotoReference).build();
         }
 
-        FetchPhotoRequest.Builder photoRequestBuilder = FetchPhotoRequest.builder(photoMetadata);
+        FetchResolvedPhotoUriRequest.Builder photoRequestBuilder =
+                FetchResolvedPhotoUriRequest.builder(photoMetadata);
 
         Integer maxWidth = readIntFromTextView(R.id.photo_max_width);
         if (maxWidth != null) {
@@ -186,13 +187,18 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
             photoRequestBuilder.setMaxHeight(maxHeight);
         }
 
-        Task<FetchPhotoResponse> photoTask = placesClient.fetchPhoto(photoRequestBuilder.build());
+        Task<FetchResolvedPhotoUriResponse> photoTask =
+                placesClient.fetchResolvedPhotoUri(photoRequestBuilder.build());
 
         photoTask.addOnSuccessListener(
                 response -> {
-                    Bitmap bitmap = response.getBitmap();
-                    binding.photo.setImageBitmap(bitmap);
-                    StringUtil.prepend(binding.photoMetadata, StringUtil.stringify(bitmap));
+                    Uri uri = response.getUri();
+                    if (uri != null) {
+                        Glide.with(binding.photo.getContext()).load(uri).into(binding.photo);
+                        StringUtil.prepend(binding.photoMetadata, StringUtil.stringify(uri));
+                    } else {
+                        StringUtil.prepend(binding.photoMetadata, "No photo available");
+                    }
                 });
 
         photoTask.addOnFailureListener(

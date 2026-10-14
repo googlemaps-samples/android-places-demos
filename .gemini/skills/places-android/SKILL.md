@@ -23,7 +23,7 @@ Add the necessary dependencies to your module-level `build.gradle.kts` file. It 
 
 ```toml
 [versions]
-places = "5.1.1" # x-release-please-version
+places = "6.0.2" # x-release-please-version
 
 [libraries]
 places = { group = "com.google.android.libraries.places", name = "places", version.ref = "places" }
@@ -114,18 +114,99 @@ public class DemoApplication extends Application {
     </manifest>
     ```
 
-## 5. Compose Interop with Places UI Kit
+## 5. Native Jetpack Compose Components (Places SDK 6.0.2+)
 
-The Places UI Kit (`PlaceDetailsCompactFragment` and `PlaceDetailsFragment`) are View-based. To use them in Jetpack Compose, use `AndroidView` to host a `FragmentContainerView`.
+Places SDK for Android 6.0.2+ includes native Jetpack Compose UI components in `com.google.android.libraries.places.compose`:
+- **`AdvancedPlaceDetailsCompact`**: A native Composable for displaying compact place details with configurable content (`AdvancedPlaceDetailsCompactContent`), actions (`MainAction` / `CornerAction`), and custom composable content slots (`basicSectionTop` and `basicSectionBottom`).
+- **`PlaceMarker` & `rememberPlaceMarkerState`**: A native Composable map marker designed to be rendered inside `MarkerComposable` from `maps-compose`, displaying the place type icon (`MarkerIcon.Type`) and rich attribute badges (`MarkerText.Rating`, `MarkerText.PriceRange`, `MarkerText.OpenStatus`, or `MarkerText.Custom`).
 
-### Key Pattern: Fragment Container in Compose
+### Native `AdvancedPlaceDetailsCompact` with Custom Content Slots
 
-*   **Access FragmentManager**: Use standard `LocalActivity.current as FragmentActivity` to access the support FragmentManager. Avoid casting `LocalContext.current` directly to Activity.
-*   **Deferred Updates**: Inside the `AndroidView` `update` block, always wrap calls (like `.loadWithPlaceId()`) in `view.post { ... }` to ensure updates run *after* the layout is inflated and bindings are stable.
+```kotlin
+import com.google.android.libraries.places.compose.AdvancedPlaceDetailsCompact
+import com.google.android.libraries.places.compose.AdvancedPlaceDetailsCompactContent
+import com.google.android.libraries.places.compose.Orientation
+import com.google.android.libraries.places.compose.PlaceReference
+import com.google.android.libraries.places.compose.action.MainAction
+
+@Composable
+fun PlaceDetailsCard(placeId: String, onDismiss: () -> Unit) {
+    AdvancedPlaceDetailsCompact(
+        reference = PlaceReference.PlaceId(placeId),
+        orientation = Orientation.VERTICAL,
+        content = AdvancedPlaceDetailsCompactContent.ALL_CONTENT,
+        mainActions = {
+            listOf(
+                MainAction.OpenDirections(),
+                MainAction.OpenWebsite(),
+                MainAction.Call(),
+                MainAction.OpenInMaps()
+            )
+        },
+        onPlaceLoadFailed = { onDismiss() }
+    ) {
+        basicSectionTop {
+            Text(
+                text = "Featured Place",
+                style = MaterialTheme.typography.labelSmall
+            )
+        }
+        basicSectionBottom {
+            val summary = this.place.editorialSummary
+            if (!summary.isNullOrBlank()) {
+                Text(
+                    text = summary,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
+    }
+}
+```
+
+### Native `PlaceMarker` on `GoogleMap`
+
+```kotlin
+import androidx.compose.ui.geometry.Offset
+import com.google.android.libraries.places.compose.PlaceMarker
+import com.google.android.libraries.places.compose.PlaceReference
+import com.google.android.libraries.places.compose.marker.MarkerIcon
+import com.google.android.libraries.places.compose.marker.MarkerText
+import com.google.android.libraries.places.compose.rememberPlaceMarkerState
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MarkerComposable
+import com.google.maps.android.compose.MarkerState
+
+@Composable
+fun MapWithPlaceMarker(placeId: String) {
+    val markerState = rememberPlaceMarkerState(
+        reference = PlaceReference.PlaceId(placeId),
+        icon = MarkerIcon.Type,
+        text = MarkerText.Rating
+    )
+    GoogleMap {
+        val location = markerState.location
+        if (location != null) {
+            MarkerComposable(
+                keys = arrayOf(markerState.isLoaded, markerState.error != null, markerState.place ?: ""),
+                state = remember(location) { MarkerState(position = location) },
+                anchor = Offset(0.5f, 1.0f),
+                title = markerState.contentDescription
+            ) {
+                PlaceMarker(state = markerState)
+            }
+        }
+    }
+}
+```
+
+### Hosting Full `PlaceDetailsFragment` via `AndroidView`
+
+For the full-screen `PlaceDetailsFragment` (which is a Fragment), use `AndroidView` with a `FragmentContainerView`:
 
 ```kotlin
 @Composable
-fun PlaceDetailsCompactView(
+fun PlaceDetailsFullView(
     placeId: String,
     onDismiss: () -> Unit
 ) {
@@ -133,9 +214,9 @@ fun PlaceDetailsCompactView(
     val fragmentManager = (LocalActivity.current as FragmentActivity).supportFragmentManager
 
     val fragment = remember {
-        PlaceDetailsCompactFragment.newInstance(
-            PlaceDetailsCompactFragment.ALL_CONTENT,
-            Orientation.VERTICAL
+        PlaceDetailsFragment.newInstance(
+            PlaceDetailsFragment.STANDARD_CONTENT,
+            com.google.android.libraries.places.widget.model.Orientation.VERTICAL
         )
     }
 
@@ -165,7 +246,7 @@ fun PlaceDetailsCompactView(
 
 ## 📏 6. Advanced Compose Viewports & BottomSheetScaffold
 
-When hosting UI Kit fragments inside navigation drawers or overlays, follow these architectural bounds to avoid viewport clipping snags:
+When hosting UI Kit components inside navigation drawers or overlays, follow these architectural bounds to avoid viewport clipping snags:
 
 *   **System Viewport Edge Overlap**: If using `enableEdgeToEdge()` and your container loses standard `Scaffold` body padding context, manually append `Modifier.statusBarsPadding()` to avoid overlapping with system status bar text:
     ```kotlin
@@ -179,25 +260,35 @@ When hosting UI Kit fragments inside navigation drawers or overlays, follow thes
     ```
     Track `currentUiType` at the Activity level and pass it to a single shared `BottomSheetScaffold`. Users can swipe to dismiss natively without custom button overrides!
 
-## 7. Autocomplete with Compose (Widget)
+## 7. Autocomplete with Compose (`PlaceAutocomplete` & `BasicPlaceAutocomplete`)
 
-To implement autocomplete in Compose, use `ActivityResultContracts.StartActivityForResult` with an Intent from `Autocomplete.IntentBuilder`. This is the recommended way to use the pre-built widget, as it handles session tokens and debouncing automatically.
+In Places SDK 6.0.2+, legacy `Autocomplete`, `AutocompleteActivity`, `AutocompleteActivityMode`, and `AutocompleteSupportFragment` have been removed. Use `PlaceAutocomplete` (which returns an `AutocompletePrediction` and session token) or `BasicPlaceAutocomplete` (which returns a basic `Place` with ID, display name, and formatted address) with `ActivityResultContracts.StartActivityForResult`:
 
 ```kotlin
+import android.app.Activity
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import com.google.android.libraries.places.widget.PlaceAutocomplete
+
 @Composable
 fun AutocompleteSearchButton() {
     val context = LocalContext.current
-    
-    val fields = listOf(Place.Field.ID, Place.Field.DISPLAY_NAME, Place.Field.FORMATTED_ADDRESS)
-    val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
-        .build(context)
+    val intent = PlaceAutocomplete.IntentBuilder().build(context)
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val place = Autocomplete.getPlaceFromIntent(result.data!!)
-            Log.d("Autocomplete", "Place selected: ${place.name}")
+            val data = result.data
+            if (data != null) {
+                val prediction = PlaceAutocomplete.getPredictionFromIntent(data)
+                Log.d("Autocomplete", "Prediction selected: ${prediction?.getPrimaryText(null)} (${prediction?.placeId})")
+            }
         }
     }
 
@@ -207,7 +298,90 @@ fun AutocompleteSearchButton() {
 }
 ```
 
-## 8. Execution Steps
+## 8. Migration Guide (Places SDK 4.x / 5.x → 6.0.x+)
+
+Places SDK `6.0.0` permanently removed the deprecated Legacy Places API classes, methods, and `Place.Field` constants. Use this reference table and code patterns when migrating existing apps to `6.0.2+`:
+
+### Removed Classes & Methods Mapping
+
+| Legacy API (Removed in 6.0.0) | Places SDK 6.0.x+ Replacement |
+| :--- | :--- |
+| `Places.initialize(context, apiKey)` | `Places.initializeWithNewPlacesApiEnabled(context, apiKey)` |
+| `Autocomplete.IntentBuilder(AutocompleteActivityMode, fields)` | `PlaceAutocomplete.IntentBuilder()` (returns `AutocompletePrediction` + session token) or `BasicPlaceAutocomplete.IntentBuilder()` (returns basic `Place`) |
+| `Autocomplete.getPlaceFromIntent(intent)` | `PlaceAutocomplete.getPredictionFromIntent(intent)` + `PlaceAutocomplete.getSessionTokenFromIntent(intent)` (then call `fetchPlace`), **or** `BasicPlaceAutocomplete.getPlaceFromIntent(intent)` |
+| `Autocomplete.getStatusFromIntent(intent)` | `PlaceAutocomplete.getResultStatusFromIntent(intent)` or `BasicPlaceAutocomplete.getResultStatusFromIntent(intent)` |
+| `AutocompleteActivity.RESULT_ERROR` | `PlaceAutocompleteActivity.RESULT_ERROR` |
+| `AutocompleteSupportFragment` / `PlaceSelectionListener` | Launch `PlaceAutocomplete` or `BasicPlaceAutocomplete` via `registerForActivityResult`, or build a custom search bar with `PlacesClient.findAutocompletePredictions` |
+| `FindCurrentPlaceRequest` / `placesClient.findCurrentPlace(request)` | `SearchNearbyRequest.newInstance(CircularBounds.newInstance(latLng, radiusMeters), placeFields)` + `placesClient.searchNearby(request)` |
+| `FetchPhotoRequest` / `placesClient.fetchPhoto(request)` | `FetchResolvedPhotoUriRequest.builder(photoMetadata).setMaxWidth(w).setMaxHeight(h).build()` + `placesClient.fetchResolvedPhotoUri(request)` (load returned `Uri` with Coil/Glide) |
+
+### Removed `Place.Field` Constants & `Place` Getters Mapping
+
+| Legacy Field / Getter (Removed in 6.0.0) | Places SDK 6.0.x+ Replacement |
+| :--- | :--- |
+| `Place.Field.NAME` / `place.name` | `Place.Field.DISPLAY_NAME` / `place.displayName` |
+| `Place.Field.ADDRESS` / `place.address` | `Place.Field.FORMATTED_ADDRESS` / `place.formattedAddress` |
+| `Place.Field.LAT_LNG` / `place.latLng` | `Place.Field.LOCATION` / `place.location` |
+| `Place.Field.PHONE_NUMBER` / `place.phoneNumber` | `Place.Field.INTERNATIONAL_PHONE_NUMBER` / `place.internationalPhoneNumber` (or `NATIONAL_PHONE_NUMBER`) |
+| `place.types` (`Place.Field.TYPES` constant unchanged) | `place.placeTypes: List<String>` (with `Place.Field.TYPES`) or `place.primaryType` (with `Place.Field.PRIMARY_TYPE`) |
+| `Place.Field.PRICE_LEVEL` (single value only) | `Place.Field.PRICE_LEVEL` (`place.priceLevel`) remains; use `Place.Field.PRICE_RANGE` (`place.priceRange`) for min/max price ranges |
+
+### Key Migration Snippets
+
+#### A. Autocomplete + Session Token → `FetchPlaceRequest`
+Because `PlaceAutocomplete` returns an `AutocompletePrediction` (not a full `Place`), pass both the `placeId` and the session token from the result intent into `FetchPlaceRequest` to complete the billing session:
+
+```kotlin
+val prediction = PlaceAutocomplete.getPredictionFromIntent(data)
+val sessionToken = PlaceAutocomplete.getSessionTokenFromIntent(data)
+if (prediction != null) {
+    val placeFields = listOf(
+        Place.Field.ID,
+        Place.Field.DISPLAY_NAME,
+        Place.Field.FORMATTED_ADDRESS,
+        Place.Field.ADDRESS_COMPONENTS,
+        Place.Field.LOCATION
+    )
+    val request = FetchPlaceRequest.builder(prediction.placeId, placeFields)
+        .setSessionToken(sessionToken)
+        .build()
+    placesClient.fetchPlace(request).addOnSuccessListener { response ->
+        val place = response.place
+        // Use place.displayName, place.formattedAddress, place.location
+    }
+}
+```
+
+#### B. `FindCurrentPlaceRequest` → `SearchNearbyRequest`
+Obtain the device's current coordinates via `FusedLocationProviderClient`, wrap them in `CircularBounds`, and call `placesClient.searchNearby`:
+
+```kotlin
+val bounds = CircularBounds.newInstance(currentLatLng, /* radiusMeters = */ 1000.0)
+val placeFields = listOf(Place.Field.ID, Place.Field.DISPLAY_NAME, Place.Field.LOCATION)
+val request = SearchNearbyRequest.newInstance(bounds, placeFields)
+placesClient.searchNearby(request).addOnSuccessListener { response ->
+    for (place in response.places) {
+        Log.d("Places", "${place.displayName}: ${place.location}")
+    }
+}
+```
+
+#### C. `FetchPhotoRequest` → `FetchResolvedPhotoUriRequest`
+Instead of downloading raw `Bitmap` bytes via `fetchPhoto`, resolve a cacheable `Uri` and load it with Coil or Glide:
+
+```kotlin
+val photoMetadata = place.photoMetadatas?.firstOrNull() ?: return
+val photoRequest = FetchResolvedPhotoUriRequest.builder(photoMetadata)
+    .setMaxWidth(800)
+    .setMaxHeight(600)
+    .build()
+placesClient.fetchResolvedPhotoUri(photoRequest).addOnSuccessListener { response ->
+    val uri = response.uri
+    // Load uri into ImageView / AsyncImage via Glide or Coil
+}
+```
+
+## 9. Execution Steps
 
 1. Add the Places SDK dependencies to `build.gradle.kts`.
 2. Set up the Secrets Gradle Plugin in `build.gradle.kts`.

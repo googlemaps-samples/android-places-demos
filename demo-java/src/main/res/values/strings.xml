@@ -115,7 +115,10 @@
   <string name="autocomplete_fragment_update_button" translatable="false">Update Fragment</string>
 
   <!-- Text for starting the autocomplete activity button. -->
-  <string name="autocomplete_activity_button" translatable="false">Open Activity</string>
+  <string name="autocomplete_activity_button" translatable="false">Open PlaceAutocomplete Activity</string>
+
+  <!-- Text for starting the basic place autocomplete activity button. -->
+  <string name="basic_autocomplete_activity_button" translatable="false">Open BasicPlaceAutocomplete Activity</string>
 
   <!-- Text for the fetch autocomplete predictions submit button. -->
   <string name="fetch_autocomplete_predictions_button" translatable="false">Fetch Predictions</string>

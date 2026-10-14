@@ -38,7 +38,7 @@ public class GetStartedActivity extends AppCompatActivity {
 
         // [START maps_places_get_started]
         // Initialize the SDK
-        Places.initialize(getApplicationContext(), apiKey);
+        Places.initializeWithNewPlacesApiEnabled(getApplicationContext(), apiKey);
 
         // Create a new PlacesClient instance
         PlacesClient placesClient = Places.createClient(this);

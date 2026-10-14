@@ -54,13 +54,6 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/autocomplete_fragment"
-                android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp" />
-
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/use_restriction_switch"
                 android:layout_width="wrap_content"

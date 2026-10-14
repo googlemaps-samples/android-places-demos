@@ -21,7 +21,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
@@ -30,18 +29,14 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
-import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.PlaceTypes;
 import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.android.libraries.places.widget.BasicPlaceAutocomplete;
+import com.google.android.libraries.places.widget.PlaceAutocomplete;
 import com.google.places.databinding.ActivityPlaceAutocompleteBinding;
 import com.google.places.kotlin.MainApplication;
-import java.util.Arrays;
 import java.util.List;
 
 public class PlaceAutocompleteActivity extends AppCompatActivity {
@@ -67,9 +62,6 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
 
         placesClient = ((MainApplication) getApplication()).getPlacesClient();
 
-        binding.useRestrictionSwitch.setOnCheckedChangeListener(
-                (buttonView, isChecked) -> initAutocompleteSupportFragment());
-        initAutocompleteSupportFragment();
         binding.autocompleteIntentButton.setOnClickListener(v -> startAutocompleteIntent());
         binding.programmaticAutocompleteButton.setOnClickListener(
                 v -> programmaticPlacePredictions(binding.autocompleteQuery.getText().toString()));
@@ -84,57 +76,28 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void initAutocompleteSupportFragment() {
+    @SuppressWarnings("unused")
+    private void configureAutocompleteIntentBuilder() {
         // [START maps_places_autocomplete_support_fragment]
-        // Initialize the AutocompleteSupportFragment.
-        AutocompleteSupportFragment autocompleteFragment =
-                (AutocompleteSupportFragment)
-                        getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-
-        // Specify the types of place data to return.
-        assert autocompleteFragment != null;
-        autocompleteFragment.setPlaceFields(
-                Arrays.asList(
-                        Place.Field.ID, Place.Field.DISPLAY_NAME, Place.Field.FORMATTED_ADDRESS));
-
-        // Set up a PlaceSelectionListener to handle the response.
-        autocompleteFragment.setOnPlaceSelectedListener(
-                new PlaceSelectionListener() {
-                    @Override
-                    public void onPlaceSelected(@NonNull Place place) {
-                        binding.autocompleteResult.setText(
-                                getString(
-                                        R.string.place_selection,
-                                        place.getDisplayName(),
-                                        place.getId(),
-                                        place.getFormattedAddress()));
-                        Log.i(TAG, "Place: " + place.getDisplayName() + ", " + place.getId());
-                    }
-
-                    @Override
-                    public void onError(@NonNull Status status) {
-                        binding.autocompleteResult.setText(
-                                getString(R.string.an_error_occurred, status));
-                        Log.e(TAG, "An error occurred: " + status);
-                    }
-                });
+        // Build a BasicPlaceAutocomplete intent to allow the user to select a place.
+        Intent basicAutocompleteIntent =
+                new BasicPlaceAutocomplete.IntentBuilder()
+                        .setCountries(List.of("AU", "NZ"))
+                        .build(this);
         // [END maps_places_autocomplete_support_fragment]
 
-        // Since we are reusing the AutocompleteSupportFragment, we need to remove the previous
-        // restrictions
-        autocompleteFragment.setLocationBias(null);
-        autocompleteFragment.setLocationRestriction(null);
+        PlaceAutocomplete.IntentBuilder intentBuilder = new PlaceAutocomplete.IntentBuilder();
 
         if (binding.useRestrictionSwitch.isChecked()) {
             // [START maps_places_autocomplete_location_restriction]
-            autocompleteFragment.setLocationRestriction(
+            intentBuilder.setLocationRestriction(
                     RectangularBounds.newInstance(
                             new LatLng(-33.880490, 151.184363),
                             new LatLng(-33.858754, 151.229596)));
             // [END maps_places_autocomplete_location_restriction]
         } else {
             // [START maps_places_autocomplete_location_bias]
-            autocompleteFragment.setLocationBias(
+            intentBuilder.setLocationBias(
                     RectangularBounds.newInstance(
                             new LatLng(-33.880490, 151.184363),
                             new LatLng(-33.858754, 151.229596)));
@@ -142,15 +105,15 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
         }
 
         // [START maps_places_autocomplete_type_filter]
-        autocompleteFragment.setTypesFilter(List.of(PlaceTypes.ESTABLISHMENT));
+        intentBuilder.setTypesFilter(List.of(PlaceTypes.ESTABLISHMENT));
         // [END maps_places_autocomplete_type_filter]
 
         // [START maps_places_autocomplete_type_filter_multiple]
-        autocompleteFragment.setTypesFilter(List.of("landmark", "restaurant", "store"));
+        intentBuilder.setTypesFilter(List.of("landmark", "restaurant", "store"));
         // [END maps_places_autocomplete_type_filter_multiple]
 
         // [START maps_places_autocomplete_country_filter]
-        autocompleteFragment.setCountries("AU", "NZ");
+        intentBuilder.setCountries(List.of("AU", "NZ"));
         // [END maps_places_autocomplete_country_filter]
     }
 
@@ -159,16 +122,10 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
     // [START_EXCLUDE silent]
     private void startAutocompleteIntent() {
         // [END_EXCLUDE]
-        // Set the fields to specify which types of place data to
-        // return after the user has made a selection.
-        List<Place.Field> fields =
-                Arrays.asList(
-                        Place.Field.ID, Place.Field.DISPLAY_NAME, Place.Field.FORMATTED_ADDRESS);
-
         // Start the autocomplete intent.
         // [START maps_places_intent_type_filter]
         Intent intent =
-                new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                new PlaceAutocomplete.IntentBuilder()
                         .setTypesFilter(List.of(PlaceTypes.ESTABLISHMENT))
                         .build(this);
         // [END maps_places_intent_type_filter]
@@ -184,21 +141,37 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
                         if (result.getResultCode() == Activity.RESULT_OK) {
                             Intent intent = result.getData();
                             if (intent != null) {
-                                Place place = Autocomplete.getPlaceFromIntent(intent);
-                                binding.autocompleteResult.setText(
-                                        getString(
-                                                R.string.place_selection,
-                                                place.getDisplayName(),
-                                                place.getId(),
-                                                place.getFormattedAddress()));
-                                Log.i(
-                                        TAG,
-                                        "Place: " + place.getDisplayName() + ", " + place.getId());
+                                AutocompletePrediction prediction =
+                                        PlaceAutocomplete.getPredictionFromIntent(intent);
+                                if (prediction != null) {
+                                    binding.autocompleteResult.setText(
+                                            getString(
+                                                    R.string.place_selection,
+                                                    prediction.getPrimaryText(null),
+                                                    prediction.getPlaceId(),
+                                                    prediction.getSecondaryText(null)));
+                                    Log.i(
+                                            TAG,
+                                            "Place: "
+                                                    + prediction.getPrimaryText(null)
+                                                    + ", "
+                                                    + prediction.getPlaceId());
+                                }
                             }
                         } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
                             // The user canceled the operation.
                             binding.autocompleteResult.setText(R.string.user_canceled_autocomplete);
                             Log.i(TAG, "User canceled autocomplete");
+                        } else if (result.getResultCode()
+                                == com.google.android.libraries.places.widget
+                                        .PlaceAutocompleteActivity.RESULT_ERROR) {
+                            Intent intent = result.getData();
+                            if (intent != null) {
+                                Status status = PlaceAutocomplete.getResultStatusFromIntent(intent);
+                                if (status != null) {
+                                    Log.e(TAG, "An error occurred: " + status.getStatusMessage());
+                                }
+                            }
                         }
                     });
 

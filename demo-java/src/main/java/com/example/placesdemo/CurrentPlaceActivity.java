@@ -34,19 +34,23 @@ import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import com.example.placesdemo.databinding.CurrentPlaceActivityBinding;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.CircularBounds;
+import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.Place.Field;
-import com.google.android.libraries.places.api.model.PlaceLikelihood;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.api.net.SearchNearbyRequest;
+import com.google.android.libraries.places.api.net.SearchNearbyResponse;
 import java.util.List;
 
-/** Activity to demonstrate {@link PlacesClient#findCurrentPlace(FindCurrentPlaceRequest)}. */
+/** Activity to demonstrate {@link PlacesClient#searchNearby(SearchNearbyRequest)}. */
 public class CurrentPlaceActivity extends AppCompatActivity {
 
     private static final String TAG = "CURRENT_PLACE";
+    private static final LatLng BOULDER_CENTER = new LatLng(40.01499, -105.27055);
+    private static final double RADIUS_METERS = 5000.0;
 
     private PlacesClient placesClient;
     private FieldSelector fieldSelector;
@@ -140,18 +144,17 @@ public class CurrentPlaceActivity extends AppCompatActivity {
         fieldSelector.onSaveInstanceState(bundle);
     }
 
-    /**
-     * Fetches a list of {@link PlaceLikelihood} instances that represent the Places the user is
-     * most likely to be at currently.
-     */
+    /** Fetches a list of nearby {@link Place} instances around the search area. */
     @RequiresPermission(allOf = {ACCESS_FINE_LOCATION, ACCESS_WIFI_STATE})
     private void findCurrentPlaceWithPermissions() {
         setLoading(true);
 
-        FindCurrentPlaceRequest currentPlaceRequest =
-                FindCurrentPlaceRequest.newInstance(getPlaceFields());
-        Task<FindCurrentPlaceResponse> currentPlaceTask =
-                placesClient.findCurrentPlace(currentPlaceRequest);
+        SearchNearbyRequest currentPlaceRequest =
+                SearchNearbyRequest.newInstance(
+                        CircularBounds.newInstance(BOULDER_CENTER, RADIUS_METERS),
+                        getPlaceFields());
+        Task<SearchNearbyResponse> currentPlaceTask =
+                placesClient.searchNearby(currentPlaceRequest);
 
         currentPlaceTask.addOnSuccessListener(
                 (response) ->

@@ -54,6 +54,7 @@ dependencies {
     // Places and Maps SDKs
     implementation(libs.places)
     implementation(libs.play.services.maps)
+    implementation(libs.play.services.location)
     implementation(libs.android.maps.utils)
 
     // --- Attribution library ---

@@ -44,11 +44,13 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AddressComponents
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.PlaceTypes
-import com.google.android.libraries.places.widget.Autocomplete
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.google.android.libraries.places.api.net.FetchPlaceRequest
+import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.libraries.places.widget.PlaceAutocomplete
 import com.google.maps.android.SphericalUtil.computeDistanceBetween
 
 /**
@@ -63,6 +65,7 @@ class AutocompleteAddressActivity :
     private lateinit var coordinates: LatLng
     private var map: GoogleMap? = null
     private var marker: Marker? = null
+    private lateinit var placesClient: PlacesClient
     private var checkProximity = false
     private lateinit var binding: AutocompleteAddressActivityBinding
     private val acceptedProximity = 150.0
@@ -79,12 +82,27 @@ class AutocompleteAddressActivity :
             if (result.resultCode == RESULT_OK) {
                 val intent = result.data
                 if (intent != null) {
-                    val place = Autocomplete.getPlaceFromIntent(intent)
-
-                    // Write a method to read the address components from the Place
-                    // and populate the form with the address components
-                    Log.d(TAG, "Place: " + place.addressComponents)
-                    fillInAddress(place)
+                    val prediction = PlaceAutocomplete.getPredictionFromIntent(intent)
+                    val sessionToken = PlaceAutocomplete.getSessionTokenFromIntent(intent)
+                    if (prediction != null) {
+                        val fields = listOf(
+                            Place.Field.ADDRESS_COMPONENTS,
+                            Place.Field.LOCATION,
+                            Place.Field.VIEWPORT,
+                        )
+                        val request = FetchPlaceRequest.builder(prediction.placeId, fields)
+                            .setSessionToken(sessionToken)
+                            .build()
+                        placesClient.fetchPlace(request).addOnSuccessListener { response ->
+                            val place = response.place
+                            // Write a method to read the address components from the Place
+                            // and populate the form with the address components
+                            Log.d(TAG, "Place: " + place.addressComponents)
+                            fillInAddress(place)
+                        }.addOnFailureListener { exception ->
+                            Log.e(TAG, "Place not found: " + exception.message)
+                        }
+                    }
                 }
             } else if (result.resultCode == RESULT_CANCELED) {
                 // The user canceled the operation.
@@ -96,16 +114,8 @@ class AutocompleteAddressActivity :
 
     // [START maps_solutions_android_autocomplete_intent]
     private fun startAutocompleteIntent() {
-        // Set the fields to specify which types of place data to
-        // return after the user has made a selection.
-        val fields = listOf(
-            Place.Field.ADDRESS_COMPONENTS,
-            Place.Field.LOCATION,
-            Place.Field.VIEWPORT,
-        )
-
-        // Build the autocomplete intent with field, country, and type filters applied
-        val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+        // Build the autocomplete intent with country and type filters applied
+        val intent = PlaceAutocomplete.IntentBuilder()
             .setCountries(listOf("US"))
             .setTypesFilter(listOf(PlaceTypes.ADDRESS))
             .build(this)
@@ -124,6 +134,9 @@ class AutocompleteAddressActivity :
         binding.topBar.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
+
+        // Retrieve a PlacesClient (previously initialized - see MainActivity)
+        placesClient = Places.createClient(this)
 
         // Attach an Autocomplete intent to the Address 1 EditText field
         binding.autocompleteAddress1.setOnClickListener(startAutocompleteIntentListener)
