@@ -32,9 +32,14 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
 import com.example.placesdemo.databinding.AutocompleteAddressActivityBinding
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.GoogleMapOptions
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
@@ -45,12 +50,12 @@ import com.google.android.libraries.places.api.model.PlaceTypes
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.maps.android.SphericalUtil.computeDistanceBetween
-import androidx.core.view.isGone
 
 /**
  *  Activity for using Place Autocomplete to assist filling out an address form.
  */
-class AutocompleteAddressActivity : BaseActivity(),
+class AutocompleteAddressActivity :
+    BaseActivity(),
     OnMapReadyCallback {
     private lateinit var mapPanel: View
 
@@ -85,7 +90,8 @@ class AutocompleteAddressActivity : BaseActivity(),
                 // The user canceled the operation.
                 Log.i(TAG, "User canceled autocomplete")
             }
-        })
+        },
+    )
     // [END maps_solutions_android_autocomplete_define]
 
     // [START maps_solutions_android_autocomplete_intent]
@@ -94,7 +100,8 @@ class AutocompleteAddressActivity : BaseActivity(),
         // return after the user has made a selection.
         val fields = listOf(
             Place.Field.ADDRESS_COMPONENTS,
-            Place.Field.LOCATION, Place.Field.VIEWPORT
+            Place.Field.LOCATION,
+            Place.Field.VIEWPORT,
         )
 
         // Build the autocomplete intent with field, country, and type filters applied
@@ -154,7 +161,7 @@ class AutocompleteAddressActivity : BaseActivity(),
             getAndCompareLocations()
         } else {
             requestPermissionLauncher.launch(
-                permission.ACCESS_FINE_LOCATION
+                permission.ACCESS_FINE_LOCATION,
             )
         }
     }
@@ -206,7 +213,7 @@ class AutocompleteAddressActivity : BaseActivity(),
         // and then fill-in the corresponding field on the form.
         // Possible AddressComponent types are documented at https://goo.gle/32SJPM1
         if (components != null) {
-            with (components.toAddress()) {
+            with(components.toAddress()) {
                 binding.autocompleteAddress1.setText(streetAddress)
                 binding.autocompletePostal.setText(fullPostalCode)
                 binding.autocompleteCity.setText(locality)
@@ -248,7 +255,7 @@ class AutocompleteAddressActivity : BaseActivity(),
                 .add(
                     R.id.confirmation_map,
                     mapFragment!!,
-                    MAP_FRAGMENT_TAG
+                    MAP_FRAGMENT_TAG,
                 )
                 .commit()
             mapFragment!!.getMapAsync(this)
@@ -273,7 +280,7 @@ class AutocompleteAddressActivity : BaseActivity(),
             // Customise the styling of the base map using a JSON object defined
             // in a string resource.
             val success = map!!.setMapStyle(
-                MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json)
+                MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json),
             )
             if (!success) {
                 Log.e(TAG, "Style parsing failed.")
@@ -302,7 +309,7 @@ class AutocompleteAddressActivity : BaseActivity(),
     // system permissions dialog. Save the return value, an instance of
     // ActivityResultLauncher, as an instance variable.
     private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
+        ActivityResultContracts.RequestPermission(),
     ) { isGranted: Boolean ->
         if (isGranted) {
             // Since ACCESS_FINE_LOCATION is the only permission in this sample,
@@ -340,7 +347,7 @@ private data class Address(
     val postCode: String,
     val postCodeSuffix: String,
     val adminArea: String,
-    val country: String
+    val country: String,
 ) {
     val fullPostalCode: String
         get() = listOf(postCode, postCodeSuffix).filter { it.isNotBlank() }.joinToString("-")
@@ -369,6 +376,6 @@ private fun AddressComponents.toAddress(): Address {
         postCodeSuffix = addressMap["postal_code_suffix"] ?: "",
         locality = addressMap["locality"] ?: "",
         adminArea = addressMap["administrative_area_level_1"] ?: "",
-        country = addressMap["country"] ?: ""
+        country = addressMap["country"] ?: "",
     )
 }

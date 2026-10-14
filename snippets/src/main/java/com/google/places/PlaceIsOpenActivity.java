@@ -18,11 +18,9 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
-
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
@@ -57,8 +55,6 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(getTitle() + " (Java)");
         }
 
-
-
         placesClient = ((MainApplication) getApplication()).getPlacesClient();
 
         binding.isOpenByObjectButton.setOnClickListener(v -> isOpenByPlaceObject());
@@ -75,23 +71,23 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
     }
 
     /**
-     * Check if the place is open at the time specified in the input fields.
-     * Requires a Place object that includes Place.Field.ID
+     * Check if the place is open at the time specified in the input fields. Requires a Place object
+     * that includes Place.Field.ID
      */
     @SuppressLint("SetTextI18n")
     private void isOpenByPlaceObject() {
         // [START maps_places_place_is_open]
-        @NonNull
-        Calendar isOpenCalendar = Calendar.getInstance();
+        @NonNull Calendar isOpenCalendar = Calendar.getInstance();
         String placeId = PlaceIdProvider.getRandomPlaceId();
         // Specify the required fields for an isOpen request.
-        List<Place.Field> placeFields = new ArrayList<>(Arrays.asList(
-                Place.Field.BUSINESS_STATUS,
-                Place.Field.CURRENT_OPENING_HOURS,
-                Place.Field.ID,
-                Place.Field.OPENING_HOURS,
-                Place.Field.DISPLAY_NAME
-        ));
+        List<Place.Field> placeFields =
+                new ArrayList<>(
+                        Arrays.asList(
+                                Place.Field.BUSINESS_STATUS,
+                                Place.Field.CURRENT_OPENING_HOURS,
+                                Place.Field.ID,
+                                Place.Field.OPENING_HOURS,
+                                Place.Field.DISPLAY_NAME));
 
         FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, placeFields);
         Task<FetchPlaceResponse> placeTask = placesClient.fetchPlace(request);
@@ -102,7 +98,8 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
                     IsOpenRequest isOpenRequest;
 
                     try {
-                        isOpenRequest = IsOpenRequest.newInstance(place, isOpenCalendar.getTimeInMillis());
+                        isOpenRequest =
+                                IsOpenRequest.newInstance(place, isOpenCalendar.getTimeInMillis());
                     } catch (IllegalArgumentException e) {
                         Log.e("PlaceIsOpen", "Error: " + e.getMessage());
                         return;
@@ -112,12 +109,20 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
                     isOpenTask.addOnSuccessListener(
                             (isOpenResponse) -> {
                                 final boolean isOpen = Boolean.TRUE.equals(isOpenResponse.isOpen());
-                                binding.isOpenByObjectResult.setText(getString(R.string.is_open_by_object, place.getDisplayName(), String.valueOf(isOpen)));
+                                binding.isOpenByObjectResult.setText(
+                                        getString(
+                                                R.string.is_open_by_object,
+                                                place.getDisplayName(),
+                                                String.valueOf(isOpen)));
                                 Log.d("PlaceIsOpen", "Is open by object: " + isOpen);
                             });
                     isOpenTask.addOnFailureListener(
                             (exception) -> { // also update the result text field
-                                binding.isOpenByObjectResult.setText(getString(R.string.is_open_by_object, place.getDisplayName(), "Error: " + exception.getMessage()));
+                                binding.isOpenByObjectResult.setText(
+                                        getString(
+                                                R.string.is_open_by_object,
+                                                place.getDisplayName(),
+                                                "Error: " + exception.getMessage()));
                                 Log.e("PlaceIsOpen", "Error: " + exception.getMessage());
                             });
                 });
@@ -125,18 +130,17 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
                 (exception) -> {
                     binding.isOpenByObjectResult.setText("Error: " + exception.getMessage());
                     Log.e("PlaceIsOpen", "Error: " + exception.getMessage());
-                });        // [END maps_places_place_is_open]
+                }); // [END maps_places_place_is_open]
     }
 
     /**
-     * Check if the place is open at the time specified in the input fields.
-     * Use the Place ID in the input field for the isOpenRequest.
+     * Check if the place is open at the time specified in the input fields. Use the Place ID in the
+     * input field for the isOpenRequest.
      */
     @SuppressLint("SetTextI18n")
     private void isOpenByPlaceId() {
         // [START maps_places_id_is_open]
-        @NonNull
-        Calendar isOpenCalendar = Calendar.getInstance();
+        @NonNull Calendar isOpenCalendar = Calendar.getInstance();
         String placeId = PlaceIdProvider.getRandomPlaceId();
         IsOpenRequest isOpenRequest;
 
@@ -152,13 +156,16 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
         placeTask.addOnSuccessListener(
                 (response) -> {
                     final boolean isOpen = Boolean.TRUE.equals(response.isOpen());
-                    binding.isOpenByIdResult.setText(getString(R.string.is_open_by_id, String.valueOf(isOpen)));
+                    binding.isOpenByIdResult.setText(
+                            getString(R.string.is_open_by_id, String.valueOf(isOpen)));
                     Log.d("PlaceIsOpen", "Is open by ID: " + isOpen);
                 });
-        placeTask.addOnFailureListener((exception) -> {
-            binding.isOpenByIdResult.setText(getString(R.string.is_open_by_id, "Error: " + exception.getMessage()));
-            Log.e("PlaceIsOpen", "Error: " + exception.getMessage());
-        });
+        placeTask.addOnFailureListener(
+                (exception) -> {
+                    binding.isOpenByIdResult.setText(
+                            getString(R.string.is_open_by_id, "Error: " + exception.getMessage()));
+                    Log.e("PlaceIsOpen", "Error: " + exception.getMessage());
+                });
         // [END maps_places_id_is_open]
     }
 }

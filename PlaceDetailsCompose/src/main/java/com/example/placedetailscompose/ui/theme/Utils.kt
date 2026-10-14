@@ -39,7 +39,10 @@ fun setStatusBarColor(activity: Activity, color: Int, isLight: Boolean) {
     // --- Modern System Insets & Light Status Bar Handling ---
 
     // 1. Get the WindowInsetsControllerCompat (backward-compatible controller)
-    val controller = WindowCompat.getInsetsController(activity.window, activity.findViewById<View>(android.R.id.content))
+    val controller = WindowCompat.getInsetsController(
+        activity.window,
+        activity.findViewById<View>(android.R.id.content),
+    )
 
     // 2. Set the appearance (dark icons/text for light status bar background)
     controller.isAppearanceLightStatusBars = isLight

@@ -16,6 +16,23 @@
 
 package com.example.placesdemo;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.TextView;
+import androidx.activity.EdgeToEdge;
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.example.placesdemo.databinding.PlaceDetailsAndPhotosActivityBinding;
 import com.google.android.gms.tasks.Task;
@@ -28,32 +45,9 @@ import com.google.android.libraries.places.api.net.FetchPhotoResponse;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
-
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.TextView;
-
 import java.util.List;
 
-import androidx.annotation.IdRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
-import androidx.activity.EdgeToEdge;
-
-/**
- * Activity to demonstrate {@link PlacesClient#fetchPlace(FetchPlaceRequest)}.
- */
+/** Activity to demonstrate {@link PlacesClient#fetchPlace(FetchPlaceRequest)}. */
 public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
 
     private static final String FETCHED_PHOTO_KEY = "photo_image";
@@ -84,9 +78,7 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
                 (buttonView, isChecked) -> setCustomPhotoReferenceEnabled(isChecked));
         fieldSelector =
                 new FieldSelector(
-                        binding.useCustomFields,
-                        binding.customFieldsList,
-                        savedInstanceState);
+                        binding.useCustomFields, binding.customFieldsList, savedInstanceState);
 
         // Set listeners for programmatic Fetch Place
         findViewById(R.id.fetch_place_and_photo_button).setOnClickListener(view -> fetchPlace());
@@ -120,8 +112,8 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
         final boolean isFetchIconChecked = isFetchIconChecked();
         List<Field> placeFields = getPlaceFields();
         String customPhotoReference = getCustomPhotoReference();
-        if (!validateInputs(isFetchPhotoChecked, isFetchIconChecked, placeFields,
-                customPhotoReference)) {
+        if (!validateInputs(
+                isFetchPhotoChecked, isFetchIconChecked, placeFields, customPhotoReference)) {
             return;
         }
 
@@ -131,9 +123,9 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
         Task<FetchPlaceResponse> placeTask = placesClient.fetchPlace(request);
 
         placeTask.addOnSuccessListener(
-
                 (response) -> {
-                    binding.response.setText(StringUtil.stringify(response, isDisplayRawResultsChecked()));
+                    binding.response.setText(
+                            StringUtil.stringify(response, isDisplayRawResultsChecked()));
                     if (isFetchPhotoChecked) {
                         attemptFetchPhoto(response.getPlace());
                     }
@@ -217,13 +209,16 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
     //////////////////////////
 
     private void dismissKeyboard(EditText focusedEditText) {
-        InputMethodManager imm = (InputMethodManager) getSystemService(
-                Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm =
+                (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(focusedEditText.getWindowToken(), 0);
     }
 
-    private boolean validateInputs(boolean isFetchPhotoChecked, boolean isFetchIconChecked,
-                                   List<Field> placeFields, String customPhotoReference) {
+    private boolean validateInputs(
+            boolean isFetchPhotoChecked,
+            boolean isFetchIconChecked,
+            List<Field> placeFields,
+            String customPhotoReference) {
         if (isFetchPhotoChecked) {
             if (!placeFields.contains(Field.PHOTO_METADATAS)) {
 

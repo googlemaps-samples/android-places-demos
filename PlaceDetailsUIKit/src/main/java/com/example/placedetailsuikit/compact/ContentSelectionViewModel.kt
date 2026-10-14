@@ -34,22 +34,17 @@ import kotlinx.coroutines.flow.update
  * @param displayName A formatted, human-readable string for the content type.
  * @param isSelected A boolean indicating whether the user has selected this content to be displayed.
  */
-data class PlaceDetailsCompactItem(
-    val content: Content,
-    val displayName: String,
-    val isSelected: Boolean = false
-)
+data class PlaceDetailsCompactItem(val content: Content, val displayName: String, val isSelected: Boolean = false)
 
 /**
  * An extension function to convert a [Content] enum into a [PlaceDetailsCompactItem].
  * This simplifies the creation of UI models from the library's data model.
  */
-private fun Content.toPlaceDetailsCompactItem() =
-    PlaceDetailsCompactItem(
-        content = this,
-        displayName = this.getDisplayName(),
-        isSelected = standardContent.contains(this)
-    )
+private fun Content.toPlaceDetailsCompactItem() = PlaceDetailsCompactItem(
+    content = this,
+    displayName = this.getDisplayName(),
+    isSelected = standardContent.contains(this),
+)
 
 /**
  * An extension function that formats a [Content] enum name into a user-friendly, readable string.
@@ -57,15 +52,15 @@ private fun Content.toPlaceDetailsCompactItem() =
  *
  * @return A capitalized, space-separated string representation of the enum name.
  */
-fun Content.getDisplayName(): String =
-    this.name.replace('_', ' ').lowercase().replaceFirstChar { it.uppercase() }
+fun Content.getDisplayName(): String = this.name.replace('_', ' ').lowercase().replaceFirstChar { it.uppercase() }
 
 /**
  * An extension function to convert a collection of [Content] enums into a list of
  * [PlaceDetailsCompactItem]s, ready to be used by the UI.
  */
-fun Iterable<Content>.toPlaceDetailsCompactItems(): List<PlaceDetailsCompactItem> =
-    this.map { it.toPlaceDetailsCompactItem() }
+fun Iterable<Content>.toPlaceDetailsCompactItems(): List<PlaceDetailsCompactItem> = this.map {
+    it.toPlaceDetailsCompactItem()
+}
 
 /**
  * A default list of [Content] types that are commonly displayed in the Place Details view.
@@ -109,9 +104,9 @@ class ContentSelectionViewModel : ViewModel() {
             PlaceDetailsCompactItem(
                 content = it,
                 displayName = it.getDisplayName(),
-                isSelected = standardContent.contains(it)
+                isSelected = standardContent.contains(it),
             )
-        }
+        },
     )
 
     /**
@@ -119,7 +114,8 @@ class ContentSelectionViewModel : ViewModel() {
      * - It's derived from `_contentItems` using the `map` operator.
      * - `stateIn` converts this cold Flow into a hot `StateFlow`, meaning it will always have a value.
      * - `viewModelScope` ensures the flow is active as long as the ViewModel is alive.
-     * - `SharingStarted.Eagerly` means the flow starts immediately and keeps its last value even if there are no collectors.
+     * - `SharingStarted.Eagerly` means the flow starts immediately and keeps its last value even if
+     *   there are no collectors.
      * The UI will collect this flow to display the list of selected items.
      */
     val selectedContent: StateFlow<List<PlaceDetailsCompactItem>> =

@@ -38,7 +38,7 @@ class MainViewModel : ViewModel() {
                 latitude = 39.9989
                 longitude = -105.2828
                 altitude = 1750.0
-            }
+            },
         ),
         Landmark(
             id = "ChIJiTEGLibsa4cRepH7ZMFEcJ8",
@@ -47,7 +47,7 @@ class MainViewModel : ViewModel() {
                 latitude = 40.0177
                 longitude = -105.2819
                 altitude = 1620.0
-            }
+            },
         ),
         Landmark(
             id = "ChIJwR6cajTsa4cR2TH0qKTVKAM",
@@ -56,7 +56,7 @@ class MainViewModel : ViewModel() {
                 latitude = 40.0076
                 longitude = -105.2659
                 altitude = 1650.0
-            }
+            },
         ),
         Landmark(
             id = "ChIJAfFnzszva4cR04sAt0lSm1g",
@@ -65,7 +65,7 @@ class MainViewModel : ViewModel() {
                 latitude = 40.0780
                 longitude = -105.2220
                 altitude = 1580.0
-            }
+            },
         ),
         Landmark(
             id = "ChIJfXOTtWbsa4cRmW07qJRB6_8",
@@ -74,8 +74,8 @@ class MainViewModel : ViewModel() {
                 latitude = 39.9880
                 longitude = -105.2930
                 altitude = 2100.0
-            }
-        )
+            },
+        ),
     )
 
     /**

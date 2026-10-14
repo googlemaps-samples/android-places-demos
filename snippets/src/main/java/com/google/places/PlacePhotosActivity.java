@@ -14,23 +14,20 @@
 
 package com.google.places;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
-
+import com.bumptech.glide.Glide;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.net.FetchResolvedPhotoUriRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.google.android.libraries.places.api.net.FetchResolvedPhotoUriRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.places.data.PlaceIdProvider;
-import com.bumptech.glide.Glide;
 import com.google.places.databinding.ActivityPlacePhotosBinding;
 import com.google.places.kotlin.MainApplication;
 import java.util.Collections;
@@ -79,42 +76,57 @@ public class PlacePhotosActivity extends AppCompatActivity {
         // Specify fields. Requests for photos must always have the PHOTO_METADATAS field.
         final List<Place.Field> fields = Collections.singletonList(Place.Field.PHOTO_METADATAS);
 
-        // Get a Place object (this example uses fetchPlace(), but you can also use findCurrentPlace())
+        // Get a Place object (this example uses fetchPlace(), but you can also use
+        // findCurrentPlace())
         final FetchPlaceRequest placeRequest = FetchPlaceRequest.newInstance(placeId, fields);
 
-        placesClient.fetchPlace(placeRequest).addOnSuccessListener((response) -> {
-            final Place place = response.getPlace();
+        placesClient
+                .fetchPlace(placeRequest)
+                .addOnSuccessListener(
+                        (response) -> {
+                            final Place place = response.getPlace();
 
-            // Get the photo metadata.
-            final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
-            if (metadata == null || metadata.isEmpty()) {
-                Log.w(TAG, "No photo metadata.");
-                return;
-            }
-            final PhotoMetadata photoMetadata = metadata.get(0);
+                            // Get the photo metadata.
+                            final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
+                            if (metadata == null || metadata.isEmpty()) {
+                                Log.w(TAG, "No photo metadata.");
+                                return;
+                            }
+                            final PhotoMetadata photoMetadata = metadata.get(0);
 
-            // Get the attribution text.
-            final String attributions = photoMetadata.getAttributions();
-            binding.placePhotosAttributions.setText(attributions);
+                            // Get the attribution text.
+                            final String attributions = photoMetadata.getAttributions();
+                            binding.placePhotosAttributions.setText(attributions);
 
-            // Create a FetchResolvedPhotoUriRequest.
-            final FetchResolvedPhotoUriRequest photoRequest = FetchResolvedPhotoUriRequest.builder(photoMetadata)
-                .setMaxWidth(500) // Optional.
-                .setMaxHeight(300) // Optional.
-                .build();
-            placesClient.fetchResolvedPhotoUri(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
-                Glide.with(this)
-                        .load(fetchPhotoResponse.getUri())
-                        .into(binding.placePhotosResult);
-            }).addOnFailureListener((exception) -> {
-                if (exception instanceof ApiException) {
-                    ApiException apiException = (ApiException) exception;
-                    Log.e(TAG, "Place not found: " + exception.getMessage());
-                    final int statusCode = apiException.getStatusCode();
-                    // TODO: Handle error with given status code.
-                }
-            });
-        });
+                            // Create a FetchResolvedPhotoUriRequest.
+                            final FetchResolvedPhotoUriRequest photoRequest =
+                                    FetchResolvedPhotoUriRequest.builder(photoMetadata)
+                                            .setMaxWidth(500) // Optional.
+                                            .setMaxHeight(300) // Optional.
+                                            .build();
+                            placesClient
+                                    .fetchResolvedPhotoUri(photoRequest)
+                                    .addOnSuccessListener(
+                                            (fetchPhotoResponse) -> {
+                                                Glide.with(this)
+                                                        .load(fetchPhotoResponse.getUri())
+                                                        .into(binding.placePhotosResult);
+                                            })
+                                    .addOnFailureListener(
+                                            (exception) -> {
+                                                if (exception instanceof ApiException) {
+                                                    ApiException apiException =
+                                                            (ApiException) exception;
+                                                    Log.e(
+                                                            TAG,
+                                                            "Place not found: "
+                                                                    + exception.getMessage());
+                                                    final int statusCode =
+                                                            apiException.getStatusCode();
+                                                    // TODO: Handle error with given status code.
+                                                }
+                                            });
+                        });
         // [END maps_places_get_place_photos]
     }
 }

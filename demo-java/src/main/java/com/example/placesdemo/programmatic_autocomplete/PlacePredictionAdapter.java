@@ -27,7 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A {@link RecyclerView.Adapter} for a {@link com.google.android.libraries.places.api.model.AutocompletePrediction}.
+ * A {@link RecyclerView.Adapter} for a {@link
+ * com.google.android.libraries.places.api.model.AutocompletePrediction}.
  */
 public class PlacePredictionAdapter extends RecyclerView.Adapter<PlacePredictionViewHolder> {
 
@@ -40,18 +41,19 @@ public class PlacePredictionAdapter extends RecyclerView.Adapter<PlacePrediction
     public PlacePredictionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         return new PlacePredictionViewHolder(
-            inflater.inflate(R.layout.place_prediction_item, parent, false));
+                inflater.inflate(R.layout.place_prediction_item, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull PlacePredictionViewHolder holder, int position) {
         final AutocompletePrediction prediction = predictions.get(position);
         holder.setPrediction(prediction);
-        holder.itemView.setOnClickListener(v -> {
-            if (onPlaceClickListener != null) {
-                onPlaceClickListener.onPlaceClicked(prediction);
-            }
-        });
+        holder.itemView.setOnClickListener(
+                v -> {
+                    if (onPlaceClickListener != null) {
+                        onPlaceClickListener.onPlaceClicked(prediction);
+                    }
+                });
     }
 
     @Override

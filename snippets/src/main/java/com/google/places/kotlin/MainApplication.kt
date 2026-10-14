@@ -43,7 +43,5 @@ class MainApplication : Application() {
         // [END maps_places_get_started]
     }
 
-    fun getPlacesClient(): PlacesClient {
-        return placesClient
-    }
+    fun getPlacesClient(): PlacesClient = placesClient
 }

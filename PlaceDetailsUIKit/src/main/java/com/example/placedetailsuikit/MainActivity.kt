@@ -67,7 +67,10 @@ class MainViewModel : ViewModel() {
  * 3. Handling clicks on Points of Interest (POIs) to get a Place ID.
  * 4. Using the Place ID to load and display place details in a [PlaceDetailsCompactFragment].
  */
-class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickListener {
+class MainActivity :
+    AppCompatActivity(),
+    OnMapReadyCallback,
+    GoogleMap.OnPoiClickListener {
     // ViewBinding provides type-safe access to views defined in the XML layout,
     // eliminating the need for `findViewById` and preventing null pointer exceptions.
     private lateinit var binding: ActivityMainBinding
@@ -94,7 +97,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
         requestPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
                 // We check if either fine or coarse location permission was granted.
-                if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true || permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
+                if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                    permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+                ) {
                     Log.d(TAG, "Location permission granted by user.")
                     fetchLastLocation()
                 } else {
@@ -104,7 +109,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
                     Toast.makeText(
                         this,
                         "Location permission denied. Showing default location.",
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_LONG,
                     ).show()
                     moveToSydney()
                 }
@@ -129,7 +134,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
             Toast.makeText(
                 this,
                 "Add your own API_KEY in local.properties",
-                Toast.LENGTH_LONG
+                Toast.LENGTH_LONG,
             ).show()
             finish()
             return
@@ -179,16 +184,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
     /**
      * A helper function to centralize the check for location permissions.
      */
-    private fun isLocationPermissionGranted(): Boolean {
-        return ActivityCompat.checkSelfPermission(
+    private fun isLocationPermissionGranted(): Boolean = ActivityCompat.checkSelfPermission(
+        this,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+    ) == PackageManager.PERMISSION_GRANTED ||
+        ActivityCompat.checkSelfPermission(
             this,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
-    }
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+        ) == PackageManager.PERMISSION_GRANTED
 
     /**
      * This function triggers the permission request flow. The result is handled by the
@@ -199,8 +202,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
         requestPermissionLauncher.launch(
             arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+            ),
         )
     }
 
@@ -283,7 +286,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
             }
 
         // [START placessdkandroid_place_details_ui_kit_add_place_details_component_snippet]
-        
+
         // We create a new instance of the fragment using its factory method.
         // We can specify which content to show, the orientation, and a custom theme.
         val fragment = PlaceDetailsCompactFragment.newInstance(

@@ -22,10 +22,6 @@ data object PlacesSearchEventIdle : PlacesSearchEvent
 
 data object PlacesSearchEventLoading : PlacesSearchEvent
 
-data class PlacesSearchEventError(
-    val exception: Throwable
-) : PlacesSearchEvent
+data class PlacesSearchEventError(val exception: Throwable) : PlacesSearchEvent
 
-data class PlacesSearchEventFound(
-    val places: List<AutocompletePrediction>
-) : PlacesSearchEvent
+data class PlacesSearchEventFound(val places: List<AutocompletePrediction>) : PlacesSearchEvent

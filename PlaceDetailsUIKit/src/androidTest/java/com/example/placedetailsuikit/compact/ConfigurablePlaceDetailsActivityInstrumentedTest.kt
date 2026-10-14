@@ -52,7 +52,7 @@ class ConfigurablePlaceDetailsActivityInstrumentedTest {
     @get:Rule
     val grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(
         Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION
+        Manifest.permission.ACCESS_COARSE_LOCATION,
     )
 
     /**
@@ -95,7 +95,6 @@ class ConfigurablePlaceDetailsActivityInstrumentedTest {
         // We can verify this by checking its new position relative to the headers.
         composeTestRule.onNodeWithText("Rating").assertIsDisplayed()
 
-
         // 3. Close the dialog
         Espresso.onView(ViewMatchers.withText("Close")).perform(ViewActions.click())
 
@@ -121,7 +120,7 @@ class ConfigurablePlaceDetailsActivityInstrumentedTest {
             val poi = PointOfInterest(
                 LatLng(-33.865072, 151.1961474),
                 "ChIJP3Sa8ziYEmsRUKgyFmh9AQM",
-                "Google Sydney"
+                "Google Sydney",
             )
             activity.onPoiClick(poi)
         }

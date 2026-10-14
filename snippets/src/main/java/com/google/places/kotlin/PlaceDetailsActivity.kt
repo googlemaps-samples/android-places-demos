@@ -65,7 +65,7 @@ class PlaceDetailsActivity : AppCompatActivity() {
             Place.Field.ID,
             Place.Field.DISPLAY_NAME,
             Place.Field.FORMATTED_ADDRESS,
-            Place.Field.LOCATION
+            Place.Field.LOCATION,
         )
 
         // Construct a request object, passing the place ID and fields array.
@@ -85,7 +85,9 @@ class PlaceDetailsActivity : AppCompatActivity() {
                 binding.placeAddress.text = address
                 if (location != null) {
                     binding.placeLocation.text = getString(
-                        R.string.place_location, location.latitude, location.longitude
+                        R.string.place_location,
+                        location.latitude,
+                        location.longitude,
                     )
                 } else {
                     binding.placeLocation.text = null

@@ -14,7 +14,6 @@
 
 package com.example.placesdemo.programmatic_autocomplete
 
-import com.google.android.material.search.SearchView
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
@@ -53,6 +52,7 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.material.search.SearchView
 import com.google.gson.GsonBuilder
 import org.json.JSONArray
 import org.json.JSONException
@@ -140,13 +140,13 @@ class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
                 // Cancel any previous place prediction requests
                 handler.removeCallbacksAndMessages(null)
 
-
                 // Start a new place prediction request after a 300ms delay
-                handler.postDelayed({
+                handler.postDelayed(
+                    {
                         if (query.isNotEmpty()) binding.progressBar.visibility = View.VISIBLE
                         getPlacePredictions(query)
                     },
-                    300
+                    300,
                 )
             }
 
@@ -181,8 +181,8 @@ class ProgrammaticAutocompleteGeocodingActivity : BaseActivity() {
         // pass in the appropriate value/s for .setCountries() in the
         // FindAutocompletePredictionsRequest.Builder object as well.
         val bias: LocationBias = RectangularBounds.newInstance(
-            LatLng(39.9614, -105.3017),  // SW lat, lng (South Boulder)
-            LatLng(40.0953, -105.1843)   // NE lat, lng (Northeast Boulder)
+            LatLng(39.9614, -105.3017), // SW lat, lng (South Boulder)
+            LatLng(40.0953, -105.1843), // NE lat, lng (Northeast Boulder)
         )
 
         // Create a new programmatic Place Autocomplete request in Places SDK for Android

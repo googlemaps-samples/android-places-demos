@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(
                 this,
                 "Add your own API_KEY in local.properties",
-                Toast.LENGTH_LONG
+                Toast.LENGTH_LONG,
             ).show()
             finish()
             return
@@ -78,14 +78,14 @@ class MainActivity : AppCompatActivity() {
             // or a dedicated permission handler class.
 
             // Check if we already have the permission.
-            // Using ContextCompat.checkSelfPermission ensures we respect the state if the 
+            // Using ContextCompat.checkSelfPermission ensures we respect the state if the
             // user granted it previously via system settings.
             var hasPermission by remember {
                 mutableStateOf(
                     ContextCompat.checkSelfPermission(
                         this,
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    ) == PackageManager.PERMISSION_GRANTED
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                    ) == PackageManager.PERMISSION_GRANTED,
                 )
             }
 
@@ -97,9 +97,13 @@ class MainActivity : AppCompatActivity() {
                     if (granted) {
                         hasPermission = true
                     } else {
-                        Toast.makeText(this, "Location permission is required to use this app.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            this,
+                            "Location permission is required to use this app.",
+                            Toast.LENGTH_LONG,
+                        ).show()
                     }
-                }
+                },
             )
 
             // Trigger the permission request when this Composable first enters the composition.
@@ -122,7 +126,7 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     Box(
                         modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         Button(onClick = { launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION) }) {
                             Text("Grant Location Permission")

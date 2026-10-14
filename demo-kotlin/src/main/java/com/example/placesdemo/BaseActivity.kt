@@ -28,7 +28,7 @@ open class BaseActivity : AppCompatActivity() {
 
         val insetsController = WindowCompat.getInsetsController(window, window.decorView)
         val isLightTheme = resources.configuration.uiMode and
-                Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_NO
+            Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_NO
         insetsController.isAppearanceLightStatusBars = isLightTheme
 
         // It's recommended to apply insets using a listener like this,

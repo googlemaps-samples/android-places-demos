@@ -44,7 +44,7 @@ class CurrentPlaceActivity : AppCompatActivity() {
 
     private val requestPermissionLauncher =
         registerForActivityResult(
-            androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
+            androidx.activity.result.contract.ActivityResultContracts.RequestPermission(),
         ) { isGranted: Boolean ->
             if (isGranted) {
                 findCurrentPlace()
@@ -144,7 +144,8 @@ class CurrentPlaceActivity : AppCompatActivity() {
                 val place = placeLikelihood.place
                 binding.placeName.text = place.displayName
                 binding.placeAddress.text = place.formattedAddress
-                binding.placeLikelihood.text = String.format(Locale.getDefault(), "Likelihood: %.2f", placeLikelihood.likelihood)
+                binding.placeLikelihood.text =
+                    String.format(Locale.getDefault(), "Likelihood: %.2f", placeLikelihood.likelihood)
             }
         }
     }

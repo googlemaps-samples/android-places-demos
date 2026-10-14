@@ -30,6 +30,5 @@ object DemoModule {
 
     @Singleton
     @Provides
-    fun providePlacesClient(@ApplicationContext context: Context): PlacesClient =
-        Places.createClient(context)
+    fun providePlacesClient(@ApplicationContext context: Context): PlacesClient = Places.createClient(context)
 }

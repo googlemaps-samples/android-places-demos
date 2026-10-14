@@ -43,33 +43,33 @@ class KotlinMainActivity : AppCompatActivity() {
             ActivityInfo(
                 "Current Place",
                 getString(R.string.current_place_description),
-                CurrentPlaceActivity::class.java
+                CurrentPlaceActivity::class.java,
             ),
             ActivityInfo(
                 "Place Autocomplete",
                 getString(R.string.place_autocomplete_description),
-                PlaceAutocompleteActivity::class.java
+                PlaceAutocompleteActivity::class.java,
             ),
             ActivityInfo(
                 "Place Details",
                 getString(R.string.place_details_description),
-                PlaceDetailsActivity::class.java
+                PlaceDetailsActivity::class.java,
             ),
             ActivityInfo(
                 "Place Photos",
                 getString(R.string.place_photos_description),
-                PlacePhotosActivity::class.java
+                PlacePhotosActivity::class.java,
             ),
             ActivityInfo(
                 "Places Icon",
                 getString(R.string.places_icon_description),
-                PlacesIconActivity::class.java
+                PlacesIconActivity::class.java,
             ),
             ActivityInfo(
                 "Place Is Open",
                 getString(R.string.place_is_open_description),
-                PlaceIsOpenActivity::class.java
-            )
+                PlaceIsOpenActivity::class.java,
+            ),
         )
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
@@ -79,7 +79,7 @@ class KotlinMainActivity : AppCompatActivity() {
     private data class ActivityInfo(
         val name: String,
         val description: String,
-        val activityClass: Class<out AppCompatActivity>
+        val activityClass: Class<out AppCompatActivity>,
     )
 
     private class ActivitiesAdapter(private val activities: List<ActivityInfo>) :
@@ -89,7 +89,7 @@ class KotlinMainActivity : AppCompatActivity() {
             val binding = ListItemActivityBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
-                false
+                false,
             )
             return ViewHolder(binding)
         }

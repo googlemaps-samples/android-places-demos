@@ -30,8 +30,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun <T> PlaceContentSelectionDialog(
@@ -40,7 +40,7 @@ fun <T> PlaceContentSelectionDialog(
     selectedContent: List<T>,
     onSelectionChanged: (List<T>) -> Unit,
     onDismissRequest: () -> Unit,
-    nameProvider: (T) -> String
+    nameProvider: (T) -> String,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -61,16 +61,16 @@ fun <T> PlaceContentSelectionDialog(
                                 onSelectionChanged(newSelection)
                             }
                             .padding(vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Checkbox(
                             checked = isSelected,
-                            onCheckedChange = null // Handled by Row click
+                            onCheckedChange = null, // Handled by Row click
                         )
                         Text(
                             text = nameProvider(item),
                             modifier = Modifier.padding(start = 8.dp),
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium,
                         )
                     }
                 }
@@ -80,6 +80,6 @@ fun <T> PlaceContentSelectionDialog(
             TextButton(onClick = onDismissRequest) {
                 Text(stringResource(com.example.placedetailscompose.R.string.done))
             }
-        }
+        },
     )
 }

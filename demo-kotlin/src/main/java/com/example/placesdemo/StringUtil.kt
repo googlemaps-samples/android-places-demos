@@ -41,16 +41,17 @@ object StringUtil {
             $prefix
 
             ${textView.text}
-            """.trimIndent()
+        """.trimIndent()
     }
 
-    fun convertToLatLngBounds(
-        southWest: String?, northEast: String?): LatLngBounds? {
+    fun convertToLatLngBounds(southWest: String?, northEast: String?): LatLngBounds? {
         val southWestLatLng = convertToLatLng(southWest)
         val northEastLatLng = convertToLatLng(northEast)
         return if (southWestLatLng == null || northEastLatLng == null) {
             null
-        } else LatLngBounds(southWestLatLng, northEastLatLng)
+        } else {
+            LatLngBounds(southWestLatLng, northEastLatLng)
+        }
     }
 
     fun convertToLatLng(value: String?): LatLng? {
@@ -60,20 +61,24 @@ object StringUtil {
         val split = value!!.split(",").dropLastWhile { it.isEmpty() }.toTypedArray()
         return if (split.size != 2) {
             null
-        } else try {
-            LatLng(split[0].toDouble(), split[1].toDouble())
-        } catch (_: NullPointerException) {
-            null
-        } catch (_: NumberFormatException) {
-            null
+        } else {
+            try {
+                LatLng(split[0].toDouble(), split[1].toDouble())
+            } catch (_: NullPointerException) {
+                null
+            } catch (_: NumberFormatException) {
+                null
+            }
         }
     }
 
     fun countriesStringToArrayList(countriesString: String): List<String> {
         // Allow these delimiters: , ; | / \
-        return listOf(*countriesString
-            .replace("\\s".toRegex(), "|")
-            .split("[,;|/\\\\]").dropLastWhile { it.isEmpty() }.toTypedArray())
+        return listOf(
+            *countriesString
+                .replace("\\s".toRegex(), "|")
+                .split("[,;|/\\\\]").dropLastWhile { it.isEmpty() }.toTypedArray(),
+        )
     }
 
     fun stringify(response: SearchNearbyResponse, raw: Boolean): String {
@@ -117,7 +122,6 @@ object StringUtil {
         return builder.toString()
     }
 
-
     fun stringify(response: FindAutocompletePredictionsResponse, raw: Boolean): String {
         val builder = StringBuilder()
         builder
@@ -130,7 +134,7 @@ object StringUtil {
             for (autocompletePrediction in response.autocompletePredictions) {
                 builder
                     .append(RESULT_SEPARATOR)
-                    .append(autocompletePrediction.getFullText( /* matchStyle */null))
+                    .append(autocompletePrediction.getFullText(null)) // matchStyle
             }
         }
         return builder.toString()
@@ -147,9 +151,8 @@ object StringUtil {
         return builder.toString()
     }
 
-    fun stringify(place: Place): String {
-        return "${place.displayName?.plus(" (") ?: ""}${place.formattedAddress?.plus(")") ?: ""}"
-    }
+    fun stringify(place: Place): String =
+        "${place.displayName?.plus(" (") ?: ""}${place.formattedAddress?.plus(")") ?: ""}"
 
     fun stringify(place: AutocompletePrediction?): String {
         val primary = place?.getPrimaryText(StyleSpan(Typeface.BOLD)).toString()
@@ -157,9 +160,7 @@ object StringUtil {
         return "$primary ($secondary)"
     }
 
-    fun stringify(uri: Uri): String {
-        return uri.toString()
-    }
+    fun stringify(uri: Uri): String = uri.toString()
 
     fun stringifyAutocompleteWidget(place: Place, raw: Boolean): String {
         val builder = StringBuilder()

@@ -37,9 +37,9 @@ import com.google.android.libraries.places.api.model.RectangularBounds
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.libraries.places.api.net.PlacesClient
-import com.google.android.libraries.places.widget.PlaceAutocompleteActivity
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.PlaceAutocomplete
+import com.google.android.libraries.places.widget.PlaceAutocompleteActivity
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 
@@ -79,7 +79,7 @@ class PlaceAutocompleteActivity : BaseActivity() {
         fieldSelector = FieldSelector(
             findViewById(R.id.use_custom_fields),
             findViewById(R.id.custom_fields_list),
-            savedInstanceState
+            savedInstanceState,
         )
         setupAutocompleteSupportFragment()
 
@@ -134,27 +134,29 @@ class PlaceAutocompleteActivity : BaseActivity() {
     /**
      * Launches Autocomplete activity and handles result
      */
-    private var autocompleteLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        result ->
-        when (result.resultCode) {
-            RESULT_OK -> {
-                val data: Intent? = result.data
-                if (data != null) {
-                    val place = PlaceAutocomplete.getPredictionFromIntent(data)
-                    binding.response.text =
-                        StringUtil.stringifyAutocompletePrediction(place, isDisplayRawResultsChecked)
+    private var autocompleteLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            when (result.resultCode) {
+                RESULT_OK -> {
+                    val data: Intent? = result.data
+                    if (data != null) {
+                        val place = PlaceAutocomplete.getPredictionFromIntent(data)
+                        binding.response.text =
+                            StringUtil.stringifyAutocompletePrediction(place, isDisplayRawResultsChecked)
+                    }
+                }
+
+                PlaceAutocompleteActivity.RESULT_ERROR -> {
+                    val data: Intent? = result.data
+                    val status = data?.let { PlaceAutocomplete.getResultStatusFromIntent(it) }
+                    binding.response.text = status?.statusMessage
+                }
+
+                RESULT_CANCELED -> {
+                    // The user canceled the operation.
                 }
             }
-            PlaceAutocompleteActivity.RESULT_ERROR -> {
-                val data: Intent? = result.data
-                val status = data?.let { PlaceAutocomplete.getResultStatusFromIntent(it) }
-                binding.response.text = status?.statusMessage
-            }
-            RESULT_CANCELED -> {
-                // The user canceled the operation.
-            }
         }
-    }
 
     private fun startAutocompleteActivity() {
         val autocompleteIntent = PlaceAutocomplete.IntentBuilder()
@@ -191,14 +193,14 @@ class PlaceAutocompleteActivity : BaseActivity() {
         }
         task.addOnCompleteListener {
             setLoading(
-                false
+                false,
             )
         }
     }
 
-    //////////////////////////
+    // ////////////////////////
     // Helper methods below //
-    //////////////////////////
+    // ////////////////////////
     private val placeFields: List<Place.Field>
         get() = if ((findViewById<View>(R.id.use_custom_fields) as CheckBox).isChecked) {
             fieldSelector.selectedFields
@@ -225,13 +227,14 @@ class PlaceAutocompleteActivity : BaseActivity() {
 
     private val locationBias: LocationBias?
         get() = getBounds(
-            R.id.autocomplete_location_bias_south_west, R.id.autocomplete_location_bias_north_east
+            R.id.autocomplete_location_bias_south_west,
+            R.id.autocomplete_location_bias_north_east,
         )
 
     private val locationRestriction: LocationRestriction?
         get() = getBounds(
             R.id.autocomplete_location_restriction_south_west,
-            R.id.autocomplete_location_restriction_north_east
+            R.id.autocomplete_location_restriction_north_east,
         )
 
     private fun getBounds(resIdSouthWest: Int, resIdNorthEast: Int): RectangularBounds? {
@@ -263,13 +266,14 @@ class PlaceAutocompleteActivity : BaseActivity() {
             return origin
         }
 
-    private fun getTypesFilter(): List<String> {
-        return if (binding.autocompleteTypesFilterEdittext.isEnabled)
-            binding.autocompleteTypesFilterEdittext.text.toString().split("[\\s,]+".toRegex())
-        else emptyList()
+    private fun getTypesFilter(): List<String> = if (binding.autocompleteTypesFilterEdittext.isEnabled) {
+        binding.autocompleteTypesFilterEdittext.text.toString().split("[\\s,]+".toRegex())
+    } else {
+        emptyList()
     }
 
-    // This Enum is deprecated, but there is no replacement. See https://developers.google.com/maps/documentation/places/android-sdk/reference/com/google/android/libraries/places/widget/model/AutocompleteActivityMode
+    // This Enum is deprecated, but there is no replacement. See
+    // https://developers.google.com/maps/documentation/places/android-sdk/reference/com/google/android/libraries/places/widget/model/AutocompleteActivityMode
     private val mode: AutocompleteActivityMode
         get() {
             val isOverlayMode =

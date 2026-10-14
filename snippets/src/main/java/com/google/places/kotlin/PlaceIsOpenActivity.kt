@@ -77,7 +77,7 @@ class PlaceIsOpenActivity : AppCompatActivity() {
             Place.Field.CURRENT_OPENING_HOURS,
             Place.Field.ID,
             Place.Field.OPENING_HOURS,
-            Place.Field.DISPLAY_NAME
+            Place.Field.DISPLAY_NAME,
         )
 
         val placeRequest: FetchPlaceRequest =
@@ -101,7 +101,7 @@ class PlaceIsOpenActivity : AppCompatActivity() {
                 binding.isOpenByObjectResult.text = getString(
                     R.string.is_open_by_object,
                     place.displayName,
-                    isOpen
+                    isOpen,
                 )
                 Log.d("PlaceIsOpen", "Is open by object: $isOpen")
             }

@@ -33,9 +33,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.placedetailsuikit.advanced.AdvancedConfigurablePlaceDetailsActivity
 import com.example.placedetailsuikit.compact.ConfigurablePlaceDetailsActivity
 import com.example.placedetailsuikit.full.FullConfigurablePlaceDetailsActivity
-import com.example.placedetailsuikit.advanced.AdvancedConfigurablePlaceDetailsActivity
 import com.example.placedetailsuikit.ui.theme.PlaceDetailsUIKitTheme
 
 class LauncherActivity : ComponentActivity() {
@@ -57,14 +57,14 @@ fun LauncherScreen() {
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("Place Details UIKit Demos") })
-        }
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Button(onClick = {
                 context.startActivity(Intent(context, MainActivity::class.java))

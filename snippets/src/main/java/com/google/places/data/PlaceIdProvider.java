@@ -12,15 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 package com.google.places.data;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 /**
- * Provides a list of sample Google Place IDs for testing.
- * The list is parsed from a raw string and lazily initialized on first access.
- * <p>
- * To generate a list of nearby places, you can use the following script with curl:
+ * Provides a list of sample Google Place IDs for testing. The list is parsed from a raw string and
+ * lazily initialized on first access.
+ *
+ * <p>To generate a list of nearby places, you can use the following script with curl:
+ *
  * <pre>
  * #!/bin/bash
  *
@@ -46,7 +48,8 @@ public class PlaceIdProvider {
 
     // The raw data is stored in a private static final string.
     // Using \n makes it compatible with older Java versions that lack text blocks.
-    private static final String RAW_PLACE_IDS = """
+    private static final String RAW_PLACE_IDS =
+            """
             ChIJwR6cajTsa4cR2TH0qKTVKAM
             ChIJiTEGLibsa4cRepH7ZMFEcJ8
             ChIJ01j9ptfta4cRIKZGWw-Gkq4
@@ -76,8 +79,8 @@ public class PlaceIdProvider {
     private static final Random RANDOM = new Random();
 
     /**
-     * Gets the list of place IDs, initializing it only on the first call.
-     * This method is thread-safe.
+     * Gets the list of place IDs, initializing it only on the first call. This method is
+     * thread-safe.
      *
      * @return A non-null, unmodifiable list of place IDs.
      */

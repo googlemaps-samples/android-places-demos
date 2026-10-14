@@ -35,7 +35,7 @@ class FieldSelector(
     enableView: CheckBox,
     outputView: TextView,
     savedState: Bundle?,
-    validFields: List<Place.Field> = Place.Field.entries
+    validFields: List<Place.Field> = Place.Field.entries,
 ) {
 
     private val fieldStates: MutableMap<Place.Field, State> = EnumMap(Place.Field::class.java)
@@ -52,7 +52,7 @@ class FieldSelector(
         AlertDialog.Builder(context!!)
             .setTitle("Select Place Fields")
             .setPositiveButton(
-                "Done"
+                "Done",
             ) { _, _ -> outputView.text = selectedString }
             .setView(listView)
             .show()
@@ -108,9 +108,10 @@ class FieldSelector(
             }
         }
     }
-    //////////////////////////
+    // ////////////////////////
     // Helper methods below //
-    //////////////////////////
+    // ////////////////////////
+
     /**
      * Holds selection state for a place field.
      */
@@ -118,14 +119,13 @@ class FieldSelector(
         var checked = false
     }
 
-    private class PlaceFieldArrayAdapter(
-        context: Context?,
-        states: List<State>?
-    ) : ArrayAdapter<State>(
-        context!!,
-        android.R.layout.simple_list_item_multiple_choice,
-        states!!.toMutableList()
-    ), OnItemClickListener {
+    private class PlaceFieldArrayAdapter(context: Context?, states: List<State>?) :
+        ArrayAdapter<State>(
+            context!!,
+            android.R.layout.simple_list_item_multiple_choice,
+            states!!.toMutableList(),
+        ),
+        OnItemClickListener {
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val view = super.getView(position, convertView, parent)
             val state = getItem(position)

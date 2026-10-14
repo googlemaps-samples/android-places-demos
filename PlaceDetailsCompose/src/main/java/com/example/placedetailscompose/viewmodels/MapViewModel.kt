@@ -20,6 +20,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.placedetailscompose.repository.LocationRepository
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
+import com.google.android.libraries.places.widget.PlaceDetailsCompactFragment
+import com.google.android.libraries.places.widget.PlaceDetailsFragment
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -135,17 +137,18 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     // **Content Selection State**
-    private val _selectedCompactContent = MutableStateFlow(com.google.android.libraries.places.widget.PlaceDetailsCompactFragment.ALL_CONTENT)
-    val selectedCompactContent: StateFlow<List<com.google.android.libraries.places.widget.PlaceDetailsCompactFragment.Content>> = _selectedCompactContent.asStateFlow()
+    private val _selectedCompactContent = MutableStateFlow(PlaceDetailsCompactFragment.ALL_CONTENT)
+    val selectedCompactContent: StateFlow<List<PlaceDetailsCompactFragment.Content>> =
+        _selectedCompactContent.asStateFlow()
 
-    private val _selectedFullContent = MutableStateFlow(com.google.android.libraries.places.widget.PlaceDetailsFragment.STANDARD_CONTENT)
-    val selectedFullContent: StateFlow<List<com.google.android.libraries.places.widget.PlaceDetailsFragment.Content>> = _selectedFullContent.asStateFlow()
+    private val _selectedFullContent = MutableStateFlow(PlaceDetailsFragment.STANDARD_CONTENT)
+    val selectedFullContent: StateFlow<List<PlaceDetailsFragment.Content>> = _selectedFullContent.asStateFlow()
 
-    fun updateCompactContent(content: List<com.google.android.libraries.places.widget.PlaceDetailsCompactFragment.Content>) {
+    fun updateCompactContent(content: List<PlaceDetailsCompactFragment.Content>) {
         _selectedCompactContent.value = content
     }
 
-    fun updateFullContent(content: List<com.google.android.libraries.places.widget.PlaceDetailsFragment.Content>) {
+    fun updateFullContent(content: List<PlaceDetailsFragment.Content>) {
         _selectedFullContent.value = content
     }
 

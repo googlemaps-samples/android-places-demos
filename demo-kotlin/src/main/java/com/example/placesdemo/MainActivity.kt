@@ -38,11 +38,17 @@ class MainActivity : BaseActivity() {
 
         setLaunchActivityClickListener(binding.autocompleteButton, PlaceAutocompleteActivity::class.java)
         setLaunchActivityClickListener(binding.autocompleteAddressButton, AutocompleteAddressActivity::class.java)
-        setLaunchActivityClickListener(binding.programmaticAutocompleteButton, ProgrammaticAutocompleteGeocodingActivity::class.java)
+        setLaunchActivityClickListener(
+            binding.programmaticAutocompleteButton,
+            ProgrammaticAutocompleteGeocodingActivity::class.java,
+        )
         setLaunchActivityClickListener(binding.currentPlaceButton, CurrentPlaceActivity::class.java)
         setLaunchActivityClickListener(binding.placeAndPhotoButton, PlaceDetailsAndPhotosActivity::class.java)
         setLaunchActivityClickListener(binding.isOpenButton, PlaceIsOpenActivity::class.java)
-        setLaunchActivityClickListener(binding.placeActionsAdvancedButton, PlaceActionsAndAdvancedDetailsActivity::class.java)
+        setLaunchActivityClickListener(
+            binding.placeActionsAdvancedButton,
+            PlaceActionsAndAdvancedDetailsActivity::class.java,
+        )
     }
 
     private fun setLaunchActivityClickListener(button: Button, activityClassToLaunch: Class<out Activity>) {

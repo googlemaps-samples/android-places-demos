@@ -23,7 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.ViewAnimator;
-
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -31,7 +31,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.android.volley.Request.Method;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -51,28 +50,26 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
+import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
-
-import java.util.List;
-
-import androidx.activity.EdgeToEdge;
 
 /**
  * An Activity that demonstrates programmatic as-you-type place predictions. The parameters of the
  * request are currently hard coded in this Activity, to modify these parameters (e.g. location
- * bias, place types, etc.), see {@link ProgrammaticAutocompleteToolbarActivity#getPlacePredictions(String)}.
+ * bias, place types, etc.), see {@link
+ * ProgrammaticAutocompleteToolbarActivity#getPlacePredictions(String)}.
  *
- * @see <a href="https://developers.google.com/places/android-sdk/autocomplete#get_place_predictions_programmatically">documentation</a>
+ * @see <a
+ *     href="https://developers.google.com/places/android-sdk/autocomplete#get_place_predictions_programmatically">documentation</a>
  */
 public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
 
     private static final String TAG = ProgrammaticAutocompleteToolbarActivity.class.getSimpleName();
     private final Handler handler = new Handler();
     private final PlacePredictionAdapter adapter = new PlacePredictionAdapter();
-    private final Gson gson = new GsonBuilder().registerTypeAdapter(LatLng.class, new LatLngAdapter())
-            .create();
+    private final Gson gson =
+            new GsonBuilder().registerTypeAdapter(LatLng.class, new LatLngAdapter()).create();
 
     private RequestQueue queue;
     private PlacesClient placesClient;
@@ -101,8 +98,7 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
-        final SearchView searchView =
-                (SearchView) menu.findItem(R.id.search).getActionView();
+        final SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         assert searchView != null;
         initSearchView(searchView);
         return super.onCreateOptionsMenu(menu);
@@ -123,24 +119,25 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
         searchView.setFocusable(true);
         searchView.setIconified(false);
         searchView.requestFocusFromTouch();
-        searchView.setOnQueryTextListener(new OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
+        searchView.setOnQueryTextListener(
+                new OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        return false;
+                    }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                progressBar.setIndeterminate(true);
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        progressBar.setIndeterminate(true);
 
-                // Cancel any previous place prediction requests
-                handler.removeCallbacksAndMessages(null);
+                        // Cancel any previous place prediction requests
+                        handler.removeCallbacksAndMessages(null);
 
-                // Start a new place prediction request in 300 ms
-                handler.postDelayed(() -> getPlacePredictions(newText), 300);
-                return true;
-            }
-        });
+                        // Start a new place prediction request in 300 ms
+                        handler.postDelayed(() -> getPlacePredictions(newText), 300);
+                        return true;
+                    }
+                });
     }
 
     private void initRecyclerView() {
@@ -148,8 +145,8 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-        recyclerView
-                .addItemDecoration(new DividerItemDecoration(this, layoutManager.getOrientation()));
+        recyclerView.addItemDecoration(
+                new DividerItemDecoration(this, layoutManager.getOrientation()));
         adapter.setPlaceClickListener(this::geocodePlaceAndDisplay);
     }
 
@@ -165,40 +162,48 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
         // (currently Kolkata). Modify these values to get results for another area. Make sure to
         // pass in the appropriate value/s for .setCountries() in the
         // FindAutocompletePredictionsRequest.Builder object as well.
-        final LocationBias bias = RectangularBounds.newInstance(
-                new LatLng(39.91, -105.75), // SW lat, lng
-                new LatLng(40.26, -105.02) // NE lat, lng
-        );
+        final LocationBias bias =
+                RectangularBounds.newInstance(
+                        new LatLng(39.91, -105.75), // SW lat, lng
+                        new LatLng(40.26, -105.02) // NE lat, lng
+                        );
 
         // Create a new programmatic Place Autocomplete request in Places SDK for Android
-        final FindAutocompletePredictionsRequest newRequest = FindAutocompletePredictionsRequest
-                .builder()
-                .setSessionToken(sessionToken)
-                .setLocationBias(bias)
-                .setQuery(query)
-                .setCountries(List.of("US"))
-                .setTypesFilter(List.of(PlaceTypes.STREET_ADDRESS))
-                .build();
+        final FindAutocompletePredictionsRequest newRequest =
+                FindAutocompletePredictionsRequest.builder()
+                        .setSessionToken(sessionToken)
+                        .setLocationBias(bias)
+                        .setQuery(query)
+                        .setCountries(List.of("US"))
+                        .setTypesFilter(List.of(PlaceTypes.STREET_ADDRESS))
+                        .build();
 
         // Perform autocomplete predictions request
-        placesClient.findAutocompletePredictions(newRequest).addOnSuccessListener((response) -> {
-            List<AutocompletePrediction> predictions = response.getAutocompletePredictions();
-            adapter.setPredictions(predictions);
+        placesClient
+                .findAutocompletePredictions(newRequest)
+                .addOnSuccessListener(
+                        (response) -> {
+                            List<AutocompletePrediction> predictions =
+                                    response.getAutocompletePredictions();
+                            adapter.setPredictions(predictions);
 
-            progressBar.setIndeterminate(false);
-            viewAnimator.setDisplayedChild(predictions.isEmpty() ? 0 : 1);
-        }).addOnFailureListener((exception) -> {
-            progressBar.setIndeterminate(false);
-            if (exception instanceof ApiException apiException) {
-                Log.e(TAG, "Place not found: " + apiException.getStatusCode());
-            }
-        });
+                            progressBar.setIndeterminate(false);
+                            viewAnimator.setDisplayedChild(predictions.isEmpty() ? 0 : 1);
+                        })
+                .addOnFailureListener(
+                        (exception) -> {
+                            progressBar.setIndeterminate(false);
+                            if (exception instanceof ApiException apiException) {
+                                Log.e(TAG, "Place not found: " + apiException.getStatusCode());
+                            }
+                        });
     }
 
     /**
      * Performs a Geocoding API request and displays the result in a dialog.
      *
-     * @see <a href="https://developers.google.com/maps/documentation/geocoding/intro">documentation</a>
+     * @see <a
+     *     href="https://developers.google.com/maps/documentation/geocoding/intro">documentation</a>
      */
     private void geocodePlaceAndDisplay(AutocompletePrediction placePrediction) {
         // Construct the request URL
@@ -207,24 +212,29 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
         final String requestURL = String.format(url, placePrediction.getPlaceId(), apiKey);
 
         // Use the HTTP request URL for Geocoding API to get geographic coordinates for the place
-        JsonObjectRequest request = new JsonObjectRequest(Method.GET, requestURL, null,
-                                                          response -> {
-                                                              try {
-                                                                  // Inspect the value of "results" and make sure it's not empty
-                                                                  JSONArray results = response.getJSONArray("results");
-                                                                  if (results.length() == 0) {
-                                                                      Log.w(TAG, "No results from geocoding request.");
-                                                                      return;
-                                                                  }
+        JsonObjectRequest request =
+                new JsonObjectRequest(
+                        Method.GET,
+                        requestURL,
+                        null,
+                        response -> {
+                            try {
+                                // Inspect the value of "results" and make sure it's not empty
+                                JSONArray results = response.getJSONArray("results");
+                                if (results.length() == 0) {
+                                    Log.w(TAG, "No results from geocoding request.");
+                                    return;
+                                }
 
-                                                                  // Use Gson to convert the response JSON object to a POJO
-                                                                  GeocodingResult result = gson.fromJson(
-                                                                          results.getString(0), GeocodingResult.class);
-                                                                  displayDialog(placePrediction, result);
-                                                              } catch (JSONException e) {
-                                                                  e.printStackTrace();
-                                                              }
-                                                          }, error -> Log.e(TAG, "Request failed"));
+                                // Use Gson to convert the response JSON object to a POJO
+                                GeocodingResult result =
+                                        gson.fromJson(results.getString(0), GeocodingResult.class);
+                                displayDialog(placePrediction, result);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        },
+                        error -> Log.e(TAG, "Request failed"));
 
         // Add the request to the Request queue.
         queue.add(request);

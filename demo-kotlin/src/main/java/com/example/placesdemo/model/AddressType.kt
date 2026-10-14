@@ -16,7 +16,8 @@ package com.example.placesdemo.model
 
 /**
  * The Address types. Please see [Address Types and
- * Address Component Types](https://developers.google.com/maps/documentation/geocoding/intro#Types) for more detail. Some addresses contain additional place categories.
+ * Address Component Types](https://developers.google.com/maps/documentation/geocoding/intro#Types)
+ * for more detail. Some addresses contain additional place categories.
  * Please see [Place Types](https://developers.google.com/places/supported_types) for
  * more detail.
  */
@@ -98,7 +99,12 @@ enum class AddressType(private val addressType: String) {
      * types: `SUBLOCALITY_LEVEL_1` to `SUBLOCALITY_LEVEL_5`. Each sublocality level is a
      * civil entity. Larger numbers indicate a smaller geographic area.
      */
-    SUBLOCALITY("sublocality"), SUBLOCALITY_LEVEL_1("sublocality_level_1"), SUBLOCALITY_LEVEL_2("sublocality_level_2"), SUBLOCALITY_LEVEL_3("sublocality_level_3"), SUBLOCALITY_LEVEL_4("sublocality_level_4"), SUBLOCALITY_LEVEL_5("sublocality_level_5"),
+    SUBLOCALITY("sublocality"),
+    SUBLOCALITY_LEVEL_1("sublocality_level_1"),
+    SUBLOCALITY_LEVEL_2("sublocality_level_2"),
+    SUBLOCALITY_LEVEL_3("sublocality_level_3"),
+    SUBLOCALITY_LEVEL_4("sublocality_level_4"),
+    SUBLOCALITY_LEVEL_5("sublocality_level_5"),
 
     /** A named neighborhood.  */
     NEIGHBORHOOD("neighborhood"),
@@ -455,10 +461,8 @@ enum class AddressType(private val addressType: String) {
      * Indicates an unknown address type returned by the server. The Java Client for Google Maps
      * Services should be updated to support the new value.
      */
-    UNKNOWN("unknown");
+    UNKNOWN("unknown"),
+    ;
 
-    override fun toString(): String {
-        return addressType
-    }
-
+    override fun toString(): String = addressType
 }

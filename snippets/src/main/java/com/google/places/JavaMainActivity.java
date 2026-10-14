@@ -41,7 +41,8 @@ public class JavaMainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Enable edge-to-edge display to draw behind the system bars for a more immersive experience.
+        // Enable edge-to-edge display to draw behind the system bars for a more immersive
+        // experience.
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -50,44 +51,40 @@ public class JavaMainActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle(getTitle() + " (Java)");
 
         // Apply window insets to the root view.
-        ViewCompat.setOnApplyWindowInsetsListener(binding.main, (v, windowInsets) -> {
-            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(insets.left, insets.top, insets.right, insets.bottom);
-            return WindowInsetsCompat.CONSUMED;
-        });
+        ViewCompat.setOnApplyWindowInsetsListener(
+                binding.main,
+                (v, windowInsets) -> {
+                    Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+                    v.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+                    return WindowInsetsCompat.CONSUMED;
+                });
 
-        List<ActivityInfo> activities = Arrays.asList(
-            new ActivityInfo(
-                "Current Place",
-                getString(R.string.current_place_description),
-                CurrentPlaceActivity.class
-            ),
-            new ActivityInfo(
-                "Place Autocomplete",
-                getString(R.string.place_autocomplete_description),
-                PlaceAutocompleteActivity.class
-            ),
-            new ActivityInfo(
-                "Place Details",
-                getString(R.string.place_details_description),
-                PlaceDetailsActivity.class
-            ),
-            new ActivityInfo(
-                "Place Photos",
-                getString(R.string.place_photos_description),
-                PlacePhotosActivity.class
-            ),
-            new ActivityInfo(
-                "Places Icon",
-                getString(R.string.places_icon_description),
-                PlacesIconActivity.class
-            ),
-            new ActivityInfo(
-                "Place Is Open",
-                getString(R.string.place_is_open_description),
-                PlaceIsOpenActivity.class
-            )
-        );
+        List<ActivityInfo> activities =
+                Arrays.asList(
+                        new ActivityInfo(
+                                "Current Place",
+                                getString(R.string.current_place_description),
+                                CurrentPlaceActivity.class),
+                        new ActivityInfo(
+                                "Place Autocomplete",
+                                getString(R.string.place_autocomplete_description),
+                                PlaceAutocompleteActivity.class),
+                        new ActivityInfo(
+                                "Place Details",
+                                getString(R.string.place_details_description),
+                                PlaceDetailsActivity.class),
+                        new ActivityInfo(
+                                "Place Photos",
+                                getString(R.string.place_photos_description),
+                                PlacePhotosActivity.class),
+                        new ActivityInfo(
+                                "Places Icon",
+                                getString(R.string.places_icon_description),
+                                PlacesIconActivity.class),
+                        new ActivityInfo(
+                                "Place Is Open",
+                                getString(R.string.place_is_open_description),
+                                PlaceIsOpenActivity.class));
 
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerView.setAdapter(new ActivitiesAdapter(activities));
@@ -98,14 +95,16 @@ public class JavaMainActivity extends AppCompatActivity {
         private final String description;
         private final Class<? extends AppCompatActivity> activityClass;
 
-        ActivityInfo(String name, String description, Class<? extends AppCompatActivity> activityClass) {
+        ActivityInfo(
+                String name, String description, Class<? extends AppCompatActivity> activityClass) {
             this.name = name;
             this.description = description;
             this.activityClass = activityClass;
         }
     }
 
-    private static class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.ViewHolder> {
+    private static class ActivitiesAdapter
+            extends RecyclerView.Adapter<ActivitiesAdapter.ViewHolder> {
 
         private final List<ActivityInfo> activities;
 
@@ -116,11 +115,9 @@ public class JavaMainActivity extends AppCompatActivity {
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            ListItemActivityBinding binding = ListItemActivityBinding.inflate(
-                LayoutInflater.from(parent.getContext()),
-                parent,
-                false
-            );
+            ListItemActivityBinding binding =
+                    ListItemActivityBinding.inflate(
+                            LayoutInflater.from(parent.getContext()), parent, false);
             return new ViewHolder(binding);
         }
 
@@ -129,10 +126,11 @@ public class JavaMainActivity extends AppCompatActivity {
             ActivityInfo activityInfo = activities.get(position);
             holder.binding.activityName.setText(activityInfo.name);
             holder.binding.activityDescription.setText(activityInfo.description);
-            holder.itemView.setOnClickListener(v -> {
-                Intent intent = new Intent(v.getContext(), activityInfo.activityClass);
-                v.getContext().startActivity(intent);
-            });
+            holder.itemView.setOnClickListener(
+                    v -> {
+                        Intent intent = new Intent(v.getContext(), activityInfo.activityClass);
+                        v.getContext().startActivity(intent);
+                    });
         }
 
         @Override
