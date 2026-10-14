@@ -118,6 +118,7 @@ dependencies {
     // These are the essential libraries for this sample, providing Maps and Places functionality.
     implementation(libs.play.services.maps3d) // The core SDK for embedding 3D Google Maps.
     implementation(libs.places) // The SDK for the Places UI Kit (PlaceDetails fragments).
+    implementation(libs.play.services.location)
     implementation(libs.android.maps.utils) // Google Maps Utils for polyline decoding and other utilities.
 
     // --- Dependency Injection ---

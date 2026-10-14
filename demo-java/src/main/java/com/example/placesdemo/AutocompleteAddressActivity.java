@@ -53,11 +53,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AddressComponent;
 import com.google.android.libraries.places.api.model.AddressComponents;
+import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.PlaceTypes;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.android.libraries.places.widget.PlaceAutocomplete;
 import java.util.Arrays;
 import java.util.List;
 
@@ -93,12 +95,45 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
                         if (result.getResultCode() == Activity.RESULT_OK) {
                             Intent intent = result.getData();
                             if (intent != null) {
-                                Place place = Autocomplete.getPlaceFromIntent(intent);
-
-                                // Write a method to read the address components from the Place
-                                // and populate the form with the address components
-                                Log.d(TAG, "Place: " + place.getAddressComponents());
-                                fillInAddress(place);
+                                AutocompletePrediction prediction =
+                                        PlaceAutocomplete.getPredictionFromIntent(intent);
+                                AutocompleteSessionToken sessionToken =
+                                        PlaceAutocomplete.getSessionTokenFromIntent(intent);
+                                if (prediction != null) {
+                                    List<Place.Field> fields =
+                                            Arrays.asList(
+                                                    Place.Field.ADDRESS_COMPONENTS,
+                                                    Place.Field.LOCATION,
+                                                    Place.Field.VIEWPORT);
+                                    FetchPlaceRequest request =
+                                            FetchPlaceRequest.builder(
+                                                            prediction.getPlaceId(), fields)
+                                                    .setSessionToken(sessionToken)
+                                                    .build();
+                                    placesClient
+                                            .fetchPlace(request)
+                                            .addOnSuccessListener(
+                                                    response -> {
+                                                        Place place = response.getPlace();
+                                                        // Write a method to read the address
+                                                        // components from the Place
+                                                        // and populate the form with the address
+                                                        // components
+                                                        Log.d(
+                                                                TAG,
+                                                                "Place: "
+                                                                        + place
+                                                                                .getAddressComponents());
+                                                        fillInAddress(place);
+                                                    })
+                                            .addOnFailureListener(
+                                                    exception -> {
+                                                        Log.e(
+                                                                TAG,
+                                                                "Place not found: "
+                                                                        + exception.getMessage());
+                                                    });
+                                }
                             }
                         } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
                             // The user canceled the operation.
@@ -149,18 +184,10 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
 
     // [START maps_solutions_android_autocomplete_intent]
     private void startAutocompleteIntent() {
-
-        // Set the fields to specify which types of place data to
-        // return after the user has made a selection.
-        List<Place.Field> fields =
-                Arrays.asList(
-                        Place.Field.ADDRESS_COMPONENTS, Place.Field.LOCATION, Place.Field.VIEWPORT);
-
-        // Build the autocomplete intent with field, country, and type filters applied
+        // Build the autocomplete intent with country and type filters applied
         Intent intent =
-                new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                new PlaceAutocomplete.IntentBuilder()
                         .setCountries(List.of("US"))
-                        // IMPORTANT: the widget uses the legacy api
                         .setTypesFilter(List.of(PlaceTypes.ADDRESS))
                         .build(this);
         startAutocomplete.launch(intent);

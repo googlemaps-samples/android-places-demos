@@ -17,17 +17,20 @@
 package com.example.placesdemo;
 
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
+import android.net.Uri;
 import android.text.TextUtils;
+import android.text.style.StyleSpan;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.PlaceLikelihood;
+import com.google.android.libraries.places.api.model.RoutingSummary;
 import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
+import com.google.android.libraries.places.api.net.SearchNearbyResponse;
 import java.util.Arrays;
 import java.util.List;
 
@@ -110,22 +113,40 @@ public final class StringUtil {
         return builder.toString();
     }
 
-    static String stringify(FindCurrentPlaceResponse response, boolean raw) {
+    static String stringify(SearchNearbyResponse response, boolean raw) {
         StringBuilder builder = new StringBuilder();
+        List<Place> places = response.getPlaces();
 
-        builder.append(response.getPlaceLikelihoods().size()).append(" Current Place Results:");
+        builder.append(places.size()).append(" Nearby Places Results:");
 
         if (raw) {
             builder.append(RESULT_SEPARATOR);
-            appendListToStringBuilder(builder, response.getPlaceLikelihoods());
+            appendListToStringBuilder(builder, places);
         } else {
-            for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
+            for (Place place : places) {
                 builder.append(RESULT_SEPARATOR)
-                        .append("Likelihood: ")
-                        .append(placeLikelihood.getLikelihood())
-                        .append(FIELD_SEPARATOR)
-                        .append("Place: ")
-                        .append(stringify(placeLikelihood.getPlace()));
+                        .append(
+                                place.getDisplayName() != null
+                                        ? place.getDisplayName()
+                                        : "Unnamed Place")
+                        .append(" (")
+                        .append(place.getId() != null ? place.getId() : "no_id")
+                        .append(")");
+            }
+        }
+
+        List<RoutingSummary> routingSummaries = response.getRoutingSummaries();
+        if (routingSummaries != null && !routingSummaries.isEmpty()) {
+            builder.append(RESULT_SEPARATOR)
+                    .append(routingSummaries.size())
+                    .append(" Routing Summaries:");
+            if (raw) {
+                builder.append(RESULT_SEPARATOR);
+                appendListToStringBuilder(builder, routingSummaries);
+            } else {
+                for (RoutingSummary summary : routingSummaries) {
+                    builder.append(RESULT_SEPARATOR).append(summary.toString());
+                }
             }
         }
 
@@ -134,6 +155,19 @@ public final class StringUtil {
 
     static String stringify(Place place) {
         return place.getDisplayName() + " (" + place.getFormattedAddress() + ")";
+    }
+
+    static String stringify(@Nullable AutocompletePrediction prediction) {
+        if (prediction == null) {
+            return "";
+        }
+        String primary = prediction.getPrimaryText(new StyleSpan(Typeface.BOLD)).toString();
+        String secondary = prediction.getSecondaryText(new StyleSpan(Typeface.NORMAL)).toString();
+        return primary + " (" + secondary + ")";
+    }
+
+    static String stringify(Uri uri) {
+        return uri.toString();
     }
 
     static String stringify(Bitmap bitmap) {
@@ -157,6 +191,21 @@ public final class StringUtil {
             builder.append(place);
         } else {
             builder.append(stringify(place));
+        }
+
+        return builder.toString();
+    }
+
+    public static String stringifyAutocompletePrediction(
+            @Nullable AutocompletePrediction prediction, boolean raw) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("Autocomplete Prediction Result:").append(RESULT_SEPARATOR);
+
+        if (raw) {
+            builder.append(prediction);
+        } else {
+            builder.append(stringify(prediction));
         }
 
         return builder.toString();

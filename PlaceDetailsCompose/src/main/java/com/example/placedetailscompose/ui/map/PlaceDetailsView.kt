@@ -24,11 +24,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -40,111 +43,114 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.FragmentContainerView
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.widget.PlaceDetailsCompactFragment
+import com.google.android.libraries.places.compose.AdvancedPlaceDetailsCompact
+import com.google.android.libraries.places.compose.AdvancedPlaceDetailsCompactContent
+import com.google.android.libraries.places.compose.PlaceReference
+import com.google.android.libraries.places.compose.action.MainAction
 import com.google.android.libraries.places.widget.PlaceDetailsFragment
 import com.google.android.libraries.places.widget.PlaceLoadListener
 import com.google.android.libraries.places.widget.model.Orientation
+import com.google.android.libraries.places.compose.Orientation as ComposeOrientation
 
 /**
- * This composable displays the **Compact** version of the Place Details UI.
+ * This composable displays the **Compact** version of the Place Details UI using the native
+ * Jetpack Compose [AdvancedPlaceDetailsCompact] component introduced in Places SDK for Android 6.0.2.
  *
- * **Why use `AndroidView`?**
- * The Places UI Kit components (`PlaceDetailsCompactFragment` and `PlaceDetailsFragment`) are currently
- * implemented as Android Fragments, not native Composables. To use them in a Jetpack Compose app,
- * we need to bridge the gap using `AndroidView`. This allows us to host a legacy View (in this case,
- * a `FragmentContainerView`) inside our Compose layout.
+ * Unlike `PlaceDetailsFragment` (which is a Fragment hosted via `AndroidView`),
+ * [AdvancedPlaceDetailsCompact] is a first-class Jetpack Compose component that accepts a
+ * [PlaceReference] (`PlaceId`, `Coordinates`, or `ResourceName`), configurable content sections,
+ * main/corner actions, and custom composable content slots (`basicSectionTop` and
+ * `basicSectionBottom`).
  *
  * @param place The point of interest to display details for.
- * @param onDismiss A callback to be invoked when the place details fragment is dismissed.
+ * @param onDismiss A callback to be invoked when the place details card is dismissed.
+ * @param modifier Optional [Modifier] for the container.
+ * @param content Set of [AdvancedPlaceDetailsCompactContent] sections to render.
+ * @param showCustomSlots Whether to render custom composable content in `basicSectionTop` and `basicSectionBottom`.
  */
 @Composable
 fun PlaceDetailsCompactView(
     place: Place,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    content: List<PlaceDetailsCompactFragment.Content> = PlaceDetailsCompactFragment.ALL_CONTENT,
+    content: Set<AdvancedPlaceDetailsCompactContent> = AdvancedPlaceDetailsCompactContent.ALL_CONTENT,
+    showCustomSlots: Boolean = true,
 ) {
-    // We need to know the device orientation to tell the Fragment how to lay itself out.
-    // Although Compose handles layout differently, the underlying Fragment still relies on this signal.
     val orientation =
         if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Orientation.HORIZONTAL
+            ComposeOrientation.HORIZONTAL
         } else {
-            Orientation.VERTICAL
+            ComposeOrientation.VERTICAL
         }
 
-    val context = LocalContext.current
+    val reference: PlaceReference? = remember(place.id, place.location) {
+        when {
+            place.id != null -> PlaceReference.PlaceId(place.id!!)
 
-    // **Why generate a View ID?**
-    // The FragmentManager needs a unique ID to identify the container where the fragment will be placed.
-    // `View.generateViewId()` gives us a safe, unique integer that won't collide with other views.
-    // We use `remember` so this ID persists across recompositions.
-    val fragmentContainerId = remember { View.generateViewId() }
+            place.location != null -> PlaceReference.Coordinates(
+                place.location!!.latitude,
+                place.location!!.longitude,
+            )
 
-    // We need the FragmentManager to perform Fragment transactions (adding/removing the fragment).
-    // We cast the Context to AppCompatActivity assuming this Composable is hosted within one.
-    // In a production app, you might want a more robust way to provide the FragmentManager.
-    val fragmentManager = remember(context) {
-        (context as? AppCompatActivity)?.supportFragmentManager
-            ?: throw IllegalStateException("Context must be a FragmentActivity")
+            else -> null
+        }
     }
 
-    val fragment = remember(fragmentManager, fragmentContainerId, orientation, content) {
-        fragmentManager.findFragmentById(fragmentContainerId) as? PlaceDetailsCompactFragment
-            ?: PlaceDetailsCompactFragment.newInstance(
-                content,
-                orientation,
-            ).also { fragment ->
-                // **Listening for Load Events**
-                fragment.setPlaceLoadListener(object : PlaceLoadListener {
-                    override fun onSuccess(place: Place) {
-                        Log.d("PlaceDetails", "Loading details for: ${place.id} at ${place.location}")
-                    }
-
-                    override fun onFailure(e: Exception) {
-                        Log.d("PlaceDetailsView", "Place failed to load place: ${e.message}")
-                        onDismiss()
-                    }
-                })
-            }
+    if (reference == null) {
+        Log.e("PlaceDetailsView", "Place has no ID and no location: $place")
+        return
     }
 
     Box(modifier = modifier.fillMaxWidth()) {
-        AndroidView(
+        AdvancedPlaceDetailsCompact(
+            reference = reference,
             modifier = Modifier.fillMaxWidth(),
-            factory = { context ->
-                // **The Factory Block**
-                // This runs only once when the AndroidView is first created.
-                // We create the container view that will hold our Fragment.
-                FragmentContainerView(context).apply {
-                    id = fragmentContainerId
-                    // Ensure the fragment is added.
-                    // We use commit() (async) to allow the view to be attached before the transaction runs.
-                    if (fragmentManager.findFragmentById(fragmentContainerId) == null) {
-                        fragmentManager.beginTransaction()
-                            .add(fragmentContainerId, fragment)
-                            .commit()
+            orientation = orientation,
+            content = content,
+            mainActions = {
+                listOf(
+                    MainAction.OpenDirections(),
+                    MainAction.OpenWebsite(),
+                    MainAction.Call(),
+                    MainAction.OpenInMaps(),
+                )
+            },
+            onPlaceLoaded = { loadedPlace ->
+                Log.d("PlaceDetails", "Loaded details for: ${loadedPlace.id} at ${loadedPlace.location}")
+            },
+            onPlaceLoadFailed = { exception ->
+                Log.d("PlaceDetailsView", "Failed to load place: ${exception.message}")
+                onDismiss()
+            },
+        ) {
+            if (showCustomSlots) {
+                basicSectionTop {
+                    Surface(
+                        color = MaterialTheme.colorScheme.secondaryContainer,
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier.padding(bottom = 4.dp),
+                    ) {
+                        Text(
+                            text = "Featured Place",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                        )
                     }
                 }
-            },
-            update = { view ->
-                // **The Update Block**
-                // This runs whenever the Composable recomposes (e.g., when `place` changes).
-
-                // We post the update to ensure it runs after the fragment transaction has completed
-                // and the fragment's view hierarchy is fully initialized.
-                view.post {
-                    // Load the place data
-                    if (place.id != null) {
-                        fragment.loadWithPlaceId(place.id!!)
-                    } else if (place.location != null) {
-                        fragment.loadWithCoordinates(place.location!!)
-                    } else {
-                        Log.e("PlaceDetailsView", "Place has no ID and no location: $place")
+                basicSectionBottom {
+                    val summary = this.place.editorialSummary
+                    if (!summary.isNullOrBlank()) {
+                        Text(
+                            text = summary,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(top = 4.dp),
+                        )
                     }
                 }
-            },
-        )
+            }
+        }
 
         // Close Button
         IconButton(

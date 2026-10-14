@@ -24,6 +24,8 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +38,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.LocationBias;
 import com.google.android.libraries.places.api.model.LocationRestriction;
@@ -44,33 +47,72 @@ import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteActivity;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.android.libraries.places.widget.BasicPlaceAutocomplete;
+import com.google.android.libraries.places.widget.PlaceAutocomplete;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * Activity to demonstrate Place Autocomplete (activity widget intent, fragment widget, and {@link
- * PlacesClient#([PlacesClient.findAutocompletePredictions])}).
+ * Activity to demonstrate Place Autocomplete ({@link PlaceAutocomplete}, {@link
+ * BasicPlaceAutocomplete}, and {@link PlacesClient#findAutocompletePredictions}).
  */
 public class PlaceAutocompleteActivity extends AppCompatActivity {
 
-    private static final int AUTOCOMPLETE_REQUEST_CODE = 23487;
     private PlacesClient placesClient;
     private FieldSelector fieldSelector;
     private PlaceAutocompleteActivityBinding binding;
+
+    private final ActivityResultLauncher<Intent> autocompleteLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        Intent data = result.getData();
+                        if (result.getResultCode() == RESULT_OK && data != null) {
+                            AutocompletePrediction prediction =
+                                    PlaceAutocomplete.getPredictionFromIntent(data);
+                            binding.response.setText(
+                                    StringUtil.stringifyAutocompletePrediction(
+                                            prediction, isDisplayRawResultsChecked()));
+                        } else if (result.getResultCode()
+                                        == com.google.android.libraries.places.widget
+                                                .PlaceAutocompleteActivity.RESULT_ERROR
+                                && data != null) {
+                            Status status = PlaceAutocomplete.getResultStatusFromIntent(data);
+                            if (status != null) {
+                                binding.response.setText(status.getStatusMessage());
+                            }
+                        }
+                    });
+
+    private final ActivityResultLauncher<Intent> basicAutocompleteLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        Intent data = result.getData();
+                        if (result.getResultCode() == RESULT_OK && data != null) {
+                            Place place = BasicPlaceAutocomplete.getPlaceFromIntent(data);
+                            if (place != null) {
+                                binding.response.setText(
+                                        StringUtil.stringifyAutocompleteWidget(
+                                                place, isDisplayRawResultsChecked()));
+                            }
+                        } else if (result.getResultCode()
+                                        == com.google.android.libraries.places.widget
+                                                .PlaceAutocompleteActivity.RESULT_ERROR
+                                && data != null) {
+                            Status status = BasicPlaceAutocomplete.getResultStatusFromIntent(data);
+                            if (status != null) {
+                                binding.response.setText(status.getStatusMessage());
+                            }
+                        }
+                    });
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         // Enable edge-to-edge display. This must be called before calling super.onCreate().
         EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.place_autocomplete_activity);
 
         binding = PlaceAutocompleteActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -86,10 +128,10 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
                 new FieldSelector(
                         binding.useCustomFields, binding.customFieldsList, savedInstanceState);
 
-        setupAutocompleteSupportFragment();
-
         // Set listeners for Autocomplete activity
         binding.autocompleteActivityButton.setOnClickListener(view -> startAutocompleteActivity());
+        binding.basicAutocompleteActivityButton.setOnClickListener(
+                view -> startBasicAutocompleteActivity());
 
         // Set listeners for programmatic Autocomplete
         binding.fetchAutocompletePredictionsButton.setOnClickListener(
@@ -105,77 +147,30 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
         fieldSelector.onSaveInstanceState(bundle);
     }
 
-    private void setupAutocompleteSupportFragment() {
-        final AutocompleteSupportFragment autocompleteSupportFragment =
-                (AutocompleteSupportFragment)
-                        getSupportFragmentManager()
-                                .findFragmentById(R.id.autocomplete_support_fragment);
-        if (autocompleteSupportFragment != null) {
-            autocompleteSupportFragment.setPlaceFields(getPlaceFields());
-            autocompleteSupportFragment.setOnPlaceSelectedListener(getPlaceSelectionListener());
-        }
-
-        binding.autocompleteSupportFragmentUpdateButton.setOnClickListener(
-                view ->
-                        autocompleteSupportFragment
-                                .setPlaceFields(getPlaceFields())
-                                .setText(getQuery())
-                                .setHint(getHint())
-                                .setCountries(getCountries())
-                                .setLocationBias(getLocationBias())
-                                .setLocationRestriction(getLocationRestriction())
-                                .setTypesFilter(getTypesFilter())
-                                .setActivityMode(getMode()));
-    }
-
-    private PlaceSelectionListener getPlaceSelectionListener() {
-        return new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(@NonNull Place place) {
-                binding.response.setText(
-                        StringUtil.stringifyAutocompleteWidget(
-                                place, isDisplayRawResultsChecked()));
-            }
-
-            @Override
-            public void onError(@NonNull Status status) {
-                binding.response.setText(status.getStatusMessage());
-            }
-        };
-    }
-
-    /** Called when AutocompleteActivity finishes */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
-        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
-            if (resultCode == AutocompleteActivity.RESULT_OK) {
-                Place place = Autocomplete.getPlaceFromIntent(intent);
-                binding.response.setText(
-                        StringUtil.stringifyAutocompleteWidget(
-                                place, isDisplayRawResultsChecked()));
-            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                Status status = Autocomplete.getStatusFromIntent(intent);
-                binding.response.setText(status.getStatusMessage());
-            } // The user canceled the operation.
-        }
-
-        // Required because this class extends AppCompatActivity which extends FragmentActivity
-        // which implements this method to pass onActivityResult calls to child fragments
-        // (eg AutocompleteFragment).
-        super.onActivityResult(requestCode, resultCode, intent);
-    }
-
     private void startAutocompleteActivity() {
         Intent autocompleteIntent =
-                new Autocomplete.IntentBuilder(getMode(), getPlaceFields())
+                new PlaceAutocomplete.IntentBuilder()
                         .setInitialQuery(getQuery())
-                        .setHint(getHint())
                         .setCountries(getCountries())
                         .setLocationBias(getLocationBias())
                         .setLocationRestriction(getLocationRestriction())
                         .setTypesFilter(getTypesFilter())
+                        .setOrigin(getOrigin())
                         .build(this);
-        startActivityForResult(autocompleteIntent, AUTOCOMPLETE_REQUEST_CODE);
+        autocompleteLauncher.launch(autocompleteIntent);
+    }
+
+    private void startBasicAutocompleteActivity() {
+        Intent basicAutocompleteIntent =
+                new BasicPlaceAutocomplete.IntentBuilder()
+                        .setInitialQuery(getQuery())
+                        .setCountries(getCountries())
+                        .setLocationBias(getLocationBias())
+                        .setLocationRestriction(getLocationRestriction())
+                        .setTypesFilter(getTypesFilter())
+                        .setOrigin(getOrigin())
+                        .build(this);
+        basicAutocompleteLauncher.launch(basicAutocompleteIntent);
     }
 
     private void findAutocompletePredictions() {
@@ -301,14 +296,6 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
         return typesFilterEditText.isEnabled()
                 ? Arrays.asList(typesFilterEditText.getText().toString().split("[\\s,]+"))
                 : new ArrayList<>();
-    }
-
-    private AutocompleteActivityMode getMode() {
-        boolean isOverlayMode =
-                ((CheckBox) findViewById(R.id.autocomplete_activity_overlay_mode)).isChecked();
-        return isOverlayMode
-                ? AutocompleteActivityMode.OVERLAY
-                : AutocompleteActivityMode.FULLSCREEN;
     }
 
     private boolean isDisplayRawResultsChecked() {

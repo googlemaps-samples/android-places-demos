@@ -33,19 +33,20 @@ import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.model.CircularBounds;
+import com.google.android.libraries.places.api.model.LocationRestriction;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.PlaceLikelihood;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.api.net.SearchNearbyRequest;
+import com.google.android.libraries.places.api.net.SearchNearbyResponse;
 import com.google.places.databinding.ActivityCurrentPlaceBinding;
 import com.google.places.databinding.ListItemPlaceBinding;
 import com.google.places.kotlin.MainApplication;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 public class CurrentPlaceActivity extends AppCompatActivity {
 
@@ -106,20 +107,26 @@ public class CurrentPlaceActivity extends AppCompatActivity {
                         Place.Field.FORMATTED_ADDRESS,
                         Place.Field.LOCATION);
 
-        // Use the builder to create a FindCurrentPlaceRequest.
-        FindCurrentPlaceRequest request = FindCurrentPlaceRequest.newInstance(placeFields);
+        // Define the search area around the current location.
+        LatLng currentLocation = new LatLng(37.4220, -122.0841);
+        LocationRestriction circle =
+                CircularBounds.newInstance(currentLocation, /* radius= */ 500.0);
 
-        // Call findCurrentPlace and handle the response (first check that the user has granted
+        // Use the builder to create a SearchNearbyRequest.
+        SearchNearbyRequest request =
+                SearchNearbyRequest.builder(circle, placeFields).setMaxResultCount(20).build();
+
+        // Call searchNearby and handle the response (first check that the user has granted
         // permission).
         if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            Task<FindCurrentPlaceResponse> placeResponse = placesClient.findCurrentPlace(request);
+            Task<SearchNearbyResponse> placeResponse = placesClient.searchNearby(request);
             placeResponse.addOnCompleteListener(
                     task -> {
                         binding.progressBar.setVisibility(View.GONE);
                         if (task.isSuccessful()) {
-                            FindCurrentPlaceResponse response = task.getResult();
-                            adapter.setPlaceLikelihoods(response.getPlaceLikelihoods());
+                            SearchNearbyResponse response = task.getResult();
+                            adapter.setPlaces(response.getPlaces());
                         } else {
                             Exception exception = task.getException();
                             if (exception instanceof ApiException apiException) {
@@ -147,7 +154,7 @@ public class CurrentPlaceActivity extends AppCompatActivity {
     // Adapter for the RecyclerView
     private static class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder> {
 
-        private List<PlaceLikelihood> placeLikelihoods = new ArrayList<>();
+        private List<Place> places = new ArrayList<>();
 
         @NonNull
         @Override
@@ -160,17 +167,17 @@ public class CurrentPlaceActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            PlaceLikelihood placeLikelihood = placeLikelihoods.get(position);
-            holder.bind(placeLikelihood);
+            Place place = places.get(position);
+            holder.bind(place);
         }
 
         @Override
         public int getItemCount() {
-            return placeLikelihoods.size();
+            return places.size();
         }
 
-        public void setPlaceLikelihoods(List<PlaceLikelihood> placeLikelihoods) {
-            this.placeLikelihoods = placeLikelihoods;
+        public void setPlaces(List<Place> places) {
+            this.places = places;
             notifyDataSetChanged();
         }
 
@@ -182,15 +189,10 @@ public class CurrentPlaceActivity extends AppCompatActivity {
                 this.binding = binding;
             }
 
-            void bind(PlaceLikelihood placeLikelihood) {
-                Place place = placeLikelihood.getPlace();
+            void bind(Place place) {
                 binding.placeName.setText(place.getDisplayName());
                 binding.placeAddress.setText(place.getFormattedAddress());
-                binding.placeLikelihood.setText(
-                        String.format(
-                                Locale.getDefault(),
-                                "Likelihood: %.2f",
-                                placeLikelihood.getLikelihood()));
+                binding.placeLikelihood.setVisibility(View.GONE);
             }
         }
     }

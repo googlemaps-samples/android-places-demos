@@ -21,9 +21,11 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.CheckBox
 import android.widget.TextView
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
 import com.example.placesdemo.databinding.PlaceAutocompleteActivityBinding
 import com.google.android.gms.common.api.Status
@@ -37,14 +39,12 @@ import com.google.android.libraries.places.api.model.RectangularBounds
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.libraries.places.api.net.PlacesClient
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment
+import com.google.android.libraries.places.widget.BasicPlaceAutocomplete
 import com.google.android.libraries.places.widget.PlaceAutocomplete
 import com.google.android.libraries.places.widget.PlaceAutocompleteActivity
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 
 /**
- * Activity to demonstrate Place Autocomplete (activity widget intent, fragment widget, and
+ * Activity to demonstrate Place Autocomplete ([PlaceAutocomplete], [BasicPlaceAutocomplete], and
  * [PlacesClient.findAutocompletePredictions]).
  */
 class PlaceAutocompleteActivity : BaseActivity() {
@@ -81,11 +81,12 @@ class PlaceAutocompleteActivity : BaseActivity() {
             findViewById(R.id.custom_fields_list),
             savedInstanceState,
         )
-        setupAutocompleteSupportFragment()
 
         // Set listeners for Autocomplete activity
         binding.autocompleteActivityButton
             .setOnClickListener { startAutocompleteActivity() }
+        binding.basicAutocompleteActivityButton
+            .setOnClickListener { startBasicAutocompleteActivity() }
 
         // Set listeners for programmatic Autocomplete
         binding.fetchAutocompletePredictionsButton
@@ -100,63 +101,71 @@ class PlaceAutocompleteActivity : BaseActivity() {
         fieldSelector.onSaveInstanceState(outState)
     }
 
-    private fun setupAutocompleteSupportFragment() {
-        val autocompleteSupportFragment =
-            supportFragmentManager.findFragmentById(R.id.autocomplete_support_fragment) as AutocompleteSupportFragment?
-        autocompleteSupportFragment!!.setPlaceFields(placeFields)
-        autocompleteSupportFragment.setOnPlaceSelectedListener(placeSelectionListener)
-        findViewById<View>(R.id.autocomplete_support_fragment_update_button)
-            .setOnClickListener {
-                autocompleteSupportFragment
-                    .setPlaceFields(placeFields)
-                    .setText(query)
-                    .setHint(hint)
-                    .setCountries(countries)
-                    .setLocationBias(locationBias)
-                    .setLocationRestriction(locationRestriction)
-                    .setTypesFilter(getTypesFilter())
-                    .setActivityMode(mode)
-            }
-    }
-
-    private val placeSelectionListener: PlaceSelectionListener
-        get() = object : PlaceSelectionListener {
-            override fun onPlaceSelected(place: Place) {
-                binding.response.text =
-                    StringUtil.stringifyAutocompleteWidget(place, isDisplayRawResultsChecked)
-            }
-
-            override fun onError(status: Status) {
-                binding.response.text = status.statusMessage
-            }
-        }
-
     /**
-     * Launches Autocomplete activity and handles result
+     * Launches PlaceAutocomplete activity and handles result
      */
     private var autocompleteLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            when (result.resultCode) {
-                RESULT_OK -> {
-                    val data: Intent? = result.data
-                    if (data != null) {
-                        val place = PlaceAutocomplete.getPredictionFromIntent(data)
-                        binding.response.text =
-                            StringUtil.stringifyAutocompletePrediction(place, isDisplayRawResultsChecked)
-                    }
-                }
+            handleAutocompleteResult(result)
+        }
 
-                PlaceAutocompleteActivity.RESULT_ERROR -> {
-                    val data: Intent? = result.data
-                    val status = data?.let { PlaceAutocomplete.getResultStatusFromIntent(it) }
-                    binding.response.text = status?.statusMessage
-                }
-
-                RESULT_CANCELED -> {
-                    // The user canceled the operation.
+    @VisibleForTesting
+    internal fun handleAutocompleteResult(result: ActivityResult) {
+        when (result.resultCode) {
+            RESULT_OK -> {
+                val data: Intent? = result.data
+                if (data != null) {
+                    val place = PlaceAutocomplete.getPredictionFromIntent(data)
+                    binding.response.text =
+                        StringUtil.stringifyAutocompletePrediction(place, isDisplayRawResultsChecked)
                 }
             }
+
+            PlaceAutocompleteActivity.RESULT_ERROR -> {
+                val data: Intent? = result.data
+                val status = data?.let { PlaceAutocomplete.getResultStatusFromIntent(it) }
+                binding.response.text = status?.statusMessage
+            }
+
+            RESULT_CANCELED -> {
+                // The user canceled the operation.
+            }
         }
+    }
+
+    /**
+     * Launches BasicPlaceAutocomplete activity and handles result
+     */
+    private var basicAutocompleteLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            handleBasicAutocompleteResult(result)
+        }
+
+    @VisibleForTesting
+    internal fun handleBasicAutocompleteResult(result: ActivityResult) {
+        when (result.resultCode) {
+            RESULT_OK -> {
+                val data: Intent? = result.data
+                if (data != null) {
+                    val place = BasicPlaceAutocomplete.getPlaceFromIntent(data)
+                    if (place != null) {
+                        binding.response.text =
+                            StringUtil.stringifyAutocompleteWidget(place, isDisplayRawResultsChecked)
+                    }
+                }
+            }
+
+            PlaceAutocompleteActivity.RESULT_ERROR -> {
+                val data: Intent? = result.data
+                val status = data?.let { BasicPlaceAutocomplete.getResultStatusFromIntent(it) }
+                binding.response.text = status?.statusMessage
+            }
+
+            RESULT_CANCELED -> {
+                // The user canceled the operation.
+            }
+        }
+    }
 
     private fun startAutocompleteActivity() {
         val autocompleteIntent = PlaceAutocomplete.IntentBuilder()
@@ -165,8 +174,21 @@ class PlaceAutocompleteActivity : BaseActivity() {
             .setLocationBias(locationBias)
             .setLocationRestriction(locationRestriction)
             .setTypesFilter(getTypesFilter())
+            .setOrigin(origin)
             .build(this)
         autocompleteLauncher.launch(autocompleteIntent)
+    }
+
+    private fun startBasicAutocompleteActivity() {
+        val basicAutocompleteIntent = BasicPlaceAutocomplete.IntentBuilder()
+            .setInitialQuery(query)
+            .setCountries(countries)
+            .setLocationBias(locationBias)
+            .setLocationRestriction(locationRestriction)
+            .setTypesFilter(getTypesFilter())
+            .setOrigin(origin)
+            .build(this)
+        basicAutocompleteLauncher.launch(basicAutocompleteIntent)
     }
 
     private fun findAutocompletePredictions() {
@@ -271,15 +293,6 @@ class PlaceAutocompleteActivity : BaseActivity() {
     } else {
         emptyList()
     }
-
-    // This Enum is deprecated, but there is no replacement. See
-    // https://developers.google.com/maps/documentation/places/android-sdk/reference/com/google/android/libraries/places/widget/model/AutocompleteActivityMode
-    private val mode: AutocompleteActivityMode
-        get() {
-            val isOverlayMode =
-                binding.autocompleteActivityOverlayMode.isChecked
-            return if (isOverlayMode) AutocompleteActivityMode.OVERLAY else AutocompleteActivityMode.FULLSCREEN
-        }
 
     private val isDisplayRawResultsChecked: Boolean
         get() = binding.displayRawResults.isChecked

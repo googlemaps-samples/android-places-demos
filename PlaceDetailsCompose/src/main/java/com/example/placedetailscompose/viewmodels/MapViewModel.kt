@@ -20,7 +20,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.placedetailscompose.repository.LocationRepository
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
-import com.google.android.libraries.places.widget.PlaceDetailsCompactFragment
+import com.google.android.libraries.places.compose.AdvancedPlaceDetailsCompactContent
 import com.google.android.libraries.places.widget.PlaceDetailsFragment
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -137,14 +137,15 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     // **Content Selection State**
-    private val _selectedCompactContent = MutableStateFlow(PlaceDetailsCompactFragment.ALL_CONTENT)
-    val selectedCompactContent: StateFlow<List<PlaceDetailsCompactFragment.Content>> =
+    private val _selectedCompactContent =
+        MutableStateFlow(AdvancedPlaceDetailsCompactContent.ALL_CONTENT.toList())
+    val selectedCompactContent: StateFlow<List<AdvancedPlaceDetailsCompactContent>> =
         _selectedCompactContent.asStateFlow()
 
     private val _selectedFullContent = MutableStateFlow(PlaceDetailsFragment.STANDARD_CONTENT)
     val selectedFullContent: StateFlow<List<PlaceDetailsFragment.Content>> = _selectedFullContent.asStateFlow()
 
-    fun updateCompactContent(content: List<PlaceDetailsCompactFragment.Content>) {
+    fun updateCompactContent(content: List<AdvancedPlaceDetailsCompactContent>) {
         _selectedCompactContent.value = content
     }
 

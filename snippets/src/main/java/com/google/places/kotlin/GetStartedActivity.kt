@@ -36,7 +36,7 @@ class GetStartedActivity : AppCompatActivity() {
 
         // [START maps_places_get_started]
         // Initialize the SDK
-        Places.initialize(applicationContext, apiKey)
+        Places.initializeWithNewPlacesApiEnabled(applicationContext, apiKey)
 
         // Create a new PlacesClient instance
         val placesClient = Places.createClient(this)

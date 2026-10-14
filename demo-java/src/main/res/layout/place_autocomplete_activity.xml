@@ -216,25 +216,11 @@
         android:layout_height="wrap_content"
         android:text="@string/autocomplete_activity_button"/>
 
-    <!-- Autocomplete support fragment -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/autocomplete_support_fragment_text_label"
-        android:text="@string/autocomplete_support_fragment_text_label"/>
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/autocomplete_support_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-        tools:layout="@layout/places_autocomplete_fragment" />
-
     <Button
-        android:id="@+id/autocomplete_support_fragment_update_button"
+        android:id="@+id/basic_autocomplete_activity_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/autocomplete_support_fragment_update_button"/>
+        android:text="@string/basic_autocomplete_activity_button"/>
 
     <!-- Results -->
     <CheckBox
