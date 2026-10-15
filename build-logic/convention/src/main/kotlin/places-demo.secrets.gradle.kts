@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+import com.android.build.api.variant.AndroidComponentsExtension
+import com.android.build.api.variant.HasHostTests
+import com.android.build.gradle.api.AndroidBasePlugin
 import java.util.Properties
 import org.gradle.api.GradleException
 import org.gradle.api.provider.ListProperty
@@ -136,4 +139,14 @@ secrets {
     // Optionally specify a different file name containing your secrets.
     // The plugin defaults to "local.properties"
     propertiesFileName = "secrets.properties"
+}
+
+// AGP 9 gives host (unit) tests their own manifest placeholders, so tests that merge the app
+// manifest (isIncludeAndroidResources) need the API keys the secrets plugin sets on the variant.
+plugins.withType<AndroidBasePlugin> {
+    extensions.getByType(AndroidComponentsExtension::class.java).onVariants { variant ->
+        (variant as? HasHostTests)?.hostTests?.values?.forEach { hostTest ->
+            hostTest.manifestPlaceholders.putAll(variant.manifestPlaceholders)
+        }
+    }
 }
