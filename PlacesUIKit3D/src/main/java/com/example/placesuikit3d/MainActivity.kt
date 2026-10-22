@@ -70,6 +70,7 @@ import com.example.placesuikit3d.utils.toValidCamera
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps3d.GoogleMap3D
+import com.google.android.gms.maps3d.Map3DInitConfig
 import com.google.android.gms.maps3d.OnMap3DViewReadyCallback
 import com.google.android.gms.maps3d.model.Camera
 import com.google.android.gms.maps3d.model.Map3DMode
@@ -195,7 +196,10 @@ class MainActivity :
         val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
 
         val map3DView = remember {
-            com.google.android.gms.maps3d.Map3DView(context).apply {
+            com.google.android.gms.maps3d.Map3DView(
+                context,
+                Map3DInitConfig.create(mapMode = Map3DMode.HYBRID),
+            ).apply {
                 getMap3DViewAsync(this@MainActivity)
             }
         }
@@ -334,11 +338,14 @@ class MainActivity :
         googleMap3D.setMapMode(Map3DMode.HYBRID)
         googleMap3D.setCamera(initialCamera)
 
-        googleMap3D.setMap3DClickListener { _, placeId ->
+        googleMap3D.setMap3DClickListener { event ->
+            val placeId = event.placeId
             Log.e(TAG, "Map clicked: placeId=$placeId")
             if (!placeId.isNullOrEmpty()) {
                 viewModel.setSelectedPlaceId(placeId)
+                return@setMap3DClickListener true
             }
+            return@setMap3DClickListener false
         }
 
         if (isLocationPermissionGranted()) {
