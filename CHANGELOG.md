@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0](https://github.com/googlemaps-samples/android-places-demos/compare/v4.0.0...v4.1.0) (2026-10-23)
+
+
+### Features
+
+* upgrade to Places SDK for Android 6.0.2 and migrate removed legacy APIs ([#1092](https://github.com/googlemaps-samples/android-places-demos/issues/1092)) ([6a1cd28](https://github.com/googlemaps-samples/android-places-demos/commit/6a1cd2859e8c6a83019147e79149642a1c5981c4))
+
 ## [4.0.0](https://github.com/googlemaps-samples/android-places-demos/compare/v3.2.0...v4.0.0) (2026-10-02)
 
 

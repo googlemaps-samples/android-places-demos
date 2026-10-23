@@ -1,7 +1,7 @@
 [versions]
 # Project Configuration
 versionCode = "1"
-versionName = "4.0.0" # {x-release-please-version}
+versionName = "4.1.0" # {x-release-please-version}
 agp = "9.4.1"
 kotlin = "2.4.21"
 coreKtx = "1.19.1"
