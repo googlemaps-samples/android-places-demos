@@ -46,6 +46,7 @@ android {
     }
 
     kotlin {
+        jvmToolchain(21)
         compilerOptions {
             freeCompilerArgs.addAll(
                 "-opt-in=kotlin.RequiresOptIn",
@@ -92,8 +93,16 @@ dependencies {
 
     implementation(libs.places)
 
-    // --- Attribution library ---
+    // Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.google.truth)
+    testImplementation(libs.mockk)
+    testImplementation(libs.robolectric)
+
+    // --- Attribution library & Unified Catalog ---
     implementation(project(":library"))
+    implementation(project(":common-ui"))
+    implementation(project(":reviewer"))
 }
 
 

@@ -24,6 +24,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import com.example.common_ui.catalog.Complexity
+import com.example.common_ui.catalog.Framework
+import com.example.common_ui.catalog.Sample
 import com.example.placesdemo.StringUtil.stringify
 import com.example.placesdemo.databinding.PlaceIsOpenActivityBinding
 import com.google.android.gms.tasks.Task
@@ -43,6 +46,24 @@ import java.util.TimeZone.getTimeZone
 /**
  * Activity to demonstrate [PlacesClient.isOpen].
  */
+@Sample(
+    id = "com.example.placesdemo.PlaceIsOpenActivity",
+    title = "Place Open Status (isOpen)",
+    description = "Checking whether a place is open at a specific date, time, and timezone using IsOpenRequest.",
+    category = "Place Details & Photos",
+    complexity = Complexity.SIMPLE,
+    tags = ["#isopen", "#openinghours", "#timezone", "#placedetails"],
+    apiCalls = [
+        "IsOpenRequest.newInstance(placeId, utcTimeMillis)",
+        "IsOpenRequest.newInstance(place, utcTimeMillis)",
+        "PlacesClient.isOpen(request)",
+        "IsOpenResponse.isOpen",
+    ],
+    purpose = "Demonstrates checking whether a business is open at a chosen date, time, and timezone either directly by Place ID or using a pre-fetched Place object containing opening hours.",
+    successCriteria = "• Selecting a date, time, and timezone and tapping 'Is Open (by Place ID)' or 'Fetch Place & Check Is Open' returns true/false/null open status.\n• Extra opening hours details are displayed when fetching the Place object.",
+    failureIndicators = "• Date/time pickers fail to update the query timestamp.\n• isOpen request throws an unhandled exception.",
+    framework = Framework.KOTLIN_VIEWS,
+)
 class PlaceIsOpenActivity : BaseActivity() {
     private val defaultTimeZone = getDefault()
     private val defaultTimeZoneID: String = defaultTimeZone.id

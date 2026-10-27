@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Copyright 2026 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <queries>
+        <package android:name="com.example.placesdemo" />
+        <package android:name="com.example.placesdemo.java" />
+        <package android:name="com.example.placedetailsuikit" />
+        <package android:name="com.google.maps.android.ktx.demo" />
+        <package android:name="com.example.placedetailscompose" />
+        <package android:name="com.example.placesuikit3d" />
+        <package android:name="com.google.places" />
+    </queries>
+
+    <application>
+        <activity
+            android:name="com.example.reviewer.compose.ReviewerActivity"
+            android:exported="true"
+            android:label="GMP Sample Reviewer"
+            android:theme="@style/Theme.Material3.DayNight.NoActionBar">
+            <intent-filter>
+                <action android:name="com.google.maps.SAMPLE_REVIEWER" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name="com.example.reviewer.repository.EvaluationExportReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.maps.EXPORT_EVALUATIONS" />
+                <action android:name="com.google.maps.RECORD_EVALUATION" />
+                <action android:name="com.google.maps.CLEAR_EVALUATIONS" />
+            </intent-filter>
+        </receiver>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+    </application>
+
+</manifest>

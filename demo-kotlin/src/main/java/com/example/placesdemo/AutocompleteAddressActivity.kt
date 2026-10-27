@@ -33,6 +33,9 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
+import com.example.common_ui.catalog.Complexity
+import com.example.common_ui.catalog.Framework
+import com.example.common_ui.catalog.Sample
 import com.example.placesdemo.databinding.AutocompleteAddressActivityBinding
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -56,6 +59,27 @@ import com.google.maps.android.SphericalUtil.computeDistanceBetween
 /**
  *  Activity for using Place Autocomplete to assist filling out an address form.
  */
+@Sample(
+    id = "com.example.placesdemo.AutocompleteAddressActivity",
+    title = "Autocomplete Address Form",
+    description = "Auto-filling a structured postal address form using Place Autocomplete and verifying location proximity on a Google Map.",
+    category = "Place Autocomplete",
+    complexity = Complexity.ADVANCED,
+    tags = ["#autocomplete", "#address", "#checkout", "#map", "#location"],
+    apiCalls = [
+        "PlaceAutocomplete.IntentBuilder().setTypesFilter(listOf(PlaceTypes.ADDRESS))",
+        "PlaceAutocomplete.getPredictionFromIntent(intent)",
+        "PlaceAutocomplete.getSessionTokenFromIntent(intent)",
+        "FetchPlaceRequest.builder(placeId, fields).setSessionToken(sessionToken)",
+        "PlacesClient.fetchPlace(request)",
+        "Place.addressComponents",
+        "SphericalUtil.computeDistanceBetween(currentLocation, enteredLocation)",
+    ],
+    purpose = "Demonstrates a real-world address checkout workflow: launching PlaceAutocomplete filtered to street addresses, fetching ADDRESS_COMPONENTS + LOCATION with the autocomplete session token, auto-populating structured address fields, and displaying a confirmation map.",
+    successCriteria = "• Tapping the 'Street address' field launches PlaceAutocomplete filtered to US addresses.\n• Selecting an address populates Street, City, State, Postal Code, and Country fields, focuses the Apt/Unit field, and renders a confirmation map marker.",
+    failureIndicators = "• Address fields remain blank after selecting an address prediction.\n• Confirmation map fails to inflate or center on the selected address.",
+    framework = Framework.KOTLIN_VIEWS,
+)
 class AutocompleteAddressActivity :
     BaseActivity(),
     OnMapReadyCallback {

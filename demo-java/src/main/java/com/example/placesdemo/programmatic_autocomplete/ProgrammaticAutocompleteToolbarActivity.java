@@ -35,6 +35,9 @@ import com.android.volley.Request.Method;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.common_ui.catalog.Complexity;
+import com.example.common_ui.catalog.Framework;
+import com.example.common_ui.catalog.Sample;
 import com.example.placesdemo.BuildConfig;
 import com.example.placesdemo.R;
 import com.example.placesdemo.model.GeocodingResult;
@@ -63,6 +66,27 @@ import org.json.JSONException;
  * @see <a
  *     href="https://developers.google.com/places/android-sdk/autocomplete#get_place_predictions_programmatically">documentation</a>
  */
+@Sample(
+        id =
+                "com.example.placesdemo.programmatic_autocomplete.ProgrammaticAutocompleteGeocodingActivity",
+        title = "Programmatic Autocomplete & Search",
+        description =
+                "Custom as-you-type search bar querying programmatic autocomplete predictions and resolving Place coordinates.",
+        category = "Place Autocomplete",
+        complexity = Complexity.ADVANCED,
+        tags = {"#autocomplete", "#searchbar", "#geocoding", "#predictions", "#recyclerview"},
+        apiCalls = {
+            "AutocompleteSessionToken.newInstance()",
+            "FindAutocompletePredictionsRequest.builder().setSessionToken(token).setQuery(query)",
+            "PlacesClient.findAutocompletePredictions(request)"
+        },
+        purpose =
+                "Demonstrates building a custom debounced as-you-type search UI backed by PlacesClient.findAutocompletePredictions with session tokens, displaying predictions in a list, and resolving the selected place.",
+        successCriteria =
+                "• Typing into the search bar triggers debounced autocomplete prediction queries with a loading indicator.\n• Tapping a prediction resolves and displays the place's coordinates or details.",
+        failureIndicators =
+                "• Typing does not trigger prediction updates.\n• Tapping a prediction crashes or fails to display the result dialog.",
+        framework = Framework.JAVA_VIEWS)
 public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
 
     private static final String TAG = ProgrammaticAutocompleteToolbarActivity.class.getSimpleName();

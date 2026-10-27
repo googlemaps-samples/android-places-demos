@@ -25,6 +25,9 @@ import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
+import com.example.common_ui.catalog.Complexity
+import com.example.common_ui.catalog.Framework
+import com.example.common_ui.catalog.Sample
 import com.example.placesdemo.databinding.PlaceDetailsAndPhotosActivityBinding
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.PhotoMetadata
@@ -38,6 +41,26 @@ import com.google.android.libraries.places.api.net.PlacesClient
 /**
  * Activity to demonstrate [PlacesClient.fetchPlace].
  */
+@Sample(
+    id = "com.example.placesdemo.PlaceDetailsAndPhotosActivity",
+    title = "Place Details, Photos & Icons",
+    description = "Fetching Place Details by Place ID, resolving photo URIs via FetchResolvedPhotoUriRequest, and rendering Place icons.",
+    category = "Place Details & Photos",
+    complexity = Complexity.SIMPLE,
+    tags = ["#placedetails", "#photos", "#icons", "#fetchplace", "#uri"],
+    apiCalls = [
+        "FetchPlaceRequest.newInstance(placeId, placeFields)",
+        "PlacesClient.fetchPlace(request)",
+        "FetchResolvedPhotoUriRequest.builder(photoMetadata).setMaxWidth(w).setMaxHeight(h).build()",
+        "PlacesClient.fetchResolvedPhotoUri(photoRequest)",
+        "Place.iconMaskUrl",
+        "Place.iconBackgroundColor",
+    ],
+    purpose = "Demonstrates fetching Place Details for a Place ID with customizable Place.Field selections, resolving high-resolution place photos via FetchResolvedPhotoUriRequest, and loading themed Place icon masks.",
+    successCriteria = "• Tapping 'Fetch Place and Photo' retrieves details for the Place ID and prints formatted fields.\n• Checking 'Fetch Photo' resolves the photo URI and renders the image via Glide/Coil.\n• Checking 'Fetch Icon' renders the Place icon mask over its background color.",
+    failureIndicators = "• FetchPlace fails with API error.\n• Photo or icon image view remains blank when the respective checkbox is enabled.",
+    framework = Framework.KOTLIN_VIEWS,
+)
 class PlaceDetailsAndPhotosActivity : BaseActivity() {
     private lateinit var placesClient: PlacesClient
     private lateinit var fieldSelector: FieldSelector

@@ -51,6 +51,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.common_ui.catalog.Complexity
+import com.example.common_ui.catalog.Framework
+import com.example.common_ui.catalog.Sample
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.PlacesClient
@@ -60,6 +63,23 @@ import com.google.android.libraries.places.widget.PlaceAutocompleteActivity
 import com.google.places.android.ktx.demo.ui.DemoTheme
 import kotlinx.coroutines.launch
 
+@Sample(
+    id = "com.example.placesdemo.PlaceAutocompleteActivity",
+    title = "Place Autocomplete",
+    description = "Full-featured PlaceAutocomplete & BasicPlaceAutocomplete intents plus programmatic predictions.",
+    category = "Place Autocomplete",
+    complexity = Complexity.SIMPLE,
+    tags = ["#autocomplete", "#predictions", "#sessiontoken", "#locationbias", "#places"],
+    apiCalls = [
+        "PlaceAutocomplete.IntentBuilder().build(context)",
+        "PlaceAutocomplete.getPredictionFromIntent(intent)",
+        "PlacesClient.awaitFetchPlace(placeId, placeFields)",
+    ],
+    purpose = "Demonstrates launching PlaceAutocomplete from Jetpack Compose via rememberLauncherForActivityResult and fetching the selected place details with Places KTX awaitFetchPlace.",
+    successCriteria = "• Tapping 'Launch Autocomplete' opens the Places Autocomplete UI.\n• Selecting a prediction resolves and displays the place details in the Compose UI.",
+    failureIndicators = "• Autocomplete intent immediately closes with RESULT_ERROR or DEVELOPER_ERROR.",
+    framework = Framework.KOTLIN_COMPOSE,
+)
 class AutocompleteDemoActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

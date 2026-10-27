@@ -17,6 +17,9 @@ package com.example.placesdemo
 
 import android.os.Bundle
 import android.widget.Toast
+import com.example.common_ui.catalog.Complexity
+import com.example.common_ui.catalog.Framework
+import com.example.common_ui.catalog.Sample
 import com.example.placesdemo.databinding.ActivityPlaceActionsAdvancedBinding
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -36,6 +39,26 @@ import com.google.android.libraries.places.widget.model.SearchReviewsOptions
  * - SearchMediaOptions and SearchReviewsOptions
  * - PlaceActionProvider / PlaceAction / CornerPlaceAction configuration
  */
+@Sample(
+    id = "com.example.placesdemo.PlaceActionsAndAdvancedDetailsActivity",
+    title = "Advanced Place Details & Place Actions",
+    description = "Inspecting AddressDescriptor (areas & landmarks), ContainingPlaces, PriceRange, SearchMediaOptions, SearchReviewsOptions, and PlaceActionProvider.",
+    category = "Place Details & Photos",
+    complexity = Complexity.ADVANCED,
+    tags = ["#addressdescriptor", "#landmarks", "#pricerange", "#placeactions", "#media", "#reviews"],
+    apiCalls = [
+        "Place.Field.ADDRESS_DESCRIPTOR",
+        "Place.Field.CONTAINING_PLACES",
+        "Place.Field.PRICE_RANGE",
+        "SearchMediaOptions.builder().setQuery(query).setRankPreference(rank).build()",
+        "SearchReviewsOptions.builder().setQuery(query).setRankPreference(rank).build()",
+        "PlaceActionProvider.getMainPlaceActions(place)",
+    ],
+    purpose = "Demonstrates advanced Places SDK data models including spatial AddressDescriptor landmarks/areas, ContainingPlaces hierarchy, PriceRange, SearchMediaOptions, SearchReviewsOptions, and custom PlaceActionProvider configuration.",
+    successCriteria = "• Tapping 'Fetch Advanced Place Details' retrieves and formats AddressDescriptor landmarks/areas, ContainingPlaces, PriceRange, and configured PlaceActions for the input Place ID.",
+    failureIndicators = "• Fetching advanced fields fails or crashes when formatting null/optional properties.",
+    framework = Framework.KOTLIN_VIEWS,
+)
 class PlaceActionsAndAdvancedDetailsActivity : BaseActivity() {
 
     private lateinit var placesClient: PlacesClient
