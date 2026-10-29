@@ -2,7 +2,7 @@
 # Project Configuration
 versionCode = "1"
 versionName = "4.0.0" # {x-release-please-version}
-agp = "9.4.1"
+agp = "9.5.0"
 kotlin = "2.4.21"
 coreKtx = "1.19.1"
 appcompat = "1.8.0"
@@ -19,7 +19,7 @@ googleMaps = "20.1.0"
 places = "6.0.2"
 playServicesLocation = "21.4.0"
 mapsCompose = "9.0.1"
-mapsUtils = "6.0.0"
+mapsUtils = "6.1.0"
 playServicesMaps3d = "16.0.1"
 volley = "1.2.1"
 glide = "5.0.9"
