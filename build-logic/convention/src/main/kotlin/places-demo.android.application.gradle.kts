@@ -56,15 +56,33 @@ afterEvaluate {
     val appId = androidExt.defaultConfig.applicationId ?: androidExt.namespace ?: project.name
     val namespace = androidExt.namespace ?: appId
     val mainAct = demoApp.mainActivity.get()
-    val componentName = if (mainAct.startsWith(".")) "$appId/$namespace$mainAct" else "$appId/$mainAct"
+
+    val requestedActivity = project.findProperty("activity")?.toString()?.trim()
+    val requestedSample = project.findProperty("sample")?.toString()?.trim()
+    val requestedFramework = project.findProperty("framework")?.toString()?.trim()
+
+    val targetAct = if (!requestedActivity.isNullOrEmpty()) requestedActivity else mainAct
+    val componentName = when {
+        targetAct.startsWith(".") -> "$appId/$namespace$targetAct"
+        targetAct.contains(".") -> "$appId/$targetAct"
+        else -> "$appId/$namespace.$targetAct"
+    }
 
     val androidComponents = project.extensions.getByType(com.android.build.api.variant.AndroidComponentsExtension::class.java)
     val adbPath = androidComponents.sdkComponents.adb.get().asFile.absolutePath
 
     tasks.register<Exec>("installAndLaunch") {
-        description = "Installs the debug APK and launches the main activity."
+        description = "Installs the debug APK and launches the catalog or a specific sample (-Psample=... -Pframework=... or -Pactivity=...)."
         group = "application"
         dependsOn("installDebug")
-        commandLine(adbPath, "shell", "am", "start", "-n", componentName)
+
+        val argsList = mutableListOf(adbPath, "shell", "am", "start", "-n", componentName)
+        if (!requestedSample.isNullOrEmpty()) {
+            argsList.addAll(listOf("--es", "extra_launch_sample", requestedSample))
+        }
+        if (!requestedFramework.isNullOrEmpty()) {
+            argsList.addAll(listOf("--es", "extra_framework", requestedFramework))
+        }
+        commandLine(argsList)
     }
 }

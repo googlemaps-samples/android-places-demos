@@ -23,4 +23,6 @@
     <string name="autocomplete_fragment_demo_description">Demonstrates using the Autocomplete Widget (Intent) via the Places SDK.</string>
     <string name="places_photo_demo_title">Places Photo Demo</string>
     <string name="places_photo_demo_description">Demonstrates fetching and displaying place photos using awaitFetchResolvedPhotoUri and Coil.</string>
+    <string name="places_text_and_nearby_search_demo_title">Text &amp; Nearby Search Demo</string>
+    <string name="places_text_and_nearby_search_demo_description">Demonstrates awaitSearchByText, awaitSearchNearby, awaitIsOpen, and 5.3.0 Place attributes.</string>
 </resources>

@@ -40,10 +40,30 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.example.common_ui.catalog.Complexity
+import com.example.common_ui.catalog.Framework
+import com.example.common_ui.catalog.Sample
 import com.example.placedetailscompose.ui.map.MapScreen
 import com.example.placedetailscompose.ui.theme.PlaceDetailsComposeTheme
 import com.google.android.libraries.places.api.Places
 
+@Sample(
+    id = "com.example.placedetailsuikit.MainActivity",
+    title = "Place Details UI Kit (Compact & Map Markers)",
+    description = "Interactive map with PlaceDetailsCompactFragment (Views) or AdvancedPlaceDetailsCompact + PlaceMarker (Compose).",
+    category = "Places UI Kit & 3D",
+    complexity = Complexity.SIMPLE,
+    tags = ["#uikit", "#compact", "#placemarker", "#compose", "#map"],
+    apiCalls = [
+        "AdvancedPlaceDetailsCompact(placeId, orientation, content, placeLoadListener)",
+        "PlaceMarker(location, id, title, icon)",
+        "rememberPlaceMarkerState(position)",
+    ],
+    purpose = "Demonstrates integrating Places 6.0.2 PlaceMarker pins and AdvancedPlaceDetailsCompact with content slots in Jetpack Compose.",
+    successCriteria = "• Map loads and centers on user location or default city.\n• Tapping a POI or PlaceMarker opens the Place Details UI Kit compact card with photos, ratings, and details.",
+    failureIndicators = "• Map fails to render or tapping a POI/marker does not load the Place Details UI Kit card.",
+    framework = Framework.KOTLIN_COMPOSE,
+)
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

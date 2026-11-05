@@ -1,11 +1,11 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,43 +16,19 @@
 
 package com.example.placesdemo;
 
-import android.content.Intent;
-import android.os.Bundle;
-import androidx.activity.EdgeToEdge;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import com.example.placesdemo.programmatic_autocomplete.ProgrammaticAutocompleteToolbarActivity;
+import androidx.annotation.NonNull;
+import com.example.common_ui.catalog.Framework;
+import com.example.common_ui.catalog.compose.CatalogActivity;
 
-public class MainActivity extends AppCompatActivity {
+/**
+ * Primary launcher activity for `:demo-java`, hosting the Unified Places Sample Catalog defaulted
+ * to the {@link Framework#JAVA_VIEWS} tab.
+ */
+public class MainActivity extends CatalogActivity {
 
+    @NonNull
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        // Enable edge-to-edge display. This must be called before calling super.onCreate().
-        EdgeToEdge.enable(this);
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        setLaunchActivityClickListener(R.id.autocomplete_button, PlaceAutocompleteActivity.class);
-        setLaunchActivityClickListener(
-                R.id.autocomplete_address_button, AutocompleteAddressActivity.class);
-        setLaunchActivityClickListener(
-                R.id.programmatic_autocomplete_button,
-                ProgrammaticAutocompleteToolbarActivity.class);
-        setLaunchActivityClickListener(
-                R.id.place_and_photo_button, PlaceDetailsAndPhotosActivity.class);
-        setLaunchActivityClickListener(R.id.is_open_button, PlaceIsOpenActivity.class);
-        setLaunchActivityClickListener(R.id.current_place_button, CurrentPlaceActivity.class);
-        setLaunchActivityClickListener(
-                R.id.place_actions_advanced_button, PlaceActionsAndAdvancedDetailsActivity.class);
-    }
-
-    private void setLaunchActivityClickListener(
-            int onClickResId, Class<? extends AppCompatActivity> activityClassToLaunch) {
-        findViewById(onClickResId)
-                .setOnClickListener(
-                        v -> {
-                            Intent intent = new Intent(MainActivity.this, activityClassToLaunch);
-                            startActivity(intent);
-                        });
+    protected Framework getDefaultFramework() {
+        return Framework.JAVA_VIEWS;
     }
 }

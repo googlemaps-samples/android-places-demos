@@ -33,6 +33,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import com.example.common_ui.catalog.Complexity;
+import com.example.common_ui.catalog.Framework;
+import com.example.common_ui.catalog.Sample;
 import com.example.placesdemo.databinding.CurrentPlaceActivityBinding;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
@@ -46,6 +49,25 @@ import com.google.android.libraries.places.api.net.SearchNearbyResponse;
 import java.util.List;
 
 /** Activity to demonstrate {@link PlacesClient#searchNearby(SearchNearbyRequest)}. */
+@Sample(
+        id = "com.example.placesdemo.CurrentPlaceActivity",
+        title = "Nearby Search (SearchNearbyRequest)",
+        description =
+                "Searching for nearby places within a circular geographic bound using PlacesClient.searchNearby.",
+        category = "Nearby Search",
+        complexity = Complexity.SIMPLE,
+        tags = {"#nearby", "#searchnearby", "#circularbounds", "#location"},
+        apiCalls = {
+            "CircularBounds.newInstance(centerLatLng, radiusMeters)",
+            "SearchNearbyRequest.newInstance(locationRestriction, placeFields)",
+            "PlacesClient.searchNearby(request)"
+        },
+        purpose =
+                "Demonstrates querying nearby places within a CircularBounds region using SearchNearbyRequest and customizable Place.Field selections.",
+        successCriteria =
+                "• Tapping 'Find Current / Nearby Place' requests location permission (if needed) and executes PlacesClient.searchNearby, listing returned places in the response view.",
+        failureIndicators = "• Permission prompt fails or searchNearby returns an unhandled error.",
+        framework = Framework.JAVA_VIEWS)
 public class CurrentPlaceActivity extends AppCompatActivity {
 
     private static final String TAG = "CURRENT_PLACE";
