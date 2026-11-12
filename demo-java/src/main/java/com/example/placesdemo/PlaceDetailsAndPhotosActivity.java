@@ -122,23 +122,20 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
         FetchPlaceRequest request = FetchPlaceRequest.newInstance(getPlaceId(), placeFields);
         Task<FetchPlaceResponse> placeTask = placesClient.fetchPlace(request);
 
-        placeTask.addOnSuccessListener(
-                (response) -> {
-                    binding.response.setText(
-                            StringUtil.stringify(response, isDisplayRawResultsChecked()));
-                    if (isFetchPhotoChecked) {
-                        attemptFetchPhoto(response.getPlace());
-                    }
-                    if (isFetchIconChecked) {
-                        attemptFetchIcon(response.getPlace());
-                    }
-                });
+        placeTask.addOnSuccessListener(response -> {
+            binding.response.setText(StringUtil.stringify(response, isDisplayRawResultsChecked()));
+            if (isFetchPhotoChecked) {
+                attemptFetchPhoto(response.getPlace());
+            }
+            if (isFetchIconChecked) {
+                attemptFetchIcon(response.getPlace());
+            }
+        });
 
-        placeTask.addOnFailureListener(
-                (exception) -> {
-                    exception.printStackTrace();
-                    binding.response.setText(exception.getMessage());
-                });
+        placeTask.addOnFailureListener(exception -> {
+            exception.printStackTrace();
+            binding.response.setText(exception.getMessage());
+        });
 
         placeTask.addOnCompleteListener(response -> setLoading(false));
     }
@@ -190,22 +187,20 @@ public class PlaceDetailsAndPhotosActivity extends AppCompatActivity {
         Task<FetchResolvedPhotoUriResponse> photoTask =
                 placesClient.fetchResolvedPhotoUri(photoRequestBuilder.build());
 
-        photoTask.addOnSuccessListener(
-                response -> {
-                    Uri uri = response.getUri();
-                    if (uri != null) {
-                        Glide.with(binding.photo.getContext()).load(uri).into(binding.photo);
-                        StringUtil.prepend(binding.photoMetadata, StringUtil.stringify(uri));
-                    } else {
-                        StringUtil.prepend(binding.photoMetadata, "No photo available");
-                    }
-                });
+        photoTask.addOnSuccessListener(response -> {
+            Uri uri = response.getUri();
+            if (uri != null) {
+                Glide.with(binding.photo.getContext()).load(uri).into(binding.photo);
+                StringUtil.prepend(binding.photoMetadata, StringUtil.stringify(uri));
+            } else {
+                StringUtil.prepend(binding.photoMetadata, "No photo available");
+            }
+        });
 
-        photoTask.addOnFailureListener(
-                exception -> {
-                    exception.printStackTrace();
-                    StringUtil.prepend(binding.response, "Photo: " + exception.getMessage());
-                });
+        photoTask.addOnFailureListener(exception -> {
+            exception.printStackTrace();
+            StringUtil.prepend(binding.response, "Photo: " + exception.getMessage());
+        });
 
         photoTask.addOnCompleteListener(response -> setLoading(false));
     }

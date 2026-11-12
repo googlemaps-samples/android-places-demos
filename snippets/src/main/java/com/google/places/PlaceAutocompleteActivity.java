@@ -203,28 +203,23 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
 
         placesClient
                 .findAutocompletePredictions(request)
-                .addOnSuccessListener(
-                        (response) -> {
-                            StringBuilder builder = new StringBuilder();
-                            for (AutocompletePrediction prediction :
-                                    response.getAutocompletePredictions()) {
-                                builder.append(prediction.getPrimaryText(null).toString())
-                                        .append("\n");
-                                Log.i(TAG, prediction.getPlaceId());
-                                Log.i(TAG, prediction.getPrimaryText(null).toString());
-                            }
-                            binding.autocompleteResult.setText(builder.toString());
-                        })
-                .addOnFailureListener(
-                        (exception) -> {
-                            if (exception instanceof ApiException apiException) {
-                                Log.e(TAG, "Place not found: " + apiException.getStatusCode());
-                                binding.autocompleteResult.setText(
-                                        getString(
-                                                R.string.place_not_found,
-                                                apiException.getMessage()));
-                            }
-                        });
+                .addOnSuccessListener(response -> {
+                    StringBuilder builder = new StringBuilder();
+                    for (AutocompletePrediction prediction :
+                            response.getAutocompletePredictions()) {
+                        builder.append(prediction.getPrimaryText(null).toString()).append("\n");
+                        Log.i(TAG, prediction.getPlaceId());
+                        Log.i(TAG, prediction.getPrimaryText(null).toString());
+                    }
+                    binding.autocompleteResult.setText(builder.toString());
+                })
+                .addOnFailureListener(exception -> {
+                    if (exception instanceof ApiException apiException) {
+                        Log.e(TAG, "Place not found: " + apiException.getStatusCode());
+                        binding.autocompleteResult.setText(
+                                getString(R.string.place_not_found, apiException.getMessage()));
+                    }
+                });
         // [END maps_places_programmatic_place_predictions]
     }
 }

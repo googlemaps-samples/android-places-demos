@@ -113,17 +113,15 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
         FetchPlaceRequest request = FetchPlaceRequest.newInstance(getPlaceId(), placeFields);
         Task<FetchPlaceResponse> placeTask = placesClient.fetchPlace(request);
 
-        placeTask.addOnSuccessListener(
-                (response) -> {
-                    place = response.getPlace();
-                    isOpenByPlaceObject(place);
-                });
+        placeTask.addOnSuccessListener(response -> {
+            place = response.getPlace();
+            isOpenByPlaceObject(place);
+        });
 
-        placeTask.addOnFailureListener(
-                (exception) -> {
-                    exception.printStackTrace();
-                    binding.textViewResponse.setText(exception.getMessage());
-                });
+        placeTask.addOnFailureListener(exception -> {
+            exception.printStackTrace();
+            binding.textViewResponse.setText(exception.getMessage());
+        });
 
         placeTask.addOnCompleteListener(response -> setLoading(false));
     }
@@ -151,19 +149,17 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
 
         Task<IsOpenResponse> placeTask = placesClient.isOpen(request);
 
-        placeTask.addOnSuccessListener(
-                (response) ->
-                        binding.textViewResponse.setText(
-                                "Is place open? "
-                                        + response.isOpen()
-                                        + "\nExtra place details: \n"
-                                        + StringUtil.stringify(place)));
+        placeTask.addOnSuccessListener(response ->
+                binding.textViewResponse.setText(
+                        "Is place open? "
+                                + response.isOpen()
+                                + "\nExtra place details: \n"
+                                + StringUtil.stringify(place)));
 
-        placeTask.addOnFailureListener(
-                (exception) -> {
-                    exception.printStackTrace();
-                    binding.textViewResponse.setText(exception.getMessage());
-                });
+        placeTask.addOnFailureListener(exception -> {
+            exception.printStackTrace();
+            binding.textViewResponse.setText(exception.getMessage());
+        });
 
         placeTask.addOnCompleteListener(response -> setLoading(false));
     }
@@ -191,15 +187,13 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
 
         Task<IsOpenResponse> placeTask = placesClient.isOpen(request);
 
-        placeTask.addOnSuccessListener(
-                (response) ->
-                        binding.textViewResponse.setText("Is place open? " + response.isOpen()));
+        placeTask.addOnSuccessListener(response ->
+                binding.textViewResponse.setText("Is place open? " + response.isOpen()));
 
-        placeTask.addOnFailureListener(
-                (exception) -> {
-                    exception.printStackTrace();
-                    binding.textViewResponse.setText(exception.getMessage());
-                });
+        placeTask.addOnFailureListener(exception -> {
+            exception.printStackTrace();
+            binding.textViewResponse.setText(exception.getMessage());
+        });
 
         placeTask.addOnCompleteListener(response -> setLoading(false));
     }
@@ -278,15 +272,14 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
                     updateIsOpenDate();
                 };
 
-        binding.editTextIsOpenDate.setOnClickListener(
-                view ->
-                        new DatePickerDialog(
-                                        PlaceIsOpenActivity.this,
-                                        listener,
-                                        isOpenCalendar.get(Calendar.YEAR),
-                                        isOpenCalendar.get(Calendar.MONTH),
-                                        isOpenCalendar.get(Calendar.DAY_OF_MONTH))
-                                .show());
+        binding.editTextIsOpenDate.setOnClickListener(view ->
+                new DatePickerDialog(
+                                PlaceIsOpenActivity.this,
+                                listener,
+                                isOpenCalendar.get(Calendar.YEAR),
+                                isOpenCalendar.get(Calendar.MONTH),
+                                isOpenCalendar.get(Calendar.DAY_OF_MONTH))
+                        .show());
     }
 
     private void updateIsOpenDate() {
@@ -302,15 +295,14 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
                     updateIsOpenTime();
                 };
 
-        binding.editTextIsOpenTime.setOnClickListener(
-                view ->
-                        new TimePickerDialog(
-                                        PlaceIsOpenActivity.this,
-                                        listener,
-                                        isOpenCalendar.get(Calendar.HOUR_OF_DAY),
-                                        isOpenCalendar.get(Calendar.MINUTE),
-                                        true)
-                                .show());
+        binding.editTextIsOpenTime.setOnClickListener(view ->
+                new TimePickerDialog(
+                                PlaceIsOpenActivity.this,
+                                listener,
+                                isOpenCalendar.get(Calendar.HOUR_OF_DAY),
+                                isOpenCalendar.get(Calendar.MINUTE),
+                                true)
+                        .show());
     }
 
     private void updateIsOpenTime() {

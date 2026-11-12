@@ -49,10 +49,9 @@ public class MainActivity extends AppCompatActivity {
     private void setLaunchActivityClickListener(
             int onClickResId, Class<? extends AppCompatActivity> activityClassToLaunch) {
         findViewById(onClickResId)
-                .setOnClickListener(
-                        v -> {
-                            Intent intent = new Intent(MainActivity.this, activityClassToLaunch);
-                            startActivity(intent);
-                        });
+                .setOnClickListener(v -> {
+                    Intent intent = new Intent(MainActivity.this, activityClassToLaunch);
+                    startActivity(intent);
+                });
     }
 }

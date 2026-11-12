@@ -126,11 +126,10 @@ public class JavaMainActivity extends AppCompatActivity {
             ActivityInfo activityInfo = activities.get(position);
             holder.binding.activityName.setText(activityInfo.name);
             holder.binding.activityDescription.setText(activityInfo.description);
-            holder.itemView.setOnClickListener(
-                    v -> {
-                        Intent intent = new Intent(v.getContext(), activityInfo.activityClass);
-                        v.getContext().startActivity(intent);
-                    });
+            holder.itemView.setOnClickListener(v -> {
+                Intent intent = new Intent(v.getContext(), activityInfo.activityClass);
+                v.getContext().startActivity(intent);
+            });
         }
 
         @Override

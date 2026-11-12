@@ -82,26 +82,24 @@ public final class FieldSelector {
             outputView.setText(getSelectedString());
         }
 
-        outputView.setOnClickListener(
-                v -> {
-                    if (v.isEnabled()) {
-                        showDialog(v.getContext());
-                    }
-                });
+        outputView.setOnClickListener(v -> {
+            if (v.isEnabled()) {
+                showDialog(v.getContext());
+            }
+        });
 
-        enableView.setOnClickListener(
-                view -> {
-                    boolean isChecked = enableView.isChecked();
-                    outputView.setEnabled(isChecked);
-                    if (isChecked) {
-                        showDialog(view.getContext());
-                    } else {
-                        outputView.setText("");
-                        for (State state : fieldStates.values()) {
-                            state.checked = false;
-                        }
-                    }
-                });
+        enableView.setOnClickListener(view -> {
+            boolean isChecked = enableView.isChecked();
+            outputView.setEnabled(isChecked);
+            if (isChecked) {
+                showDialog(view.getContext());
+            } else {
+                outputView.setText("");
+                for (State state : fieldStates.values()) {
+                    state.checked = false;
+                }
+            }
+        });
 
         this.outputView = outputView;
     }

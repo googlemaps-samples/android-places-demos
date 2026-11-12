@@ -48,12 +48,11 @@ public class PlacePredictionAdapter extends RecyclerView.Adapter<PlacePrediction
     public void onBindViewHolder(@NonNull PlacePredictionViewHolder holder, int position) {
         final AutocompletePrediction prediction = predictions.get(position);
         holder.setPrediction(prediction);
-        holder.itemView.setOnClickListener(
-                v -> {
-                    if (onPlaceClickListener != null) {
-                        onPlaceClickListener.onPlaceClicked(prediction);
-                    }
-                });
+        holder.itemView.setOnClickListener(v -> {
+            if (onPlaceClickListener != null) {
+                onPlaceClickListener.onPlaceClicked(prediction);
+            }
+        });
     }
 
     @Override
