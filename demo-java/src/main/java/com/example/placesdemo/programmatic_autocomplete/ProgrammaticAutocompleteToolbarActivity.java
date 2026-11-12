@@ -181,22 +181,20 @@ public class ProgrammaticAutocompleteToolbarActivity extends AppCompatActivity {
         // Perform autocomplete predictions request
         placesClient
                 .findAutocompletePredictions(newRequest)
-                .addOnSuccessListener(
-                        (response) -> {
-                            List<AutocompletePrediction> predictions =
-                                    response.getAutocompletePredictions();
-                            adapter.setPredictions(predictions);
+                .addOnSuccessListener(response -> {
+                    List<AutocompletePrediction> predictions =
+                            response.getAutocompletePredictions();
+                    adapter.setPredictions(predictions);
 
-                            progressBar.setIndeterminate(false);
-                            viewAnimator.setDisplayedChild(predictions.isEmpty() ? 0 : 1);
-                        })
-                .addOnFailureListener(
-                        (exception) -> {
-                            progressBar.setIndeterminate(false);
-                            if (exception instanceof ApiException apiException) {
-                                Log.e(TAG, "Place not found: " + apiException.getStatusCode());
-                            }
-                        });
+                    progressBar.setIndeterminate(false);
+                    viewAnimator.setDisplayedChild(predictions.isEmpty() ? 0 : 1);
+                })
+                .addOnFailureListener(exception -> {
+                    progressBar.setIndeterminate(false);
+                    if (exception instanceof ApiException apiException) {
+                        Log.e(TAG, "Place not found: " + apiException.getStatusCode());
+                    }
+                });
     }
 
     /**

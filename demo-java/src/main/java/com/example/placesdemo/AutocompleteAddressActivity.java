@@ -112,27 +112,23 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
                                                     .build();
                                     placesClient
                                             .fetchPlace(request)
-                                            .addOnSuccessListener(
-                                                    response -> {
-                                                        Place place = response.getPlace();
-                                                        // Write a method to read the address
-                                                        // components from the Place
-                                                        // and populate the form with the address
-                                                        // components
-                                                        Log.d(
-                                                                TAG,
-                                                                "Place: "
-                                                                        + place
-                                                                                .getAddressComponents());
-                                                        fillInAddress(place);
-                                                    })
-                                            .addOnFailureListener(
-                                                    exception -> {
-                                                        Log.e(
-                                                                TAG,
-                                                                "Place not found: "
-                                                                        + exception.getMessage());
-                                                    });
+                                            .addOnSuccessListener(response -> {
+                                                Place place = response.getPlace();
+                                                // Write a method to read the address
+                                                // components from the Place
+                                                // and populate the form with the address
+                                                // components
+                                                Log.d(
+                                                        TAG,
+                                                        "Place: " + place.getAddressComponents());
+                                                fillInAddress(place);
+                                            })
+                                            .addOnFailureListener(exception -> {
+                                                Log.e(
+                                                        TAG,
+                                                        "Place not found: "
+                                                                + exception.getMessage());
+                                            });
                                 }
                             }
                         } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
@@ -166,12 +162,11 @@ public class AutocompleteAddressActivity extends AppCompatActivity implements On
 
         // Update checkProximity when user checks the checkbox
         CheckBox checkProximityBox = findViewById(R.id.checkbox_proximity);
-        checkProximityBox.setOnCheckedChangeListener(
-                (view, isChecked) -> {
-                    // Set the boolean to match user preference for when the Submit button is
-                    // clicked
-                    checkProximity = isChecked;
-                });
+        checkProximityBox.setOnCheckedChangeListener((view, isChecked) -> {
+            // Set the boolean to match user preference for when the Submit button is
+            // clicked
+            checkProximity = isChecked;
+        });
 
         // Submit and optionally check proximity
         Button saveButton = findViewById(R.id.autocomplete_save_button);

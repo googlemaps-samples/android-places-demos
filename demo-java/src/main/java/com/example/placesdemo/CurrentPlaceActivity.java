@@ -135,7 +135,7 @@ public class CurrentPlaceActivity extends AppCompatActivity {
         setLoading(false);
 
         // Set listeners for programmatic Find Current Place
-        binding.findCurrentPlaceButton.setOnClickListener((view) -> checkLocationPermissions());
+        binding.findCurrentPlaceButton.setOnClickListener(view -> checkLocationPermissions());
     }
 
     @Override
@@ -156,16 +156,14 @@ public class CurrentPlaceActivity extends AppCompatActivity {
         Task<SearchNearbyResponse> currentPlaceTask =
                 placesClient.searchNearby(currentPlaceRequest);
 
-        currentPlaceTask.addOnSuccessListener(
-                (response) ->
-                        binding.response.setText(
-                                StringUtil.stringify(response, isDisplayRawResultsChecked())));
+        currentPlaceTask.addOnSuccessListener(response ->
+                binding.response.setText(
+                        StringUtil.stringify(response, isDisplayRawResultsChecked())));
 
-        currentPlaceTask.addOnFailureListener(
-                (exception) -> {
-                    exception.printStackTrace();
-                    binding.response.setText(exception.getMessage());
-                });
+        currentPlaceTask.addOnFailureListener(exception -> {
+            exception.printStackTrace();
+            binding.response.setText(exception.getMessage());
+        });
 
         currentPlaceTask.addOnCompleteListener(task -> setLoading(false));
     }

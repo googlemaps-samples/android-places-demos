@@ -121,21 +121,18 @@ public class CurrentPlaceActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             Task<SearchNearbyResponse> placeResponse = placesClient.searchNearby(request);
-            placeResponse.addOnCompleteListener(
-                    task -> {
-                        binding.progressBar.setVisibility(View.GONE);
-                        if (task.isSuccessful()) {
-                            SearchNearbyResponse response = task.getResult();
-                            adapter.setPlaces(response.getPlaces());
-                        } else {
-                            Exception exception = task.getException();
-                            if (exception instanceof ApiException apiException) {
-                                Log.e(
-                                        "CurrentPlace",
-                                        "Place not found: " + apiException.getStatusCode());
-                            }
-                        }
-                    });
+            placeResponse.addOnCompleteListener(task -> {
+                binding.progressBar.setVisibility(View.GONE);
+                if (task.isSuccessful()) {
+                    SearchNearbyResponse response = task.getResult();
+                    adapter.setPlaces(response.getPlaces());
+                } else {
+                    Exception exception = task.getException();
+                    if (exception instanceof ApiException apiException) {
+                        Log.e("CurrentPlace", "Place not found: " + apiException.getStatusCode());
+                    }
+                }
+            });
         } else {
             // [START_EXCLUDE silent]
             binding.progressBar.setVisibility(View.GONE);

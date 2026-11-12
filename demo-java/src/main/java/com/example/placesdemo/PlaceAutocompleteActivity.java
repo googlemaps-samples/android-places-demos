@@ -192,16 +192,14 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
         Task<FindAutocompletePredictionsResponse> task =
                 placesClient.findAutocompletePredictions(requestBuilder.build());
 
-        task.addOnSuccessListener(
-                (response) ->
-                        binding.response.setText(
-                                StringUtil.stringify(response, isDisplayRawResultsChecked())));
+        task.addOnSuccessListener(response ->
+                binding.response.setText(
+                        StringUtil.stringify(response, isDisplayRawResultsChecked())));
 
-        task.addOnFailureListener(
-                (exception) -> {
-                    exception.printStackTrace();
-                    binding.response.setText(exception.getMessage());
-                });
+        task.addOnFailureListener(exception -> {
+            exception.printStackTrace();
+            binding.response.setText(exception.getMessage());
+        });
 
         task.addOnCompleteListener(response -> setLoading(false));
     }

@@ -42,19 +42,18 @@ public class PlacesIconActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(getTitle() + " (Java)");
         }
 
-        binding.placesIconButton.setOnClickListener(
-                v -> {
-                    // In a real app, you would get a Place object from a Place Details request or
-                    // similar.
-                    // For this snippet, we'll create a dummy Place object.
-                    Place place =
-                            Place.builder()
-                                    .setIconBackgroundColor(Color.BLUE)
-                                    .setIconMaskUrl(
-                                            "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/generic_business-71.png")
-                                    .build();
-                    getPlacesIcon(place);
-                });
+        binding.placesIconButton.setOnClickListener(v -> {
+            // In a real app, you would get a Place object from a Place Details request or
+            // similar.
+            // For this snippet, we'll create a dummy Place object.
+            Place place =
+                    Place.builder()
+                            .setIconBackgroundColor(Color.BLUE)
+                            .setIconMaskUrl(
+                                    "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/generic_business-71.png")
+                            .build();
+            getPlacesIcon(place);
+        });
     }
 
     @Override

@@ -82,51 +82,43 @@ public class PlacePhotosActivity extends AppCompatActivity {
 
         placesClient
                 .fetchPlace(placeRequest)
-                .addOnSuccessListener(
-                        (response) -> {
-                            final Place place = response.getPlace();
+                .addOnSuccessListener(response -> {
+                    final Place place = response.getPlace();
 
-                            // Get the photo metadata.
-                            final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
-                            if (metadata == null || metadata.isEmpty()) {
-                                Log.w(TAG, "No photo metadata.");
-                                return;
-                            }
-                            final PhotoMetadata photoMetadata = metadata.get(0);
+                    // Get the photo metadata.
+                    final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
+                    if (metadata == null || metadata.isEmpty()) {
+                        Log.w(TAG, "No photo metadata.");
+                        return;
+                    }
+                    final PhotoMetadata photoMetadata = metadata.get(0);
 
-                            // Get the attribution text.
-                            final String attributions = photoMetadata.getAttributions();
-                            binding.placePhotosAttributions.setText(attributions);
+                    // Get the attribution text.
+                    final String attributions = photoMetadata.getAttributions();
+                    binding.placePhotosAttributions.setText(attributions);
 
-                            // Create a FetchResolvedPhotoUriRequest.
-                            final FetchResolvedPhotoUriRequest photoRequest =
-                                    FetchResolvedPhotoUriRequest.builder(photoMetadata)
-                                            .setMaxWidth(500) // Optional.
-                                            .setMaxHeight(300) // Optional.
-                                            .build();
-                            placesClient
-                                    .fetchResolvedPhotoUri(photoRequest)
-                                    .addOnSuccessListener(
-                                            (fetchPhotoResponse) -> {
-                                                Glide.with(this)
-                                                        .load(fetchPhotoResponse.getUri())
-                                                        .into(binding.placePhotosResult);
-                                            })
-                                    .addOnFailureListener(
-                                            (exception) -> {
-                                                if (exception instanceof ApiException) {
-                                                    ApiException apiException =
-                                                            (ApiException) exception;
-                                                    Log.e(
-                                                            TAG,
-                                                            "Place not found: "
-                                                                    + exception.getMessage());
-                                                    final int statusCode =
-                                                            apiException.getStatusCode();
-                                                    // TODO: Handle error with given status code.
-                                                }
-                                            });
-                        });
+                    // Create a FetchResolvedPhotoUriRequest.
+                    final FetchResolvedPhotoUriRequest photoRequest =
+                            FetchResolvedPhotoUriRequest.builder(photoMetadata)
+                                    .setMaxWidth(500) // Optional.
+                                    .setMaxHeight(300) // Optional.
+                                    .build();
+                    placesClient
+                            .fetchResolvedPhotoUri(photoRequest)
+                            .addOnSuccessListener(fetchPhotoResponse -> {
+                                Glide.with(this)
+                                        .load(fetchPhotoResponse.getUri())
+                                        .into(binding.placePhotosResult);
+                            })
+                            .addOnFailureListener(exception -> {
+                                if (exception instanceof ApiException) {
+                                    ApiException apiException = (ApiException) exception;
+                                    Log.e(TAG, "Place not found: " + exception.getMessage());
+                                    final int statusCode = apiException.getStatusCode();
+                                    // TODO: Handle error with given status code.
+                                }
+                            });
+                });
         // [END maps_places_get_place_photos]
     }
 }

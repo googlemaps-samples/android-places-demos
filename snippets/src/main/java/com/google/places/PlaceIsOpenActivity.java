@@ -92,45 +92,40 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
         FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, placeFields);
         Task<FetchPlaceResponse> placeTask = placesClient.fetchPlace(request);
 
-        placeTask.addOnSuccessListener(
-                (placeResponse) -> {
-                    Place place = placeResponse.getPlace();
-                    IsOpenRequest isOpenRequest;
+        placeTask.addOnSuccessListener(placeResponse -> {
+            Place place = placeResponse.getPlace();
+            IsOpenRequest isOpenRequest;
 
-                    try {
-                        isOpenRequest =
-                                IsOpenRequest.newInstance(place, isOpenCalendar.getTimeInMillis());
-                    } catch (IllegalArgumentException e) {
-                        Log.e("PlaceIsOpen", "Error: " + e.getMessage());
-                        return;
-                    }
-                    Task<IsOpenResponse> isOpenTask = placesClient.isOpen(isOpenRequest);
+            try {
+                isOpenRequest = IsOpenRequest.newInstance(place, isOpenCalendar.getTimeInMillis());
+            } catch (IllegalArgumentException e) {
+                Log.e("PlaceIsOpen", "Error: " + e.getMessage());
+                return;
+            }
+            Task<IsOpenResponse> isOpenTask = placesClient.isOpen(isOpenRequest);
 
-                    isOpenTask.addOnSuccessListener(
-                            (isOpenResponse) -> {
-                                final boolean isOpen = Boolean.TRUE.equals(isOpenResponse.isOpen());
-                                binding.isOpenByObjectResult.setText(
-                                        getString(
-                                                R.string.is_open_by_object,
-                                                place.getDisplayName(),
-                                                String.valueOf(isOpen)));
-                                Log.d("PlaceIsOpen", "Is open by object: " + isOpen);
-                            });
-                    isOpenTask.addOnFailureListener(
-                            (exception) -> { // also update the result text field
-                                binding.isOpenByObjectResult.setText(
-                                        getString(
-                                                R.string.is_open_by_object,
-                                                place.getDisplayName(),
-                                                "Error: " + exception.getMessage()));
-                                Log.e("PlaceIsOpen", "Error: " + exception.getMessage());
-                            });
-                });
-        placeTask.addOnFailureListener(
-                (exception) -> {
-                    binding.isOpenByObjectResult.setText("Error: " + exception.getMessage());
-                    Log.e("PlaceIsOpen", "Error: " + exception.getMessage());
-                }); // [END maps_places_place_is_open]
+            isOpenTask.addOnSuccessListener(isOpenResponse -> {
+                final boolean isOpen = Boolean.TRUE.equals(isOpenResponse.isOpen());
+                binding.isOpenByObjectResult.setText(
+                        getString(
+                                R.string.is_open_by_object,
+                                place.getDisplayName(),
+                                String.valueOf(isOpen)));
+                Log.d("PlaceIsOpen", "Is open by object: " + isOpen);
+            });
+            isOpenTask.addOnFailureListener(exception -> { // also update the result text field
+                binding.isOpenByObjectResult.setText(
+                        getString(
+                                R.string.is_open_by_object,
+                                place.getDisplayName(),
+                                "Error: " + exception.getMessage()));
+                Log.e("PlaceIsOpen", "Error: " + exception.getMessage());
+            });
+        });
+        placeTask.addOnFailureListener(exception -> {
+            binding.isOpenByObjectResult.setText("Error: " + exception.getMessage());
+            Log.e("PlaceIsOpen", "Error: " + exception.getMessage());
+        }); // [END maps_places_place_is_open]
     }
 
     /**
@@ -153,19 +148,17 @@ public class PlaceIsOpenActivity extends AppCompatActivity {
 
         Task<IsOpenResponse> placeTask = placesClient.isOpen(isOpenRequest);
 
-        placeTask.addOnSuccessListener(
-                (response) -> {
-                    final boolean isOpen = Boolean.TRUE.equals(response.isOpen());
-                    binding.isOpenByIdResult.setText(
-                            getString(R.string.is_open_by_id, String.valueOf(isOpen)));
-                    Log.d("PlaceIsOpen", "Is open by ID: " + isOpen);
-                });
-        placeTask.addOnFailureListener(
-                (exception) -> {
-                    binding.isOpenByIdResult.setText(
-                            getString(R.string.is_open_by_id, "Error: " + exception.getMessage()));
-                    Log.e("PlaceIsOpen", "Error: " + exception.getMessage());
-                });
+        placeTask.addOnSuccessListener(response -> {
+            final boolean isOpen = Boolean.TRUE.equals(response.isOpen());
+            binding.isOpenByIdResult.setText(
+                    getString(R.string.is_open_by_id, String.valueOf(isOpen)));
+            Log.d("PlaceIsOpen", "Is open by ID: " + isOpen);
+        });
+        placeTask.addOnFailureListener(exception -> {
+            binding.isOpenByIdResult.setText(
+                    getString(R.string.is_open_by_id, "Error: " + exception.getMessage()));
+            Log.e("PlaceIsOpen", "Error: " + exception.getMessage());
+        });
         // [END maps_places_id_is_open]
     }
 }

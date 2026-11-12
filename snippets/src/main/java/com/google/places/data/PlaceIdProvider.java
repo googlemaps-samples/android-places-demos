@@ -69,7 +69,8 @@ public class PlaceIdProvider {
             ChIJWbbcvijsa4cR7bHu3lilcFA
             ChIJ00Gjeyjsa4cRvLYGmRIQ92o
             ChIJA8ksXNHta4cR8MkYLipiZL0
-            ChIJc0Gm1tbta4cRxmXvsBRtU7M""";
+            ChIJc0Gm1tbta4cRxmXvsBRtU7M\
+            """;
 
     // The list is declared as 'volatile' and starts as null.
     // 'volatile' ensures changes are visible across all threads.
