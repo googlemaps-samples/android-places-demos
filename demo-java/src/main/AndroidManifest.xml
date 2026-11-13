@@ -71,6 +71,10 @@
             android:name=".PlaceActionsAndAdvancedDetailsActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
             android:exported="true" />
+        <activity
+            android:name=".TextAndNearbySearchActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
+            android:exported="true" />
 
     </application>
 </manifest>

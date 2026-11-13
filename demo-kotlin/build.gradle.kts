@@ -80,7 +80,9 @@ dependencies {
     testImplementation(libs.google.truth)
     testImplementation(libs.robolectric)
 
-    // --- Attribution library ---
+    // --- Attribution library & Unified Catalog ---
     implementation(project(":library"))
+    implementation(project(":common-ui"))
+    implementation(project(":reviewer"))
 }
 

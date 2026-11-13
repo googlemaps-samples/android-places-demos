@@ -18,9 +18,30 @@ import android.os.Bundle;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.common_ui.catalog.Complexity;
+import com.example.common_ui.catalog.Framework;
+import com.example.common_ui.catalog.Sample;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
+@Sample(
+        id = "com.google.places.kotlin.GetStartedActivity",
+        title = "Snippet: Get Started & Initialize SDK",
+        description =
+                "DevSite documentation snippet showing Places.initializeWithNewPlacesApiEnabled and Places.createClient.",
+        category = "Documentation Snippets",
+        complexity = Complexity.SNIPPET,
+        tags = {"#snippet", "#init", "#getstarted", "#placesclient"},
+        apiCalls = {
+            "Places.initializeWithNewPlacesApiEnabled(applicationContext, apiKey)",
+            "Places.createClient(context)"
+        },
+        purpose =
+                "Canonical DevSite documentation snippet demonstrating how to initialize the Places SDK with the New Places API enabled and create a PlacesClient instance.",
+        successCriteria =
+                "• Activity launches cleanly, initializes Places SDK with the configured API key, and creates a PlacesClient without error.",
+        failureIndicators = "• Activity crashes or shows an unconfigured API key toast.",
+        framework = Framework.JAVA_VIEWS)
 public class GetStartedActivity extends AppCompatActivity {
 
     @Override

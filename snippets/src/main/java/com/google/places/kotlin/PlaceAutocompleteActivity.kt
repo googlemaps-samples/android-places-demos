@@ -21,6 +21,9 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import com.example.common_ui.catalog.Complexity
+import com.example.common_ui.catalog.Framework
+import com.example.common_ui.catalog.Sample
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
@@ -35,6 +38,24 @@ import com.google.places.R
 import com.google.places.databinding.ActivityPlaceAutocompleteBinding
 import com.google.android.libraries.places.widget.PlaceAutocompleteActivity as PlacesSdkAutocompleteActivity
 
+@Sample(
+    id = "com.google.places.kotlin.PlaceAutocompleteActivity",
+    title = "Snippet: Place Autocomplete",
+    description = "DevSite documentation snippet for PlaceAutocomplete and programmatic prediction requests.",
+    category = "Documentation Snippets",
+    complexity = Complexity.SNIPPET,
+    tags = ["#snippet", "#autocomplete", "#predictions"],
+    apiCalls = [
+        "PlaceAutocomplete.IntentBuilder().build(context)",
+        "PlaceAutocomplete.getPredictionFromIntent(intent)",
+        "FindAutocompletePredictionsRequest.builder()",
+        "PlacesClient.findAutocompletePredictions(request)",
+    ],
+    purpose = "Canonical DevSite code snippet illustrating PlaceAutocomplete intent launching and programmatic prediction queries in Kotlin and Java.",
+    successCriteria = "• Activity launches and executes the Place Autocomplete snippet flow without error.",
+    failureIndicators = "• Crash or missing resource on launch.",
+    framework = Framework.KOTLIN_VIEWS,
+)
 class PlaceAutocompleteActivity : AppCompatActivity() {
     private lateinit var placesClient: PlacesClient
     private lateinit var binding: ActivityPlaceAutocompleteBinding

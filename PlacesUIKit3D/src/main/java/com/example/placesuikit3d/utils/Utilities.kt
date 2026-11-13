@@ -91,8 +91,7 @@ fun LatLngAltitude.toValidLocation(): LatLngAltitude {
  * @receiver The Number? to convert.
  * @return The heading value as a Double within [0.0, 360.0).
  */
-fun Number?.toHeading(): Double =
-    this?.toDouble()?.wrapIn(headingRange.start, headingRange.endInclusive) ?: DEFAULT_HEADING
+fun Number?.toHeading(): Double = this?.toDouble()?.wrapIn(headingRange.start, headingRange.endInclusive) ?: DEFAULT_HEADING
 
 /**
  * Converts a Number? to a valid tilt value (0.0 to 90.0).

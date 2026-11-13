@@ -59,10 +59,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.common_ui.catalog.Complexity
+import com.example.common_ui.catalog.Framework
+import com.example.common_ui.catalog.Sample
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.places.android.ktx.demo.ui.DemoTheme
 import dagger.hilt.android.AndroidEntryPoint
 
+@Sample(
+    id = "com.example.placesdemo.programmatic_autocomplete.ProgrammaticAutocompleteGeocodingActivity",
+    title = "Programmatic Autocomplete & Search",
+    description = "Custom as-you-type search bar querying programmatic autocomplete predictions and resolving Place coordinates.",
+    category = "Place Autocomplete",
+    complexity = Complexity.ADVANCED,
+    tags = ["#autocomplete", "#searchbar", "#geocoding", "#predictions", "#recyclerview"],
+    apiCalls = [
+        "PlacesClient.awaitFindAutocompletePredictions(actions)",
+        "PlacesClient.awaitFetchPlace(placeId, placeFields)",
+    ],
+    purpose = "Demonstrates building a reactive as-you-type search bar in Jetpack Compose backed by Places KTX awaitFindAutocompletePredictions and StateFlow.",
+    successCriteria = "• Typing into the search bar triggers debounced autocomplete prediction queries.\n• Tapping a prediction resolves and displays the place details.",
+    failureIndicators = "• Typing does not trigger prediction updates.",
+    framework = Framework.KOTLIN_COMPOSE,
+)
 @AndroidEntryPoint
 class PlacesSearchDemoActivity : ComponentActivity() {
 

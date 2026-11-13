@@ -67,6 +67,5 @@ class LatLngAdapter : TypeAdapter<LatLng?>() {
 
     /** Not supported.  */
     @Throws(IOException::class)
-    override fun write(out: JsonWriter, value: LatLng?): Unit =
-        throw UnsupportedOperationException("Unimplemented method.")
+    override fun write(out: JsonWriter, value: LatLng?): Unit = throw UnsupportedOperationException("Unimplemented method.")
 }

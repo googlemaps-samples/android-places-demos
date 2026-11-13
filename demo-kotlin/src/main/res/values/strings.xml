@@ -56,6 +56,23 @@
   <!-- Button for launching 5.3.0 actions and advanced details test activity. -->
   <string name="place_actions_advanced_button" translatable="false">Places 5.3.0 Actions &amp; Advanced Details</string>
 
+  <!-- Button and labels for Text Search & Nearby Search activity. -->
+  <string name="text_and_nearby_search_button" translatable="false">Text Search &amp; Nearby Search</string>
+  <string name="text_and_nearby_search_description" translatable="false">Demonstrates SearchByTextRequest and SearchNearbyRequest with CircularBounds, place type filtering, and openNow constraints.</string>
+  <string name="text_search_query_hint" translatable="false">Text Search Query</string>
+  <string name="text_search_default_query" translatable="false">Spicy Vegetarian Food in Sydney</string>
+  <string name="search_center_lat_lng_hint" translatable="false">Center (lat, lng)</string>
+  <string name="search_default_center_lat_lng" translatable="false">-33.8567844, 151.2152967</string>
+  <string name="search_radius_meters_hint" translatable="false">Radius (meters)</string>
+  <string name="search_default_radius_meters" translatable="false">2000</string>
+  <string name="search_included_type_hint" translatable="false">Included Type (e.g. restaurant, cafe)</string>
+  <string name="search_default_included_type" translatable="false">restaurant</string>
+  <string name="search_open_now_label" translatable="false">Open Now only (SearchByText)</string>
+  <string name="search_by_text_button_label" translatable="false">Search By Text</string>
+  <string name="search_nearby_button_label" translatable="false">Search Nearby</string>
+  <string name="error_empty_text_query" translatable="false">Please enter a text search query</string>
+  <string name="error_invalid_radius" translatable="false">Radius must be a positive number in meters</string>
+
 
   <!-- AUTOCOMPLETE -->
 
